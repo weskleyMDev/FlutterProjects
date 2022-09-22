@@ -26,6 +26,12 @@ class Resultado extends StatelessWidget {
             style: const TextStyle(fontSize: 25.0),
           ),
         ),
+        Center(
+          child: Text(
+            'Você fez: ${pontuacao.toString()} pontos',
+            style: const TextStyle(fontSize: 25.0),
+          ),
+        ),
         TextButton(
           onPressed: quandoReiniciar,
           child: const Text(
