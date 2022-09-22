@@ -10,13 +10,13 @@ class DespesasApp extends StatelessWidget {
     Transacao(
       id: 't1',
       titulo: 'Lanche',
-      valor: 28.90,
+      valor: 28.99,
       date: DateTime.now(),
     ),
     Transacao(
       id: 't2',
       titulo: 'Conta de Luz',
-      valor: 99.90,
+      valor: 99.99,
       date: DateTime.now(),
     )
   ];
@@ -34,8 +34,9 @@ class DespesasApp extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            const SizedBox(
-              child: Card(
+            // ignore: avoid_unnecessary_containers
+            Container(
+              child: const Card(
                 color: Colors.blue,
                 elevation: 5,
                 child: Text('Gráfico'),
@@ -46,10 +47,32 @@ class DespesasApp extends StatelessWidget {
                 return Card(
                   child: Row(
                     children: [
-                      SizedBox(
+                      Container(
+                        margin: const EdgeInsets.symmetric(
+                          horizontal: 15,
+                          vertical: 10,
+                        ),
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                            color: Colors.purple.shade700,
+                            width: 2,
+                          ),
+                        ),
+                        padding: const EdgeInsets.all(10),
                         child: Text(
                           tr.valor.toString(),
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 20,
+                            color: Colors.purple.shade500,
+                          ),
                         ),
+                      ),
+                      Column(
+                        children: [
+                          Text(tr.titulo),
+                          Text(tr.date.toString()),
+                        ],
                       ),
                     ],
                   ),
