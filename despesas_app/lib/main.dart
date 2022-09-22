@@ -81,7 +81,7 @@ class DespesasApp extends StatelessWidget {
                           Text(
                             tr.date.toString(),
                             style: const TextStyle(
-                              color: Colors.grey,
+                              color: Colors.green,
                             ),
                           ),
                         ],
