@@ -9,7 +9,6 @@ void main() {
 
 class _PerguntasAppState extends State<PerguntasApp> {
   var _perguntaSelecionada = 0;
-  var _pontosTotal = 0;
   final _perguntas = [
     {
       'texto': 'Qual é seu time favorito?',
@@ -37,13 +36,10 @@ class _PerguntasAppState extends State<PerguntasApp> {
     }
   ];
 
-  void _responder(int pontos) {
-    if (perguntasLoop) {
+  void _responder() {
       setState(() {
         _perguntaSelecionada++;
-        _pontosTotal += pontos;
       });
-    }
   }
 
   bool get perguntasLoop {
@@ -70,7 +66,7 @@ class _PerguntasAppState extends State<PerguntasApp> {
                 perguntaSelecionada: _perguntaSelecionada,
                 responder: _responder,
               )
-            : Resultado(_pontosTotal),
+            : const Resultado(),
       ),
     );
   }
