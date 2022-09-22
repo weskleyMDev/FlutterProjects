@@ -1,4 +1,6 @@
 // ignore_for_file: prefer_const_constructors
+
+import 'package:despesas_app/components/transacao_form.dart';
 import 'package:despesas_app/components/transacao_lista.dart';
 import 'package:despesas_app/model/transacao.dart';
 import 'package:flutter/material.dart';
@@ -8,6 +10,8 @@ void main() {
 }
 
 class DespesasApp extends StatelessWidget {
+  const DespesasApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -32,6 +36,8 @@ class HomePage extends StatelessWidget {
     )
   ];
 
+  HomePage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -51,39 +57,7 @@ class HomePage extends StatelessWidget {
               ),
             ),
             TransacaoLista(_transacoes),
-            Card(
-              elevation: 5,
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                  // ignore: prefer_const_literals_to_create_immutables
-                  children: [
-                    TextField(
-                      decoration: InputDecoration(
-                        labelText: 'Título',
-                      ),
-                    ),
-                    TextField(
-                      decoration: InputDecoration(
-                        labelText: 'Valor (R\$)',
-                      ),
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        TextButton(
-                          onPressed: () {},
-                          style: TextButton.styleFrom(
-                            foregroundColor: Colors.purple,
-                          ),
-                          child: Text('Nova transação'),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ),
+            TransacaoForm(),
           ],
         ),
       ),
