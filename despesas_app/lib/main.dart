@@ -1,11 +1,27 @@
+import 'package:despesas_app/model/transacao.dart';
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(const DespesasApp());
+  runApp(DespesasApp());
 }
 
 class DespesasApp extends StatelessWidget {
-  const DespesasApp({Key? key}) : super(key: key);
+  final _transacoes = [
+    Transacao(
+      id: 't1',
+      titulo: 'Lanche',
+      valor: 28.90,
+      date: DateTime.now(),
+    ),
+    Transacao(
+      id: 't2',
+      titulo: 'Conta de Luz',
+      valor: 99.90,
+      date: DateTime.now(),
+    )
+  ];
+
+  DespesasApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -15,17 +31,30 @@ class DespesasApp extends StatelessWidget {
           title: const Text('Despesas App Flutter'),
         ),
         body: Column(
-          children: const [
-            SizedBox(
-              width: double.infinity,
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            const SizedBox(
               child: Card(
                 color: Colors.blue,
                 elevation: 5,
                 child: Text('Gráfico'),
               ),
             ),
-            Card(
-              child: Text('Lista de Transações'),
+            Column(
+              children: _transacoes.map((tr) {
+                return Card(
+                  child: Row(
+                    children: [
+                      SizedBox(
+                        child: Text(
+                          tr.valor.toString(),
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              }).toList(),
             ),
           ],
         ),
