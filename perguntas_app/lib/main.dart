@@ -1,47 +1,76 @@
 import 'package:flutter/material.dart';
 
+import './resultado.dart';
+import './questoes.dart';
+
 void main() {
   runApp(const PerguntasApp());
 }
 
 class _PerguntasAppState extends State<PerguntasApp> {
-  var perguntaSelecionada = 0;
+  var _perguntaSelecionada = 0;
+  var _pontosTotal = 0;
+  final _perguntas = [
+    {
+      'texto': 'Qual é seu time favorito?',
+      'respostas': [
+        {'texto': 'Flamengo', 'nota': 10},
+        {'texto': 'Botafogo', 'nota': 1},
+        {'texto': 'Fluminense', 'nota': 5},
+      ]
+    },
+    {
+      'texto': 'Qual é sua cor favorita?',
+      'respostas': [
+        {'texto': 'Verde', 'nota': 5},
+        {'texto': 'Azul', 'nota': 10},
+        {'texto': 'Branco', 'nota': 1},
+      ]
+    },
+    {
+      'texto': 'Qual é seu animal favorito?',
+      'respostas': [
+        {'texto': 'Cachorro', 'nota': 1},
+        {'texto': 'Gato', 'nota': 5},
+        {'texto': 'Pássaro', 'nota': 10},
+      ]
+    }
+  ];
 
-  void responder() {
-    setState(() {
-      perguntaSelecionada++;
-    });
+  void _responder(int pontos) {
+    if (perguntasLoop) {
+      setState(() {
+        _perguntaSelecionada++;
+        _pontosTotal += pontos;
+      });
+    }
+  }
+
+  bool get perguntasLoop {
+    return _perguntaSelecionada < _perguntas.length;
   }
 
   @override
   Widget build(BuildContext context) {
-    final perguntas = [
-      'Qual é seu time favorito?',
-      'Qual é sua cor favorita?',
-    ];
+    // List<Widget> respostas = [];
+    // for (String textoResp
+    //     in _perguntas[_perguntaSelecionada].cast()['respostas']) {
+    //   respostas.add(Resposta(textoResp, _responder));
+    // }
 
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
+          backgroundColor: Colors.deepPurple,
           title: const Text('Perguntas App Flutter'),
         ),
-        body: Column(
-          children: [
-            Text(perguntas[perguntaSelecionada]),
-            ElevatedButton(
-              onPressed: responder,
-              child: const Text('Resposta 1'),
-            ),
-            ElevatedButton(
-              onPressed: responder,
-              child: const Text('Resposta 2'),
-            ),
-            ElevatedButton(
-              onPressed: responder,
-              child: const Text('Resposta 3'),
-            ),
-          ],
-        ),
+        body: perguntasLoop
+            ? Questoes(
+                perguntas: _perguntas,
+                perguntaSelecionada: _perguntaSelecionada,
+                responder: _responder,
+              )
+            : Resultado(_pontosTotal),
       ),
     );
   }
