@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import './resultado.dart';
 import './questoes.dart';
+import './resultado.dart';
 
 void main() {
   runApp(const PerguntasApp());
@@ -9,37 +9,48 @@ void main() {
 
 class _PerguntasAppState extends State<PerguntasApp> {
   var _perguntaSelecionada = 0;
+  var _pontuacaoTotal = 0;
   final _perguntas = [
     {
       'texto': 'Qual é seu time favorito?',
       'respostas': [
-        {'texto': 'Flamengo', 'nota': 10},
-        {'texto': 'Botafogo', 'nota': 1},
-        {'texto': 'Fluminense', 'nota': 5},
+        {'texto': 'Flamengo', 'pontos': 10},
+        {'texto': 'Botafogo', 'pontos': 1},
+        {'texto': 'Fluminense', 'pontos': 5},
       ]
     },
     {
       'texto': 'Qual é sua cor favorita?',
       'respostas': [
-        {'texto': 'Verde', 'nota': 5},
-        {'texto': 'Azul', 'nota': 10},
-        {'texto': 'Branco', 'nota': 1},
+        {'texto': 'Verde', 'pontos': 5},
+        {'texto': 'Azul', 'pontos': 10},
+        {'texto': 'Branco', 'pontos': 1},
       ]
     },
     {
       'texto': 'Qual é seu animal favorito?',
       'respostas': [
-        {'texto': 'Cachorro', 'nota': 1},
-        {'texto': 'Gato', 'nota': 5},
-        {'texto': 'Pássaro', 'nota': 10},
+        {'texto': 'Cachorro', 'pontos': 1},
+        {'texto': 'Gato', 'pontos': 5},
+        {'texto': 'Pássaro', 'pontos': 10},
       ]
     }
   ];
 
-  void _responder() {
+  void _responder(int pontuacao) {
+    if (perguntasLoop) {
       setState(() {
         _perguntaSelecionada++;
+        _pontuacaoTotal += pontuacao;
       });
+    }
+  }
+
+  void _reiniciar() {
+    setState(() {
+      _perguntaSelecionada = 0;
+      _pontuacaoTotal = 0;
+    });
   }
 
   bool get perguntasLoop {
@@ -48,12 +59,6 @@ class _PerguntasAppState extends State<PerguntasApp> {
 
   @override
   Widget build(BuildContext context) {
-    // List<Widget> respostas = [];
-    // for (String textoResp
-    //     in _perguntas[_perguntaSelecionada].cast()['respostas']) {
-    //   respostas.add(Resposta(textoResp, _responder));
-    // }
-
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
@@ -66,7 +71,12 @@ class _PerguntasAppState extends State<PerguntasApp> {
                 perguntaSelecionada: _perguntaSelecionada,
                 responder: _responder,
               )
-            : const Resultado(),
+            : Resultado(
+                pontuacao: _pontuacaoTotal,
+                quandoReiniciar: () {
+                  _reiniciar();
+                },
+              ),
       ),
     );
   }

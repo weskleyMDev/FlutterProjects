@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 
 class Resposta extends StatelessWidget {
   final String texto;
-  final void Function() _quandoClicado;
+  final void Function() quandoClicado;
 
-  const Resposta(this.texto, this._quandoClicado, {super.key});
+  const Resposta(this.texto, this.quandoClicado, {super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -14,7 +14,7 @@ class Resposta extends StatelessWidget {
       child: ElevatedButton(
         style:
             ElevatedButton.styleFrom(backgroundColor: Colors.deepPurpleAccent),
-        onPressed: _quandoClicado,
+        onPressed: quandoClicado,
         child: Text(
           texto,
           style: const TextStyle(fontSize: 18),
