@@ -10,13 +10,13 @@ class DespesasApp extends StatelessWidget {
     Transacao(
       id: 't1',
       titulo: 'Lanche',
-      valor: 28.99,
+      valor: 28.90,
       date: DateTime.now(),
     ),
     Transacao(
       id: 't2',
       titulo: 'Conta de Luz',
-      valor: 99.99,
+      valor: 99.90,
       date: DateTime.now(),
     )
   ];
@@ -60,7 +60,7 @@ class DespesasApp extends StatelessWidget {
                         ),
                         padding: const EdgeInsets.all(10),
                         child: Text(
-                          tr.valor.toString(),
+                          'R\$ ${tr.valor.toStringAsFixed(2)}',
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 20,
@@ -69,9 +69,21 @@ class DespesasApp extends StatelessWidget {
                         ),
                       ),
                       Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(tr.titulo),
-                          Text(tr.date.toString()),
+                          Text(
+                            tr.titulo,
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          Text(
+                            tr.date.toString(),
+                            style: const TextStyle(
+                              color: Colors.grey,
+                            ),
+                          ),
                         ],
                       ),
                     ],
