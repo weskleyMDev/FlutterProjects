@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors
+import 'dart:math';
 
 import 'package:despesas_app/components/transacao_form.dart';
 import 'package:despesas_app/components/transacao_lista.dart';
@@ -29,11 +29,24 @@ class _TransacaoElemtsState extends State<TransacaoElemts> {
     )
   ];
 
+  _addTransacao(String titulo, double valor) {
+    final newTransacao = Transacao(
+      id: Random().nextDouble().toString(),
+      titulo: titulo,
+      valor: valor,
+      date: DateTime.now(),
+    );
+
+    setState(() {
+      _transacoes.add(newTransacao);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(children: [
       TransacaoLista(_transacoes),
-      TransacaoForm(),
+      TransacaoForm(_addTransacao),
     ]);
   }
 }

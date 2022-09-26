@@ -1,5 +1,3 @@
-// ignore_for_file: prefer_const_constructors
-
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -42,14 +40,14 @@ class TransacaoLista extends StatelessWidget {
                 children: [
                   Text(
                     tr.titulo,
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                   Text(
                     DateFormat('d MMM y').format(tr.date),
-                    style: TextStyle(
+                    style: const TextStyle(
                       color: Colors.grey,
                     ),
                   ),

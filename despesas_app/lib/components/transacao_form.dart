@@ -1,9 +1,12 @@
-// ignore_for_file: prefer_const_constructors
-
 import 'package:flutter/material.dart';
 
 class TransacaoForm extends StatelessWidget {
-  const TransacaoForm({super.key});
+  TransacaoForm(this.onSubmit, {super.key});
+
+  final tituloController = TextEditingController();
+  final valorController = TextEditingController();
+
+  final void Function(String, double) onSubmit;
 
   @override
   Widget build(BuildContext context) {
@@ -15,12 +18,14 @@ class TransacaoForm extends StatelessWidget {
           // ignore: prefer_const_literals_to_create_immutables
           children: [
             TextField(
-              decoration: InputDecoration(
+              controller: tituloController,
+              decoration: const InputDecoration(
                 labelText: 'Título',
               ),
             ),
             TextField(
-              decoration: InputDecoration(
+              controller: valorController,
+              decoration: const InputDecoration(
                 labelText: 'Valor (R\$)',
               ),
             ),
@@ -28,11 +33,15 @@ class TransacaoForm extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 TextButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    final titulo = tituloController.text;
+                    final valor = double.tryParse(valorController.text) ?? 0.0;
+                    onSubmit(titulo, valor);
+                  },
                   style: TextButton.styleFrom(
                     foregroundColor: Colors.purple,
                   ),
-                  child: Text('Nova transação'),
+                  child: const Text('Nova transação'),
                 ),
               ],
             ),
