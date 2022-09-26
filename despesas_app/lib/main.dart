@@ -28,19 +28,21 @@ class HomePage extends StatelessWidget {
         appBar: AppBar(
           title: const Text('Despesas App Flutter'),
         ),
-        body: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            // ignore: avoid_unnecessary_containers
-            Container(
-              child: Card(
-                color: Colors.blue,
-                elevation: 5,
-                child: Text('Gráfico'),
+        body: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              // ignore: avoid_unnecessary_containers
+              Container(
+                child: Card(
+                  color: Colors.blue,
+                  elevation: 5,
+                  child: Text('Gráfico'),
+                ),
               ),
-            ),
-            TransacaoElemts(),
-          ],
+              TransacaoElemts(),
+            ],
+          ),
         ),
       ),
     );
