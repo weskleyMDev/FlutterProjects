@@ -32,7 +32,6 @@ class _TransacaoFormState extends State<TransacaoForm> {
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(
-          // ignore: prefer_const_literals_to_create_immutables
           children: [
             TextField(
               controller: tituloController,
