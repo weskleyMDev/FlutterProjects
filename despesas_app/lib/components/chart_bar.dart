@@ -17,10 +17,33 @@ class ChartBar extends StatelessWidget {
         const SizedBox(
           height: 5,
         ),
-        const SizedBox(
+        SizedBox(
           height: 60,
           width: 10,
-          child: null,
+          child: Stack(
+            alignment: Alignment.bottomCenter,
+            children: <Widget>[
+              Container(
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    color: Colors.grey,
+                    width: 1.0,
+                  ),
+                  color: const Color.fromRGBO(220, 220, 220, 1),
+                  borderRadius: BorderRadius.circular(5),
+                ),
+              ),
+              FractionallySizedBox(
+                heightFactor: percet,
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.lightGreen[900],
+                    borderRadius: BorderRadius.circular(5),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
         const SizedBox(
           height: 5,

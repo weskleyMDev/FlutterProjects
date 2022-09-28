@@ -47,7 +47,7 @@ class TransacaoLista extends StatelessWidget {
                         ),
                         decoration: BoxDecoration(
                           border: Border.all(
-                            color: Colors.purple.shade700,
+                            color: Colors.green.shade800,
                             width: 2,
                           ),
                         ),
@@ -57,7 +57,7 @@ class TransacaoLista extends StatelessWidget {
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 20,
-                            color: Colors.purple.shade500,
+                            color: Colors.green.shade900,
                           ),
                         ),
                       ),

@@ -60,6 +60,18 @@ class _HomePageState extends State<HomePage> {
       valor: 49.90,
       date: DateTime.now().subtract(const Duration(days: 3)),
     ),
+    Transacao(
+      id: 't0',
+      titulo: 'Água',
+      valor: 69.90,
+      date: DateTime.now().subtract(const Duration(days: 4)),
+    ),
+    Transacao(
+      id: 't0',
+      titulo: 'Luz',
+      valor: 99.90,
+      date: DateTime.now().subtract(const Duration(days: 2)),
+    ),
   ];
 
   List<Transacao> get _recenteTransacao {
@@ -125,7 +137,7 @@ class _HomePageState extends State<HomePage> {
           onPressed: () {
             _abrirTransacaoFormModal(context);
           },
-          backgroundColor: Theme.of(context).colorScheme.secondary,
+          backgroundColor: Theme.of(context).colorScheme.primary,
           child: const Icon(Icons.add),
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,

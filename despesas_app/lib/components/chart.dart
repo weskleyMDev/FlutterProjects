@@ -30,6 +30,12 @@ class Chart extends StatelessWidget {
     });
   }
 
+  double get _semanaTotal {
+    return grupoTransacoes.fold(0.0, (cont, tr) {
+      return cont + (tr['valor'] as double);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     grupoTransacoes;
@@ -39,7 +45,11 @@ class Chart extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: grupoTransacoes.map((tr) {
-          return ChartBar(tr['dia'] as String, tr['valor'] as double, 0);
+          return ChartBar(
+            (tr['dia'] as String),
+            (tr['valor'] as double),
+            (tr['valor'] as double) / _semanaTotal,
+          );
         }).toList(),
       ),
     );
