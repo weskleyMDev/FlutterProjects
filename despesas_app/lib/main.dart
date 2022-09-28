@@ -21,8 +21,8 @@ class DespesasApp extends StatelessWidget {
       home: const HomePage(),
       theme: tema.copyWith(
         colorScheme: tema.colorScheme.copyWith(
-          primary: Colors.purple[700],
-          secondary: Colors.purple[500],
+          primary: Colors.green[700],
+          secondary: Colors.green[500],
         ),
         textTheme: tema.textTheme.copyWith(
           headline6: const TextStyle(
