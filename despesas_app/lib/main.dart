@@ -21,10 +21,24 @@ class DespesasApp extends StatelessWidget {
       home: const HomePage(),
       theme: tema.copyWith(
         colorScheme: tema.colorScheme.copyWith(
-          primary: Colors.purple,
-          secondary: Colors.amber,
+          primary: Colors.purple[700],
+          secondary: Colors.purple[500],
         ),
-        textTheme: tema.textTheme.copyWith(),
+        textTheme: tema.textTheme.copyWith(
+          headline6: const TextStyle(
+            fontFamily: 'Quicksand',
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
+        ),
+        appBarTheme: const AppBarTheme(
+          titleTextStyle: TextStyle(
+            fontFamily: 'OpenSans',
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
       ),
     );
   }
@@ -81,7 +95,10 @@ class _HomePageState extends State<HomePage> {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
-          title: const Text('Despesas App Flutter'),
+          title: Text(
+            'Despesas App Flutter',
+            style: Theme.of(context).appBarTheme.titleTextStyle,
+          ),
           actions: [
             IconButton(
               onPressed: () {
@@ -90,6 +107,7 @@ class _HomePageState extends State<HomePage> {
               icon: const Icon(Icons.add),
             )
           ],
+          backgroundColor: Theme.of(context).colorScheme.primary,
         ),
         body: SingleChildScrollView(
           child: Column(
@@ -97,10 +115,11 @@ class _HomePageState extends State<HomePage> {
             children: [
               // ignore: avoid_unnecessary_containers
               Container(
-                child: const Card(
-                  color: Colors.blue,
+                child: Card(
+                  color: Theme.of(context).colorScheme.primary,
                   elevation: 5,
-                  child: Text('Gráfico'),
+                  child: Text('Gráfico',
+                  style: Theme.of(context).textTheme.headline6,),
                 ),
               ),
               TransacaoLista(_transacoes),
@@ -111,6 +130,7 @@ class _HomePageState extends State<HomePage> {
           onPressed: () {
             _abrirTransacaoFormModal(context);
           },
+          backgroundColor: Theme.of(context).colorScheme.secondary,
           child: const Icon(Icons.add),
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
