@@ -15,8 +15,17 @@ class DespesasApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: HomePage(),
+    final ThemeData tema = ThemeData();
+
+    return MaterialApp(
+      home: const HomePage(),
+      theme: tema.copyWith(
+        colorScheme: tema.colorScheme.copyWith(
+          primary: Colors.purple,
+          secondary: Colors.amber,
+        ),
+        textTheme: tema.textTheme.copyWith(),
+      ),
     );
   }
 }
