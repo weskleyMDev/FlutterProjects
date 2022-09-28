@@ -1,3 +1,4 @@
+import 'package:despesas_app/components/chart_bar.dart';
 import 'package:despesas_app/model/transacao.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
@@ -25,20 +26,21 @@ class Chart extends StatelessWidget {
         }
       }
 
-      print(DateFormat.E().format(semanaDia)[0]);
-      print(totalSoma);
-
       return {'dia': DateFormat.E().format(semanaDia)[0], 'valor': totalSoma};
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    grupoTransacoes;
     return Card(
       elevation: 6,
       margin: const EdgeInsets.all(20),
       child: Row(
-        children: const <Widget>[],
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: grupoTransacoes.map((tr) {
+          return ChartBar(tr['dia'] as String, tr['valor'] as double, 0);
+        }).toList(),
       ),
     );
   }

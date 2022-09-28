@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:despesas_app/components/chart.dart';
 import 'package:despesas_app/components/transacao_form.dart';
 import 'package:despesas_app/components/transacao_lista.dart';
 import 'package:flutter/material.dart';
@@ -52,7 +53,22 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final List<Transacao> _transacoes = [];
+  final List<Transacao> _transacoes = [
+    Transacao(
+      id: 't0',
+      titulo: 'Internet',
+      valor: 49.90,
+      date: DateTime.now().subtract(const Duration(days: 3)),
+    ),
+  ];
+
+  List<Transacao> get _recenteTransacao {
+    return _transacoes.where((tr) {
+      return tr.date.isAfter(DateTime.now().subtract(
+        const Duration(days: 7),
+      ));
+    }).toList();
+  }
 
   _addTransacao(String titulo, double valor) {
     final newTransacao = Transacao(
@@ -99,18 +115,8 @@ class _HomePageState extends State<HomePage> {
         body: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              // ignore: avoid_unnecessary_containers
-              Container(
-                child: Card(
-                  color: Theme.of(context).colorScheme.primary,
-                  elevation: 5,
-                  child: Text(
-                    'Gráfico',
-                    style: Theme.of(context).textTheme.headline6,
-                  ),
-                ),
-              ),
+            children: <Widget>[
+              Chart(recenteTransacao: _recenteTransacao),
               TransacaoLista(_transacoes),
             ],
           ),
