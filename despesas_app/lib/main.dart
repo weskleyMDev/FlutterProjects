@@ -118,8 +118,10 @@ class _HomePageState extends State<HomePage> {
                 child: Card(
                   color: Theme.of(context).colorScheme.primary,
                   elevation: 5,
-                  child: Text('Gráfico',
-                  style: Theme.of(context).textTheme.headline6,),
+                  child: Text(
+                    'Gráfico',
+                    style: Theme.of(context).textTheme.headline6,
+                  ),
                 ),
               ),
               TransacaoLista(_transacoes),
