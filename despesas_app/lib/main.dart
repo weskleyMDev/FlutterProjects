@@ -53,26 +53,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final List<Transacao> _transacoes = [
-    Transacao(
-      id: 't0',
-      titulo: 'Internet',
-      valor: 49.90,
-      date: DateTime.now().subtract(const Duration(days: 3)),
-    ),
-    Transacao(
-      id: 't0',
-      titulo: 'Água',
-      valor: 69.90,
-      date: DateTime.now().subtract(const Duration(days: 4)),
-    ),
-    Transacao(
-      id: 't0',
-      titulo: 'Luz',
-      valor: 99.90,
-      date: DateTime.now().subtract(const Duration(days: 2)),
-    ),
-  ];
+  final List<Transacao> _transacoes = [];
 
   List<Transacao> get _recenteTransacao {
     return _transacoes.where((tr) {
@@ -82,12 +63,12 @@ class _HomePageState extends State<HomePage> {
     }).toList();
   }
 
-  _addTransacao(String titulo, double valor) {
+  _addTransacao(String titulo, double valor, DateTime date) {
     final newTransacao = Transacao(
       id: Random().nextDouble().toString(),
       titulo: titulo,
       valor: valor,
-      date: DateTime.now(),
+      date: date,
     );
 
     setState(() {
@@ -95,6 +76,12 @@ class _HomePageState extends State<HomePage> {
     });
 
     Navigator.of(context).pop();
+  }
+
+  _deleteTransacao(String id) {
+    setState(() {
+      _transacoes.removeWhere((tr) => tr.id == id);
+    });
   }
 
   _abrirTransacaoFormModal(BuildContext context) {
@@ -129,7 +116,7 @@ class _HomePageState extends State<HomePage> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
               Chart(recenteTransacao: _recenteTransacao),
-              TransacaoLista(_transacoes),
+              TransacaoLista(_transacoes, _deleteTransacao),
             ],
           ),
         ),

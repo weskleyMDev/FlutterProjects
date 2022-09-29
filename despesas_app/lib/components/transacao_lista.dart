@@ -5,7 +5,8 @@ import '../model/transacao.dart';
 
 class TransacaoLista extends StatelessWidget {
   final List<Transacao> transacoes;
-  const TransacaoLista(this.transacoes, {super.key});
+  final void Function(String) removeTransacao;
+  const TransacaoLista(this.transacoes, this.removeTransacao, {super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -64,6 +65,11 @@ class TransacaoLista extends StatelessWidget {
                     ),
                     subtitle: Text(
                       DateFormat('d MMM y').format(tr.date),
+                    ),
+                    trailing: IconButton(
+                      icon: const Icon(Icons.delete),
+                      color: Colors.red[400],
+                      onPressed: () => removeTransacao(tr.id),
                     ),
                   ),
                 );

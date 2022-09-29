@@ -52,7 +52,7 @@ class Chart extends StatelessWidget {
               child: ChartBar(
                 (tr['dia'] as String),
                 (tr['valor'] as double),
-                (tr['valor'] as double) / _semanaTotal,
+                _semanaTotal == 0 ? 0 : (tr['valor'] as double) / _semanaTotal,
               ),
             );
           }).toList(),
