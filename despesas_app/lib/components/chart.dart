@@ -27,7 +27,7 @@ class Chart extends StatelessWidget {
       }
 
       return {'dia': DateFormat.E().format(semanaDia)[0], 'valor': totalSoma};
-    });
+    }).reversed.toList();
   }
 
   double get _semanaTotal {
@@ -42,15 +42,21 @@ class Chart extends StatelessWidget {
     return Card(
       elevation: 6,
       margin: const EdgeInsets.all(20),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: grupoTransacoes.map((tr) {
-          return ChartBar(
-            (tr['dia'] as String),
-            (tr['valor'] as double),
-            (tr['valor'] as double) / _semanaTotal,
-          );
-        }).toList(),
+      child: Padding(
+        padding: const EdgeInsets.all(10.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: grupoTransacoes.map((tr) {
+            return Flexible(
+              fit: FlexFit.tight,
+              child: ChartBar(
+                (tr['dia'] as String),
+                (tr['valor'] as double),
+                (tr['valor'] as double) / _semanaTotal,
+              ),
+            );
+          }).toList(),
+        ),
       ),
     );
   }
