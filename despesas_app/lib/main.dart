@@ -94,29 +94,43 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final appBar = AppBar(
+      title: Text(
+        'Despesas App Flutter',
+        style: TextStyle(
+          fontSize: 20 * MediaQuery.of(context).textScaleFactor,
+        ),
+      ),
+      actions: [
+        IconButton(
+          onPressed: () {
+            _abrirTransacaoFormModal(context);
+          },
+          icon: const Icon(Icons.add),
+        )
+      ],
+      backgroundColor: Theme.of(context).colorScheme.primary,
+    );
+
+    final alturaResp = MediaQuery.of(context).size.height -
+        appBar.preferredSize.height -
+        MediaQuery.of(context).padding.top;
+
     return MaterialApp(
       home: Scaffold(
-        appBar: AppBar(
-          title: Text(
-            'Despesas App Flutter',
-            style: Theme.of(context).appBarTheme.titleTextStyle,
-          ),
-          actions: [
-            IconButton(
-              onPressed: () {
-                _abrirTransacaoFormModal(context);
-              },
-              icon: const Icon(Icons.add),
-            )
-          ],
-          backgroundColor: Theme.of(context).colorScheme.primary,
-        ),
+        appBar: appBar,
         body: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
-              Chart(recenteTransacao: _recenteTransacao),
-              TransacaoLista(_transacoes, _deleteTransacao),
+              SizedBox(
+                height: alturaResp * 0.32,
+                child: Chart(recenteTransacao: _recenteTransacao),
+              ),
+              SizedBox(
+                height: alturaResp * 0.68,
+                child: TransacaoLista(_transacoes, _deleteTransacao),
+              ),
             ],
           ),
         ),
