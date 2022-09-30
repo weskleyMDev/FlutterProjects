@@ -96,6 +96,8 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    bool isLandscape =
+        MediaQuery.of(context).orientation == Orientation.landscape;
     final appBar = AppBar(
       title: Text(
         'Despesas App Flutter',
@@ -103,7 +105,16 @@ class _HomePageState extends State<HomePage> {
           fontSize: 20 * MediaQuery.of(context).textScaleFactor,
         ),
       ),
-      actions: [
+      actions: <Widget>[
+        if (isLandscape)
+          IconButton(
+            onPressed: () {
+              setState(() {
+                _mostrarChart = !_mostrarChart;
+              });
+            },
+            icon: Icon(_mostrarChart ? Icons.list : Icons.show_chart),
+          ),
         IconButton(
           onPressed: () {
             _abrirTransacaoFormModal(context);
@@ -125,29 +136,16 @@ class _HomePageState extends State<HomePage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  const Text('Mostrar Gráfico'),
-                  Switch(
-                    value: _mostrarChart,
-                    onChanged: (value) {
-                      setState(() {
-                        _mostrarChart = value;
-                      });
-                    },
-                  ),
-                ],
-              ),
-              _mostrarChart
-                  ? SizedBox(
-                      height: alturaResp * 0.32,
-                      child: Chart(recenteTransacao: _recenteTransacao),
-                    )
-                  : SizedBox(
-                      height: alturaResp * 0.68,
-                      child: TransacaoLista(_transacoes, _deleteTransacao),
-                    ),
+              if (_mostrarChart || !isLandscape)
+                SizedBox(
+                  height: alturaResp * (isLandscape ? 0.7 : 0.3),
+                  child: Chart(recenteTransacao: _recenteTransacao),
+                ),
+              if (!_mostrarChart || !isLandscape)
+                SizedBox(
+                  height: alturaResp * 0.68,
+                  child: TransacaoLista(_transacoes, _deleteTransacao),
+                ),
             ],
           ),
         ),
