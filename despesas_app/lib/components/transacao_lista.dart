@@ -69,11 +69,20 @@ class TransacaoLista extends StatelessWidget {
                   subtitle: Text(
                     DateFormat('d MMM y').format(tr.date),
                   ),
-                  trailing: IconButton(
-                    icon: const Icon(Icons.delete),
-                    color: Colors.red[400],
-                    onPressed: () => removeTransacao(tr.id),
-                  ),
+                  trailing: MediaQuery.of(context).size.width > 480
+                      ? TextButton.icon(
+                          onPressed: () => removeTransacao(tr.id),
+                          icon: const Icon(Icons.delete),
+                          style: const ButtonStyle(
+                            foregroundColor: MaterialStatePropertyAll(Colors.red),
+                          ),
+                          label: const Text('Excluir'),
+                        )
+                      : IconButton(
+                          icon: const Icon(Icons.delete),
+                          color: Colors.red,
+                          onPressed: () => removeTransacao(tr.id),
+                        ),
                 ),
               );
             },
