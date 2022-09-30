@@ -53,9 +53,8 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final List<Transacao> _transacoes = [];
-
   bool _mostrarChart = false;
+  final List<Transacao> _transacoes = [];
 
   List<Transacao> get _recenteTransacao {
     return _transacoes.where((tr) {

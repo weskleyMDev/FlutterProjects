@@ -10,8 +10,8 @@ class ItemTransacao extends StatelessWidget {
     required this.removeTransacao,
   }) : super(key: key);
 
-  final Transacao tr;
   final void Function(String) removeTransacao;
+  final Transacao tr;
 
   @override
   Widget build(BuildContext context) {

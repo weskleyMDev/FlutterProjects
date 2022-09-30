@@ -4,10 +4,10 @@ import '../model/transacao.dart';
 import 'transacao_item.dart';
 
 class TransacaoLista extends StatelessWidget {
-  final List<Transacao> transacoes;
-  final void Function(String) removeTransacao;
-
   const TransacaoLista(this.transacoes, this.removeTransacao, {super.key});
+
+  final void Function(String) removeTransacao;
+  final List<Transacao> transacoes;
 
   @override
   Widget build(BuildContext context) {
