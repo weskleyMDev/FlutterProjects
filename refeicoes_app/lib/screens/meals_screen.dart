@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:refeicoes_app/models/category.dart';
 
 class MealsScreen extends StatelessWidget {
-  const MealsScreen(this.category, {super.key});
-
-  final Category category;
+  const MealsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final category = ModalRoute.of(context)!.settings.arguments as Category;
+
     return Scaffold(
       appBar: AppBar(
         title: Text(category.title),
