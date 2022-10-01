@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:refeicoes_app/screens/categories_screen.dart';
 
 void main() => runApp(const MyApp());
 
@@ -8,32 +9,20 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Vamos Conzinhar?',
+      title: 'Refeições App Flutter',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.brown)
+            .copyWith(secondary: Colors.amber),
+        fontFamily: 'Raleway',
+        canvasColor: const Color.fromRGBO(251, 251, 253, 1),
+        textTheme: ThemeData.light().textTheme.copyWith(
+          titleMedium: const TextStyle(
+            fontSize: 20,
+            fontFamily: 'RobotoCondensed',
+          ),
+        ),
       ),
-      home: const MyHomePage(),
-    );
-  }
-}
-
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key});
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Vamos Conzinhar?'),
-      ),
-      body: const Center(
-        child: Text('Navegar é preciso'),
-      ),
+      home: const CategoriesScreen(),
     );
   }
 }
