@@ -1,9 +1,11 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import '../model/transacao.dart';
 
-class ItemTransacao extends StatelessWidget {
+class ItemTransacao extends StatefulWidget {
   const ItemTransacao({
     Key? key,
     required this.tr,
@@ -12,6 +14,28 @@ class ItemTransacao extends StatelessWidget {
 
   final void Function(String) removeTransacao;
   final Transacao tr;
+
+  @override
+  State<ItemTransacao> createState() => _ItemTransacaoState();
+}
+
+class _ItemTransacaoState extends State<ItemTransacao> {
+  static const colors = [
+    Colors.red,
+    Colors.blue,
+    Colors.green,
+    Colors.amber,
+    Colors.purple,
+  ];
+
+  late Color _backgroundColor;
+
+  @override
+  void initState() {
+    super.initState();
+    int i = Random().nextInt(5);
+    _backgroundColor = colors[i];
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -23,29 +47,29 @@ class ItemTransacao extends StatelessWidget {
       ),
       child: ListTile(
         leading: CircleAvatar(
-          backgroundColor: Colors.lightGreen[700],
+          backgroundColor: _backgroundColor,
           foregroundColor: Colors.white,
           radius: 30,
           child: Padding(
             padding: const EdgeInsets.all(6.0),
             child: FittedBox(
               child: Text(
-                'R\$${tr.valor.toStringAsFixed(2)}',
+                'R\$${widget.tr.valor.toStringAsFixed(2)}',
                 style: const TextStyle(fontWeight: FontWeight.bold),
               ),
             ),
           ),
         ),
         title: Text(
-          tr.titulo,
+          widget.tr.titulo,
           style: Theme.of(context).textTheme.titleLarge,
         ),
         subtitle: Text(
-          DateFormat('d MMM y').format(tr.date),
+          DateFormat('d MMM y').format(widget.tr.date),
         ),
         trailing: MediaQuery.of(context).size.width > 480
             ? TextButton.icon(
-                onPressed: () => removeTransacao(tr.id),
+                onPressed: () => widget.removeTransacao(widget.tr.id),
                 icon: const Icon(Icons.delete),
                 style: const ButtonStyle(
                   foregroundColor: MaterialStatePropertyAll(Colors.red),
@@ -55,7 +79,7 @@ class ItemTransacao extends StatelessWidget {
             : IconButton(
                 icon: const Icon(Icons.delete),
                 color: Colors.red,
-                onPressed: () => removeTransacao(tr.id),
+                onPressed: () => widget.removeTransacao(widget.tr.id),
               ),
       ),
     );

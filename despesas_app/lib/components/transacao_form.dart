@@ -15,6 +15,21 @@ class _TransacaoFormState extends State<TransacaoForm> {
   final _tituloController = TextEditingController();
   final _valorController = TextEditingController();
 
+  @override
+  void didUpdateWidget(oldWidget) {
+    super.didUpdateWidget(oldWidget);
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
   _submitForm() {
     final titulo = _tituloController.text;
     final valor = double.tryParse(_valorController.text) ?? 0.0;

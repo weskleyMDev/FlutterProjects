@@ -42,6 +42,7 @@ class TransacaoLista extends StatelessWidget {
             itemBuilder: (ctxt, index) {
               final tr = transacoes[index];
               return ItemTransacao(
+                key: GlobalObjectKey(tr),
                 tr: tr,
                 removeTransacao: removeTransacao,
               );
