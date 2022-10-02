@@ -14,14 +14,14 @@ class Category {
 
   factory Category.fromMap(Map<String, dynamic> map) {
     return Category(
-      id: map['id'] as int,
+      id: map['id'] as String,
       title: map['title'] as String,
       color: Color(map['color'] as int),
     );
   }
 
   final Color color;
-  final int id;
+  final String id;
   final String title;
 
   @override
@@ -41,7 +41,7 @@ class Category {
   String toString() => 'Category(id: $id, title: $title, color: $color)';
 
   Category copyWith({
-    int? id,
+    String? id,
     String? title,
     Color? color,
   }) {

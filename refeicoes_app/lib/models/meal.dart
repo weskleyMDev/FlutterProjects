@@ -24,7 +24,7 @@ class Meal {
   final bool isVegetarian;
   final Complexity complexity;
   final Cost cost;
-  
+
   const Meal({
     required this.id,
     required this.title,
@@ -40,4 +40,30 @@ class Meal {
     required this.complexity,
     required this.cost,
   });
+
+  String get complexityText {
+    switch (complexity) {
+      case Complexity.simple:
+        return 'Simples';
+      case Complexity.medium:
+        return 'Normal';
+      case Complexity.difficult:
+        return 'Difícil';
+      default:
+        return 'Desconhecida';
+    }
+  }
+
+  String get costText {
+    switch (cost) {
+      case Cost.cheap:
+        return 'Baixo';
+      case Cost.fair:
+        return 'Normal';
+      case Cost.expensive:
+        return 'Alto';
+      default:
+        return 'Desconhecido';
+    }
+  }
 }
