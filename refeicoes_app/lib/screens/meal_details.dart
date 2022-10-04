@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import '../models/meal.dart';
 
 class MealDetails extends StatelessWidget {
-  const MealDetails({super.key});
+  const MealDetails(this.onToggleFavorite, {super.key});
+
+  final Function(Meal) onToggleFavorite;
 
   Widget _createSectionTitle(BuildContext context, String title) {
     return Container(
@@ -95,7 +97,7 @@ class MealDetails extends StatelessWidget {
         backgroundColor: Colors.amber,
         child: const Icon(Icons.star),
         onPressed: () {
-          Navigator.of(context).pop(meal.title);
+          onToggleFavorite(meal);
         },
       ),
     );
