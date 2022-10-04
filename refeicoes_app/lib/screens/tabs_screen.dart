@@ -3,6 +3,7 @@ import 'package:refeicoes_app/components/main_drawer.dart';
 import 'package:refeicoes_app/models/meal.dart';
 import 'package:refeicoes_app/screens/categories_screen.dart';
 import 'package:refeicoes_app/screens/favorite_screen.dart';
+import 'package:refeicoes_app/utils/capitalize_words.dart';
 
 class TabsScreen extends StatefulWidget {
   const TabsScreen(this.favoriteMeals, {super.key});
@@ -13,7 +14,7 @@ class TabsScreen extends StatefulWidget {
   State<TabsScreen> createState() => _TabsScreenState();
 }
 
-class _TabsScreenState extends State<TabsScreen> {
+class _TabsScreenState extends State<TabsScreen> with Capitalize {
   int _selectedScreenIndex = 0;
   late List<Map<String, Object>> _screens;
 
@@ -21,11 +22,11 @@ class _TabsScreenState extends State<TabsScreen> {
   void initState() {
     _screens = [
       {
-        'title': 'Receitas por Categorias',
+        'title': capitalizedWords('receitas por categorias'),
         'screen': const CategoriesScreen(),
       },
       {
-        'title': 'Minhas Receitas Favoritas',
+        'title': capitalizedWords('minhas receitas favoritas'),
         'screen': FavoriteScreen(widget.favoriteMeals),
       },
     ];
