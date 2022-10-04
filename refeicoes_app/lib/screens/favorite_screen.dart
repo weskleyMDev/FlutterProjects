@@ -11,18 +11,10 @@ class FavoriteScreen extends StatelessWidget with Capitalize {
 
   @override
   Widget build(BuildContext context) {
-    String text = 'nenhuma refeição selecionada!';
-    List<String> splited = text.split(' ');
-    List<String> result = [];
-    for (var element in splited) {
-      result.add(element.capitalize());
-    }
-    text = result.join(' ');
-
     if (favoriteMeals.isEmpty) {
       return Center(
         child: Text(
-          text,
+          capitalizedWords('nenhuma refeição selecionada!'),
           style: const TextStyle(
             fontFamily: 'RobotoCondensed',
             fontSize: 20,
