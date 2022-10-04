@@ -14,11 +14,11 @@ class _TabsScreenState extends State<TabsScreen> {
   int _selectedScreenIndex = 0;
   final List<Map<String, Object>> _screens = [
     {
-      'title': 'Lista de Categorias',
+      'title': 'Receitas por Categorias',
       'screen': const CategoriesScreen(),
     },
     {
-      'title': 'Lista de Favoritos',
+      'title': 'Minhas Receitas Favoritas',
       'screen': const FavoriteScreen(),
     },
   ];
@@ -48,11 +48,11 @@ class _TabsScreenState extends State<TabsScreen> {
         currentIndex: _selectedScreenIndex,
         items: const [
           BottomNavigationBarItem(
-            icon: Icon(Icons.category),
-            label: 'Categorias',
+            icon: Icon(Icons.receipt),
+            label: 'Receitas',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.star),
+            icon: Icon(Icons.star_rate),
             label: 'Favoritos',
           )
         ],
