@@ -3,9 +3,10 @@ import 'package:flutter/material.dart';
 import '../models/meal.dart';
 
 class MealDetails extends StatelessWidget {
-  const MealDetails(this.onToggleFavorite, {super.key});
+  const MealDetails(this.onToggleFavorite, this.isFavorite, {super.key});
 
   final Function(Meal) onToggleFavorite;
+  final bool Function(Meal) isFavorite;
 
   Widget _createSectionTitle(BuildContext context, String title) {
     return Container(
@@ -94,8 +95,10 @@ class MealDetails extends StatelessWidget {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.amber,
-        child: const Icon(Icons.star),
+        backgroundColor: Colors.amber[800],
+        child: Icon(
+          isFavorite(meal) ? Icons.star_rate : Icons.star_border,
+        ),
         onPressed: () {
           onToggleFavorite(meal);
         },
