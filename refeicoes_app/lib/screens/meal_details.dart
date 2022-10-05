@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 import '../models/meal.dart';
 
@@ -101,6 +102,25 @@ class MealDetails extends StatelessWidget {
         ),
         onPressed: () {
           onToggleFavorite(meal);
+          isFavorite(meal)
+              ? Fluttertoast.showToast(
+                  msg: 'Adicionado aos Favoritos',
+                  toastLength: Toast.LENGTH_SHORT,
+                  gravity: ToastGravity.BOTTOM,
+                  timeInSecForIosWeb: 2,
+                  backgroundColor: Colors.grey,
+                  textColor: Colors.white,
+                  fontSize: 15,
+                )
+              : Fluttertoast.showToast(
+                  msg: 'Removido dos Favoritos',
+                  toastLength: Toast.LENGTH_SHORT,
+                  gravity: ToastGravity.BOTTOM,
+                  timeInSecForIosWeb: 2,
+                  backgroundColor: Colors.grey,
+                  textColor: Colors.white,
+                  fontSize: 15,
+                );
         },
       ),
     );
