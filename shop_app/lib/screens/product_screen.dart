@@ -1,34 +1,53 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-import '../data/dummy_data.dart';
-import '../models/product.dart';
+import '../models/products_list.dart';
 import '../utils/capitalize.dart';
-import '../widgets/product_item.dart';
+import '../widgets/product_grid.dart';
+
+enum FilterOptions {
+  favorite,
+  all,
+}
 
 class ProductsScreen extends StatelessWidget with Capitalize {
   ProductsScreen({super.key});
 
-  final List<Product> loadedProducts = dummyProducts;
-
   @override
   Widget build(BuildContext context) {
+    final provider = Provider.of<ProductsList>(context);
     return Scaffold(
       appBar: AppBar(
-        title: Text(capitalize('minha loja')),
-      ),
-      body: GridView.builder(
-        padding: const EdgeInsets.all(10),
-        itemCount: loadedProducts.length,
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
-          childAspectRatio: 1.2,
-          crossAxisSpacing: 10,
-          mainAxisSpacing: 10,
+        title: Text(
+          capitalize('minha loja'),
         ),
-        itemBuilder: (context, index) => ProductItem(
-          product: loadedProducts[index],
-        ),
+        actions: [
+          PopupMenuButton(
+            itemBuilder: (_) => [
+              PopupMenuItem(
+                value: FilterOptions.all,
+                child: Text(
+                  capitalize('ver todos'),
+                ),
+              ),
+              PopupMenuItem(
+                value: FilterOptions.favorite,
+                child: Text(
+                  capitalize('ver favoritos'),
+                ),
+              ),
+            ],
+            onSelected: (FilterOptions value) {
+              if (value == FilterOptions.all) {
+                provider.showAll();
+              } else {
+                provider.showFavorites();
+              }
+            },
+          )
+        ],
       ),
+      body: const ProductGrid(),
     );
   }
 }

@@ -1,4 +1,4 @@
-class Capitalize {
+mixin Capitalize {
   String capitalize(String text) {
     List<String> splited = text.split(' ');
     List<String> result = [];
