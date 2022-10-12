@@ -1,21 +1,25 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
-import '../models/products_list.dart';
 import '../utils/capitalize.dart';
 import '../widgets/product_grid.dart';
 
 enum FilterOptions {
-  favorite,
   all,
+  favorite,
 }
 
-class ProductsScreen extends StatelessWidget with Capitalize {
-  ProductsScreen({super.key});
+class ProductsScreen extends StatefulWidget {
+  const ProductsScreen({super.key});
+
+  @override
+  State<ProductsScreen> createState() => _ProductsScreenState();
+}
+
+class _ProductsScreenState extends State<ProductsScreen> with Capitalize {
+  bool _showFavorites = false;
 
   @override
   Widget build(BuildContext context) {
-    final provider = Provider.of<ProductsList>(context);
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -38,16 +42,18 @@ class ProductsScreen extends StatelessWidget with Capitalize {
               ),
             ],
             onSelected: (FilterOptions value) {
-              if (value == FilterOptions.all) {
-                provider.showAll();
-              } else {
-                provider.showFavorites();
-              }
+              setState(() {
+                if (value == FilterOptions.favorite) {
+                  _showFavorites = true;
+                } else {
+                  _showFavorites = false;
+                }
+              });
             },
           )
         ],
       ),
-      body: const ProductGrid(),
+      body: ProductGrid(_showFavorites),
     );
   }
 }

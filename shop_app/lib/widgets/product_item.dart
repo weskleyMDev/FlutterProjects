@@ -18,13 +18,9 @@ class ProductItem extends StatelessWidget with Capitalize {
       borderRadius: BorderRadius.circular(10),
       child: GridTile(
         footer: GridTileBar(
-          title: Text(
-            capitalize(product.title),
-            textAlign: TextAlign.center,
-          ),
           backgroundColor: Colors.black54,
           leading: Consumer<Product>(
-            builder: (context, product, _) => IconButton(
+            builder: (ctx, product, _) => IconButton(
               onPressed: () {
                 product.toggleFavorite();
               },
@@ -33,6 +29,10 @@ class ProductItem extends StatelessWidget with Capitalize {
               ),
               color: Colors.orange,
             ),
+          ),
+          title: Text(
+            capitalize(product.title),
+            textAlign: TextAlign.center,
           ),
           trailing: IconButton(
             onPressed: () {},
