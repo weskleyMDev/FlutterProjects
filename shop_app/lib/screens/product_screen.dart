@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
+import '../models/cart.dart';
 import '../utils/capitalize.dart';
+import '../widgets/badge.dart';
 import '../widgets/product_grid.dart';
 
 enum FilterOptions {
@@ -26,6 +29,16 @@ class _ProductsScreenState extends State<ProductsScreen> with Capitalize {
           capitalize('minha loja'),
         ),
         actions: [
+          Consumer<Cart>(
+              child: IconButton(
+                onPressed: () {},
+                icon: const Icon(Icons.shopping_cart_checkout_rounded),
+              ),
+            builder: (context, cart, child) => Badge(
+              value: cart.itemCount.toString(),
+              child: child!,
+            ),
+          ),
           PopupMenuButton(
             itemBuilder: (_) => [
               PopupMenuItem(
@@ -50,7 +63,7 @@ class _ProductsScreenState extends State<ProductsScreen> with Capitalize {
                 }
               });
             },
-          )
+          ),
         ],
       ),
       body: ProductGrid(_showFavorites),
