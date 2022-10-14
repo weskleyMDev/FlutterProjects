@@ -12,7 +12,7 @@ class ProductDetails extends StatelessWidget with Capitalize {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          capitalize(product.title),
+          capitalize(product.name),
         ),
       ),
       body: Center(

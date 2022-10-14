@@ -20,7 +20,7 @@ class ProductItem extends StatelessWidget with Capitalize {
         footer: GridTileBar(
           backgroundColor: Colors.black54,
           leading: Consumer<Product>(
-            builder: (ctx, product, _) => IconButton(
+            builder: (context, product, _) => IconButton(
               onPressed: () {
                 product.toggleFavorite();
               },
@@ -31,7 +31,7 @@ class ProductItem extends StatelessWidget with Capitalize {
             ),
           ),
           title: Text(
-            capitalize(product.title),
+            capitalize(product.name),
             textAlign: TextAlign.center,
           ),
           trailing: IconButton(
@@ -41,9 +41,11 @@ class ProductItem extends StatelessWidget with Capitalize {
           ),
         ),
         child: GestureDetector(
-          child: Image.network(
-            product.imageUrl,
-            fit: BoxFit.cover,
+          child: Consumer<Product>(
+            builder: (context, product, _) => Image.network(
+              product.imageUrl,
+              fit: BoxFit.cover,
+            ),
           ),
           onTap: () => Navigator.of(context).pushNamed(
             AppRoutes.productDetails,
