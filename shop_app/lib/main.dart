@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 import 'models/cart.dart';
 import 'models/products_list.dart';
+import 'screens/cart_screen.dart';
 import 'screens/product_details.dart';
 import 'screens/product_screen.dart';
 import 'utils/app_routes.dart';
@@ -40,6 +41,7 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         routes: {
           AppRoutes.productDetails: (context) => const ProductDetails(),
+          AppRoutes.cart:(context) => const CartScreen(),
         },
       ),
     );
