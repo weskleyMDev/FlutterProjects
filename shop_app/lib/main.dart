@@ -36,6 +36,7 @@ class MyApp extends StatelessWidget {
             secondary: Colors.orange,
           ),
           fontFamily: 'Lato',
+          canvasColor: const Color.fromRGBO(244, 237, 215, 1)
         ),
         home: const ProductsScreen(),
         debugShowCheckedModeBanner: false,
