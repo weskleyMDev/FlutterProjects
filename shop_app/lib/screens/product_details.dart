@@ -48,6 +48,9 @@ class ProductDetails extends StatelessWidget with Capitalize {
               child: Text(
                 product.description,
                 textAlign: TextAlign.center,
+                style: const TextStyle(
+                  fontSize: 18
+                ),
               ),
             ),
           ],
