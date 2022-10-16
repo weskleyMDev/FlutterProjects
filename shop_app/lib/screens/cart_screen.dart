@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../models/cart.dart';
+import '../models/order_list.dart';
 import '../utils/capitalize.dart';
 import '../widgets/cart_item.dart';
 
@@ -12,6 +13,10 @@ class CartScreen extends StatelessWidget with Capitalize {
   Widget build(BuildContext context) {
     final Cart cart = Provider.of(context);
     final items = cart.items.values.toList();
+    final OrderList order = Provider.of(
+      context,
+      listen: false,
+    );
 
     return Scaffold(
       appBar: AppBar(
@@ -59,12 +64,6 @@ class CartScreen extends StatelessWidget with Capitalize {
                     ),
                   ),
                 ),
-                Text(
-                  capitalize('seu carrinho está vazio!!!'),
-                  style: const TextStyle(
-                    fontSize: 20,
-                  ),
-                ),
               ],
             )
           : Column(
@@ -103,7 +102,10 @@ class CartScreen extends StatelessWidget with Capitalize {
                         ),
                         const Spacer(),
                         TextButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            order.addOrder(cart);
+                            cart.clear();
+                          },
                           style: ButtonStyle(
                             foregroundColor:
                                 MaterialStateProperty.all(Colors.green),

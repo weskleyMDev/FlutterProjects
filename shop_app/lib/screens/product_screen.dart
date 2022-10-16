@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../models/cart.dart';
 import '../utils/app_routes.dart';
 import '../utils/capitalize.dart';
+import '../widgets/app_drawer.dart';
 import '../widgets/badge.dart';
 import '../widgets/product_grid.dart';
 
@@ -82,6 +83,7 @@ class _ProductsScreenState extends State<ProductsScreen> with Capitalize {
         ],
       ),
       body: ProductGrid(_showFavorites),
+      drawer: const AppDrawer(),
     );
   }
 }
