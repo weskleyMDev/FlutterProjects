@@ -39,6 +39,37 @@ class CartItemWidget extends StatelessWidget with Capitalize {
       onDismissed: (_) {
         cart.removeItem(cartItem.productId);
       },
+      confirmDismiss: (_) {
+        return showDialog<bool>(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: Text(
+              capitalize('tem certeza?'),
+            ),
+            content: Text(
+              capitalize('deseja remover este item do carrinho?'),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop(false);
+                },
+                child: Text(
+                  capitalize('não'),
+                ),
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop(true);
+                },
+                child: Text(
+                  capitalize('sim'),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
       child: Card(
         margin: const EdgeInsets.symmetric(
           vertical: 4,
