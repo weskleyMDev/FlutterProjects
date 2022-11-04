@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:hdc_app/utils/routes.dart';
+import 'package:hdc_app/widgets/home.dart';
 
 void main() {
   runApp(const MyApp());
@@ -13,9 +15,13 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       theme: ThemeData(
         primarySwatch: Colors.lightBlue,
+        canvasColor: const Color.fromRGBO(231, 249, 251, 1),
       ),
       home: const MyHomePage(title: 'Hora de Cuidar'),
       debugShowCheckedModeBanner: false,
+      routes: {
+        AppRoutes.home: (context) => const Home(),
+      },
     );
   }
 }
@@ -28,33 +34,79 @@ class MyHomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(title),
-      ),
+      appBar: null,
       body: Center(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
-            const TextField(
-              obscureText: true,
-              decoration: InputDecoration(
-                  border: OutlineInputBorder(), labelText: 'CPF'),
+            SizedBox(
+              child: Image.asset(
+                'assets/images/logo.png',
+                fit: BoxFit.cover,
+              ),
             ),
-            const SizedBox(
-              height: 20,
-            ),
-            const TextField(
-              obscureText: true,
-              decoration: InputDecoration(
-                  border: OutlineInputBorder(), labelText: 'Senha'),
-            ),
-            const SizedBox(
-              height: 20,
+            Padding(
+              padding: const EdgeInsets.all(18.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  TextField(
+                    obscureText: true,
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
+                      labelText: 'CPF',
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 25,
+                  ),
+                  TextField(
+                    obscureText: true,
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
+                      labelText: 'Senha',
+                    ),
+                  ),
+                  const Padding(
+                    padding: EdgeInsets.only(
+                      top: 10.0,
+                    ),
+                    child: Text(
+                      'Esqueci Minha Senha',
+                      style: TextStyle(
+                        color: Colors.grey,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
             ElevatedButton(
-              onPressed: () {},
-              child: const Text('Fazer Login'),
+              onPressed: () {
+                Navigator.pushNamed(
+                  context,
+                  AppRoutes.home,
+                );
+              },
+              style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color.fromRGBO(5, 40, 46, 1),
+                  shape: const StadiumBorder(),
+                  fixedSize: const Size(350.0, 50.0)),
+              child: const Text(
+                'Fazer Login',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 18,
+                ),
+              ),
             ),
+            const Text(
+              'Não tem um conta? Cadastre-se',
+            )
           ],
         ),
       ),
