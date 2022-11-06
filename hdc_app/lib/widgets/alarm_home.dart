@@ -1,16 +1,11 @@
 import 'package:flutter/material.dart';
 
-class Home extends StatelessWidget {
-  const Home({super.key});
+class AlarmesHome extends StatelessWidget {
+  const AlarmesHome({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Hora de Cuidar'),
-        backgroundColor: const Color.fromRGBO(231, 249, 251, 1),
-        elevation: 0.0,
-      ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -22,7 +17,7 @@ class Home extends StatelessWidget {
                   padding: const EdgeInsets.all(25),
                   backgroundColor: const Color.fromRGBO(209, 244, 250, 1)),
               child: const Icon(
-                Icons.note_add_outlined,
+                Icons.alarm,
                 size: 40,
                 color: Color.fromRGBO(5, 40, 46, 1),
               ),
@@ -37,10 +32,13 @@ class Home extends StatelessWidget {
                 fontWeight: FontWeight.bold,
               ),
             ),
-            const Text(
-              'Tente escanear uma receita para ver as informações e medicamentos aqui',
-              style: TextStyle(fontSize: 18),
-              textAlign: TextAlign.center,
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 18.0),
+              child: Text(
+                'Adicione um alarme e te avisaremos quando for a hora de tomar a dose do seu remédio',
+                style: TextStyle(fontSize: 18),
+                textAlign: TextAlign.center,
+              ),
             ),
             const SizedBox(
               height: 30,
@@ -48,7 +46,7 @@ class Home extends StatelessWidget {
             ElevatedButton.icon(
               onPressed: () {},
               icon: const Icon(
-                Icons.photo_camera,
+                Icons.alarm,
                 color: Colors.white,
               ),
               style: ElevatedButton.styleFrom(
@@ -60,7 +58,7 @@ class Home extends StatelessWidget {
                 backgroundColor: const Color.fromRGBO(5, 40, 46, 1),
               ),
               label: const Text(
-                'Escanear Receita',
+                'Adiconar Alarme',
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 16,

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:hdc_app/utils/routes.dart';
-import 'package:hdc_app/widgets/home.dart';
+import 'package:hdc_app/widgets/receitas_home.dart';
+
+import 'widgets/tabs.dart';
 
 void main() {
   runApp(const MyApp());
@@ -20,7 +22,7 @@ class MyApp extends StatelessWidget {
       home: const MyHomePage(title: 'Hora de Cuidar'),
       debugShowCheckedModeBanner: false,
       routes: {
-        AppRoutes.home: (context) => const Home(),
+        AppRoutes.home: (context) => const TabScreen(),
       },
     );
   }
