@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'alarm_modal.dart';
+
 class AlarmesHome extends StatelessWidget {
   const AlarmesHome({super.key});
 
@@ -44,7 +46,16 @@ class AlarmesHome extends StatelessWidget {
               height: 30,
             ),
             ElevatedButton.icon(
-              onPressed: () {},
+              onPressed: () {
+                showModalBottomSheet(
+                  backgroundColor: Colors.transparent,
+                  isScrollControlled: true,
+                  context: context,
+                  builder: ((context) {
+                    return const AlarmModal();
+                  }),
+                );
+              },
               icon: const Icon(
                 Icons.alarm,
                 color: Colors.white,

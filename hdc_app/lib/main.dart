@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:hdc_app/utils/routes.dart';
-import 'package:hdc_app/widgets/receitas_home.dart';
 
 import 'widgets/tabs.dart';
 
