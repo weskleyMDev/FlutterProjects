@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hdc_app/utils/routes.dart';
 
+import 'widgets/qr_scanner.dart';
 import 'widgets/tabs.dart';
 
 void main() {
@@ -22,6 +23,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       routes: {
         AppRoutes.home: (context) => const TabScreen(),
+        AppRoutes.qrscan: (context) => const QRScannerScreen(),
       },
     );
   }

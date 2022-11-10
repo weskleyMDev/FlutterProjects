@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../utils/routes.dart';
+
 class ReceitasHome extends StatelessWidget {
   const ReceitasHome({super.key});
 
@@ -41,7 +43,12 @@ class ReceitasHome extends StatelessWidget {
               height: 30,
             ),
             ElevatedButton.icon(
-              onPressed: () {},
+              onPressed: () {
+                Navigator.pushNamed(
+                  context,
+                  AppRoutes.qrscan,
+                );
+              },
               icon: const Icon(
                 Icons.photo_camera,
                 color: Colors.white,
