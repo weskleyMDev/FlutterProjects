@@ -11,8 +11,10 @@ class AlarmModal extends StatefulWidget {
 
 class _AlarmModalState extends State<AlarmModal> {
   int _value = 1;
+  int _value2 = 1;
   bool isSwitched = false;
-  List<DropdownMenuItem<String>> get dropdownItems {
+
+  List<DropdownMenuItem<String>> get dropdownItems1 {
     List<DropdownMenuItem<String>> menuItems = [
       const DropdownMenuItem(
         value: 'Toda Semana',
@@ -26,7 +28,37 @@ class _AlarmModalState extends State<AlarmModal> {
     return menuItems;
   }
 
-  String selectedValue = 'Toda Semana';
+  List<DropdownMenuItem<String>> get dropdownItems2 {
+    List<DropdownMenuItem<String>> menuItems = [
+      const DropdownMenuItem(
+        value: 'Uma Dose',
+        child: Text('Uma Dose'),
+      ),
+      const DropdownMenuItem(
+        value: 'Duas Doses',
+        child: Text('Duas Doses'),
+      )
+    ];
+    return menuItems;
+  }
+
+  List<DropdownMenuItem<String>> get dropdownItems3 {
+    List<DropdownMenuItem<String>> menuItems = [
+      const DropdownMenuItem(
+        value: 'A Cada 6 Horas',
+        child: Text('A Cada 6 Horas'),
+      ),
+      const DropdownMenuItem(
+        value: 'A Cada 12 Horas',
+        child: Text('A Cada 12 Horas'),
+      )
+    ];
+    return menuItems;
+  }
+
+  String selectedValue1 = 'Toda Semana';
+  String selectedValue2 = 'Uma Dose';
+  String selectedValue3 = 'A Cada 6 Horas';
 
   @override
   Widget build(BuildContext context) {
@@ -69,7 +101,7 @@ class _AlarmModalState extends State<AlarmModal> {
               ),
               TextField(
                 decoration: InputDecoration(
-                  border: OutlineInputBorder(
+                  enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10.0),
                     borderSide: const BorderSide(
                       color: Colors.lightBlue,
@@ -85,7 +117,8 @@ class _AlarmModalState extends State<AlarmModal> {
               Container(
                 decoration: BoxDecoration(
                   color: Colors.lightBlue[100],
-                  borderRadius: const BorderRadius.all(Radius.circular(12)),
+                  borderRadius: BorderRadius.circular(12.0),
+                  border: Border.all(color: Colors.lightBlue),
                 ),
                 padding: const EdgeInsets.all(15),
                 child: Column(
@@ -154,11 +187,11 @@ class _AlarmModalState extends State<AlarmModal> {
                         filled: true,
                         fillColor: Colors.white,
                       ),
-                      value: selectedValue,
-                      items: dropdownItems,
+                      value: selectedValue1,
+                      items: dropdownItems1,
                       onChanged: (String? newValue) {
                         setState(() {
-                          selectedValue = newValue!;
+                          selectedValue1 = newValue!;
                         });
                       },
                       dropdownColor: Colors.white,
@@ -230,6 +263,7 @@ class _AlarmModalState extends State<AlarmModal> {
                 decoration: BoxDecoration(
                   color: Colors.lightBlue[100],
                   borderRadius: const BorderRadius.all(Radius.circular(12)),
+                  border: Border.all(color: Colors.lightBlue),
                 ),
                 padding: const EdgeInsets.all(15),
                 child: Column(
@@ -280,11 +314,131 @@ class _AlarmModalState extends State<AlarmModal> {
                         ),
                       ),
                     ),
-                    
                     const SizedBox(
                       height: 15,
                     ),
-                    
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(12.0),
+                            border: Border.all(
+                              color: Colors.lightBlue,
+                              width: 2.0,
+                            ),
+                          ),
+                          child: DropdownButton(
+                            value: selectedValue2,
+                            items: dropdownItems2,
+                            onChanged: (String? newValue) {
+                              setState(() {
+                                selectedValue2 = newValue!;
+                              });
+                            },
+                          ),
+                        ),
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(12.0),
+                            border: Border.all(
+                              color: Colors.lightBlue,
+                              width: 2.0,
+                            ),
+                          ),
+                          child: DropdownButton(
+                            value: selectedValue3,
+                            items: dropdownItems3,
+                            onChanged: (String? newValue) {
+                              setState(() {
+                                selectedValue3 = newValue!;
+                              });
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(
+                      height: 12.0,
+                    ),
+                    Row(
+                      children: [
+                        Radio(
+                          value: 1,
+                          groupValue: _value2,
+                          onChanged: (value) {
+                            setState(() {
+                              _value2 = value!;
+                            });
+                          },
+                          activeColor: Colors.black,
+                        ),
+                        ElevatedButton(
+                          onPressed: () {},
+                          style: ElevatedButton.styleFrom(
+                            shape: const StadiumBorder(),
+                            backgroundColor: Colors.lightBlue[300],
+                          ),
+                          child: const Text('6:00'),
+                        ),
+                        const SizedBox(
+                          width: 15.0,
+                        ),
+                        const Text(
+                          'Descrição...',
+                          style: TextStyle(
+                            fontSize: 16.0,
+                          ),
+                        ),
+                        const Spacer(),
+                        IconButton(
+                          onPressed: () {},
+                          icon: const Icon(Icons.edit_note),
+                          iconSize: 30.0,
+                        ),
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        Radio(
+                          value: 2,
+                          groupValue: _value2,
+                          onChanged: (value) {
+                            setState(() {
+                              _value2 = value!;
+                            });
+                          },
+                          activeColor: Colors.black,
+                        ),
+                        ElevatedButton(
+                          onPressed: () {},
+                          style: ElevatedButton.styleFrom(
+                            shape: const StadiumBorder(),
+                            backgroundColor: Colors.lightBlue[300],
+                          ),
+                          child: const Text('12:00'),
+                        ),
+                        const SizedBox(
+                          width: 15.0,
+                        ),
+                        const Text(
+                          'Descrição...',
+                          style: TextStyle(
+                            fontSize: 16.0,
+                          ),
+                        ),
+                        const Spacer(),
+                        IconButton(
+                          onPressed: () {},
+                          icon: const Icon(Icons.edit_note),
+                          iconSize: 30.0,
+                        ),
+                      ],
+                    ),
                   ],
                 ),
               ),
@@ -294,14 +448,14 @@ class _AlarmModalState extends State<AlarmModal> {
               ElevatedButton(
                 onPressed: () {},
                 style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 155.0,
-                    vertical: 15,
-                  ),
-                  shape: const StadiumBorder(),
-                  backgroundColor: const Color.fromRGBO(5, 40, 46, 1),
-                  foregroundColor: Colors.white,
-                ),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 150.0,
+                      vertical: 15,
+                    ),
+                    shape: const StadiumBorder(),
+                    backgroundColor: const Color.fromRGBO(5, 40, 46, 1),
+                    foregroundColor: Colors.white,
+                    textStyle: const TextStyle(fontSize: 18)),
                 child: const Text(
                   'Salvar',
                 ),
