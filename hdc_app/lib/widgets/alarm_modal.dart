@@ -10,9 +10,30 @@ class AlarmModal extends StatefulWidget {
 }
 
 class _AlarmModalState extends State<AlarmModal> {
+  TimeOfDay? _time = const TimeOfDay(hour: 6, minute: 0);
   int _value = 1;
   int _value2 = 1;
   bool isSwitched = false;
+
+  _showTimePicker() async {
+    showTimePicker(
+      context: context,
+      initialTime: TimeOfDay.now(),
+      builder: (context, child) {
+        return MediaQuery(
+          data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: true),
+          child: child ?? Container(),
+        );
+      },
+    ).then((pickedTime) {
+      if (pickedTime == null) {
+        return;
+      }
+      setState(() {
+        _time = pickedTime;
+      });
+    });
+  }
 
   List<DropdownMenuItem<String>> get dropdownItems1 {
     List<DropdownMenuItem<String>> menuItems = [
@@ -62,6 +83,8 @@ class _AlarmModalState extends State<AlarmModal> {
 
   @override
   Widget build(BuildContext context) {
+    final horas = _time!.hour.toString().padLeft(2, '0');
+    final minutos = _time!.minute.toString().padLeft(2, '0');
     return Container(
       height: 720,
       decoration: const BoxDecoration(
@@ -378,12 +401,14 @@ class _AlarmModalState extends State<AlarmModal> {
                           activeColor: Colors.black,
                         ),
                         ElevatedButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            _showTimePicker();
+                          },
                           style: ElevatedButton.styleFrom(
                             shape: const StadiumBorder(),
                             backgroundColor: Colors.lightBlue[300],
                           ),
-                          child: const Text('6:00'),
+                          child: Text('$horas:$minutos'),
                         ),
                         const SizedBox(
                           width: 15.0,
@@ -415,12 +440,14 @@ class _AlarmModalState extends State<AlarmModal> {
                           activeColor: Colors.black,
                         ),
                         ElevatedButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            _showTimePicker();
+                          },
                           style: ElevatedButton.styleFrom(
                             shape: const StadiumBorder(),
                             backgroundColor: Colors.lightBlue[300],
                           ),
-                          child: const Text('12:00'),
+                          child: Text('$horas:$minutos'),
                         ),
                         const SizedBox(
                           width: 15.0,
@@ -445,20 +472,21 @@ class _AlarmModalState extends State<AlarmModal> {
               const SizedBox(
                 height: 35,
               ),
-              ElevatedButton(
+              ElevatedButton.icon(
                 onPressed: () {},
                 style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(
-                      horizontal: 150.0,
+                      horizontal: 125.0,
                       vertical: 15,
                     ),
                     shape: const StadiumBorder(),
                     backgroundColor: const Color.fromRGBO(5, 40, 46, 1),
                     foregroundColor: Colors.white,
                     textStyle: const TextStyle(fontSize: 18)),
-                child: const Text(
+                label: const Text(
                   'Salvar',
                 ),
+                icon: const Icon(Icons.check),
               ),
             ],
           ),

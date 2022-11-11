@@ -17,7 +17,6 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       theme: ThemeData(
         primarySwatch: Colors.lightBlue,
-        canvasColor: const Color.fromRGBO(231, 249, 251, 1),
       ),
       home: const MyHomePage(title: 'Hora de Cuidar'),
       debugShowCheckedModeBanner: false,
@@ -37,6 +36,7 @@ class MyHomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color.fromRGBO(231, 249, 251, 1),
       appBar: null,
       body: Center(
         child: Column(

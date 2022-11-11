@@ -16,6 +16,7 @@ class _TabScreenState extends State<TabScreen> {
     return DefaultTabController(
       length: 2,
       child: Scaffold(
+        backgroundColor: const Color.fromRGBO(231, 249, 251, 1),
         appBar: AppBar(
           title: const Text(
             'Hora de Cuidar',

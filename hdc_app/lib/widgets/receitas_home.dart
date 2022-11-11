@@ -8,6 +8,7 @@ class ReceitasHome extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color.fromRGBO(231, 249, 251, 1),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
