@@ -1,19 +1,12 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:hdc_app/models/lembrete.dart';
-import 'package:hdc_app/services/notify_manager.dart';
 import 'package:hdc_app/widgets/alarm_form.dart';
 import 'package:hdc_app/widgets/alarm_list.dart';
 
 class AlarmesHome extends StatefulWidget {
-  const AlarmesHome(this.notificationAppLaunchDetails, {super.key});
-
-  final NotificationAppLaunchDetails? notificationAppLaunchDetails;
-
-  bool get didNotificationLaunchApp =>
-      notificationAppLaunchDetails?.didNotificationLaunchApp ?? false;
+  const AlarmesHome({super.key});
 
   @override
   State<AlarmesHome> createState() => _AlarmesHomeState();
@@ -66,7 +59,7 @@ class _AlarmesHomeState extends State<AlarmesHome> with WidgetsBindingObserver {
       backgroundColor: Colors.transparent,
       isScrollControlled: true,
       context: context,
-      builder: (_) => AlarmeForm(_addLembrete, NotifyManager.notificationAppLaunchDetails),
+      builder: (_) => AlarmeForm(_addLembrete),
     );
   }
 

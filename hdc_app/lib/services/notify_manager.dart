@@ -5,12 +5,13 @@ import 'package:timezone/timezone.dart' as tz;
 import 'package:timezone/data/latest.dart' as tz;
 
 import '../models/notification.dart';
-import '../utils/routes.dart';
+import '../screens/feedback.dart';
+import '../screens/home_page.dart';
 
 class NotifyManager {
   static int _id = 0;
 
-  static final notification = FlutterLocalNotificationsPlugin();
+  static final FlutterLocalNotificationsPlugin notification = FlutterLocalNotificationsPlugin();
 
   static final StreamController<ReceivedNotification>
       didReceiveLocalNotificationStream =
@@ -23,9 +24,9 @@ class NotifyManager {
 
   static String? selectedPayload;
 
-  static String initialRoute = AppRoutes.inital;
+  static String initialRoute = MyHomePage.routeName;
 
-  static Future initNotification({bool initScheduled = false}) async {
+  static Future initNotification() async {
     const String navigationActionId = 'id_3';
 
     notificationAppLaunchDetails =
@@ -34,13 +35,13 @@ class NotifyManager {
     if (notificationAppLaunchDetails?.didNotificationLaunchApp ?? false) {
       selectedPayload =
           notificationAppLaunchDetails!.notificationResponse?.payload;
-      initialRoute = AppRoutes.feedback;
+      initialRoute = FeedbackScreen.routeName;      
     }
 
-    const androidSettings =
+    const AndroidInitializationSettings androidSettings =
         AndroidInitializationSettings('@drawable/ic_stat_logo3');
 
-    const settings = InitializationSettings(android: androidSettings);
+    const InitializationSettings settings = InitializationSettings(android: androidSettings);
 
     await notification.initialize(
       settings,
@@ -75,6 +76,7 @@ class NotifyManager {
       channelDescription: 'CHANNEL_DESCRIPTION',
       importance: Importance.max,
       priority: Priority.high,
+      ticker: 'ticker',
       sound: RawResourceAndroidNotificationSound('nokia_ring'),
       autoCancel: true,
       playSound: true,

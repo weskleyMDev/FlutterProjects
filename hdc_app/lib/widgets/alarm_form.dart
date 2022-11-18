@@ -1,19 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:hdc_app/services/notify_manager.dart';
-import 'package:hdc_app/widgets/feedback.dart';
 import 'package:intl/intl.dart';
 
+import '../services/notify_manager.dart';
+
 class AlarmeForm extends StatefulWidget {
-  const AlarmeForm(this.onSubmit, this.notificationAppLaunchDetails,
-      {super.key});
+  const AlarmeForm(this.onSubmit, {super.key});
 
   final void Function(String, String, String) onSubmit;
-
-  final NotificationAppLaunchDetails? notificationAppLaunchDetails;
-
-  bool get didNotificationLaunchApp =>
-      notificationAppLaunchDetails?.didNotificationLaunchApp ?? false;
 
   @override
   State<AlarmeForm> createState() => _AlarmeFormState();
@@ -31,25 +24,9 @@ class _AlarmeFormState extends State<AlarmeForm> {
   }
 
   @override
-  void dispose() {
-    NotifyManager.selectNotificationStream.close();
-    super.dispose();
-  }
-
-  @override
   void initState() {
-    NotifyManager.initNotification();
-    _configureSelectNotificationSubject();
     super.initState();
-  }
-
-  void _configureSelectNotificationSubject() {
-    NotifyManager.selectNotificationStream.stream
-        .listen((String? payload) async {
-      await Navigator.of(context).push(MaterialPageRoute<void>(
-        builder: (BuildContext context) => FeedbackScreen(payload),
-      ));
-    });
+    NotifyManager.initNotification();
   }
 
   _submitForm() {
@@ -82,7 +59,7 @@ class _AlarmeFormState extends State<AlarmeForm> {
     String dataFormatada = DateFormat('y-MM-dd').format(_dataAtual);
     return SafeArea(
       child: Container(
-        height: 680.0,
+        height: 550.0,
         decoration: const BoxDecoration(
           color: Color.fromRGBO(231, 249, 251, 1),
           borderRadius: BorderRadius.only(
@@ -99,7 +76,7 @@ class _AlarmeFormState extends State<AlarmeForm> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    'Criar Alarme',
+                    'Criar Lembrete',
                     style: TextStyle(
                       fontSize: 18.0,
                       fontWeight: FontWeight.bold,
@@ -116,14 +93,14 @@ class _AlarmeFormState extends State<AlarmeForm> {
                 ],
               ),
               const SizedBox(
-                height: 20.0,
+                height: 35.0,
               ),
               TextField(
                 controller: _tituloController,
                 onSubmitted: (_) => _submitForm(),
                 decoration: const InputDecoration(
                   border: OutlineInputBorder(),
-                  labelText: 'Título',
+                  labelText: 'Título ou Remédio',
                 ),
               ),
               const SizedBox(
@@ -134,34 +111,45 @@ class _AlarmeFormState extends State<AlarmeForm> {
                 onSubmitted: (_) => _submitForm(),
                 decoration: const InputDecoration(
                   border: OutlineInputBorder(),
-                  labelText: 'Descrição',
+                  labelText: 'Descrição(Dosagem, Observações, ect)',
                 ),
               ),
               const SizedBox(
-                height: 20.0,
+                height: 45.0,
               ),
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: [
+                  ElevatedButton.icon(
+                    onPressed: _showHoursPicker,
+                    style: ElevatedButton.styleFrom(
+                      shape: const StadiumBorder(),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 20.0,
+                        vertical: 10.0,
+                      ),
+                    ),
+                    icon: const Icon(Icons.alarm_rounded),
+                    label: const Text('Hora'),
+                  ),
+                  const SizedBox(
+                    width: 15.0,
+                  ),
                   Text(
                     _horas == null ? 'Nenhum Horário Selecionado!' : '$_horas',
                     style: const TextStyle(
-                      fontSize: 16.0
+                      fontSize: 18.0,
+                      fontWeight: FontWeight.bold,
                     ),
-                  ),
-                  ElevatedButton.icon(
-                    onPressed: _showHoursPicker,
-                    icon: const Icon(Icons.alarm_rounded),
-                    label: const Text('Hora'),
                   ),
                 ],
               ),
               const SizedBox(
-                height: 20.0,
+                height: 35.0,
               ),
-              ElevatedButton(
-                onPressed: () {
-                  NotifyManager.showNotification(
+              ElevatedButton.icon(
+                onPressed: () async {
+                  await NotifyManager.showNotification(
                     title: _tituloController.text,
                     body: _descricaoController.text,
                     payload: _tituloController.text,
@@ -169,7 +157,14 @@ class _AlarmeFormState extends State<AlarmeForm> {
                   );
                   _submitForm();
                 },
-                child: const Text(
+                style: ElevatedButton.styleFrom(
+                    shape: const StadiumBorder(),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 55.0,
+                      vertical: 10.0,
+                    )),
+                icon: const Icon(Icons.check),
+                label: const Text(
                   'Salvar',
                 ),
               ),

@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:hdc_app/services/notify_manager.dart';
+import 'package:hdc_app/screens/feedback.dart';
+import 'package:hdc_app/widgets/alarm_home.dart';
+import 'package:hdc_app/widgets/receitas_home.dart';
 
-import 'alarm_home.dart';
-import 'receitas_home.dart';
+import '../services/notify_manager.dart';
 
 class TabScreen extends StatefulWidget {
   const TabScreen(this.notificationAppLaunchDetails, {super.key});
+
+  static const String routeName = '/tabs';
 
   final NotificationAppLaunchDetails? notificationAppLaunchDetails;
 
@@ -18,6 +21,27 @@ class TabScreen extends StatefulWidget {
 }
 
 class _TabScreenState extends State<TabScreen> {
+
+  @override
+  void initState() {
+    super.initState();
+    _configureSelectNotificationSubject();
+  }
+
+  void _configureSelectNotificationSubject() {
+    NotifyManager.selectNotificationStream.stream.listen((String? payload) async {
+      await Navigator.of(context).push(MaterialPageRoute<void>(
+        builder: (BuildContext context) => FeedbackScreen(payload),
+      ));
+    });
+  }
+
+  @override
+  void dispose() {
+    NotifyManager.selectNotificationStream.close();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -25,6 +49,7 @@ class _TabScreenState extends State<TabScreen> {
       child: Scaffold(
         backgroundColor: const Color.fromRGBO(231, 249, 251, 1),
         appBar: AppBar(
+          foregroundColor: Colors.black,
           title: const Text(
             'Hora de Cuidar',
             style: TextStyle(
@@ -91,14 +116,14 @@ class _TabScreenState extends State<TabScreen> {
                 ),
               ),
             ),
-            Expanded(
+            const Expanded(
               child: TabBarView(
                 children: [
-                  const Center(
+                  Center(
                     child: ReceitasHome(),
                   ),
                   Center(
-                    child: AlarmesHome(NotifyManager.notificationAppLaunchDetails),
+                    child: AlarmesHome(),
                   ),
                 ],
               ),

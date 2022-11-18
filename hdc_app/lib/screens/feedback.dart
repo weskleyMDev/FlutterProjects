@@ -6,6 +6,7 @@ class FeedbackScreen extends StatefulWidget {
   const FeedbackScreen(this.payload, {super.key});
 
   final String? payload;
+  static const String routeName = '/feedback';
 
   @override
   State<FeedbackScreen> createState() => _FeedbackScreenState();
@@ -19,16 +20,11 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
   final _motivoController = TextEditingController();
 
   @override
-  void dispose() {
-    super.dispose();
-  }
-
-  @override
   void initState() {
+    super.initState();
     dbRef = FirebaseDatabase.instance.ref().child('Feedbacks');
     _payload = widget.payload;
     _getCurrentTime();
-    super.initState();
   }
 
   _getCurrentTime() {

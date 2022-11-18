@@ -4,6 +4,8 @@ import 'package:qr_code_scanner/qr_code_scanner.dart';
 class QRScannerScreen extends StatefulWidget {
   const QRScannerScreen({super.key});
 
+  static const String routeName = '/qrscan';
+
   @override
   State<QRScannerScreen> createState() => _QRScannerScreenState();
 }
