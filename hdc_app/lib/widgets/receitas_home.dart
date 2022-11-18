@@ -67,7 +67,7 @@ class ReceitasHome extends StatelessWidget {
               ),
             ),
             const SizedBox(
-              height: 120.0,
+              height: 40.0,
             ),
           ],
         ),

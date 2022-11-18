@@ -60,7 +60,7 @@ class _AlarmeListaState extends State<AlarmeLista> {
                   const Padding(
                     padding: EdgeInsets.symmetric(horizontal: 18.0),
                     child: Text(
-                      'Adicione um alarme e te avisaremos quando for a hora de tomar a dose do seu remédio',
+                      'Adicione um lembrete e te avisaremos quando for a hora de tomar a dose do seu remédio',
                       style: TextStyle(fontSize: 18),
                       textAlign: TextAlign.center,
                     ),

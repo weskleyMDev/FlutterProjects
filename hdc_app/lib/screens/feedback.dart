@@ -1,5 +1,6 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 
 class FeedbackScreen extends StatefulWidget {
@@ -132,6 +133,14 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                           : _motivoController.text,
                     };
                     dbRef.push().set(feedbacks);
+                    Fluttertoast.showToast(
+                      msg: 'Obrigado pelo seu Feedback!',
+                      toastLength: Toast.LENGTH_SHORT,
+                      gravity: ToastGravity.BOTTOM,
+                      backgroundColor: Colors.grey,
+                      textColor: Colors.white,
+                      fontSize: 16.0,
+                    );
                     Navigator.pop(context);
                   },
                   icon: const Icon(

@@ -133,12 +133,12 @@ class _AlarmeFormState extends State<AlarmeForm> {
                     label: const Text('Hora'),
                   ),
                   const SizedBox(
-                    width: 15.0,
+                    width: 8.0,
                   ),
                   Text(
-                    _horas == null ? 'Nenhum Horário Selecionado!' : '$_horas',
+                    _horas == null ? 'Selecione um Horário!' : '$_horas',
                     style: const TextStyle(
-                      fontSize: 18.0,
+                      fontSize: 15.0,
                       fontWeight: FontWeight.bold,
                     ),
                   ),

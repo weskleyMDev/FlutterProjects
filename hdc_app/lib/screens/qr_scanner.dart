@@ -51,8 +51,8 @@ class _QRScannerScreenState extends State<QRScannerScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             SizedBox(
-              height: 350,
-              width: 350,
+              height: 300,
+              width: 300,
               child: QRView(
                 key: _globalKey,
                 onQRViewCreated: qr,
@@ -72,12 +72,15 @@ class _QRScannerScreenState extends State<QRScannerScreen> {
             const SizedBox(
               height: 15.0,
             ),
-            const Text(
-              'Use a câmera do seu celular para escanear o código da receita',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 18.0,
-                color: Colors.white,
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12.0),
+              child: const Text(
+                'Use a câmera do seu celular para escanear o código da receita',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 18.0,
+                  color: Colors.white,
+                ),
               ),
             ),
           ],

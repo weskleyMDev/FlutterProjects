@@ -75,7 +75,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 style: ElevatedButton.styleFrom(
                     backgroundColor: const Color.fromRGBO(5, 40, 46, 1),
                     shape: const StadiumBorder(),
-                    fixedSize: const Size(350.0, 50.0)),
+                    fixedSize: const Size(320.0, 50.0)),
                 child: const Text(
                   'Fazer Login',
                   style: TextStyle(

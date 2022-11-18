@@ -73,8 +73,9 @@ class _AlarmesHomeState extends State<AlarmesHome> with WidgetsBindingObserver {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              SizedBox(
+              Container(
                 height: 400.0,
+                padding: const EdgeInsets.symmetric(horizontal: 10.0),
                 child: AlarmeLista(
                   _lembretes,
                   _deleteLembrete,
@@ -101,7 +102,7 @@ class _AlarmesHomeState extends State<AlarmesHome> with WidgetsBindingObserver {
                   backgroundColor: const Color.fromRGBO(5, 40, 46, 1),
                 ),
                 label: const Text(
-                  'Adiconar Alarme',
+                  'Adiconar Lembrete',
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 16,

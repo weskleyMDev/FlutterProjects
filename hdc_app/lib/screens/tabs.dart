@@ -104,7 +104,7 @@ class _TabScreenState extends State<TabScreen> {
                       ),
                       Tab(
                         child: Text(
-                          'Alarmes',
+                          'Lembretes',
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 18,
