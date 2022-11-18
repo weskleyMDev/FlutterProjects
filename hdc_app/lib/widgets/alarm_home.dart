@@ -1,83 +1,122 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:hdc_app/models/lembrete.dart';
+import 'package:hdc_app/services/notify_manager.dart';
+import 'package:hdc_app/widgets/alarm_form.dart';
+import 'package:hdc_app/widgets/alarm_list.dart';
 
-import 'alarm_modal.dart';
+class AlarmesHome extends StatefulWidget {
+  const AlarmesHome(this.notificationAppLaunchDetails, {super.key});
 
-class AlarmesHome extends StatelessWidget {
-  const AlarmesHome({super.key});
+  final NotificationAppLaunchDetails? notificationAppLaunchDetails;
+
+  bool get didNotificationLaunchApp =>
+      notificationAppLaunchDetails?.didNotificationLaunchApp ?? false;
+
+  @override
+  State<AlarmesHome> createState() => _AlarmesHomeState();
+}
+
+class _AlarmesHomeState extends State<AlarmesHome> with WidgetsBindingObserver {
+  final List<Lembrete> _lembretes = [];
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    // print(state);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void initState() {
+    WidgetsBinding.instance.addObserver(this);
+    super.initState();
+  }
+
+
+  _addLembrete(String titulo, String desc, String horas) {
+    final newLembrete = Lembrete(
+      id: Random().nextInt(100),
+      titulo: titulo,
+      desc: desc,
+      horas: horas,
+    );
+
+    setState(() {
+      _lembretes.add(newLembrete);
+    });
+
+    Navigator.of(context).pop();
+  }
+
+  _deleteLembrete(int id) {
+    setState(() {
+      _lembretes.removeWhere((lb) => lb.id == id);
+    });
+  }
+
+  _abrirAlarmeModal(BuildContext context) {
+    showModalBottomSheet(
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      context: context,
+      builder: (_) => AlarmeForm(_addLembrete, NotifyManager.notificationAppLaunchDetails),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color.fromRGBO(231, 249, 251, 1),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            OutlinedButton(
-              onPressed: () {},
-              style: OutlinedButton.styleFrom(
-                  shape: const CircleBorder(),
-                  padding: const EdgeInsets.all(25),
-                  backgroundColor: const Color.fromRGBO(209, 244, 250, 1)),
-              child: const Icon(
-                Icons.alarm,
-                size: 40,
-                color: Color.fromRGBO(5, 40, 46, 1),
-              ),
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            const Text(
-              'Não Há Nada Aqui',
-              style: TextStyle(
-                fontSize: 22,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 18.0),
-              child: Text(
-                'Adicione um alarme e te avisaremos quando for a hora de tomar a dose do seu remédio',
-                style: TextStyle(fontSize: 18),
-                textAlign: TextAlign.center,
-              ),
-            ),
-            const SizedBox(
-              height: 30,
-            ),
-            ElevatedButton.icon(
-              onPressed: () {
-                showModalBottomSheet(
-                  backgroundColor: Colors.transparent,
-                  isScrollControlled: true,
-                  context: context,
-                  builder: ((context) {
-                    return const AlarmModal();
-                  }),
-                );
-              },
-              icon: const Icon(
-                Icons.alarm,
-                color: Colors.white,
-              ),
-              style: ElevatedButton.styleFrom(
-                shape: const StadiumBorder(),
-                padding: const EdgeInsets.symmetric(
-                  vertical: 15,
-                  horizontal: 35,
+      body: SingleChildScrollView(
+        child: Container(
+          padding: const EdgeInsets.only(top: 20.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              SizedBox(
+                height: 400.0,
+                child: AlarmeLista(
+                  _lembretes,
+                  _deleteLembrete,
+                  _abrirAlarmeModal,
                 ),
-                backgroundColor: const Color.fromRGBO(5, 40, 46, 1),
               ),
-              label: const Text(
-                'Adiconar Alarme',
-                style: TextStyle(
+              const SizedBox(
+                height: 30,
+              ),
+              ElevatedButton.icon(
+                onPressed: () {
+                  _abrirAlarmeModal(context);
+                },
+                icon: const Icon(
+                  Icons.alarm,
                   color: Colors.white,
-                  fontSize: 16,
+                ),
+                style: ElevatedButton.styleFrom(
+                  shape: const StadiumBorder(),
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 15,
+                    horizontal: 35,
+                  ),
+                  backgroundColor: const Color.fromRGBO(5, 40, 46, 1),
+                ),
+                label: const Text(
+                  'Adiconar Alarme',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 16,
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

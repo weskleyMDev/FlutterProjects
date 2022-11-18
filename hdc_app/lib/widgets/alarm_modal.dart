@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import '../data/radio_list.dart';
 
 class AlarmModal extends StatefulWidget {
-  const AlarmModal({super.key});
+  const AlarmModal(this.onSubmit, {super.key});
+
+  final void Function(String, String, DateTime) onSubmit;
 
   @override
   State<AlarmModal> createState() => _AlarmModalState();

@@ -1,10 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:hdc_app/services/notify_manager.dart';
 
 import 'alarm_home.dart';
 import 'receitas_home.dart';
 
 class TabScreen extends StatefulWidget {
-  const TabScreen({super.key});
+  const TabScreen(this.notificationAppLaunchDetails, {super.key});
+
+  final NotificationAppLaunchDetails? notificationAppLaunchDetails;
+
+  bool get didNotificationLaunchApp =>
+      notificationAppLaunchDetails?.didNotificationLaunchApp ?? false;
 
   @override
   State<TabScreen> createState() => _TabScreenState();
@@ -84,14 +91,14 @@ class _TabScreenState extends State<TabScreen> {
                 ),
               ),
             ),
-            const Expanded(
+            Expanded(
               child: TabBarView(
                 children: [
-                  Center(
+                  const Center(
                     child: ReceitasHome(),
                   ),
                   Center(
-                    child: AlarmesHome(),
+                    child: AlarmesHome(NotifyManager.notificationAppLaunchDetails),
                   ),
                 ],
               ),

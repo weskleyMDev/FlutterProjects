@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../utils/routes.dart';
 
 class ReceitasHome extends StatelessWidget {
   const ReceitasHome({super.key});
@@ -11,7 +10,7 @@ class ReceitasHome extends StatelessWidget {
       backgroundColor: const Color.fromRGBO(231, 249, 251, 1),
       body: Center(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.end,
           children: <Widget>[
             OutlinedButton(
               onPressed: () {},
@@ -21,7 +20,7 @@ class ReceitasHome extends StatelessWidget {
                   backgroundColor: const Color.fromRGBO(209, 244, 250, 1)),
               child: const Icon(
                 Icons.description_outlined,
-                size: 40,
+                size: 40.0,
                 color: Color.fromRGBO(5, 40, 46, 1),
               ),
             ),
@@ -45,10 +44,7 @@ class ReceitasHome extends StatelessWidget {
             ),
             ElevatedButton.icon(
               onPressed: () {
-                Navigator.pushNamed(
-                  context,
-                  AppRoutes.qrscan,
-                );
+                Navigator.of(context).pushNamed('/qrscan');
               },
               icon: const Icon(
                 Icons.photo_camera,
@@ -69,6 +65,9 @@ class ReceitasHome extends StatelessWidget {
                   fontSize: 16,
                 ),
               ),
+            ),
+            const SizedBox(
+              height: 120.0,
             ),
           ],
         ),
