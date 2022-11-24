@@ -32,7 +32,6 @@ class _AlarmesHomeState extends State<AlarmesHome> with WidgetsBindingObserver {
     super.initState();
   }
 
-
   _addLembrete(String titulo, String desc, String horas) {
     final newLembrete = Lembrete(
       id: Random().nextInt(100),
@@ -65,52 +64,50 @@ class _AlarmesHomeState extends State<AlarmesHome> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
+    final mediaQuery = MediaQuery.of(context);
+    final altResp = mediaQuery.size.height - mediaQuery.padding.top;
+
     return Scaffold(
       backgroundColor: const Color.fromRGBO(231, 249, 251, 1),
       body: SingleChildScrollView(
-        child: Container(
-          padding: const EdgeInsets.only(top: 20.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Container(
-                height: 400.0,
-                padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                child: AlarmeLista(
-                  _lembretes,
-                  _deleteLembrete,
-                  _abrirAlarmeModal,
+        child: Column(
+          children: <Widget>[
+            SizedBox(
+              height: altResp * 0.6,
+              child: AlarmeLista(
+                _lembretes,
+                _deleteLembrete,
+                _abrirAlarmeModal,
+              ),
+            ),
+            const SizedBox(
+              height: 30,
+            ),
+            ElevatedButton.icon(
+              onPressed: () {
+                _abrirAlarmeModal(context);
+              },
+              icon: const Icon(
+                Icons.alarm,
+                color: Colors.white,
+              ),
+              style: ElevatedButton.styleFrom(
+                shape: const StadiumBorder(),
+                padding: const EdgeInsets.symmetric(
+                  vertical: 15,
+                  horizontal: 35,
                 ),
+                backgroundColor: const Color.fromRGBO(5, 40, 46, 1),
               ),
-              const SizedBox(
-                height: 30,
-              ),
-              ElevatedButton.icon(
-                onPressed: () {
-                  _abrirAlarmeModal(context);
-                },
-                icon: const Icon(
-                  Icons.alarm,
+              label: const Text(
+                'Adiconar Lembrete',
+                style: TextStyle(
                   color: Colors.white,
-                ),
-                style: ElevatedButton.styleFrom(
-                  shape: const StadiumBorder(),
-                  padding: const EdgeInsets.symmetric(
-                    vertical: 15,
-                    horizontal: 35,
-                  ),
-                  backgroundColor: const Color.fromRGBO(5, 40, 46, 1),
-                ),
-                label: const Text(
-                  'Adiconar Lembrete',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 16,
-                  ),
+                  fontSize: 16,
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

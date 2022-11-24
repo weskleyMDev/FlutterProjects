@@ -69,10 +69,10 @@ class _TabScreenState extends State<TabScreen> {
         body: Column(
           children: <Widget>[
             const SizedBox(
-              height: 10,
+              height: 10.0,
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            Container(
+              padding: const EdgeInsets.all(8.0),
               child: Card(
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
@@ -95,7 +95,7 @@ class _TabScreenState extends State<TabScreen> {
                     tabs: const [
                       Tab(
                         child: Text(
-                          'Receitas',
+                          'Lembretes',
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 18,
@@ -104,7 +104,7 @@ class _TabScreenState extends State<TabScreen> {
                       ),
                       Tab(
                         child: Text(
-                          'Lembretes',
+                          'Receitas',
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 18,
@@ -120,10 +120,10 @@ class _TabScreenState extends State<TabScreen> {
               child: TabBarView(
                 children: [
                   Center(
-                    child: ReceitasHome(),
+                    child: AlarmesHome(),
                   ),
                   Center(
-                    child: AlarmesHome(),
+                    child: ReceitasHome(),
                   ),
                 ],
               ),
@@ -134,3 +134,4 @@ class _TabScreenState extends State<TabScreen> {
     );
   }
 }
+

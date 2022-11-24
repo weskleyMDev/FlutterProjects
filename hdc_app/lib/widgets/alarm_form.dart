@@ -57,9 +57,8 @@ class _AlarmeFormState extends State<AlarmeForm> {
   @override
   Widget build(BuildContext context) {
     String dataFormatada = DateFormat('y-MM-dd').format(_dataAtual);
-    return SafeArea(
+    return SingleChildScrollView(
       child: Container(
-        height: 550.0,
         decoration: const BoxDecoration(
           color: Color.fromRGBO(231, 249, 251, 1),
           borderRadius: BorderRadius.only(
@@ -67,20 +66,24 @@ class _AlarmeFormState extends State<AlarmeForm> {
             topRight: Radius.circular(25.0),
           ),
         ),
-        padding: const EdgeInsets.all(20.0),
-        child: SingleChildScrollView(
+        child: Padding(
+          padding: EdgeInsets.only(
+            top: 15.0,
+            left: 10.0,
+            right: 10.0,
+            bottom: 20.0 + MediaQuery.of(context).viewInsets.bottom,
+          ),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
+                  const Text(
                     'Criar Lembrete',
                     style: TextStyle(
                       fontSize: 18.0,
                       fontWeight: FontWeight.bold,
-                      color: Colors.blueGrey[900],
+                      color: Color.fromRGBO(5, 40, 46, 1),
                     ),
                   ),
                   IconButton(
@@ -93,59 +96,107 @@ class _AlarmeFormState extends State<AlarmeForm> {
                 ],
               ),
               const SizedBox(
-                height: 35.0,
+                height: 10.0,
               ),
               TextField(
                 controller: _tituloController,
                 onSubmitted: (_) => _submitForm(),
                 decoration: const InputDecoration(
                   border: OutlineInputBorder(),
+                  prefixIcon: Icon(
+                    Icons.medical_services_outlined,
+                    color: Colors.lightBlue,
+                  ),
                   labelText: 'Título ou Remédio',
+                  floatingLabelStyle: TextStyle(
+                    color: Color.fromRGBO(5, 40, 46, 1),
+                    fontWeight: FontWeight.bold,
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(
+                      color: Colors.lightBlue,
+                      width: 2.0,
+                    ),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(
+                      color: Colors.lightBlue,
+                      width: 2.0,
+                    ),
+                  ),
                 ),
               ),
               const SizedBox(
-                height: 20.0,
+                height: 15.0,
               ),
               TextField(
                 controller: _descricaoController,
                 onSubmitted: (_) => _submitForm(),
                 decoration: const InputDecoration(
                   border: OutlineInputBorder(),
+                  prefixIcon: Icon(
+                    Icons.description_outlined,
+                    color: Colors.lightBlue,
+                  ),
                   labelText: 'Descrição(Dosagem, Observações, ect)',
+                  floatingLabelStyle: TextStyle(
+                    color: Color.fromRGBO(5, 40, 46, 1),
+                    fontWeight: FontWeight.bold,
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(
+                      color: Colors.lightBlue,
+                      width: 2.0,
+                    ),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(
+                      color: Colors.lightBlue,
+                      width: 2.0,
+                    ),
+                  ),
                 ),
               ),
               const SizedBox(
-                height: 45.0,
+                height: 15.0,
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  ElevatedButton.icon(
+                  TextButton(
                     onPressed: _showHoursPicker,
-                    style: ElevatedButton.styleFrom(
-                      shape: const StadiumBorder(),
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 20.0,
-                        vertical: 10.0,
-                      ),
+                    style: IconButton.styleFrom(
+                      shape: const CircleBorder(),
+                      padding: const EdgeInsets.all(12.0),
+                      backgroundColor: const Color.fromRGBO(5, 40, 46, 1),
                     ),
-                    icon: const Icon(Icons.alarm_rounded),
-                    label: const Text('Hora'),
+                    child: const Icon(
+                      Icons.alarm_rounded,
+                      color: Colors.white,
+                    ),
                   ),
                   const SizedBox(
                     width: 8.0,
                   ),
-                  Text(
-                    _horas == null ? 'Selecione um Horário!' : '$_horas',
-                    style: const TextStyle(
-                      fontSize: 15.0,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
+                  _horas == null
+                      ? const Text(
+                          'Selecione um Horário!',
+                          style: TextStyle(
+                            fontSize: 18.0,
+                            color: Color.fromRGBO(5, 40, 46, 1),
+                          ),
+                        )
+                      : Text(
+                          '$_horas',
+                          style: const TextStyle(
+                            fontSize: 25.0,
+                            color: Color.fromRGBO(5, 40, 46, 1),
+                          ),
+                        ),
                 ],
               ),
               const SizedBox(
-                height: 35.0,
+                height: 10.0,
               ),
               ElevatedButton.icon(
                 onPressed: () async {
@@ -158,14 +209,19 @@ class _AlarmeFormState extends State<AlarmeForm> {
                   _submitForm();
                 },
                 style: ElevatedButton.styleFrom(
-                    shape: const StadiumBorder(),
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 55.0,
-                      vertical: 10.0,
-                    )),
+                  shape: const StadiumBorder(),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 55.0,
+                    vertical: 10.0,
+                  ),
+                  backgroundColor: const Color.fromRGBO(5, 40, 46, 1),
+                ),
                 icon: const Icon(Icons.check),
                 label: const Text(
                   'Salvar',
+                  style: TextStyle(
+                    fontSize: 16.0,
+                  ),
                 ),
               ),
             ],
