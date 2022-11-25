@@ -22,14 +22,51 @@ class MyApp extends StatelessWidget {
       title: 'HDC - Hora de Cuidar',
       theme: ThemeData(
         primarySwatch: Colors.blueGrey,
+        timePickerTheme: TimePickerThemeData(
+          backgroundColor: const Color.fromRGBO(231, 249, 251, 1),
+          helpTextStyle: const TextStyle(
+            fontSize: 15.0,
+            fontWeight: FontWeight.bold,
+            color: Color.fromRGBO(5, 40, 46, 1),
+          ),
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(
+              Radius.circular(25.0),
+            ),
+          ),
+          hourMinuteShape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(
+              Radius.circular(10.0),
+            ),
+          ),
+          hourMinuteColor: Colors.lightBlue[200],
+          hourMinuteTextColor: const Color.fromRGBO(5, 40, 46, 1),
+          dialBackgroundColor: Colors.lightBlue[200],
+          dialTextColor: MaterialStateColor.resolveWith(
+            (states) => states.contains(MaterialState.selected)
+                ? Colors.white
+                : const Color.fromRGBO(5, 40, 46, 1),
+          ),
+          dialHandColor: Colors.lightBlue,
+          entryModeIconColor: const Color.fromRGBO(5, 40, 46, 1),
+        ),
+        textButtonTheme: TextButtonThemeData(
+          style: ButtonStyle(
+            foregroundColor: MaterialStateColor.resolveWith(
+              (states) => Colors.lightBlue,
+            ),
+          ),
+        ),
       ),
       debugShowCheckedModeBanner: false,
       initialRoute: NotifyManager.initialRoute,
       routes: {
         MyHomePage.routeName: (_) => const MyHomePage(),
-        TabScreen.routeName: (_) => TabScreen(NotifyManager.notificationAppLaunchDetails),
+        TabScreen.routeName: (_) =>
+            TabScreen(NotifyManager.notificationAppLaunchDetails),
         QRScannerScreen.routeName: (_) => const QRScannerScreen(),
-        FeedbackScreen.routeName: (_) => FeedbackScreen(NotifyManager.selectedPayload),
+        FeedbackScreen.routeName: (_) =>
+            FeedbackScreen(NotifyManager.selectedPayload),
       },
     );
   }

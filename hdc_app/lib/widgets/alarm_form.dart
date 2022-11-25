@@ -43,6 +43,13 @@ class _AlarmeFormState extends State<AlarmeForm> {
     showTimePicker(
       context: context,
       initialTime: TimeOfDay.now(),
+      helpText: 'Selecionar Horário',
+      builder: (context, child) => MediaQuery(
+        data: MediaQuery.of(context).copyWith(
+          alwaysUse24HourFormat: true,
+        ),
+        child: child!,
+      ),
     ).then((pickedTime) {
       if (pickedTime == null) {
         return;
@@ -69,9 +76,9 @@ class _AlarmeFormState extends State<AlarmeForm> {
         child: Padding(
           padding: EdgeInsets.only(
             top: 15.0,
-            left: 10.0,
-            right: 10.0,
-            bottom: 20.0 + MediaQuery.of(context).viewInsets.bottom,
+            left: 15.0,
+            right: 15.0,
+            bottom: 25.0 + MediaQuery.of(context).viewInsets.bottom,
           ),
           child: Column(
             children: [
@@ -81,14 +88,14 @@ class _AlarmeFormState extends State<AlarmeForm> {
                   const Text(
                     'Criar Lembrete',
                     style: TextStyle(
-                      fontSize: 18.0,
+                      fontSize: 20.0,
                       fontWeight: FontWeight.bold,
                       color: Color.fromRGBO(5, 40, 46, 1),
                     ),
                   ),
                   IconButton(
                     icon: const Icon(Icons.close),
-                    color: Colors.blueGrey[900],
+                    color: const Color.fromRGBO(5, 40, 46, 1),
                     onPressed: () {
                       Navigator.of(context).pop();
                     },
@@ -96,7 +103,7 @@ class _AlarmeFormState extends State<AlarmeForm> {
                 ],
               ),
               const SizedBox(
-                height: 10.0,
+                height: 15.0,
               ),
               TextField(
                 controller: _tituloController,
@@ -113,12 +120,18 @@ class _AlarmeFormState extends State<AlarmeForm> {
                     fontWeight: FontWeight.bold,
                   ),
                   enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(10.0),
+                    ),
                     borderSide: BorderSide(
                       color: Colors.lightBlue,
                       width: 2.0,
                     ),
                   ),
                   focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(10.0),
+                    ),
                     borderSide: BorderSide(
                       color: Colors.lightBlue,
                       width: 2.0,
@@ -127,7 +140,7 @@ class _AlarmeFormState extends State<AlarmeForm> {
                 ),
               ),
               const SizedBox(
-                height: 15.0,
+                height: 20.0,
               ),
               TextField(
                 controller: _descricaoController,
@@ -144,12 +157,18 @@ class _AlarmeFormState extends State<AlarmeForm> {
                     fontWeight: FontWeight.bold,
                   ),
                   enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(10.0),
+                    ),
                     borderSide: BorderSide(
                       color: Colors.lightBlue,
                       width: 2.0,
                     ),
                   ),
                   focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(10.0),
+                    ),
                     borderSide: BorderSide(
                       color: Colors.lightBlue,
                       width: 2.0,
@@ -158,16 +177,16 @@ class _AlarmeFormState extends State<AlarmeForm> {
                 ),
               ),
               const SizedBox(
-                height: 15.0,
+                height: 20.0,
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   TextButton(
                     onPressed: _showHoursPicker,
-                    style: IconButton.styleFrom(
+                    style: TextButton.styleFrom(
                       shape: const CircleBorder(),
-                      padding: const EdgeInsets.all(12.0),
+                      padding: const EdgeInsets.all(11.0),
                       backgroundColor: const Color.fromRGBO(5, 40, 46, 1),
                     ),
                     child: const Icon(
@@ -176,7 +195,7 @@ class _AlarmeFormState extends State<AlarmeForm> {
                     ),
                   ),
                   const SizedBox(
-                    width: 8.0,
+                    width: 5.0,
                   ),
                   _horas == null
                       ? const Text(
@@ -196,33 +215,37 @@ class _AlarmeFormState extends State<AlarmeForm> {
                 ],
               ),
               const SizedBox(
-                height: 10.0,
+                height: 20.0,
               ),
-              ElevatedButton.icon(
-                onPressed: () async {
-                  await NotifyManager.showNotification(
-                    title: _tituloController.text,
-                    body: _descricaoController.text,
-                    payload: _tituloController.text,
-                    data: '$dataFormatada $_horas:00',
-                  );
-                  _submitForm();
-                },
-                style: ElevatedButton.styleFrom(
-                  shape: const StadiumBorder(),
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 55.0,
-                    vertical: 10.0,
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  ElevatedButton.icon(
+                    onPressed: () async {
+                      await NotifyManager.showNotification(
+                        title: _tituloController.text,
+                        body: _descricaoController.text,
+                        payload: _tituloController.text,
+                        data: '$dataFormatada $_horas:00',
+                      );
+                      _submitForm();
+                    },
+                    style: ElevatedButton.styleFrom(
+                      shape: const StadiumBorder(),
+                      backgroundColor: const Color.fromRGBO(5, 40, 46, 1),
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 12.0,
+                      ),
+                    ),
+                    icon: const Icon(Icons.check),
+                    label: const Text(
+                      'Salvar',
+                      style: TextStyle(
+                        fontSize: 16.0,
+                      ),
+                    ),
                   ),
-                  backgroundColor: const Color.fromRGBO(5, 40, 46, 1),
-                ),
-                icon: const Icon(Icons.check),
-                label: const Text(
-                  'Salvar',
-                  style: TextStyle(
-                    fontSize: 16.0,
-                  ),
-                ),
+                ],
               ),
             ],
           ),
