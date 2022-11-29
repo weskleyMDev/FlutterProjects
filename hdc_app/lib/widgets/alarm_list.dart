@@ -39,7 +39,7 @@ class _AlarmeListaState extends State<AlarmeLista> {
                         backgroundColor:
                             const Color.fromRGBO(209, 244, 250, 1)),
                     child: const Icon(
-                      Icons.alarm,
+                      Icons.notifications_active_rounded,
                       size: 40,
                       color: Color.fromRGBO(5, 40, 46, 1),
                     ),

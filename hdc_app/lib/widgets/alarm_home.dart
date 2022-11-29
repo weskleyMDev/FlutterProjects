@@ -88,7 +88,7 @@ class _AlarmesHomeState extends State<AlarmesHome> with WidgetsBindingObserver {
                 _abrirAlarmeModal(context);
               },
               icon: const Icon(
-                Icons.alarm,
+                Icons.notifications_active_outlined,
                 color: Colors.white,
               ),
               style: ElevatedButton.styleFrom(
@@ -100,7 +100,7 @@ class _AlarmesHomeState extends State<AlarmesHome> with WidgetsBindingObserver {
                 backgroundColor: const Color.fromRGBO(5, 40, 46, 1),
               ),
               label: const Text(
-                'Adiconar Lembrete',
+                'ADICIONAR LEMBRETE',
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 16,

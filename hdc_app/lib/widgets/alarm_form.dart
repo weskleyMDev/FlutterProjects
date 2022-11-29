@@ -44,6 +44,8 @@ class _AlarmeFormState extends State<AlarmeForm> {
       context: context,
       initialTime: TimeOfDay.now(),
       helpText: 'Selecionar Horário',
+      hourLabelText: 'Hora',
+      minuteLabelText: 'Minuto',
       builder: (context, child) => MediaQuery(
         data: MediaQuery.of(context).copyWith(
           alwaysUse24HourFormat: true,
@@ -59,6 +61,44 @@ class _AlarmeFormState extends State<AlarmeForm> {
             '${pickedTime.hour.toString().padLeft(2, '0')}:${pickedTime.minute.toString().padLeft(2, '0')}';
       });
     });
+  }
+
+  Widget _showTextField(TextEditingController? ec, String? lb, IconData? i) {
+    return TextField(
+      controller: ec!,
+      onSubmitted: (_) => _submitForm(),
+      decoration: InputDecoration(
+        filled: true,
+        fillColor: Colors.white,
+        prefixIcon: Icon(
+          i!,
+          color: Colors.lightBlue,
+        ),
+        labelText: lb!,
+        floatingLabelStyle: const TextStyle(
+          color: Colors.lightBlue,
+          fontWeight: FontWeight.bold,
+        ),
+        enabledBorder: const OutlineInputBorder(
+          borderRadius: BorderRadius.all(
+            Radius.circular(10.0),
+          ),
+          borderSide: BorderSide(
+            color: Colors.lightBlue,
+            width: 2.0,
+          ),
+        ),
+        focusedBorder: const OutlineInputBorder(
+          borderRadius: BorderRadius.all(
+            Radius.circular(10.0),
+          ),
+          borderSide: BorderSide(
+            color: Colors.lightBlue,
+            width: 2.0,
+          ),
+        ),
+      ),
+    );
   }
 
   @override
@@ -105,76 +145,18 @@ class _AlarmeFormState extends State<AlarmeForm> {
               const SizedBox(
                 height: 15.0,
               ),
-              TextField(
-                controller: _tituloController,
-                onSubmitted: (_) => _submitForm(),
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  prefixIcon: Icon(
-                    Icons.medical_services_outlined,
-                    color: Colors.lightBlue,
-                  ),
-                  labelText: 'Título ou Remédio',
-                  floatingLabelStyle: TextStyle(
-                    color: Color.fromRGBO(5, 40, 46, 1),
-                    fontWeight: FontWeight.bold,
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.all(
-                      Radius.circular(10.0),
-                    ),
-                    borderSide: BorderSide(
-                      color: Colors.lightBlue,
-                      width: 2.0,
-                    ),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.all(
-                      Radius.circular(10.0),
-                    ),
-                    borderSide: BorderSide(
-                      color: Colors.lightBlue,
-                      width: 2.0,
-                    ),
-                  ),
-                ),
+              _showTextField(
+                _tituloController,
+                'Título ou Remédio',
+                Icons.medical_services_outlined,
               ),
               const SizedBox(
                 height: 20.0,
               ),
-              TextField(
-                controller: _descricaoController,
-                onSubmitted: (_) => _submitForm(),
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  prefixIcon: Icon(
-                    Icons.description_outlined,
-                    color: Colors.lightBlue,
-                  ),
-                  labelText: 'Descrição(Dosagem, Observações, ect)',
-                  floatingLabelStyle: TextStyle(
-                    color: Color.fromRGBO(5, 40, 46, 1),
-                    fontWeight: FontWeight.bold,
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.all(
-                      Radius.circular(10.0),
-                    ),
-                    borderSide: BorderSide(
-                      color: Colors.lightBlue,
-                      width: 2.0,
-                    ),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.all(
-                      Radius.circular(10.0),
-                    ),
-                    borderSide: BorderSide(
-                      color: Colors.lightBlue,
-                      width: 2.0,
-                    ),
-                  ),
-                ),
+              _showTextField(
+                _descricaoController,
+                'Descrição(Dosagem, Observações, ect)',
+                Icons.description_outlined,
               ),
               const SizedBox(
                 height: 20.0,
@@ -198,11 +180,13 @@ class _AlarmeFormState extends State<AlarmeForm> {
                     width: 5.0,
                   ),
                   _horas == null
-                      ? const Text(
-                          'Selecione um Horário!',
-                          style: TextStyle(
-                            fontSize: 18.0,
-                            color: Color.fromRGBO(5, 40, 46, 1),
+                      ? const Expanded(
+                          child: Text(
+                            'Selecione um Horário!',
+                            style: TextStyle(
+                              fontSize: 18.0,
+                              color: Color.fromRGBO(5, 40, 46, 1),
+                            ),
                           ),
                         )
                       : Text(
@@ -239,7 +223,7 @@ class _AlarmeFormState extends State<AlarmeForm> {
                     ),
                     icon: const Icon(Icons.check),
                     label: const Text(
-                      'Salvar',
+                      'SALVAR',
                       style: TextStyle(
                         fontSize: 16.0,
                       ),

@@ -37,11 +37,17 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color.fromRGBO(231, 249, 251, 1),
       appBar: AppBar(
+        backgroundColor: const Color.fromRGBO(231, 249, 251, 1),
         automaticallyImplyLeading: false,
         elevation: 0.0,
         title: const Text(
           'Feedback',
+          style: TextStyle(
+            fontSize: 24,
+            color: Color.fromRGBO(5, 40, 46, 1),
+          ),
         ),
       ),
       body: SafeArea(
@@ -54,14 +60,15 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                   'Você já tomou "${_payload ?? ''}"?',
                   style: const TextStyle(
                     fontSize: 25.0,
+                    color: Color.fromRGBO(5, 40, 46, 1),
                   ),
                 ),
-                const Divider(
+                Divider(
                   height: 50.0,
                   indent: 20.0,
                   endIndent: 20.0,
                   thickness: 2.0,
-                  color: Colors.blueGrey,
+                  color: Colors.lightBlue[200],
                 ),
                 RadioListTile(
                   title: const Text(
@@ -78,6 +85,7 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                     );
                     //selected value
                   },
+                  activeColor: Colors.lightBlue,
                 ),
                 RadioListTile(
                   title: const Text(
@@ -94,6 +102,7 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                     );
                     //selected value
                   },
+                  activeColor: Colors.lightBlue,
                 ),
                 const SizedBox(
                   height: 10.0,
@@ -105,18 +114,45 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                     decoration: const InputDecoration(
                       border: OutlineInputBorder(),
                       labelText: 'Se não, digite aqui o motivo...',
+                      prefixIcon: Icon(
+                        Icons.edit_rounded,
+                        color: Colors.lightBlue,
+                      ),
+                      floatingLabelStyle: TextStyle(
+                        color: Color.fromRGBO(5, 40, 46, 1),
+                        fontWeight: FontWeight.bold,
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(10.0),
+                        ),
+                        borderSide: BorderSide(
+                          color: Colors.lightBlue,
+                          width: 2.0,
+                        ),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(10.0),
+                        ),
+                        borderSide: BorderSide(
+                          color: Colors.lightBlue,
+                          width: 2.0,
+                        ),
+                      ),
                     ),
                   ),
                 ),
-                const Divider(
+                Divider(
                   height: 50.0,
                   indent: 20.0,
                   endIndent: 20.0,
                   thickness: 2.0,
-                  color: Colors.blueGrey,
+                  color: Colors.lightBlue[200],
                 ),
                 ElevatedButton.icon(
                   style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color.fromRGBO(5, 40, 46, 1),
                     shape: const StadiumBorder(),
                     padding: const EdgeInsets.symmetric(
                       horizontal: 40.0,
@@ -147,7 +183,7 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                     Icons.send,
                   ),
                   label: const Text(
-                    'Enviar',
+                    'ENVIAR',
                     style: TextStyle(
                       fontSize: 18.0,
                     ),

@@ -31,7 +31,7 @@ class _ReceitasHomeState extends State<ReceitasHome> {
                         backgroundColor:
                             const Color.fromRGBO(209, 244, 250, 1)),
                     child: const Icon(
-                      Icons.description_outlined,
+                      Icons.qr_code_scanner_rounded,
                       size: 40.0,
                       color: Color.fromRGBO(5, 40, 46, 1),
                     ),
@@ -45,6 +45,9 @@ class _ReceitasHomeState extends State<ReceitasHome> {
                       fontSize: 22,
                       fontWeight: FontWeight.bold,
                     ),
+                  ),
+                  const SizedBox(
+                    height: 12.0,
                   ),
                   const Text(
                     'Tente escanear uma receita para ver as informações e medicamentos aqui',
@@ -63,7 +66,7 @@ class _ReceitasHomeState extends State<ReceitasHome> {
               Navigator.of(context).pushNamed('/qrscan');
             },
             icon: const Icon(
-              Icons.photo_camera,
+              Icons.qr_code_scanner_rounded,
               color: Colors.white,
             ),
             style: ElevatedButton.styleFrom(
@@ -75,7 +78,7 @@ class _ReceitasHomeState extends State<ReceitasHome> {
               backgroundColor: const Color.fromRGBO(5, 40, 46, 1),
             ),
             label: const Text(
-              'Escanear Receita',
+              'ESCANEAR RECEITA',
               style: TextStyle(
                 color: Colors.white,
                 fontSize: 16,

@@ -21,7 +21,6 @@ class TabScreen extends StatefulWidget {
 }
 
 class _TabScreenState extends State<TabScreen> {
-
   @override
   void initState() {
     super.initState();
@@ -29,7 +28,8 @@ class _TabScreenState extends State<TabScreen> {
   }
 
   void _configureSelectNotificationSubject() {
-    NotifyManager.selectNotificationStream.stream.listen((String? payload) async {
+    NotifyManager.selectNotificationStream.stream
+        .listen((String? payload) async {
       await Navigator.of(context).push(MaterialPageRoute<void>(
         builder: (BuildContext context) => FeedbackScreen(payload),
       ));
@@ -62,7 +62,15 @@ class _TabScreenState extends State<TabScreen> {
           actions: [
             IconButton(
               onPressed: () {},
-              icon: const Icon(Icons.more_vert),
+              icon: const Icon(
+                Icons.logout,
+              ),
+            ),
+            IconButton(
+              onPressed: () {},
+              icon: const Icon(
+                Icons.more_vert,
+              ),
             ),
           ],
         ),
@@ -95,7 +103,7 @@ class _TabScreenState extends State<TabScreen> {
                     tabs: const [
                       Tab(
                         child: Text(
-                          'Lembretes',
+                          'LEMBRETES',
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 18,
@@ -104,7 +112,7 @@ class _TabScreenState extends State<TabScreen> {
                       ),
                       Tab(
                         child: Text(
-                          'Receitas',
+                          'RECEITAS',
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 18,
@@ -134,4 +142,3 @@ class _TabScreenState extends State<TabScreen> {
     );
   }
 }
-
