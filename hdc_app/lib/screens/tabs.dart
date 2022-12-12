@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:hdc_app/screens/feedback.dart';
 import 'package:hdc_app/widgets/alarm_home.dart';
+import 'package:hdc_app/widgets/alarm_modal.dart';
 import 'package:hdc_app/widgets/receitas_home.dart';
 
 import '../services/notify_manager.dart';
@@ -61,7 +62,21 @@ class _TabScreenState extends State<TabScreen> {
           elevation: 0.0,
           actions: [
             IconButton(
-              onPressed: () {},
+              onPressed: () {
+                showModalBottomSheet(
+                  isScrollControlled: true,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(12.0),
+                      topRight: Radius.circular(12.0),
+                    )
+                  ),
+                  context: context,
+                  builder: (context) {
+                    return AlarmModal();
+                  },
+                );
+              },
               icon: const Icon(
                 Icons.logout,
               ),

@@ -1,5 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:hdc_app/widgets/alarm_modal.dart';
 
 import 'screens/feedback.dart';
 import 'screens/home_page.dart';
@@ -67,6 +68,7 @@ class MyApp extends StatelessWidget {
         QRScannerScreen.routeName: (_) => const QRScannerScreen(),
         FeedbackScreen.routeName: (_) =>
             FeedbackScreen(NotifyManager.selectedPayload),
+        AlarmModal.route: (_) => const AlarmModal(),
       },
     );
   }
