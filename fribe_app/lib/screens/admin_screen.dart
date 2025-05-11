@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:fribe_app/services/auth_service.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'login_screen.dart';
 import 'signup_screen.dart';
+import 'stock/stock_screen.dart';
 
 class AdminScreen extends StatelessWidget {
   const AdminScreen({super.key});
@@ -12,13 +14,15 @@ class AdminScreen extends StatelessWidget {
     final AuthService authService = AuthService();
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Admin Screen"),
+        title: const Text("Fribé Cortes Especiais"),
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         actions: [
           IconButton(
             icon: const Icon(Icons.logout),
             onPressed: () {
-              authService.logout().then((_) {
+              authService.logout().then((_) async {
+                SharedPreferences prefs = await SharedPreferences.getInstance();
+                await prefs.remove('userRole');
                 if (!context.mounted) return;
                 Navigator.pushReplacement(
                   context,
@@ -45,7 +49,14 @@ class AdminScreen extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     IconButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => const StockScreen(),
+                          ),
+                        );
+                      },
                       icon: Image.asset("assets/stock.png"),
                     ),
                     const Text(

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fribe_app/screens/user_screen.dart';
 import 'package:fribe_app/services/auth_service.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'admin_screen.dart';
 
@@ -22,27 +23,31 @@ class _LoginScreenState extends State<LoginScreen> {
     setState(() {
       isLoading = true;
     });
+
     String? result = await _authService.login(
       name: nameController.text,
       password: passwordController.text,
     );
+
     if (!mounted) return;
+
     setState(() {
       isLoading = false;
     });
-    if (result == 'admin') {
-      // Navigate to admin screen
+
+    if (result == 'admin' || result == 'user') {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.setString('userRole', result!);
+      if (!mounted) return;
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (_) => const AdminScreen()),
-      );
-    } else if (result == 'user') {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (_) => const UserScreen()),
+        MaterialPageRoute(
+          builder:
+              (_) =>
+                  result == 'admin' ? const AdminScreen() : const UserScreen(),
+        ),
       );
     } else {
-      // Handle error
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(SnackBar(content: Text("Error: $result")));
@@ -113,27 +118,28 @@ class _LoginScreenState extends State<LoginScreen> {
                   isLoading
                       ? Center(child: const CircularProgressIndicator())
                       : SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton(
-                      onPressed: _login,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Theme.of(context).colorScheme.primary,
-                        foregroundColor: Colors.white,
-                        textStyle: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 50,
-                          vertical: 15,
-                        ),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8.0),
+                        width: double.infinity,
+                        child: ElevatedButton(
+                          onPressed: _login,
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor:
+                                Theme.of(context).colorScheme.primary,
+                            foregroundColor: Colors.white,
+                            textStyle: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 50,
+                              vertical: 15,
+                            ),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8.0),
+                            ),
+                          ),
+                          child: const Text("Login"),
                         ),
                       ),
-                      child: const Text("Login"),
-                    ),
-                  ),
                 ],
               ),
             ),

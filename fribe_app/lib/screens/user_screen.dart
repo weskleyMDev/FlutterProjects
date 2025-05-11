@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../services/auth_service.dart';
 import 'login_screen.dart';
@@ -17,7 +18,9 @@ class UserScreen extends StatelessWidget {
           IconButton(
             icon: const Icon(Icons.logout),
             onPressed: () {
-              authService.logout().then((_) {
+              authService.logout().then((_) async {
+                SharedPreferences prefs = await SharedPreferences.getInstance();
+                await prefs.remove('userRole');
                 if (!context.mounted) return;
                 Navigator.pushReplacement(
                   context,
