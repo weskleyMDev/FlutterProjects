@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "606950357442",
+    "project_id": "teste-fribe",
+    "storage_bucket": "teste-fribe.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:606950357442:android:b4c9e411e338f5fb6abe5b",
+        "android_client_info": {
+          "package_name": "com.fribe.fribe_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDHepYSxCTsuV1WBb4S1TLFsA79Z2NByRM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
