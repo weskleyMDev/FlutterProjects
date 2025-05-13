@@ -16,13 +16,12 @@ class _BovinoScreenState extends State<BovinoScreen> {
   final TextEditingController quantityController = TextEditingController();
   final TextEditingController priceController = TextEditingController();
   String selectedCategory = "BOVINO";
-  bool isEditing = false;
 
   final DbService dbService = DbService();
   final AuthService authService = AuthService();
 
   final CollectionReference collectionRef = FirebaseFirestore.instance
-      .collection('estoque');
+      .collection('EstoqueLoja');
 
   void _clearFields() {
     codController.clear();
@@ -32,6 +31,9 @@ class _BovinoScreenState extends State<BovinoScreen> {
   }
 
   Future<void> _showAddItemDialog() async {
+    int nextCode = await dbService.getCurrentCode();
+    codController.text = nextCode.toString();
+    if (!mounted) return;
     return showDialog<void>(
       context: context,
       builder: (BuildContext context) {
@@ -42,25 +44,28 @@ class _BovinoScreenState extends State<BovinoScreen> {
               children: <Widget>[
                 TextField(
                   controller: codController,
-                  decoration: const InputDecoration(hintText: 'Código'),
+                  decoration: const InputDecoration(labelText: 'Código'),
+                  keyboardType: TextInputType.number,
+                  readOnly: true,
+                  enabled: false,
                 ),
                 TextField(
                   controller: nameController,
-                  decoration: const InputDecoration(hintText: 'Produto'),
+                  decoration: const InputDecoration(labelText: 'Produto'),
                 ),
                 TextField(
                   controller: quantityController,
-                  decoration: const InputDecoration(hintText: 'Quantidade'),
+                  decoration: const InputDecoration(labelText: 'Quantidade'),
                   keyboardType: TextInputType.number,
                 ),
                 TextField(
                   controller: priceController,
-                  decoration: const InputDecoration(hintText: 'Preço'),
+                  decoration: const InputDecoration(labelText: 'Preço'),
                   keyboardType: TextInputType.number,
                 ),
                 TextField(
                   controller: TextEditingController(text: selectedCategory),
-                  decoration: const InputDecoration(hintText: 'Categoria'),
+                  decoration: const InputDecoration(labelText: 'Categoria'),
                   readOnly: true,
                 ),
               ],
@@ -92,20 +97,23 @@ class _BovinoScreenState extends State<BovinoScreen> {
               children: <Widget>[
                 TextField(
                   controller: codController,
-                  decoration: const InputDecoration(hintText: 'Código'),
+                  decoration: const InputDecoration(labelText: 'Código'),
+                  keyboardType: TextInputType.number,
+                  enabled: false,
                 ),
                 TextField(
                   controller: nameController,
-                  decoration: const InputDecoration(hintText: 'Produto'),
+                  decoration: const InputDecoration(labelText: 'Produto'),
+                  enabled: false,
                 ),
                 TextField(
                   controller: quantityController,
-                  decoration: const InputDecoration(hintText: 'Quantidade'),
+                  decoration: const InputDecoration(labelText: 'Quantidade'),
                   keyboardType: TextInputType.number,
                 ),
                 TextField(
                   controller: priceController,
-                  decoration: const InputDecoration(hintText: 'Preço'),
+                  decoration: const InputDecoration(labelText: 'Preço'),
                   keyboardType: TextInputType.number,
                 ),
               ],
@@ -127,8 +135,9 @@ class _BovinoScreenState extends State<BovinoScreen> {
   }
 
   void _addItem() async {
+    int nextCode = int.parse(codController.text);
     final result = await dbService.addStock(
-      codController.text,
+      nextCode,
       nameController.text,
       int.parse(quantityController.text),
       double.parse(priceController.text),
@@ -140,9 +149,11 @@ class _BovinoScreenState extends State<BovinoScreen> {
         context,
       ).showSnackBar(SnackBar(content: Text("Error: $result")));
     } else {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text("Item adicionado com sucesso")));
+      await dbService.incrementCode();
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Item adicionado com sucesso")),
+      );
       Navigator.of(context).pop();
     }
     _clearFields();
@@ -150,7 +161,7 @@ class _BovinoScreenState extends State<BovinoScreen> {
 
   void _updateItem() {
     dbService.updateStock(
-      codController.text,
+      int.parse(codController.text),
       int.parse(quantityController.text),
       double.parse(priceController.text),
     );
@@ -219,17 +230,10 @@ class _BovinoScreenState extends State<BovinoScreen> {
                             Text(
                               'Preço: R\$${documentSnapshot['preco'].toStringAsFixed(2)}',
                             ),
-                            const SizedBox(width: 10),
-                            Text("-"),
-                            const SizedBox(width: 10),
-                            Text(
-                              'Venda: R\$${documentSnapshot['venda'].toStringAsFixed(2)}',
-                            ),
                           ],
                         ),
                       ),
                       trailing: IconButton(
-                        // show a dropdownmenu with edit and delete options
                         icon: const Icon(Icons.more_vert),
                         onPressed: () {
                           showMenu(
@@ -240,11 +244,10 @@ class _BovinoScreenState extends State<BovinoScreen> {
                                 child: const Text('Editar'),
                                 onTap: () {
                                   codController.text =
-                                      documentSnapshot['codigo'];
+                                      documentSnapshot['codigo'].toString();
                                   nameController.text =
                                       documentSnapshot['produto'];
-                                  quantityController.text =
-                                      documentSnapshot['quantidade'].toString();
+                                  quantityController.text = '1';
                                   priceController.text =
                                       documentSnapshot['preco'].toString();
                                   selectedCategory =
@@ -254,18 +257,50 @@ class _BovinoScreenState extends State<BovinoScreen> {
                               ),
                               PopupMenuItem(
                                 child: const Text('Deletar'),
-                                onTap: () async {
-                                  await collectionRef
-                                      .doc(documentSnapshot.id)
-                                      .delete();
-                                  if (!context.mounted) return;
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                      content: Text(
-                                        'Item deletado com sucesso',
-                                      ),
-                                    ),
-                                  );
+                                onTap: () {
+                                  Future.delayed(const Duration(), () async {
+                                    if (!context.mounted) return;
+                                    await showDialog<void>(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return AlertDialog(
+                                          title: const Text(
+                                            'Confirmar Exclusão',
+                                          ),
+                                          content: const Text(
+                                            'Tem certeza que deseja deletar este item?',
+                                          ),
+                                          actions: <Widget>[
+                                            TextButton(
+                                              child: const Text('Cancelar'),
+                                              onPressed: () {
+                                                Navigator.of(context).pop();
+                                              },
+                                            ),
+                                            TextButton(
+                                              child: const Text('Deletar'),
+                                              onPressed: () async {
+                                                await collectionRef
+                                                    .doc(documentSnapshot.id)
+                                                    .delete();
+                                                if (!context.mounted) return;
+                                                ScaffoldMessenger.of(
+                                                  context,
+                                                ).showSnackBar(
+                                                  const SnackBar(
+                                                    content: Text(
+                                                      'Item deletado com sucesso',
+                                                    ),
+                                                  ),
+                                                );
+                                                Navigator.of(context).pop();
+                                              },
+                                            ),
+                                          ],
+                                        );
+                                      },
+                                    );
+                                  });
                                 },
                               ),
                             ],

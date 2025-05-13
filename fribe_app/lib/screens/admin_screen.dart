@@ -60,7 +60,8 @@ class AdminScreen extends StatelessWidget {
                       icon: Image.asset("assets/images/stock.png"),
                     ),
                     const Text(
-                      'ESTOQUE',
+                      textAlign: TextAlign.center,
+                      'ESTOQUE LOJA',
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,

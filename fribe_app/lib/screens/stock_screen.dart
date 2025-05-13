@@ -17,7 +17,7 @@ class _StockScreenState extends State<StockScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Estoque'),
+        title: const Text('Estoque Loja'),
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
       ),
       body: SingleChildScrollView(
