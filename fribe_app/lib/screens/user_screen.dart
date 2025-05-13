@@ -3,9 +3,16 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../services/auth_service.dart';
 import 'login_screen.dart';
+import 'venda_screen.dart';
 
-class UserScreen extends StatelessWidget {
+class UserScreen extends StatefulWidget {
   const UserScreen({super.key});
+
+  @override
+  State<UserScreen> createState() => _UserScreenState();
+}
+
+class _UserScreenState extends State<UserScreen> {
 
   @override
   Widget build(BuildContext context) {
@@ -47,7 +54,9 @@ class UserScreen extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     IconButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.push(context, MaterialPageRoute(builder: (_) => const VendaScreen()));
+                      },
                       icon: Image.asset("assets/images/sales.png"),
                     ),
                     const Text(
