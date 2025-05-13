@@ -16,6 +16,7 @@ class _BovinoScreenState extends State<BovinoScreen> {
   final TextEditingController quantityController = TextEditingController();
   final TextEditingController priceController = TextEditingController();
   String selectedCategory = "BOVINO";
+  bool isEditing = false;
 
   final DbService dbService = DbService();
   final AuthService authService = AuthService();
@@ -31,12 +32,11 @@ class _BovinoScreenState extends State<BovinoScreen> {
   }
 
   Future<void> _showAddItemDialog() async {
-    _clearFields();
     return showDialog<void>(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Adicionar Item'),
+          title: Text('Adicionar Item'),
           content: SingleChildScrollView(
             child: ListBody(
               children: <Widget>[
@@ -50,44 +50,18 @@ class _BovinoScreenState extends State<BovinoScreen> {
                 ),
                 TextField(
                   controller: quantityController,
-                  decoration:
-                      const InputDecoration(hintText: 'Quantidade'),
+                  decoration: const InputDecoration(hintText: 'Quantidade'),
                   keyboardType: TextInputType.number,
                 ),
                 TextField(
                   controller: priceController,
-                  decoration:
-                      const InputDecoration(hintText: 'Preço'),
+                  decoration: const InputDecoration(hintText: 'Preço'),
                   keyboardType: TextInputType.number,
                 ),
-                DropdownButtonFormField(
-                  value: selectedCategory,
-                  items: const [
-                    DropdownMenuItem(
-                      value: 'BOVINO',
-                      child: Text('BOVINO'),
-                    ),
-                    DropdownMenuItem(
-                      value: 'SUINO',
-                      child: Text('SUINO'),
-                    ),
-                    DropdownMenuItem(
-                      value: 'CAPRINO',
-                      child: Text('CAPRINO'),
-                    ),
-                    DropdownMenuItem(
-                      value: 'AVES',
-                      child: Text('AVES'),
-                    ),
-                  ],
-                  onChanged: (value) {
-                    setState(() {
-                      selectedCategory = value!;
-                    });
-                  },
-                  decoration: const InputDecoration(
-                    labelText: 'Categoria',
-                  ),
+                TextField(
+                  controller: TextEditingController(text: selectedCategory),
+                  decoration: const InputDecoration(hintText: 'Categoria'),
+                  readOnly: true,
                 ),
               ],
             ),
@@ -97,12 +71,55 @@ class _BovinoScreenState extends State<BovinoScreen> {
               child: const Text('Cancelar'),
               onPressed: () {
                 Navigator.of(context).pop();
+                _clearFields();
               },
             ),
-            TextButton(
-              onPressed: _addItem,
-              child: const Text('Salvar'),
+            TextButton(onPressed: _addItem, child: const Text('Salvar')),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> _showEditItemDialog() async {
+    return showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Editar Item'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                TextField(
+                  controller: codController,
+                  decoration: const InputDecoration(hintText: 'Código'),
+                ),
+                TextField(
+                  controller: nameController,
+                  decoration: const InputDecoration(hintText: 'Produto'),
+                ),
+                TextField(
+                  controller: quantityController,
+                  decoration: const InputDecoration(hintText: 'Quantidade'),
+                  keyboardType: TextInputType.number,
+                ),
+                TextField(
+                  controller: priceController,
+                  decoration: const InputDecoration(hintText: 'Preço'),
+                  keyboardType: TextInputType.number,
+                ),
+              ],
             ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Cancelar'),
+              onPressed: () {
+                Navigator.of(context).pop();
+                _clearFields();
+              },
+            ),
+            TextButton(onPressed: _updateItem, child: const Text('Atualizar')),
           ],
         );
       },
@@ -125,9 +142,23 @@ class _BovinoScreenState extends State<BovinoScreen> {
     } else {
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(const SnackBar(content: Text("Item added successfully")));
+      ).showSnackBar(const SnackBar(content: Text("Item adicionado com sucesso")));
       Navigator.of(context).pop();
     }
+    _clearFields();
+  }
+
+  void _updateItem() {
+    dbService.updateStock(
+      codController.text,
+      int.parse(quantityController.text),
+      double.parse(priceController.text),
+    );
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text("Item atualizado com sucesso")),
+    );
+    Navigator.of(context).pop();
+    _clearFields();
   }
 
   @override
@@ -149,35 +180,104 @@ class _BovinoScreenState extends State<BovinoScreen> {
       ),
       body: Center(
         child: StreamBuilder<QuerySnapshot>(
-          stream: collectionRef.where('categoria', isEqualTo: 'BOVINO').snapshots(),
+          stream:
+              collectionRef.where('categoria', isEqualTo: 'BOVINO').snapshots(),
           builder: (context, AsyncSnapshot<QuerySnapshot> streamSnapshot) {
-        if (streamSnapshot.hasData) {
-          return ListView.builder(
-            itemCount: streamSnapshot.data!.docs.length,
-            itemBuilder: (context, index) {
-          final DocumentSnapshot documentSnapshot =
-              streamSnapshot.data!.docs[index];
-          final double preco = documentSnapshot['preco'];
-          final valor = preco + (preco * 0.3);
-          return Card(
-            elevation: 5,
-            child: ListTile(
-              leading: CircleAvatar(
-            backgroundColor: Colors.blue,
-            child: Text(
-              documentSnapshot['codigo'].toString(),
-              style: const TextStyle(color: Colors.white),
-            ),
-              ),
-              title: Text(documentSnapshot['produto']),
-              subtitle: Text('Quantidade: ${documentSnapshot['quantidade']}'),
-              trailing: Text('Preço: \$${valor.toStringAsFixed(2)}'),
-            ),
-          );
-            },
-          );
-        }
-        return const Center(child: CircularProgressIndicator());
+            if (streamSnapshot.hasData) {
+              return ListView.builder(
+                itemCount: streamSnapshot.data!.docs.length,
+                itemBuilder: (context, index) {
+                  final DocumentSnapshot documentSnapshot =
+                      streamSnapshot.data!.docs[index];
+                  return Card(
+                    elevation: 5,
+                    child: ListTile(
+                      leading: CircleAvatar(
+                        backgroundColor: Colors.blue,
+                        child: Text(
+                          documentSnapshot['codigo'].toString(),
+                          style: const TextStyle(color: Colors.white),
+                        ),
+                      ),
+                      title: Text(
+                        documentSnapshot['produto'],
+                        style: const TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      subtitle: SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Row(
+                          children: [
+                            Text(
+                              'Quantidade: ${documentSnapshot['quantidade']}',
+                            ),
+                            const SizedBox(width: 10),
+                            Text("-"),
+                            const SizedBox(width: 10),
+                            Text(
+                              'Preço: R\$${documentSnapshot['preco'].toStringAsFixed(2)}',
+                            ),
+                            const SizedBox(width: 10),
+                            Text("-"),
+                            const SizedBox(width: 10),
+                            Text(
+                              'Venda: R\$${documentSnapshot['venda'].toStringAsFixed(2)}',
+                            ),
+                          ],
+                        ),
+                      ),
+                      trailing: IconButton(
+                        // show a dropdownmenu with edit and delete options
+                        icon: const Icon(Icons.more_vert),
+                        onPressed: () {
+                          showMenu(
+                            context: context,
+                            position: RelativeRect.fromLTRB(100, 100, 0, 0),
+                            items: [
+                              PopupMenuItem(
+                                child: const Text('Editar'),
+                                onTap: () {
+                                  codController.text =
+                                      documentSnapshot['codigo'];
+                                  nameController.text =
+                                      documentSnapshot['produto'];
+                                  quantityController.text =
+                                      documentSnapshot['quantidade'].toString();
+                                  priceController.text =
+                                      documentSnapshot['preco'].toString();
+                                  selectedCategory =
+                                      documentSnapshot['categoria'];
+                                  _showEditItemDialog();
+                                },
+                              ),
+                              PopupMenuItem(
+                                child: const Text('Deletar'),
+                                onTap: () async {
+                                  await collectionRef
+                                      .doc(documentSnapshot.id)
+                                      .delete();
+                                  if (!context.mounted) return;
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text(
+                                        'Item deletado com sucesso',
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ),
+                            ],
+                          );
+                        },
+                      ),
+                    ),
+                  );
+                },
+              );
+            }
+            return const Center(child: CircularProgressIndicator());
           },
         ),
       ),

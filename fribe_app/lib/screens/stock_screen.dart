@@ -23,39 +23,42 @@ class _StockScreenState extends State<StockScreen> {
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(8.0),
-          child: Row(
-            // child: GridView.count(
-            //   crossAxisCount: 3,
-            //   crossAxisSpacing: 8.0,
-            //   mainAxisSpacing: 8.0,
-            //   shrinkWrap: true,
-            //   physics: const NeverScrollableScrollPhysics(),
-            children: [
-              _buildCategoryButton(
-                context,
-                'BOVINO',
-                'assets/images/cow.png',
-                () => _moveToCategoryScreen(context, 'BOVINO'),
-              ),
-              _buildCategoryButton(
-                context,
-                'CAPRINO',
-                'assets/images/goat.png',
-                () => _moveToCategoryScreen(context, 'CAPRINO'),
-              ),
-              _buildCategoryButton(
-                context,
-                'SUÍNO',
-                'assets/images/pig.png',
-                () => _moveToCategoryScreen(context, 'SUÍNO'),
-              ),
-              _buildCategoryButton(
-                context,
-                'AVES',
-                'assets/images/chicken.png',
-                () => _moveToCategoryScreen(context, 'AVES'),
-              ),
-            ],
+          child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              // child: GridView.count(
+              //   crossAxisCount: 3,
+              //   crossAxisSpacing: 8.0,
+              //   mainAxisSpacing: 8.0,
+              //   shrinkWrap: true,
+              //   physics: const NeverScrollableScrollPhysics(),
+              children: [
+                _buildCategoryButton(
+                  context,
+                  'BOVINO',
+                  'assets/images/cow.png',
+                  () => _moveToCategoryScreen(context, 'BOVINO'),
+                ),
+                _buildCategoryButton(
+                  context,
+                  'CAPRINO',
+                  'assets/images/goat.png',
+                  () => _moveToCategoryScreen(context, 'CAPRINO'),
+                ),
+                _buildCategoryButton(
+                  context,
+                  'SUÍNO',
+                  'assets/images/pig.png',
+                  () => _moveToCategoryScreen(context, 'SUÍNO'),
+                ),
+                _buildCategoryButton(
+                  context,
+                  'AVES',
+                  'assets/images/chicken.png',
+                  () => _moveToCategoryScreen(context, 'AVES'),
+                ),
+              ],
+            ),
           ),
         ),
       ),
