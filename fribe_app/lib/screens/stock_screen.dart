@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:fribe_app/screens/stock/bovino_screen.dart';
+
+import 'stock/aves_screen.dart';
+import 'stock/caprino_screen.dart';
+import 'stock/suino_screen.dart';
 
 class StockScreen extends StatefulWidget {
   const StockScreen({super.key});
@@ -18,36 +23,37 @@ class _StockScreenState extends State<StockScreen> {
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(8.0),
-          child: GridView.count(
-            crossAxisCount: 3,
-            crossAxisSpacing: 8.0,
-            mainAxisSpacing: 8.0,
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
+          child: Row(
+            // child: GridView.count(
+            //   crossAxisCount: 3,
+            //   crossAxisSpacing: 8.0,
+            //   mainAxisSpacing: 8.0,
+            //   shrinkWrap: true,
+            //   physics: const NeverScrollableScrollPhysics(),
             children: [
               _buildCategoryButton(
                 context,
                 'BOVINO',
                 'assets/images/cow.png',
-                () => _showBottomModal(context, 'BOVINO'),
+                () => _moveToCategoryScreen(context, 'BOVINO'),
               ),
               _buildCategoryButton(
                 context,
                 'CAPRINO',
                 'assets/images/goat.png',
-                () => _showBottomModal(context, 'CAPRINO'),
+                () => _moveToCategoryScreen(context, 'CAPRINO'),
               ),
               _buildCategoryButton(
                 context,
                 'SUÍNO',
                 'assets/images/pig.png',
-                () => _showBottomModal(context, 'SUÍNO'),
+                () => _moveToCategoryScreen(context, 'SUÍNO'),
               ),
               _buildCategoryButton(
                 context,
                 'AVES',
                 'assets/images/chicken.png',
-                () => _showBottomModal(context, 'AVES'),
+                () => _moveToCategoryScreen(context, 'AVES'),
               ),
             ],
           ),
@@ -63,6 +69,8 @@ class _StockScreenState extends State<StockScreen> {
     VoidCallback onPressed,
   ) {
     return Container(
+      width: 100,
+      margin: const EdgeInsets.only(right: 8.0),
       padding: const EdgeInsets.all(8.0),
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.primary,
@@ -72,11 +80,9 @@ class _StockScreenState extends State<StockScreen> {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Expanded(
-            child: IconButton(
-              onPressed: onPressed,
-              icon: Image.asset(imagePath, fit: BoxFit.contain),
-            ),
+          IconButton(
+            onPressed: onPressed,
+            icon: Image.asset(imagePath, fit: BoxFit.contain),
           ),
           Text(
             label,
@@ -92,39 +98,70 @@ class _StockScreenState extends State<StockScreen> {
     );
   }
 
-  void _showBottomModal(BuildContext context, String category) {
-    showModalBottomSheet(
-      context: context,
-      builder: (BuildContext context) {
-        return Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                'Categoria: $category',
-                style: const TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const SizedBox(height: 10),
-              Text(
-                'Você clicou em $category. Este é um modal exibido na parte inferior da tela.',
-                style: const TextStyle(fontSize: 16),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                child: const Text('Fechar'),
-              ),
-            ],
-          ),
+  void _moveToCategoryScreen(BuildContext context, String category) {
+    switch (category) {
+      case 'BOVINO':
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (_) => const BovinoScreen()),
         );
-      },
-    );
+        break;
+      case 'CAPRINO':
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (_) => const CaprinoScreen()),
+        );
+        break;
+      case 'SUÍNO':
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (_) => const SuinoScreen()),
+        );
+        break;
+      case 'AVES':
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (_) => const AvesScreen()),
+        );
+        break;
+      default:
+        break;
+    }
   }
+
+  // void _showBottomModal(BuildContext context, String category) {
+  //   showModalBottomSheet(
+  //     context: context,
+  //     builder: (BuildContext context) {
+  //       return Padding(
+  //         padding: const EdgeInsets.all(16.0),
+  //         child: Column(
+  //           mainAxisSize: MainAxisSize.min,
+  //           children: [
+  //             Text(
+  //               'Categoria: $category',
+  //               style: const TextStyle(
+  //                 fontSize: 24,
+  //                 fontWeight: FontWeight.bold,
+  //               ),
+  //             ),
+  //             const SizedBox(height: 10),
+  //             Text(
+  //               'Você clicou em $category. Este é um modal exibido na parte inferior da tela.',
+  //               style: const TextStyle(fontSize: 16),
+  //               textAlign: TextAlign.center,
+  //             ),
+  //             const SizedBox(height: 20),
+  //             ElevatedButton(
+  //               onPressed: () {
+  //                 Navigator.of(context).pop();
+  //               },
+  //               child: const Text('Fechar'),
+  //             ),
+  //           ],
+  //         ),
+  //       );
+  //     },
+  //   );
+  // }
 }
