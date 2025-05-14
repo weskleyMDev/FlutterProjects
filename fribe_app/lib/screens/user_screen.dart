@@ -13,14 +13,12 @@ class UserScreen extends StatefulWidget {
 }
 
 class _UserScreenState extends State<UserScreen> {
-
   @override
   Widget build(BuildContext context) {
     final AuthService authService = AuthService();
     return Scaffold(
       appBar: AppBar(
         title: const Text("User Screen"),
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         actions: [
           IconButton(
             icon: const Icon(Icons.logout),
@@ -43,9 +41,8 @@ class _UserScreenState extends State<UserScreen> {
         child: Column(
           children: [
             Container(
-              width: 100,
+              width: 150,
               decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.primary,
                 borderRadius: BorderRadius.circular(20),
               ),
               child: Padding(
@@ -54,8 +51,14 @@ class _UserScreenState extends State<UserScreen> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     IconButton(
+                      hoverColor: Theme.of(context).colorScheme.primary,
                       onPressed: () {
-                        Navigator.push(context, MaterialPageRoute(builder: (_) => const VendaScreen()));
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => const VendaScreen(),
+                          ),
+                        );
                       },
                       icon: Image.asset("assets/images/sales.png"),
                     ),
@@ -64,7 +67,6 @@ class _UserScreenState extends State<UserScreen> {
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
-                        color: Colors.white,
                       ),
                     ),
                   ],

@@ -186,7 +186,6 @@ class _CaprinoScreenState extends State<CaprinoScreen> {
                   autofocus: true,
                   decoration: const InputDecoration(
                     hintText: 'Pesquisar...',
-                    fillColor: Colors.white,
                     filled: true,
                   ),
                   onChanged: (value) {
@@ -194,7 +193,6 @@ class _CaprinoScreenState extends State<CaprinoScreen> {
                   },
                 )
                 : const Text('CAPRINO'),
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         actions: [
           Padding(
             padding: const EdgeInsets.only(right: 8.0),
@@ -248,10 +246,8 @@ class _CaprinoScreenState extends State<CaprinoScreen> {
                   elevation: 5,
                   child: ListTile(
                     leading: CircleAvatar(
-                      backgroundColor: Colors.blue,
                       child: Text(
                         documentSnapshot['codigo'].toString(),
-                        style: const TextStyle(color: Colors.white),
                       ),
                     ),
                     title: Text(

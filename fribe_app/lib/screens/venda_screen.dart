@@ -85,7 +85,6 @@ class _VendaScreenState extends State<VendaScreen> {
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
                       content: Text('A quantidade deve ser maior que zero.'),
-                      backgroundColor: Colors.red,
                     ),
                   );
                   return;
@@ -110,7 +109,6 @@ class _VendaScreenState extends State<VendaScreen> {
                         content: Text(
                           'Estoque insuficiente. Só há $estoqueDisponivel unidades disponíveis.',
                         ),
-                        backgroundColor: Colors.red,
                       ),
                     );
                     return;
@@ -362,7 +360,6 @@ class _VendaScreenState extends State<VendaScreen> {
                               'Nenhum item encontrado com esse nome ou código.',
                               style: TextStyle(
                                 fontSize: 16,
-                                color: Colors.grey,
                               ),
                             ),
                           );
@@ -425,7 +422,6 @@ class _VendaScreenState extends State<VendaScreen> {
   Widget _buildCarrinho() {
     return Container(
       padding: const EdgeInsets.all(16.0),
-      color: Colors.grey[200],
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [

@@ -17,7 +17,6 @@ class AdminScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Fribé Cortes Especiais"),
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         actions: [
           IconButton(
             icon: const Icon(Icons.logout),
@@ -78,24 +77,21 @@ class AdminScreen extends StatelessWidget {
     return Container(
       width: 150,
       margin: const EdgeInsets.only(right: 8.0),
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.primary,
-        borderRadius: BorderRadius.circular(20),
-      ),
+      decoration: BoxDecoration(borderRadius: BorderRadius.circular(20)),
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            IconButton(onPressed: onPressed, icon: Image.asset(imagePath, fit: BoxFit.contain)),
+            IconButton(
+              hoverColor: Theme.of(context).colorScheme.primary,
+              onPressed: onPressed,
+              icon: Image.asset(imagePath, fit: BoxFit.contain),
+            ),
             Text(
               textAlign: TextAlign.center,
               category,
-              style: TextStyle(
-                fontSize: 12,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-              ),
+              style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
             ),
           ],
         ),

@@ -58,10 +58,8 @@ class _LoginScreenState extends State<SignupScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: const Text("Signup"),
+        title: const Text("Cadastrar Funcionário"),
       ),
-      backgroundColor: Colors.white,
       body: SingleChildScrollView(
         child: Center(
           child: Padding(
@@ -76,7 +74,7 @@ class _LoginScreenState extends State<SignupScreen> {
                 ),
                 const SizedBox(height: 20),
                 const Text(
-                  "Welcome to Fribe",
+                  "Bem Vindo a Fribe",
                   style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 10),
@@ -152,7 +150,7 @@ class _LoginScreenState extends State<SignupScreen> {
                             borderRadius: BorderRadius.circular(8.0),
                           ),
                         ),
-                        child: const Text("Signup"),
+                        child: const Text("Cadastrar"),
                       ),
                     ),
               ],

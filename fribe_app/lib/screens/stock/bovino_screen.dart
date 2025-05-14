@@ -185,7 +185,6 @@ class _BovinoScreenState extends State<BovinoScreen> {
                   autofocus: true,
                   decoration: const InputDecoration(
                     hintText: 'Pesquisar...',
-                    fillColor: Colors.white,
                     filled: true,
                   ),
                   onChanged: (value) {
@@ -193,7 +192,6 @@ class _BovinoScreenState extends State<BovinoScreen> {
                   },
                 )
                 : const Text('BOVINO'),
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         actions: [
           Padding(
             padding: const EdgeInsets.only(right: 8.0),
@@ -247,10 +245,8 @@ class _BovinoScreenState extends State<BovinoScreen> {
                   elevation: 5,
                   child: ListTile(
                     leading: CircleAvatar(
-                      backgroundColor: Colors.blue,
                       child: Text(
                         documentSnapshot['codigo'].toString(),
-                        style: const TextStyle(color: Colors.white),
                       ),
                     ),
                     title: Text(

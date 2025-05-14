@@ -18,7 +18,6 @@ class _StockScreenState extends State<StockScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Estoque Loja'),
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -76,7 +75,6 @@ class _StockScreenState extends State<StockScreen> {
       margin: const EdgeInsets.only(right: 8.0),
       padding: const EdgeInsets.all(8.0),
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.primary,
         borderRadius: BorderRadius.circular(20),
       ),
       child: Column(
@@ -84,6 +82,7 @@ class _StockScreenState extends State<StockScreen> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           IconButton(
+            hoverColor: Theme.of(context).colorScheme.primary,
             onPressed: onPressed,
             icon: Image.asset(imagePath, fit: BoxFit.contain),
           ),
@@ -92,7 +91,6 @@ class _StockScreenState extends State<StockScreen> {
             style: const TextStyle(
               fontSize: 12,
               fontWeight: FontWeight.bold,
-              color: Colors.white,
             ),
             textAlign: TextAlign.center,
           ),

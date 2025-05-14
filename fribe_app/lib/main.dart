@@ -4,6 +4,8 @@ import 'package:fribe_app/firebase_options.dart';
 import 'package:fribe_app/screens/splash_screen.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
+import 'theme/meat_app_theme_material3.dart';
+
 
 
 void main() async {
@@ -30,9 +32,7 @@ class MyApp extends StatelessWidget {
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
       ],
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-      ),
+      theme: meatAppTheme,
       home: SplashScreen(),
     );
   }
