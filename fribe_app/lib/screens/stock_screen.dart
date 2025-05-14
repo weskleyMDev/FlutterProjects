@@ -16,85 +16,78 @@ class _StockScreenState extends State<StockScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Estoque Loja'),
-      ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Row(
-              // child: GridView.count(
-              //   crossAxisCount: 3,
-              //   crossAxisSpacing: 8.0,
-              //   mainAxisSpacing: 8.0,
-              //   shrinkWrap: true,
-              //   physics: const NeverScrollableScrollPhysics(),
-              children: [
-                _buildCategoryButton(
-                  context,
-                  'BOVINO',
-                  'assets/images/cow.png',
-                  () => _moveToCategoryScreen(context, 'BOVINO'),
-                ),
-                _buildCategoryButton(
-                  context,
-                  'CAPRINO',
-                  'assets/images/goat.png',
-                  () => _moveToCategoryScreen(context, 'CAPRINO'),
-                ),
-                _buildCategoryButton(
-                  context,
-                  'SUÍNO',
-                  'assets/images/pig.png',
-                  () => _moveToCategoryScreen(context, 'SUÍNO'),
-                ),
-                _buildCategoryButton(
-                  context,
-                  'AVES',
-                  'assets/images/chicken.png',
-                  () => _moveToCategoryScreen(context, 'AVES'),
-                ),
-              ],
+      appBar: AppBar(title: const Text('Estoque Loja')),
+      body: OrientationBuilder(
+        builder: (context, orientation) {
+          final buttons = [
+            _buildCategoryButton(
+              context,
+              'BOVINO',
+              'assets/images/cow.png',
+              () => _moveToCategoryScreen(context, 'BOVINO'),
             ),
-          ),
-        ),
+            _buildCategoryButton(
+              context,
+              'CAPRINO',
+              'assets/images/goat.png',
+              () => _moveToCategoryScreen(context, 'CAPRINO'),
+            ),
+            _buildCategoryButton(
+              context,
+              'SUÍNO',
+              'assets/images/pig.png',
+              () => _moveToCategoryScreen(context, 'SUÍNO'),
+            ),
+            _buildCategoryButton(
+              context,
+              'AVES',
+              'assets/images/chicken.png',
+              () => _moveToCategoryScreen(context, 'AVES'),
+            ),
+          ];
+          if (orientation == Orientation.portrait) {
+            return GridView.count(
+              crossAxisCount: 2,
+              childAspectRatio: 1.1,
+              mainAxisSpacing: 8,
+              crossAxisSpacing: 8,
+              physics: const AlwaysScrollableScrollPhysics(),
+              children: buttons,
+            );
+          } else {
+            return Row(children: buttons);
+          }
+        },
       ),
     );
   }
 
   Widget _buildCategoryButton(
     BuildContext context,
-    String label,
+    String category,
     String imagePath,
     VoidCallback onPressed,
   ) {
     return Container(
       width: 150,
       margin: const EdgeInsets.only(right: 8.0),
-      padding: const EdgeInsets.all(8.0),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          IconButton(
-            hoverColor: Theme.of(context).colorScheme.primary,
-            onPressed: onPressed,
-            icon: Image.asset(imagePath, fit: BoxFit.contain),
-          ),
-          Text(
-            label,
-            style: const TextStyle(
-              fontSize: 12,
-              fontWeight: FontWeight.bold,
+      decoration: BoxDecoration(borderRadius: BorderRadius.circular(20)),
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          children: [
+            IconButton(
+              hoverColor: Theme.of(context).colorScheme.primary,
+              onPressed: onPressed,
+              icon: Image.asset(imagePath, height: 100, width: 150),
             ),
-            textAlign: TextAlign.center,
-          ),
-        ],
+            Text(
+              textAlign: TextAlign.center,
+              category,
+              style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+            ),
+          ],
+        ),
       ),
     );
   }

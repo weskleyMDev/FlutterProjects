@@ -34,10 +34,9 @@ class AdminScreen extends StatelessWidget {
           ),
         ],
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Row(
-          children: [
+      body: OrientationBuilder(
+        builder: (context, orientation) {
+          final buttons = [
             _buildButton(
               context,
               'assets/images/stock.png',
@@ -62,8 +61,21 @@ class AdminScreen extends StatelessWidget {
               'Funcionários'.toUpperCase(),
               () => _moveToCategoryScreen(context, 'Funcionarios'),
             ),
-          ],
-        ),
+          ];
+
+          if (orientation == Orientation.portrait) {
+            return GridView.count(
+              crossAxisCount: 2,
+              childAspectRatio: 1.1,
+              mainAxisSpacing: 8,
+              crossAxisSpacing: 8,
+              physics: const AlwaysScrollableScrollPhysics(),
+              children: buttons,
+            );
+          } else {
+            return Row(children: buttons);
+          }
+        },
       ),
     );
   }
@@ -81,12 +93,11 @@ class AdminScreen extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(
-          mainAxisSize: MainAxisSize.min,
           children: [
             IconButton(
               hoverColor: Theme.of(context).colorScheme.primary,
               onPressed: onPressed,
-              icon: Image.asset(imagePath, fit: BoxFit.contain),
+              icon: Image.asset(imagePath, height: 100, width: 150),
             ),
             Text(
               textAlign: TextAlign.center,

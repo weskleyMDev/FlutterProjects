@@ -181,7 +181,60 @@ class _VendaScreenState extends State<VendaScreen> {
           ),
           actions: [
             TextButton(
-              onPressed: () => Navigator.of(context).pop(selected),
+              onPressed: () async {
+                final confirmar = await showDialog<bool>(
+                  context: context,
+                  barrierDismissible: false,
+                  builder:
+                      (context) => AlertDialog(
+                        title: const Text('Confirmar Venda'),
+                        content: SingleChildScrollView(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text('Forma de pagamento: $selected'),
+                              const Divider(),
+                              ...carrinho.map(
+                                (item) => Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 2,
+                                  ),
+                                  child: Text(
+                                    '${item['produto']} x${item['quantidade']} - R\$ ${(item['preco'] * item['quantidade']).toStringAsFixed(2)}',
+                                  ),
+                                ),
+                              ),
+                              const Divider(),
+                              Text(
+                                'TOTAL: R\$ ${_totalCarrinho().toStringAsFixed(2)}',
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              const SizedBox(height: 16),
+                              const Text(
+                                'Tem certeza que deseja finalizar a venda?',
+                              ),
+                            ],
+                          ),
+                        ),
+                        actions: [
+                          TextButton(
+                            onPressed: () => Navigator.of(context).pop(false),
+                            child: const Text('Cancelar'),
+                          ),
+                          TextButton(
+                            onPressed: () => Navigator.of(context).pop(true),
+                            child: const Text('Confirmar'),
+                          ),
+                        ],
+                      ),
+                );
+                if (confirmar == true) {
+                  if (!context.mounted) return;
+                  Navigator.of(context).pop(selected);
+                }
+              },
               child: const Text('Confirmar'),
             ),
             TextButton(
@@ -358,9 +411,7 @@ class _VendaScreenState extends State<VendaScreen> {
                           return const Center(
                             child: Text(
                               'Nenhum item encontrado com esse nome ou código.',
-                              style: TextStyle(
-                                fontSize: 16,
-                              ),
+                              style: TextStyle(fontSize: 16),
                             ),
                           );
                         }
