@@ -25,8 +25,8 @@ class _LoginScreenState extends State<LoginScreen> {
     });
 
     String? result = await _authService.login(
-      name: nameController.text,
-      password: passwordController.text,
+      email: nameController.text.trim(),
+      password: passwordController.text.trim(),
     );
 
     if (!mounted) return;
@@ -50,7 +50,7 @@ class _LoginScreenState extends State<LoginScreen> {
     } else {
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(SnackBar(content: Text("Error: $result")));
+      ).showSnackBar(SnackBar(content: Text(result ?? 'Erro ao fazer login')));
     }
   }
 

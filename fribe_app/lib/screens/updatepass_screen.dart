@@ -38,8 +38,8 @@ class _UpdatePassScreenState extends State<UpdatePassScreen> {
     }
 
     // Chama a função updatePasswordByName do AuthService
-    String? result = await _authService.updatePasswordByName(
-      name: name,
+    String? result = await _authService.updatePasswordByEmail(
+      email: name,
       newPassword: newPassword,
     );
 

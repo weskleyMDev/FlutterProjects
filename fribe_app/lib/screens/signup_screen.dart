@@ -24,7 +24,7 @@ class _LoginScreenState extends State<SignupScreen> {
       isLoading = true;
     });
     String? result = await _authService.signup(
-      name: nameController.text,
+      email: nameController.text,
       password: passwordController.text,
       role: selectedRole,
     );

@@ -126,12 +126,10 @@ class _VendaScreenState extends State<VendaScreen> {
   Future<void> _finalizarVenda() async {
     if (carrinho.isEmpty) return;
 
-    String formaPagamento = 'Dinheiro'; // valor padrão
-
-    await showDialog(
+    final formaPagamento = await showDialog<String>(
       context: context,
       builder: (context) {
-        String? selected = formaPagamento;
+        String selected = 'Dinheiro';
 
         return AlertDialog(
           title: const Text('Forma de Pagamento'),
@@ -147,17 +145,19 @@ class _VendaScreenState extends State<VendaScreen> {
           ),
           actions: [
             TextButton(
-              onPressed: () {
-                formaPagamento = selected!;
-                Navigator.of(context).pop();
-              },
+              onPressed: () => Navigator.of(context).pop(selected),
               child: const Text('Confirmar'),
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(null),
+              child: const Text('Cancelar'),
             ),
           ],
         );
       },
     );
 
+    if (formaPagamento == null) return;
     final codigoVenda = _gerarCodigoVenda();
 
     // Salva a venda no Firestore
@@ -197,9 +197,11 @@ class _VendaScreenState extends State<VendaScreen> {
       _totalCarrinho(),
     );
 
+    if (!mounted) return;
     setState(() {
       carrinho.clear();
     });
+    await _loadProdutos();
 
     if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
@@ -274,28 +276,86 @@ class _VendaScreenState extends State<VendaScreen> {
                     ),
                   ),
                   Expanded(
-                    child: ListView.builder(
-                      itemCount: produtosFiltrados.length,
-                      itemBuilder: (context, index) {
-                        final produto = produtosFiltrados[index];
-                        return ListTile(
-                          leading: CircleAvatar(
-                            child: Text(produto['codigo'].toString()),
-                          ),
-                          title: Text(produto['produto']),
-                          subtitle: Row(
-                            children: [
-                              Text('Preço: R\$ ${produto['preco']}'),
-                              const SizedBox(width: 16),
-                              Text('Estoque: ${produto['quantidade']}'),
-                            ],
-                          ),
-                          trailing: ElevatedButton(
-                            onPressed: (produto['quantidade'] ?? 0) > 0
-                                ? () => _adicionarAoCarrinho(produto)
-                                : null,
-                            child: const Text('Adicionar'),
-                          ),
+                    child: StreamBuilder<QuerySnapshot>(
+                      stream:
+                          FirebaseFirestore.instance
+                              .collection('EstoqueLoja')
+                              .snapshots(),
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return const Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        }
+
+                        if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                          return const Center(
+                            child: Text('Nenhum produto encontrado'),
+                          );
+                        }
+
+                        final produtos =
+                            snapshot.data!.docs
+                                .map((doc) {
+                                  return {
+                                    'codigo': doc['codigo'],
+                                    'produto': doc['produto'],
+                                    'quantidade': doc['quantidade'],
+                                    'preco': doc['preco'],
+                                    'categoria': doc['categoria'],
+                                  };
+                                })
+                                .where((produto) {
+                                  final nome =
+                                      produto['produto']
+                                          .toString()
+                                          .toLowerCase();
+                                  final codigo = produto['codigo'].toString();
+                                  final query =
+                                      _searchController.text.toLowerCase();
+                                  return nome.contains(query) ||
+                                      codigo.contains(query);
+                                })
+                                .toList();
+
+                        if (produtos.isEmpty) {
+                          return const Center(
+                            child: Text(
+                              'Nenhum item encontrado com esse nome ou código.',
+                              style: TextStyle(
+                                fontSize: 16,
+                                color: Colors.grey,
+                              ),
+                            ),
+                          );
+                        }
+
+                        return ListView.builder(
+                          itemCount: produtos.length,
+                          itemBuilder: (context, index) {
+                            final produto = produtos[index];
+                            return ListTile(
+                              leading: CircleAvatar(
+                                child: Text(produto['codigo'].toString()),
+                              ),
+                              title: Text(produto['produto']),
+                              subtitle: Row(
+                                children: [
+                                  Text('Preço: R\$ ${produto['preco']}'),
+                                  const SizedBox(width: 16),
+                                  Text('Estoque: ${produto['quantidade']}'),
+                                ],
+                              ),
+                              trailing: ElevatedButton(
+                                onPressed:
+                                    (produto['quantidade'] ?? 0) > 0
+                                        ? () => _adicionarAoCarrinho(produto)
+                                        : null,
+                                child: const Text('Adicionar'),
+                              ),
+                            );
+                          },
                         );
                       },
                     ),
@@ -337,9 +397,7 @@ class _VendaScreenState extends State<VendaScreen> {
             },
           ),
           ElevatedButton(
-            onPressed: (carrinho.isEmpty)
-                ? null
-                : _finalizarVenda,
+            onPressed: (carrinho.isEmpty) ? null : _finalizarVenda,
             child: const Text('Finalizar Venda'),
           ),
         ],
