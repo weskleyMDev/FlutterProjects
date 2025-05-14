@@ -64,6 +64,7 @@ class _VendaScreenState extends State<VendaScreen> {
 
     showDialog(
       context: context,
+      barrierDismissible: false,
       builder: (context) {
         return AlertDialog(
           title: const Text("Quantos itens?"),
@@ -75,27 +76,59 @@ class _VendaScreenState extends State<VendaScreen> {
           actions: [
             TextButton(
               onPressed: () {
-                final quantidade =
-                    int.tryParse(quantidadeController.text) ??
-                    1; // Define quantidade padrão como 1
+                final quantidadeDesejada =
+                    int.tryParse(quantidadeController.text) ?? 1;
+
+                final estoqueDisponivel = produto['quantidade'] ?? 0;
+
+                if (quantidadeDesejada <= 0) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('A quantidade deve ser maior que zero.'),
+                      backgroundColor: Colors.red,
+                    ),
+                  );
+                  return;
+                }
+
                 setState(() {
-                  // Verifica se o produto já está no carrinho
                   final existingProductIndex = carrinho.indexWhere(
                     (item) => item['codigo'] == produto['codigo'],
                   );
+
+                  final quantidadeAtualNoCarrinho =
+                      (existingProductIndex != -1)
+                          ? carrinho[existingProductIndex]['quantidade']
+                          : 0;
+
+                  final totalDesejado =
+                      quantidadeAtualNoCarrinho + quantidadeDesejada;
+
+                  if (totalDesejado > estoqueDisponivel) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(
+                          'Estoque insuficiente. Só há $estoqueDisponivel unidades disponíveis.',
+                        ),
+                        backgroundColor: Colors.red,
+                      ),
+                    );
+                    return;
+                  }
+
                   if (existingProductIndex != -1) {
-                    // Se já estiver no carrinho, soma a quantidade
-                    carrinho[existingProductIndex]['quantidade'] += quantidade;
+                    carrinho[existingProductIndex]['quantidade'] +=
+                        quantidadeDesejada;
                   } else {
-                    // Se não estiver no carrinho, adiciona novo item
                     carrinho.add({
                       'codigo': produto['codigo'],
                       'produto': produto['produto'],
                       'preco': produto['preco'],
-                      'quantidade': quantidade,
+                      'quantidade': quantidadeDesejada,
                     });
                   }
                 });
+
                 Navigator.of(context).pop();
               },
               child: const Text("Adicionar ao Carrinho"),
@@ -111,7 +144,11 @@ class _VendaScreenState extends State<VendaScreen> {
   }
 
   double _totalCarrinho() {
-    return carrinho.fold(0.0, (total, item) => total + (item['preco'] ?? 0.0));
+    return carrinho.fold(0.0, (total, item) {
+      final preco = item['preco'] ?? 0.0;
+      final quantidade = item['quantidade'] ?? 1;
+      return total + (preco * quantidade);
+    });
   }
 
   String _gerarCodigoVenda() {
@@ -128,6 +165,7 @@ class _VendaScreenState extends State<VendaScreen> {
 
     final formaPagamento = await showDialog<String>(
       context: context,
+      barrierDismissible: false,
       builder: (context) {
         String selected = 'Dinheiro';
 
@@ -160,7 +198,6 @@ class _VendaScreenState extends State<VendaScreen> {
     if (formaPagamento == null) return;
     final codigoVenda = _gerarCodigoVenda();
 
-    // Salva a venda no Firestore
     await FirebaseFirestore.instance.collection('vendas').add({
       'codigoVenda': codigoVenda,
       'itens': carrinho,
@@ -169,7 +206,6 @@ class _VendaScreenState extends State<VendaScreen> {
       'data': DateTime.now(),
     });
 
-    // Atualiza o estoque como antes...
     for (var item in carrinho) {
       final querySnapshot =
           await FirebaseFirestore.instance
@@ -217,6 +253,7 @@ class _VendaScreenState extends State<VendaScreen> {
   ) async {
     showDialog(
       context: context,
+      barrierDismissible: false,
       builder: (context) {
         return AlertDialog(
           title: const Text('Recibo de Venda'),
@@ -342,16 +379,35 @@ class _VendaScreenState extends State<VendaScreen> {
                               title: Text(produto['produto']),
                               subtitle: Row(
                                 children: [
-                                  Text('Preço: R\$ ${produto['preco']}'),
+                                  Text(
+                                    'Preço: R\$ ${produto['preco'].toStringAsFixed(2)}',
+                                  ),
                                   const SizedBox(width: 16),
                                   Text('Estoque: ${produto['quantidade']}'),
                                 ],
                               ),
                               trailing: ElevatedButton(
-                                onPressed:
-                                    (produto['quantidade'] ?? 0) > 0
-                                        ? () => _adicionarAoCarrinho(produto)
-                                        : null,
+                                onPressed: () {
+                                  final estoqueDisponivel =
+                                      produto['quantidade'] ?? 0;
+
+                                  final itemNoCarrinho = carrinho.firstWhere(
+                                    (item) =>
+                                        item['codigo'] == produto['codigo'],
+                                    orElse: () => {},
+                                  );
+
+                                  final quantidadeNoCarrinho =
+                                      itemNoCarrinho['quantidade'] ?? 0;
+
+                                  if (estoqueDisponivel == 0 ||
+                                      quantidadeNoCarrinho >=
+                                          estoqueDisponivel) {
+                                    return null;
+                                  } else {
+                                    return () => _adicionarAoCarrinho(produto);
+                                  }
+                                }(),
                                 child: const Text('Adicionar'),
                               ),
                             );
@@ -383,7 +439,7 @@ class _VendaScreenState extends State<VendaScreen> {
               return ListTile(
                 title: Text(item['produto']),
                 subtitle: Text(
-                  'Quantidade: ${item['quantidade']} - Preço: R\$ ${item['preco']}',
+                  'Quantidade: ${item['quantidade']} - Preço: R\$ ${item['preco'].toStringAsFixed(2)}',
                 ),
                 trailing: IconButton(
                   icon: const Icon(Icons.delete),

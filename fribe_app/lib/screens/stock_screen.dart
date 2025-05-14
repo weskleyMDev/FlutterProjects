@@ -72,7 +72,7 @@ class _StockScreenState extends State<StockScreen> {
     VoidCallback onPressed,
   ) {
     return Container(
-      width: 100,
+      width: 150,
       margin: const EdgeInsets.only(right: 8.0),
       padding: const EdgeInsets.all(8.0),
       decoration: BoxDecoration(
@@ -90,7 +90,7 @@ class _StockScreenState extends State<StockScreen> {
           Text(
             label,
             style: const TextStyle(
-              fontSize: 16,
+              fontSize: 12,
               fontWeight: FontWeight.bold,
               color: Colors.white,
             ),

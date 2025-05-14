@@ -55,8 +55,6 @@ class AuthService {
 
       return userDoc['role'];
     } on FirebaseAuthException catch (e) {
-      print('Erro FirebaseAuth: ${e.code} - ${e.message}');
-
       switch (e.code) {
         case 'user-not-found':
         case 'wrong-password':
@@ -69,7 +67,6 @@ class AuthService {
           return 'Erro ao fazer login. Tente novamente.';
       }
     } catch (e) {
-      print('Erro inesperado: $e');
       return 'Erro inesperado. Tente novamente.';
     }
   }
