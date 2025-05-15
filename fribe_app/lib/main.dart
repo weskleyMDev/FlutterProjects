@@ -6,8 +6,6 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'theme/meat_app_theme_material3.dart';
 
-
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);

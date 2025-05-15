@@ -122,7 +122,7 @@ class _LoginScreenState extends State<SignupScreen> {
                         return DropdownMenuItem(value: role, child: Text(role));
                       }).toList(),
                   decoration: InputDecoration(
-                    labelText: "Role",
+                    labelText: "Permissão",
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(8.0),
                       borderSide: const BorderSide(),

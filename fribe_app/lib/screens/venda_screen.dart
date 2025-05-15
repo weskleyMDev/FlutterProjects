@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
@@ -10,6 +12,7 @@ class VendaScreen extends StatefulWidget {
 
 class _VendaScreenState extends State<VendaScreen> {
   final TextEditingController _searchController = TextEditingController();
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   List<Map<String, dynamic>> carrinho = [];
   List<Map<String, dynamic>> produtosFiltrados = [];
   bool isLoading = true;
@@ -24,8 +27,7 @@ class _VendaScreenState extends State<VendaScreen> {
   List<Map<String, dynamic>> todosProdutos = [];
 
   Future<void> _loadProdutos() async {
-    final snapshot =
-        await FirebaseFirestore.instance.collection('EstoqueLoja').get();
+    final snapshot = await _firestore.collection('EstoqueLoja').get();
     final produtos =
         snapshot.docs.map((doc) {
           final data = doc.data();
@@ -151,11 +153,16 @@ class _VendaScreenState extends State<VendaScreen> {
 
   String _gerarCodigoVenda() {
     final now = DateTime.now();
+
     final data =
         "${now.year}${now.month.toString().padLeft(2, '0')}${now.day.toString().padLeft(2, '0')}";
-    final hora = "${now.hour}${now.minute}${now.second}";
-    final random = DateTime.now().millisecondsSinceEpoch % 1000;
-    return "VENDA-$data-$hora-$random";
+
+    final hora =
+        "${now.hour.toString().padLeft(2, '0')}${now.minute.toString().padLeft(2, '0')}${now.second.toString().padLeft(2, '0')}";
+
+    final random = Random().nextInt(1000);
+
+    return "VENDA-$data-$hora-${random.toString().padLeft(3, '0')}";
   }
 
   Future<void> _finalizarVenda() async {
@@ -166,7 +173,6 @@ class _VendaScreenState extends State<VendaScreen> {
       barrierDismissible: false,
       builder: (context) {
         String selected = 'Dinheiro';
-
         return AlertDialog(
           title: const Text('Forma de Pagamento'),
           content: DropdownButtonFormField<String>(
@@ -247,7 +253,7 @@ class _VendaScreenState extends State<VendaScreen> {
     if (formaPagamento == null) return;
     final codigoVenda = _gerarCodigoVenda();
 
-    await FirebaseFirestore.instance.collection('vendas').add({
+    await _firestore.collection('vendas').add({
       'codigoVenda': codigoVenda,
       'itens': carrinho,
       'total': _totalCarrinho(),
@@ -257,7 +263,7 @@ class _VendaScreenState extends State<VendaScreen> {
 
     for (var item in carrinho) {
       final querySnapshot =
-          await FirebaseFirestore.instance
+          await _firestore
               .collection('EstoqueLoja')
               .where('codigo', isEqualTo: item['codigo'])
               .limit(1)
@@ -282,7 +288,6 @@ class _VendaScreenState extends State<VendaScreen> {
       _totalCarrinho(),
     );
 
-    if (!mounted) return;
     setState(() {
       carrinho.clear();
     });
@@ -300,7 +305,7 @@ class _VendaScreenState extends State<VendaScreen> {
     String formaPagamento,
     double total,
   ) async {
-    showDialog(
+    await showDialog(
       context: context,
       barrierDismissible: false,
       builder: (context) {
@@ -363,10 +368,7 @@ class _VendaScreenState extends State<VendaScreen> {
                   ),
                   Expanded(
                     child: StreamBuilder<QuerySnapshot>(
-                      stream:
-                          FirebaseFirestore.instance
-                              .collection('EstoqueLoja')
-                              .snapshots(),
+                      stream: _firestore.collection('EstoqueLoja').snapshots(),
                       builder: (context, snapshot) {
                         if (snapshot.connectionState ==
                             ConnectionState.waiting) {
@@ -404,6 +406,12 @@ class _VendaScreenState extends State<VendaScreen> {
                                       codigo.contains(query);
                                 })
                                 .toList();
+
+                        produtos.sort(
+                          (a, b) => (a['codigo'] as int).compareTo(
+                            b['codigo'] as int,
+                          ),
+                        );
 
                         if (produtos.isEmpty) {
                           return const Center(
@@ -519,12 +527,9 @@ class _VendaScreenState extends State<VendaScreen> {
                 final item = carrinho[index];
                 return ListTile(
                   leading: Text(
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18,
-                    ),
-                      '${index + 1}',
-                    ),
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                    '${index + 1}',
+                  ),
                   title: Text(item['produto']),
                   subtitle: Text(
                     'Quantidade: ${item['quantidade']} - Preço: R\$ ${item['preco'].toStringAsFixed(2)}',

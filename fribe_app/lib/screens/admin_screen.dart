@@ -16,6 +16,10 @@ class AdminScreen extends StatelessWidget {
     final AuthService authService = AuthService();
     return Scaffold(
       appBar: AppBar(
+        leading: Padding(
+          padding: const EdgeInsets.only(left: 8.0, top: 8.0, bottom: 8.0),
+          child: Image.asset('assets/images/fribe.png'),
+        ),
         title: const Text("Fribé Cortes Especiais"),
         actions: [
           IconButton(
