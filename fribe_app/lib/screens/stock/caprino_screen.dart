@@ -214,7 +214,9 @@ class _CaprinoScreenState extends State<CaprinoScreen> {
       body: Center(
         child: StreamBuilder<QuerySnapshot>(
           stream:
-              collectionRef.where('categoria', isEqualTo: 'CAPRINO').snapshots(),
+              collectionRef
+                  .where('categoria', isEqualTo: 'CAPRINO')
+                  .snapshots(),
           builder: (context, AsyncSnapshot<QuerySnapshot> streamSnapshot) {
             if (streamSnapshot.connectionState == ConnectionState.waiting) {
               return const Center(child: CircularProgressIndicator());
@@ -243,12 +245,14 @@ class _CaprinoScreenState extends State<CaprinoScreen> {
               itemBuilder: (context, index) {
                 final DocumentSnapshot documentSnapshot = filteredDocs[index];
                 return Card(
+                  margin: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 6,
+                  ),
                   elevation: 5,
-                  child: ListTile(
+                  child: ExpansionTile(
                     leading: CircleAvatar(
-                      child: Text(
-                        documentSnapshot['codigo'].toString(),
-                      ),
+                      child: Text(documentSnapshot['codigo'].toString()),
                     ),
                     title: Text(
                       documentSnapshot['produto'],
@@ -257,92 +261,93 @@ class _CaprinoScreenState extends State<CaprinoScreen> {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    subtitle: SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Row(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
                         children: [
-                          Text('Quantidade: ${documentSnapshot['quantidade']}'),
-                          const SizedBox(width: 10),
-                          Text("-"),
-                          const SizedBox(width: 10),
-                          Text(
-                            'Preço: R\$${documentSnapshot['preco'].toStringAsFixed(2)}',
+                          Container(
+                            margin: const EdgeInsets.only(left: 20.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Quantidade: ${documentSnapshot['quantidade']}',
+                                ),
+                                Text(
+                                  'Preço: R\$${documentSnapshot['preco'].toStringAsFixed(2)}',
+                                ),
+                              ],
+                            ),
                           ),
                         ],
                       ),
-                    ),
-                    trailing: IconButton(
-                      icon: const Icon(Icons.more_vert),
-                      onPressed: () {
-                        showMenu(
-                          context: context,
-                          position: RelativeRect.fromLTRB(100, 100, 0, 0),
-                          items: [
-                            PopupMenuItem(
-                              child: const Text('Editar'),
-                              onTap: () {
-                                codController.text =
-                                    documentSnapshot['codigo'].toString();
-                                nameController.text =
-                                    documentSnapshot['produto'];
-                                quantityController.text = '1';
-                                priceController.text =
-                                    documentSnapshot['preco'].toString();
-                                selectedCategory =
-                                    documentSnapshot['categoria'];
-                                _showEditItemDialog();
-                              },
-                            ),
-                            PopupMenuItem(
-                              child: const Text('Deletar'),
-                              onTap: () {
-                                Future.delayed(const Duration(), () async {
-                                  if (!context.mounted) return;
-                                  await showDialog<void>(
-                                    context: context,
-                                    builder: (BuildContext context) {
-                                      return AlertDialog(
-                                        title: const Text('Confirmar Exclusão'),
-                                        content: const Text(
-                                          'Tem certeza que deseja deletar este item?',
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          TextButton(
+                            onPressed: () {
+                              codController.text =
+                                  documentSnapshot['codigo'].toString();
+                              nameController.text = documentSnapshot['produto'];
+                              quantityController.text = '1';
+                              priceController.text =
+                                  documentSnapshot['preco'].toString();
+                              selectedCategory = documentSnapshot['categoria'];
+                              _showEditItemDialog();
+                            },
+                            child: const Text('Editar'),
+                          ),
+                          const SizedBox(width: 10),
+                          TextButton(
+                            onPressed: () {
+                              Future.delayed(const Duration(), () async {
+                                if (!context.mounted) return;
+                                await showDialog<void>(
+                                  context: context,
+                                  barrierDismissible: false,
+                                  builder: (BuildContext context) {
+                                    return AlertDialog(
+                                      title: const Text('Confirmar Exclusão'),
+                                      content: const Text(
+                                        'Tem certeza que deseja deletar este item?',
+                                      ),
+                                      actions: <Widget>[
+                                        TextButton(
+                                          child: const Text('Cancelar'),
+                                          onPressed: () {
+                                            Navigator.of(context).pop();
+                                          },
                                         ),
-                                        actions: <Widget>[
-                                          TextButton(
-                                            child: const Text('Cancelar'),
-                                            onPressed: () {
-                                              Navigator.of(context).pop();
-                                            },
-                                          ),
-                                          TextButton(
-                                            child: const Text('Deletar'),
-                                            onPressed: () async {
-                                              await collectionRef
-                                                  .doc(documentSnapshot.id)
-                                                  .delete();
-                                              if (!context.mounted) return;
-                                              ScaffoldMessenger.of(
-                                                context,
-                                              ).showSnackBar(
-                                                const SnackBar(
-                                                  content: Text(
-                                                    'Item deletado com sucesso',
-                                                  ),
+                                        TextButton(
+                                          child: const Text('Deletar'),
+                                          onPressed: () async {
+                                            await collectionRef
+                                                .doc(documentSnapshot.id)
+                                                .delete();
+                                            if (!context.mounted) return;
+                                            ScaffoldMessenger.of(
+                                              context,
+                                            ).showSnackBar(
+                                              const SnackBar(
+                                                content: Text(
+                                                  'Item deletado com sucesso',
                                                 ),
-                                              );
-                                              Navigator.of(context).pop();
-                                            },
-                                          ),
-                                        ],
-                                      );
-                                    },
-                                  );
-                                });
-                              },
-                            ),
-                          ],
-                        );
-                      },
-                    ),
+                                              ),
+                                            );
+                                            Navigator.of(context).pop();
+                                          },
+                                        ),
+                                      ],
+                                    );
+                                  },
+                                );
+                              });
+                            },
+                            child: const Text('Deletar'),
+                          ),
+                        ],
+                      ),
+                    ],
                   ),
                 );
               },

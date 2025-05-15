@@ -75,6 +75,10 @@ class _VendaScreenState extends State<VendaScreen> {
           ),
           actions: [
             TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text("Cancelar"),
+            ),
+            TextButton(
               onPressed: () {
                 final quantidadeDesejada =
                     int.tryParse(quantidadeController.text) ?? 1;
@@ -131,10 +135,6 @@ class _VendaScreenState extends State<VendaScreen> {
               },
               child: const Text("Adicionar ao Carrinho"),
             ),
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: const Text("Cancelar"),
-            ),
           ],
         );
       },
@@ -181,6 +181,10 @@ class _VendaScreenState extends State<VendaScreen> {
           ),
           actions: [
             TextButton(
+              onPressed: () => Navigator.of(context).pop(null),
+              child: const Text('Cancelar'),
+            ),
+            TextButton(
               onPressed: () async {
                 final confirmar = await showDialog<bool>(
                   context: context,
@@ -212,9 +216,7 @@ class _VendaScreenState extends State<VendaScreen> {
                                 ),
                               ),
                               const SizedBox(height: 16),
-                              const Text(
-                                'Tem certeza que deseja finalizar a venda?',
-                              ),
+                              const Text('Finalizar a venda?'),
                             ],
                           ),
                         ),
@@ -236,10 +238,6 @@ class _VendaScreenState extends State<VendaScreen> {
                 }
               },
               child: const Text('Confirmar'),
-            ),
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(null),
-              child: const Text('Cancelar'),
             ),
           ],
         );
@@ -472,32 +470,76 @@ class _VendaScreenState extends State<VendaScreen> {
 
   Widget _buildCarrinho() {
     return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(8.0),
+        border: Border(
+          top: BorderSide(
+            color: Theme.of(context).colorScheme.onSurface,
+            width: 1.0,
+          ),
+        ),
+      ),
+      height: MediaQuery.of(context).size.height * 0.45,
       padding: const EdgeInsets.all(16.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Text('Itens no carrinho: ${carrinho.length}'),
-          Text('Total: R\$ ${_totalCarrinho().toStringAsFixed(2)}'),
-          ListView.builder(
-            shrinkWrap: true,
-            itemCount: carrinho.length,
-            itemBuilder: (context, index) {
-              final item = carrinho[index];
-              return ListTile(
-                title: Text(item['produto']),
-                subtitle: Text(
-                  'Quantidade: ${item['quantidade']} - Preço: R\$ ${item['preco'].toStringAsFixed(2)}',
-                ),
-                trailing: IconButton(
-                  icon: const Icon(Icons.delete),
-                  onPressed: () {
-                    setState(() {
-                      carrinho.removeAt(index);
-                    });
-                  },
-                ),
-              );
-            },
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('Itens no carrinho: ${carrinho.length}'),
+                  Text(
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                    'Total: R\$ ${_totalCarrinho().toStringAsFixed(2)}',
+                  ),
+                ],
+              ),
+              IconButton(
+                onPressed:
+                    (carrinho.isEmpty)
+                        ? null
+                        : () {
+                          setState(() {
+                            carrinho.clear();
+                          });
+                        },
+                icon: Icon(Icons.cleaning_services_rounded),
+              ),
+            ],
+          ),
+          Expanded(
+            child: ListView.builder(
+              shrinkWrap: true,
+              itemCount: carrinho.length,
+              itemBuilder: (context, index) {
+                final item = carrinho[index];
+                return ListTile(
+                  leading: Text(
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18,
+                    ),
+                      '${index + 1}',
+                    ),
+                  title: Text(item['produto']),
+                  subtitle: Text(
+                    'Quantidade: ${item['quantidade']} - Preço: R\$ ${item['preco'].toStringAsFixed(2)}',
+                  ),
+                  trailing: IconButton(
+                    icon: const Icon(Icons.delete),
+                    onPressed: () {
+                      setState(() {
+                        carrinho.removeAt(index);
+                      });
+                    },
+                  ),
+                );
+              },
+            ),
           ),
           ElevatedButton(
             onPressed: (carrinho.isEmpty) ? null : _finalizarVenda,
