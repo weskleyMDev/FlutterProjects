@@ -193,7 +193,7 @@ class _BovinoScreenState extends State<BovinoScreen> {
                     setState(() {});
                   },
                 )
-                : const Text('BOVINO'),
+                : const Text('Bovinos'),
         actions: [
           Padding(
             padding: const EdgeInsets.only(right: 8.0),

@@ -192,7 +192,7 @@ class _AvesScreenState extends State<AvesScreen> {
                     setState(() {});
                   },
                 )
-                : const Text('AVES'),
+                : const Text('Aves'),
         actions: [
           Padding(
             padding: const EdgeInsets.only(right: 8.0),

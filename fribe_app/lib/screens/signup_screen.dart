@@ -82,7 +82,7 @@ class _LoginScreenState extends State<SignupScreen> {
                   controller: nameController,
                   keyboardType: TextInputType.emailAddress,
                   decoration: InputDecoration(
-                    labelText: "Username",
+                    labelText: "Usuário",
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(8.0),
                       borderSide: const BorderSide(),
@@ -95,7 +95,7 @@ class _LoginScreenState extends State<SignupScreen> {
                   keyboardType: TextInputType.visiblePassword,
                   obscureText: isPasswordVisible,
                   decoration: InputDecoration(
-                    labelText: "Password",
+                    labelText: "Senha",
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(8.0),
                       borderSide: const BorderSide(),

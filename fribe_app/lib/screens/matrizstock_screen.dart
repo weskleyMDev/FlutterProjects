@@ -12,7 +12,7 @@ class _MatrizstockScreenState extends State<MatrizstockScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Matriz de Estoque'),
+        title: const Text('Estoque Matriz'),
       ),
       body: Center(
         child: Column(

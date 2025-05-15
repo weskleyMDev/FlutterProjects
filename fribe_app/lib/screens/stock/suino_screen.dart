@@ -192,7 +192,7 @@ class _SuinoScreenState extends State<SuinoScreen> {
                     setState(() {});
                   },
                 )
-                : const Text('SUINO'),
+                : const Text('Suínos'),
         actions: [
           Padding(
             padding: const EdgeInsets.only(right: 8.0),

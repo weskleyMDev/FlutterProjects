@@ -192,7 +192,7 @@ class _CaprinoScreenState extends State<CaprinoScreen> {
                     setState(() {});
                   },
                 )
-                : const Text('CAPRINO'),
+                : const Text('Caprinos'),
         actions: [
           Padding(
             padding: const EdgeInsets.only(right: 8.0),

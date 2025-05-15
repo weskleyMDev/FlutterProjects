@@ -81,7 +81,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     controller: nameController,
                     keyboardType: TextInputType.emailAddress,
                     decoration: InputDecoration(
-                      labelText: "Username",
+                      labelText: "Usuário",
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(8.0),
                         borderSide: const BorderSide(),
@@ -94,7 +94,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     keyboardType: TextInputType.visiblePassword,
                     obscureText: isPasswordVisible,
                     decoration: InputDecoration(
-                      labelText: "Password",
+                      labelText: "Senha",
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(8.0),
                         borderSide: const BorderSide(),
@@ -133,7 +133,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               borderRadius: BorderRadius.circular(8.0),
                             ),
                           ),
-                          child: const Text("Login"),
+                          child: const Text("Entrar"),
                         ),
                       ),
                 ],
