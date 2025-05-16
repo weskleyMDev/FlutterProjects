@@ -35,6 +35,7 @@ class _VendaScreenState extends State<VendaScreen> {
             'codigo': data['codigo'],
             'produto': data['produto'],
             'quantidade': data['quantidade'],
+            'tipo': data['tipo'],
             'preco': data['preco'],
             'categoria': data['categoria'],
           };
@@ -105,7 +106,7 @@ class _VendaScreenState extends State<VendaScreen> {
                     );
                     return;
                   }
-                  // Verifica se já existe no carrinho
+
                   final existingProductIndex = carrinho.indexWhere(
                     (item) => item['codigo'] == produto['codigo'],
                   );
@@ -120,7 +121,7 @@ class _VendaScreenState extends State<VendaScreen> {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
                         content: Text(
-                          'Estoque insuficiente. Só há $estoqueDisponivel kg disponíveis.',
+                          'Estoque insuficiente. Só há ${estoqueDisponivel.toStringAsFixed(2)} kg disponíveis.',
                         ),
                       ),
                     );
@@ -136,6 +137,7 @@ class _VendaScreenState extends State<VendaScreen> {
                         'produto': produto['produto'],
                         'preco': produto['preco'],
                         'quantidade': quantidadeDesejada,
+                        'tipo': produto['tipo'],
                       });
                     }
                   });
@@ -179,6 +181,7 @@ class _VendaScreenState extends State<VendaScreen> {
                         'produto': produto['produto'],
                         'preco': produto['preco'],
                         'quantidade': quantidadeInt,
+                        'tipo': produto['tipo'],
                       });
                     }
                   });
@@ -261,7 +264,7 @@ class _VendaScreenState extends State<VendaScreen> {
                                     vertical: 2,
                                   ),
                                   child: Text(
-                                    '${item['produto']} x${item['quantidade']} - R\$ ${(item['preco'] * item['quantidade']).toStringAsFixed(2)}',
+                                    '${item['produto']} x${item['quantidade']}(${item['tipo']}) - R\$ ${(item['preco'] * item['quantidade']).toStringAsFixed(2)}',
                                   ),
                                 ),
                               ),
@@ -374,7 +377,7 @@ class _VendaScreenState extends State<VendaScreen> {
                   (item) => Padding(
                     padding: const EdgeInsets.symmetric(vertical: 2),
                     child: Text(
-                      '${item['produto']} x${item['quantidade']} - R\$ ${(item['preco'] * item['quantidade']).toStringAsFixed(2)}',
+                      '${item['produto']} x${item['quantidade']}(${item['tipo']}) - R\$ ${(item['preco'] * item['quantidade']).toStringAsFixed(2)}',
                     ),
                   ),
                 ),
@@ -493,7 +496,9 @@ class _VendaScreenState extends State<VendaScreen> {
                                     const SizedBox(width: 6),
                                     const Text('-'),
                                     const SizedBox(width: 6),
-                                    Text('Estoque: ${produto['quantidade']}'),
+                                    Text(
+                                      'Estoque: ${produto['quantidade'].toStringAsFixed(2)}',
+                                    ),
                                     const SizedBox(width: 6),
                                     const Text('-'),
                                     const SizedBox(width: 6),

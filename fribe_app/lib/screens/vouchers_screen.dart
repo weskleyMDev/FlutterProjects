@@ -10,7 +10,6 @@ class VouchersScreen extends StatefulWidget {
 
 class _VouchersScreenState extends State<VouchersScreen> {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  bool isLoading = true;
 
   Future<void> _mostrarRecibo(
     String codigoVenda,
@@ -36,7 +35,7 @@ class _VouchersScreenState extends State<VouchersScreen> {
                   (item) => Padding(
                     padding: const EdgeInsets.symmetric(vertical: 2),
                     child: Text(
-                      '${item['produto']} x${item['quantidade']} - R\$ ${(item['preco'] * item['quantidade']).toStringAsFixed(2)}',
+                      '${item['produto']} x${item['quantidade']}(${item['tipo']}) - R\$ ${(item['preco'] * item['quantidade']).toStringAsFixed(2)}',
                     ),
                   ),
                 ),
@@ -77,13 +76,13 @@ class _VouchersScreenState extends State<VouchersScreen> {
             if (snapshot.hasError) {
               return const Center(child: Text('Erro ao carregar dados'));
             }
-        
+
             if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
               return const Center(child: Text('Nenhum comprovante encontrado'));
             }
-        
+
             final vendas = snapshot.data!.docs;
-        
+
             return ListView.builder(
               itemCount: vendas.length,
               itemBuilder: (context, index) {
@@ -92,7 +91,7 @@ class _VouchersScreenState extends State<VouchersScreen> {
                 final itens = List<Map<String, dynamic>>.from(venda['itens']);
                 final formaPagamento = venda['formaPagamento'];
                 final total = venda['total'];
-                    
+
                 return Container(
                   decoration: BoxDecoration(
                     border: Border(
@@ -110,9 +109,7 @@ class _VouchersScreenState extends State<VouchersScreen> {
                         Text('Forma de pagamento: $formaPagamento'),
                         Text(
                           'Total: R\$ ${total.toStringAsFixed(2)}',
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                          ),
+                          style: const TextStyle(fontWeight: FontWeight.bold),
                         ),
                       ],
                     ),
