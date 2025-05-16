@@ -12,20 +12,21 @@ class DbService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   Future<List<Map<String, dynamic>>> getEstoque() async {
-  try {
-    final collectionRef = _firestore.collection('EstoqueLoja');
-    final snapshot = await collectionRef.get();
+    try {
+      final collectionRef = _firestore.collection('EstoqueLoja');
+      final snapshot = await collectionRef.get();
 
-    return snapshot.docs.map((doc) => doc.data()).toList();
-  } catch (e) {
-    rethrow;
+      return snapshot.docs.map((doc) => doc.data()).toList();
+    } catch (e) {
+      rethrow;
+    }
   }
-}
 
   Future<String?> addStock(
     int codigo,
     String produto,
     int quantidade,
+    String tipo,
     double preco,
     String categoria,
   ) async {
@@ -36,6 +37,7 @@ class DbService {
         'codigo': codigo,
         'produto': produto,
         'quantidade': quantidade,
+        'tipo': tipo,
         'preco': preco,
         'categoria': categoria,
       });
@@ -46,7 +48,13 @@ class DbService {
     }
   }
 
-  Future<String?> updateStock(int codigo, int quantidade, double preco) async {
+  Future<String?> updateStock(
+    int codigo,
+    String produto,
+    int quantidade,
+    String tipo,
+    double preco,
+  ) async {
     try {
       final collectionRef = _firestore.collection('EstoqueLoja');
 
@@ -55,12 +63,14 @@ class DbService {
 
       if (querySnapshot.docs.isNotEmpty) {
         await querySnapshot.docs.first.reference.update({
+          'produto': produto,
+          'tipo': tipo,
           'quantidade': FieldValue.increment(quantidade),
           'preco': preco,
         });
         return null;
       } else {
-        return 'Item not found';
+        return 'Item não encontrado';
       }
     } catch (e) {
       return e.toString();

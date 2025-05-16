@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fribe_app/screens/stock/bovino_screen.dart';
+import 'package:fribe_app/screens/stock/others_screen.dart';
 
 import 'stock/aves_screen.dart';
 import 'stock/caprino_screen.dart';
@@ -43,6 +44,12 @@ class _StockScreenState extends State<StockScreen> {
               'AVES',
               'assets/images/chicken.png',
               () => _moveToCategoryScreen(context, 'AVES'),
+            ),
+            _buildCategoryButton(
+              context,
+              'DIVERSOS',
+              'assets/images/food.png',
+              () => _moveToCategoryScreen(context, 'OUTROS'),
             ),
           ];
           if (orientation == Orientation.portrait) {
@@ -116,6 +123,12 @@ class _StockScreenState extends State<StockScreen> {
         Navigator.push(
           context,
           MaterialPageRoute(builder: (_) => const AvesScreen()),
+        );
+        break;
+      case 'OUTROS':
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (_) => const OutrosScreen()),
         );
         break;
       default:

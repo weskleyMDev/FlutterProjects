@@ -73,6 +73,8 @@ flutter:
     - assets/images/teamwork.png
     - assets/images/fribe.png
     - assets/images/receipt.png
+    - assets/images/products.png
+    - assets/images/food.png
   #   - images/a_dot_ham.jpeg
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

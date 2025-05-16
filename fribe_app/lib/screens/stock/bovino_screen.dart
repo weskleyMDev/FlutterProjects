@@ -12,11 +12,12 @@ class BovinoScreen extends StatefulWidget {
 
 class _BovinoScreenState extends State<BovinoScreen> {
   final TextEditingController codController = TextEditingController();
-  final TextEditingController nameController = TextEditingController();
+  final TextEditingController productController = TextEditingController();
   final TextEditingController quantityController = TextEditingController();
   final TextEditingController priceController = TextEditingController();
   final TextEditingController searchController = TextEditingController();
   String selectedCategory = "BOVINO";
+  String selectedType = "KG";
   bool isSearching = false;
 
   final DbService dbService = DbService();
@@ -27,8 +28,9 @@ class _BovinoScreenState extends State<BovinoScreen> {
 
   void _clearFields() {
     codController.clear();
-    nameController.clear();
+    productController.clear();
     quantityController.clear();
+    selectedType = "KG";
     priceController.clear();
   }
 
@@ -53,13 +55,27 @@ class _BovinoScreenState extends State<BovinoScreen> {
                   enabled: false,
                 ),
                 TextField(
-                  controller: nameController,
+                  controller: productController,
                   decoration: const InputDecoration(labelText: 'Produto'),
                 ),
                 TextField(
                   controller: quantityController,
                   decoration: const InputDecoration(labelText: 'Quantidade'),
                   keyboardType: TextInputType.number,
+                ),
+                DropdownButtonFormField<String>(
+                  value: selectedType,
+                  items: const [
+                    DropdownMenuItem(value: 'KG', child: Text('KG')),
+                    DropdownMenuItem(value: 'UN', child: Text('UN')),
+                    DropdownMenuItem(value: 'PCT', child: Text('PCT')),
+                  ],
+                  onChanged: (value) {
+                    setState(() {
+                      selectedType = value!;
+                    });
+                  },
+                  decoration: const InputDecoration(labelText: 'Tipo'),
                 ),
                 TextField(
                   controller: priceController,
@@ -106,14 +122,27 @@ class _BovinoScreenState extends State<BovinoScreen> {
                   enabled: false,
                 ),
                 TextField(
-                  controller: nameController,
+                  controller: productController,
                   decoration: const InputDecoration(labelText: 'Produto'),
-                  enabled: false,
                 ),
                 TextField(
                   controller: quantityController,
                   decoration: const InputDecoration(labelText: 'Quantidade'),
                   keyboardType: TextInputType.number,
+                ),
+                DropdownButtonFormField<String>(
+                  value: selectedType,
+                  items: const [
+                    DropdownMenuItem(value: 'KG', child: Text('KG')),
+                    DropdownMenuItem(value: 'UN', child: Text('UN')),
+                    DropdownMenuItem(value: 'PCT', child: Text('PCT')),
+                  ],
+                  onChanged: (value) {
+                    setState(() {
+                      selectedType = value!;
+                    });
+                  },
+                  decoration: const InputDecoration(labelText: 'Tipo'),
                 ),
                 TextField(
                   controller: priceController,
@@ -142,8 +171,9 @@ class _BovinoScreenState extends State<BovinoScreen> {
     int nextCode = int.parse(codController.text);
     final result = await dbService.addStock(
       nextCode,
-      nameController.text,
+      productController.text,
       int.parse(quantityController.text),
+      selectedType,
       double.parse(priceController.text),
       selectedCategory,
     );
@@ -166,7 +196,9 @@ class _BovinoScreenState extends State<BovinoScreen> {
   void _updateItem() {
     dbService.updateStock(
       int.parse(codController.text),
+      productController.text,
       int.parse(quantityController.text),
+      selectedType,
       double.parse(priceController.text),
     );
     ScaffoldMessenger.of(context).showSnackBar(
@@ -273,6 +305,9 @@ class _BovinoScreenState extends State<BovinoScreen> {
                                   'Quantidade: ${documentSnapshot['quantidade']}',
                                 ),
                                 Text(
+                                  'Tipo: ${documentSnapshot['tipo']}',
+                                ),
+                                Text(
                                   'Preço: R\$${documentSnapshot['preco'].toStringAsFixed(2)}',
                                 ),
                               ],
@@ -287,8 +322,10 @@ class _BovinoScreenState extends State<BovinoScreen> {
                             onPressed: () {
                               codController.text =
                                   documentSnapshot['codigo'].toString();
-                              nameController.text = documentSnapshot['produto'];
+                              productController.text =
+                                  documentSnapshot['produto'];
                               quantityController.text = '1';
+                              selectedType = documentSnapshot['tipo'];
                               priceController.text =
                                   documentSnapshot['preco'].toString();
                               selectedCategory = documentSnapshot['categoria'];

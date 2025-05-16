@@ -13,11 +13,12 @@ class SuinoScreen extends StatefulWidget {
 
 class _SuinoScreenState extends State<SuinoScreen> {
   final TextEditingController codController = TextEditingController();
-  final TextEditingController nameController = TextEditingController();
+  final TextEditingController productController = TextEditingController();
   final TextEditingController quantityController = TextEditingController();
   final TextEditingController priceController = TextEditingController();
   final TextEditingController searchController = TextEditingController();
   String selectedCategory = "SUINO";
+  String selectedType = "KG";
   bool isSearching = false;
 
   final DbService dbService = DbService();
@@ -28,8 +29,9 @@ class _SuinoScreenState extends State<SuinoScreen> {
 
   void _clearFields() {
     codController.clear();
-    nameController.clear();
+    productController.clear();
     quantityController.clear();
+    selectedType = "KG";
     priceController.clear();
   }
 
@@ -39,6 +41,7 @@ class _SuinoScreenState extends State<SuinoScreen> {
     if (!mounted) return;
     return showDialog<void>(
       context: context,
+      barrierDismissible: false,
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text('Adicionar Item'),
@@ -53,13 +56,27 @@ class _SuinoScreenState extends State<SuinoScreen> {
                   enabled: false,
                 ),
                 TextField(
-                  controller: nameController,
+                  controller: productController,
                   decoration: const InputDecoration(labelText: 'Produto'),
                 ),
                 TextField(
                   controller: quantityController,
                   decoration: const InputDecoration(labelText: 'Quantidade'),
                   keyboardType: TextInputType.number,
+                ),
+                DropdownButtonFormField<String>(
+                  value: selectedType,
+                  items: const [
+                    DropdownMenuItem(value: 'KG', child: Text('KG')),
+                    DropdownMenuItem(value: 'UN', child: Text('UN')),
+                    DropdownMenuItem(value: 'PCT', child: Text('PCT')),
+                  ],
+                  onChanged: (value) {
+                    setState(() {
+                      selectedType = value!;
+                    });
+                  },
+                  decoration: const InputDecoration(labelText: 'Tipo'),
                 ),
                 TextField(
                   controller: priceController,
@@ -92,6 +109,7 @@ class _SuinoScreenState extends State<SuinoScreen> {
   Future<void> _showEditItemDialog() async {
     return showDialog<void>(
       context: context,
+      barrierDismissible: false,
       builder: (BuildContext context) {
         return AlertDialog(
           title: const Text('Editar Item'),
@@ -105,14 +123,27 @@ class _SuinoScreenState extends State<SuinoScreen> {
                   enabled: false,
                 ),
                 TextField(
-                  controller: nameController,
+                  controller: productController,
                   decoration: const InputDecoration(labelText: 'Produto'),
-                  enabled: false,
                 ),
                 TextField(
                   controller: quantityController,
                   decoration: const InputDecoration(labelText: 'Quantidade'),
                   keyboardType: TextInputType.number,
+                ),
+                DropdownButtonFormField<String>(
+                  value: selectedType,
+                  items: const [
+                    DropdownMenuItem(value: 'KG', child: Text('KG')),
+                    DropdownMenuItem(value: 'UN', child: Text('UN')),
+                    DropdownMenuItem(value: 'PCT', child: Text('PCT')),
+                  ],
+                  onChanged: (value) {
+                    setState(() {
+                      selectedType = value!;
+                    });
+                  },
+                  decoration: const InputDecoration(labelText: 'Tipo'),
                 ),
                 TextField(
                   controller: priceController,
@@ -141,8 +172,9 @@ class _SuinoScreenState extends State<SuinoScreen> {
     int nextCode = int.parse(codController.text);
     final result = await dbService.addStock(
       nextCode,
-      nameController.text,
+      productController.text,
       int.parse(quantityController.text),
+      selectedType,
       double.parse(priceController.text),
       selectedCategory,
     );
@@ -165,7 +197,9 @@ class _SuinoScreenState extends State<SuinoScreen> {
   void _updateItem() {
     dbService.updateStock(
       int.parse(codController.text),
+      productController.text,
       int.parse(quantityController.text),
+      selectedType,
       double.parse(priceController.text),
     );
     ScaffoldMessenger.of(context).showSnackBar(
@@ -286,8 +320,10 @@ class _SuinoScreenState extends State<SuinoScreen> {
                             onPressed: () {
                               codController.text =
                                   documentSnapshot['codigo'].toString();
-                              nameController.text = documentSnapshot['produto'];
+                              productController.text =
+                                  documentSnapshot['produto'];
                               quantityController.text = '1';
+                              selectedType = documentSnapshot['tipo'];
                               priceController.text =
                                   documentSnapshot['preco'].toString();
                               selectedCategory = documentSnapshot['categoria'];

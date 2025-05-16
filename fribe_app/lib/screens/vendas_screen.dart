@@ -131,6 +131,11 @@ class _VendasScreenState extends State<VendasScreen> {
                     final isExpanded = _expandedDates[dateKey] ?? false;
                     final vendasDoDia = groupedVendas[dateKey]!;
 
+                    final somaTotalDia = vendasDoDia.fold<double>(
+                      0.0,
+                      (soma, doc) => soma + (doc['total'] as num).toDouble(),
+                    );
+
                     return Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -139,6 +144,12 @@ class _VendasScreenState extends State<VendasScreen> {
                             '📅 $dateKey',
                             style: const TextStyle(
                               fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          subtitle: Text(
+                            'Total do dia: R\$ ${somaTotalDia.toStringAsFixed(2)}',
+                            style: const TextStyle(
                               fontWeight: FontWeight.bold,
                             ),
                           ),

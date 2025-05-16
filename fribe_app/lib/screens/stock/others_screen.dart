@@ -4,20 +4,20 @@ import 'package:flutter/material.dart';
 import '../../services/auth_service.dart';
 import '../../services/db_service.dart';
 
-class AvesScreen extends StatefulWidget {
-  const AvesScreen({super.key});
+class OutrosScreen extends StatefulWidget {
+  const OutrosScreen({super.key});
 
   @override
-  State<AvesScreen> createState() => _AvesScreenState();
+  State<OutrosScreen> createState() => _OutrosScreenState();
 }
 
-class _AvesScreenState extends State<AvesScreen> {
+class _OutrosScreenState extends State<OutrosScreen> {
   final TextEditingController codController = TextEditingController();
   final TextEditingController productController = TextEditingController();
   final TextEditingController quantityController = TextEditingController();
   final TextEditingController priceController = TextEditingController();
   final TextEditingController searchController = TextEditingController();
-  String selectedCategory = "AVES";
+  String selectedCategory = "OUTROS";
   String selectedType = "KG";
   bool isSearching = false;
 
@@ -226,7 +226,7 @@ class _AvesScreenState extends State<AvesScreen> {
                     setState(() {});
                   },
                 )
-                : const Text('Aves'),
+                : const Text('Diversos'),
         actions: [
           Padding(
             padding: const EdgeInsets.only(right: 8.0),
@@ -248,7 +248,7 @@ class _AvesScreenState extends State<AvesScreen> {
       body: Center(
         child: StreamBuilder<QuerySnapshot>(
           stream:
-              collectionRef.where('categoria', isEqualTo: 'AVES').snapshots(),
+              collectionRef.where('categoria', isEqualTo: 'OUTROS').snapshots(),
           builder: (context, AsyncSnapshot<QuerySnapshot> streamSnapshot) {
             if (streamSnapshot.connectionState == ConnectionState.waiting) {
               return const Center(child: CircularProgressIndicator());

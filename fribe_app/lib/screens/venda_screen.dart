@@ -68,12 +68,18 @@ class _VendaScreenState extends State<VendaScreen> {
       context: context,
       barrierDismissible: false,
       builder: (context) {
+        final isKg = (produto['tipo']?.toString().toUpperCase() == 'KG');
         return AlertDialog(
-          title: const Text("Quantos itens?"),
+          title: Text(isKg ? "Quantos KG?" : "Quantos itens?"),
           content: TextField(
             controller: quantidadeController,
-            keyboardType: TextInputType.number,
-            decoration: const InputDecoration(hintText: "Digite a quantidade"),
+            keyboardType: TextInputType.numberWithOptions(decimal: isKg),
+            decoration: InputDecoration(
+              hintText:
+                  isKg
+                      ? "Digite a quantidade em KG (ex: 0.5)"
+                      : "Digite a quantidade",
+            ),
           ),
           actions: [
             TextButton(
@@ -82,33 +88,77 @@ class _VendaScreenState extends State<VendaScreen> {
             ),
             TextButton(
               onPressed: () {
-                final quantidadeDesejada =
-                    int.tryParse(quantidadeController.text) ?? 1;
-
                 final estoqueDisponivel = produto['quantidade'] ?? 0;
 
-                if (quantidadeDesejada <= 0) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('A quantidade deve ser maior que zero.'),
-                    ),
-                  );
-                  return;
-                }
-
-                setState(() {
+                double quantidadeDesejada;
+                if (isKg) {
+                  quantidadeDesejada =
+                      double.tryParse(
+                        quantidadeController.text.replaceAll(',', '.'),
+                      ) ??
+                      1.0;
+                  if (quantidadeDesejada <= 0) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('A quantidade deve ser maior que zero.'),
+                      ),
+                    );
+                    return;
+                  }
+                  // Verifica se já existe no carrinho
                   final existingProductIndex = carrinho.indexWhere(
                     (item) => item['codigo'] == produto['codigo'],
                   );
-
+                  final quantidadeAtualNoCarrinho =
+                      (existingProductIndex != -1)
+                          ? (carrinho[existingProductIndex]['quantidade']
+                              as double)
+                          : 0.0;
+                  final totalDesejado =
+                      quantidadeAtualNoCarrinho + quantidadeDesejada;
+                  if (totalDesejado > estoqueDisponivel) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(
+                          'Estoque insuficiente. Só há $estoqueDisponivel kg disponíveis.',
+                        ),
+                      ),
+                    );
+                    return;
+                  }
+                  setState(() {
+                    if (existingProductIndex != -1) {
+                      carrinho[existingProductIndex]['quantidade'] +=
+                          quantidadeDesejada;
+                    } else {
+                      carrinho.add({
+                        'codigo': produto['codigo'],
+                        'produto': produto['produto'],
+                        'preco': produto['preco'],
+                        'quantidade': quantidadeDesejada,
+                      });
+                    }
+                  });
+                } else {
+                  final quantidadeInt =
+                      int.tryParse(quantidadeController.text) ?? 1;
+                  if (quantidadeInt <= 0) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('A quantidade deve ser maior que zero.'),
+                      ),
+                    );
+                    return;
+                  }
+                  final existingProductIndex = carrinho.indexWhere(
+                    (item) => item['codigo'] == produto['codigo'],
+                  );
                   final quantidadeAtualNoCarrinho =
                       (existingProductIndex != -1)
                           ? carrinho[existingProductIndex]['quantidade']
                           : 0;
-
                   final totalDesejado =
-                      quantidadeAtualNoCarrinho + quantidadeDesejada;
-
+                      quantidadeAtualNoCarrinho + quantidadeInt;
                   if (totalDesejado > estoqueDisponivel) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
@@ -119,19 +169,20 @@ class _VendaScreenState extends State<VendaScreen> {
                     );
                     return;
                   }
-
-                  if (existingProductIndex != -1) {
-                    carrinho[existingProductIndex]['quantidade'] +=
-                        quantidadeDesejada;
-                  } else {
-                    carrinho.add({
-                      'codigo': produto['codigo'],
-                      'produto': produto['produto'],
-                      'preco': produto['preco'],
-                      'quantidade': quantidadeDesejada,
-                    });
-                  }
-                });
+                  setState(() {
+                    if (existingProductIndex != -1) {
+                      carrinho[existingProductIndex]['quantidade'] +=
+                          quantidadeInt;
+                    } else {
+                      carrinho.add({
+                        'codigo': produto['codigo'],
+                        'produto': produto['produto'],
+                        'preco': produto['preco'],
+                        'quantidade': quantidadeInt,
+                      });
+                    }
+                  });
+                }
 
                 Navigator.of(context).pop();
               },
@@ -390,6 +441,7 @@ class _VendaScreenState extends State<VendaScreen> {
                                     'codigo': doc['codigo'],
                                     'produto': doc['produto'],
                                     'quantidade': doc['quantidade'],
+                                    'tipo': doc['tipo'],
                                     'preco': doc['preco'],
                                     'categoria': doc['categoria'],
                                   };
@@ -431,14 +483,23 @@ class _VendaScreenState extends State<VendaScreen> {
                                 child: Text(produto['codigo'].toString()),
                               ),
                               title: Text(produto['produto']),
-                              subtitle: Row(
-                                children: [
-                                  Text(
-                                    'Preço: R\$ ${produto['preco'].toStringAsFixed(2)}',
-                                  ),
-                                  const SizedBox(width: 16),
-                                  Text('Estoque: ${produto['quantidade']}'),
-                                ],
+                              subtitle: SingleChildScrollView(
+                                scrollDirection: Axis.horizontal,
+                                child: Row(
+                                  children: [
+                                    Text(
+                                      'Preço: R\$ ${produto['preco'].toStringAsFixed(2)}',
+                                    ),
+                                    const SizedBox(width: 6),
+                                    const Text('-'),
+                                    const SizedBox(width: 6),
+                                    Text('Estoque: ${produto['quantidade']}'),
+                                    const SizedBox(width: 6),
+                                    const Text('-'),
+                                    const SizedBox(width: 6),
+                                    Text('Tipo: ${produto['tipo']}'),
+                                  ],
+                                ),
                               ),
                               trailing: ElevatedButton(
                                 onPressed: () {
