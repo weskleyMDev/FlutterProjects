@@ -481,6 +481,9 @@ class _VendaScreenState extends State<VendaScreen> {
                           itemCount: produtos.length,
                           itemBuilder: (context, index) {
                             final produto = produtos[index];
+                            final isKg = 
+                                (produto['tipo']?.toString().toUpperCase() ==
+                                    'KG');
                             return ListTile(
                               leading: CircleAvatar(
                                 child: Text(produto['codigo'].toString()),
@@ -497,12 +500,8 @@ class _VendaScreenState extends State<VendaScreen> {
                                     const Text('-'),
                                     const SizedBox(width: 6),
                                     Text(
-                                      'Estoque: ${produto['quantidade'].toStringAsFixed(2)}',
+                                      isKg ? 'Estoque: ${produto['quantidade'].toStringAsFixed(2)} (${produto['tipo']})' : 'Estoque: ${produto['quantidade']} (${produto['tipo']})',
                                     ),
-                                    const SizedBox(width: 6),
-                                    const Text('-'),
-                                    const SizedBox(width: 6),
-                                    Text('Tipo: ${produto['tipo']}'),
                                   ],
                                 ),
                               ),
