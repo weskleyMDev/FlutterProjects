@@ -303,7 +303,7 @@ class _AvesScreenState extends State<AvesScreen> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  'Quantidade: ${documentSnapshot['quantidade']}',
+                                  'Quantidade: ${documentSnapshot['quantidade']}(${documentSnapshot['tipo']})',
                                 ),
                                 Text(
                                   'Preço: R\$${documentSnapshot['preco'].toStringAsFixed(2)}',

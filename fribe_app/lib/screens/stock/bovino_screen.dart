@@ -302,10 +302,7 @@ class _BovinoScreenState extends State<BovinoScreen> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  'Quantidade: ${documentSnapshot['quantidade']}',
-                                ),
-                                Text(
-                                  'Tipo: ${documentSnapshot['tipo']}',
+                                  'Quantidade: ${documentSnapshot['quantidade'].toStringAsFixed(2)}(${documentSnapshot['tipo']})',
                                 ),
                                 Text(
                                   'Preço: R\$${documentSnapshot['preco'].toStringAsFixed(2)}',
