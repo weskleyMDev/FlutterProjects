@@ -16,7 +16,10 @@ class _VendaScreenState extends State<VendaScreen> {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   List<Map<String, dynamic>> carrinho = [];
   List<Map<String, dynamic>> produtosFiltrados = [];
-  bool isLoading = true;
+
+  double _formatNumber(double value) {
+    return double.parse(value.toStringAsFixed(2));
+  }
 
   @override
   void initState() {
@@ -45,7 +48,6 @@ class _VendaScreenState extends State<VendaScreen> {
     setState(() {
       todosProdutos = produtos;
       produtosFiltrados = produtos;
-      isLoading = false;
     });
   }
 
@@ -91,7 +93,6 @@ class _VendaScreenState extends State<VendaScreen> {
             TextButton(
               onPressed: () {
                 final estoqueDisponivel = produto['quantidade'] ?? 0;
-
                 double quantidadeDesejada;
                 if (isKg) {
                   quantidadeDesejada =
@@ -99,7 +100,9 @@ class _VendaScreenState extends State<VendaScreen> {
                         quantidadeController.text.replaceAll(',', '.'),
                       ) ??
                       1.0;
-                      quantidadeDesejada = double.parse(quantidadeDesejada.toStringAsFixed(2));
+                  quantidadeDesejada = double.parse(
+                    _formatNumber(quantidadeDesejada).toString(),
+                  );
                   if (quantidadeDesejada <= 0) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
@@ -120,10 +123,13 @@ class _VendaScreenState extends State<VendaScreen> {
                   final totalDesejado =
                       quantidadeAtualNoCarrinho + quantidadeDesejada;
                   if (totalDesejado > estoqueDisponivel) {
+                    final quantidadeDisponivel = _formatNumber(
+                      estoqueDisponivel - quantidadeAtualNoCarrinho,
+                    );
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
                         content: Text(
-                          'Estoque insuficiente. Só há ${estoqueDisponivel.toStringAsFixed(2)} kg disponíveis.',
+                          'Estoque insuficiente. Só há $quantidadeDisponivel kg disponíveis.',
                         ),
                       ),
                     );
@@ -164,10 +170,12 @@ class _VendaScreenState extends State<VendaScreen> {
                   final totalDesejado =
                       quantidadeAtualNoCarrinho + quantidadeInt;
                   if (totalDesejado > estoqueDisponivel) {
+                    final quantidadeDisponivel =
+                        estoqueDisponivel - quantidadeAtualNoCarrinho;
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
                         content: Text(
-                          'Estoque insuficiente. Só há $estoqueDisponivel unidades disponíveis.',
+                          'Estoque insuficiente. Só há $quantidadeDisponivel unidades disponíveis.',
                         ),
                       ),
                     );
@@ -205,7 +213,7 @@ class _VendaScreenState extends State<VendaScreen> {
       final quantidade = item['quantidade'] ?? 1;
       return total + (preco * quantidade);
     });
-    return double.parse(total.toStringAsFixed(2));
+    return _formatNumber(total);
   }
 
   String _gerarCodigoVenda() {
@@ -238,16 +246,15 @@ class _VendaScreenState extends State<VendaScreen> {
 
         return StatefulBuilder(
           builder: (context, setState) {
-            totalParcial = pagamentosTemp.fold(
-              0.0,
-              (acc, p) => acc + p['valor'],
+            totalParcial = _formatNumber(
+              pagamentosTemp.fold(0.0, (acc, p) => acc + p['valor']),
             );
-            final restante = total - totalParcial;
+            final restante = _formatNumber(total - totalParcial);
 
             void adicionarPagamento() {
               final input = valorController.text.replaceAll(',', '.');
               double valor = double.tryParse(input) ?? 0.0;
-              valor = double.parse(valor.toStringAsFixed(2));
+              valor = _formatNumber(valor);
               if (valor <= 0 || valor > restante) return;
 
               setState(() {
@@ -302,7 +309,7 @@ class _VendaScreenState extends State<VendaScreen> {
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
                                   Text(
-                                    '${p['forma']}: R\$ ${p['valor'].toStringAsFixed(2)}',
+                                    '${p['forma']}: R\$ ${_formatNumber(p['valor'])}',
                                   ),
                                 ],
                               );
@@ -314,11 +321,9 @@ class _VendaScreenState extends State<VendaScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Total Informado: R\$ ${totalParcial.toStringAsFixed(2)}',
+                          'Total Informado: R\$ ${_formatNumber(totalParcial)}',
                         ),
-                        Text(
-                          'Total Restante: R\$ ${restante.toStringAsFixed(2)}',
-                        ),
+                        Text('Total Restante: R\$ ${_formatNumber(restante)}'),
                       ],
                     ),
                   ],
@@ -335,7 +340,7 @@ class _VendaScreenState extends State<VendaScreen> {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
                           content: Text(
-                            'Total insuficiente. Faltam R\$ ${(total - totalParcial).toStringAsFixed(2)}',
+                            'Total insuficiente. Faltam R\$ ${_formatNumber(total - totalParcial)}',
                           ),
                         ),
                       );
@@ -366,7 +371,7 @@ class _VendaScreenState extends State<VendaScreen> {
     await _firestore.collection('vendas').add({
       'codigoVenda': codigoVenda,
       'itens': carrinho,
-      'total': total,
+      'total': _formatNumber(total),
       'pagamentos': pagamentos,
       'data': DateTime.now(),
     });
@@ -427,9 +432,8 @@ class _VendaScreenState extends State<VendaScreen> {
                   style: TextStyle(fontWeight: FontWeight.bold),
                 ),
                 ...pagamentos.map(
-                  (p) => Text(
-                    '${p['forma']}: R\$ ${p['valor'].toStringAsFixed(2)}',
-                  ),
+                  (p) =>
+                      Text('${p['forma']}: R\$ ${_formatNumber(p['valor'])}'),
                 ),
                 const Divider(),
                 ...itens.map(
@@ -437,13 +441,13 @@ class _VendaScreenState extends State<VendaScreen> {
                     padding: const EdgeInsets.symmetric(vertical: 2),
                     child: Text(
                       '${item['produto']} x${item['quantidade']} (${item['tipo']}) - '
-                      'R\$ ${(item['preco'] * item['quantidade']).toStringAsFixed(2)}',
+                      'R\$ ${_formatNumber(item['preco'] * item['quantidade'])}',
                     ),
                   ),
                 ),
                 const Divider(),
                 Text(
-                  'TOTAL: R\$ ${total.toStringAsFixed(2)}',
+                  'TOTAL: R\$ ${_formatNumber(total)}',
                   style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
               ],
@@ -464,142 +468,140 @@ class _VendaScreenState extends State<VendaScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Nova Venda')),
-      body:
-          isLoading
-              ? const Center(child: CircularProgressIndicator())
-              : Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: TextField(
-                      controller: _searchController,
-                      decoration: const InputDecoration(
-                        labelText: 'Buscar produto',
-                        border: OutlineInputBorder(),
-                        prefixIcon: Icon(Icons.search),
-                      ),
-                    ),
-                  ),
-                  Expanded(
-                    child: StreamBuilder<QuerySnapshot>(
-                      stream: _firestore.collection('EstoqueLoja').snapshots(),
-                      builder: (context, snapshot) {
-                        if (snapshot.connectionState ==
-                            ConnectionState.waiting) {
-                          return const Center(
-                            child: CircularProgressIndicator(),
-                          );
-                        }
-
-                        if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-                          return const Center(
-                            child: Text('Nenhum produto encontrado'),
-                          );
-                        }
-
-                        final produtos =
-                            snapshot.data!.docs
-                                .map((doc) {
-                                  return {
-                                    'codigo': doc['codigo'],
-                                    'produto': doc['produto'],
-                                    'quantidade': doc['quantidade'],
-                                    'tipo': doc['tipo'],
-                                    'preco': doc['preco'],
-                                    'categoria': doc['categoria'],
-                                  };
-                                })
-                                .where((produto) {
-                                  final nome =
-                                      produto['produto']
-                                          .toString()
-                                          .toLowerCase();
-                                  final codigo = produto['codigo'].toString();
-                                  final query =
-                                      _searchController.text.toLowerCase();
-                                  return nome.contains(query) ||
-                                      codigo.contains(query);
-                                })
-                                .toList();
-
-                        produtos.sort(
-                          (a, b) => (a['codigo'] as int).compareTo(
-                            b['codigo'] as int,
-                          ),
-                        );
-
-                        if (produtos.isEmpty) {
-                          return const Center(
-                            child: Text(
-                              'Nenhum item encontrado com esse nome ou código.',
-                              style: TextStyle(fontSize: 16),
-                            ),
-                          );
-                        }
-
-                        return ListView.builder(
-                          itemCount: produtos.length,
-                          itemBuilder: (context, index) {
-                            final produto = produtos[index];
-                            final isKg =
-                                (produto['tipo']?.toString().toUpperCase() ==
-                                    'KG');
-                            return ListTile(
-                              leading: CircleAvatar(
-                                child: Text(produto['codigo'].toString()),
-                              ),
-                              title: Text(produto['produto']),
-                              subtitle: SingleChildScrollView(
-                                scrollDirection: Axis.horizontal,
-                                child: Row(
-                                  children: [
-                                    Text(
-                                      'Preço: R\$ ${produto['preco'].toStringAsFixed(2)}',
-                                    ),
-                                    const SizedBox(width: 6),
-                                    const Text('-'),
-                                    const SizedBox(width: 6),
-                                    Text(
-                                      isKg
-                                          ? 'Estoque: ${NumberFormat('#,##0.00', 'pt_BR').format(produto['quantidade'])} (${produto['tipo']})'
-                                          : 'Estoque: ${produto['quantidade']} (${produto['tipo']})',
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              trailing: ElevatedButton(
-                                onPressed: () {
-                                  final estoqueDisponivel =
-                                      produto['quantidade'] ?? 0;
-
-                                  final itemNoCarrinho = carrinho.firstWhere(
-                                    (item) =>
-                                        item['codigo'] == produto['codigo'],
-                                    orElse: () => {},
-                                  );
-
-                                  final quantidadeNoCarrinho =
-                                      itemNoCarrinho['quantidade'] ?? 0;
-
-                                  if (estoqueDisponivel == 0 ||
-                                      quantidadeNoCarrinho >=
-                                          estoqueDisponivel) {
-                                    return null;
-                                  } else {
-                                    return () => _adicionarAoCarrinho(produto);
-                                  }
-                                }(),
-                                child: const Text('Adicionar'),
-                              ),
-                            );
-                          },
-                        );
-                      },
-                    ),
-                  ),
-                  _buildCarrinho(),
-                ],
+      body: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: TextField(
+              controller: _searchController,
+              decoration: const InputDecoration(
+                labelText: 'Buscar produto',
+                border: OutlineInputBorder(),
+                prefixIcon: Icon(Icons.search),
               ),
+            ),
+          ),
+          Expanded(
+            child: StreamBuilder<QuerySnapshot>(
+              stream: _firestore.collection('EstoqueLoja').snapshots(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+
+                if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                  return const Center(child: Text('Nenhum produto encontrado'));
+                }
+
+                final produtos =
+                    snapshot.data!.docs
+                        .map((doc) {
+                          return {
+                            'codigo': doc['codigo'],
+                            'produto': doc['produto'],
+                            'quantidade': doc['quantidade'],
+                            'tipo': doc['tipo'],
+                            'preco': doc['preco'],
+                            'categoria': doc['categoria'],
+                          };
+                        })
+                        .where((produto) {
+                          final nome =
+                              produto['produto'].toString().toLowerCase();
+                          final codigo = produto['codigo'].toString();
+                          final query = _searchController.text.toLowerCase();
+                          return nome.contains(query) || codigo.contains(query);
+                        })
+                        .toList();
+
+                produtos.sort(
+                  (a, b) => (a['codigo'] as int).compareTo(b['codigo'] as int),
+                );
+
+                if (produtos.isEmpty) {
+                  return const Center(
+                    child: Text(
+                      'Nenhum item encontrado com esse nome ou código.',
+                      style: TextStyle(fontSize: 16),
+                    ),
+                  );
+                }
+
+                return ListView.builder(
+                  itemCount: produtos.length,
+                  itemBuilder: (context, index) {
+                    final produto = produtos[index];
+                    final isKg =
+                        (produto['tipo']?.toString().toUpperCase() == 'KG');
+                    return ListTile(
+                      leading: CircleAvatar(
+                        child: Text(produto['codigo'].toString()),
+                      ),
+                      title: Text(produto['produto']),
+                      subtitle: SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Row(
+                          children: [
+                            Text(
+                              'Preço: R\$ ${_formatNumber(produto['preco'])}',
+                            ),
+                            const SizedBox(width: 6),
+                            const Text('-'),
+                            const SizedBox(width: 6),
+                            Text(
+                              isKg
+                                  ? 'Estoque: ${NumberFormat('#,##0.00', 'pt_BR').format(produto['quantidade'])} (${produto['tipo']})'
+                                  : 'Estoque: ${produto['quantidade']} (${produto['tipo']})',
+                            ),
+                          ],
+                        ),
+                      ),
+                      trailing: ElevatedButton(
+                        onPressed: () {
+                          final estoqueDisponivel = _formatNumber(
+                            (produto['quantidade'] ?? 0).toDouble(),
+                          );
+                          final isKg =
+                              produto['tipo']?.toString().toUpperCase() == 'KG';
+
+                          final itemNoCarrinho = carrinho.firstWhere(
+                            (item) => item['codigo'] == produto['codigo'],
+                            orElse: () => {},
+                          );
+
+                          final quantidadeNoCarrinho = _formatNumber(
+                            (itemNoCarrinho['quantidade'] ?? 0).toDouble(),
+                          );
+
+                          if (estoqueDisponivel == 0) {
+                            return null;
+                          }
+
+                          if (isKg) {
+                            final pesoZerado =
+                                quantidadeNoCarrinho - estoqueDisponivel;
+                            if (pesoZerado == 0) {
+                              return null;
+                            }
+                          } else {
+                            if (quantidadeNoCarrinho >= estoqueDisponivel) {
+                              return null;
+                            }
+                          }
+
+                          return () => _adicionarAoCarrinho(produto);
+                        }(),
+                        child: const Text('Adicionar'),
+                      ),
+                    );
+                  },
+                );
+              },
+            ),
+          ),
+          _buildCarrinho(),
+        ],
+      ),
     );
   }
 
@@ -629,7 +631,7 @@ class _VendaScreenState extends State<VendaScreen> {
                   Text('Itens no carrinho: ${carrinho.length}'),
                   Text(
                     style: TextStyle(fontWeight: FontWeight.bold),
-                    'Total: R\$ ${_totalCarrinho().toStringAsFixed(2)}',
+                    'Total: R\$ ${_formatNumber(_totalCarrinho())}',
                   ),
                 ],
               ),
@@ -660,8 +662,8 @@ class _VendaScreenState extends State<VendaScreen> {
                   title: Text(item['produto']),
                   subtitle: Text(
                     item['tipo'] == 'KG'
-                        ? 'Quantidade: ${NumberFormat('#,##0.00', 'pt_BR').format(item['quantidade'])} (${item['tipo']}) - Preço: R\$ ${item['preco'].toStringAsFixed(2)}'
-                        : 'Quantidade: ${item['quantidade']} (${item['tipo']}) - Preço: R\$ ${item['preco'].toStringAsFixed(2)}',
+                        ? 'Quantidade: ${NumberFormat('#,##0.00', 'pt_BR').format(item['quantidade'])} (${item['tipo']}) - Preço: R\$ ${_formatNumber(item['preco'])}'
+                        : 'Quantidade: ${item['quantidade']} (${item['tipo']}) - Preço: R\$ ${_formatNumber(item['preco'])}',
                   ),
                   trailing: IconButton(
                     icon: const Icon(Icons.delete),
