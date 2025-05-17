@@ -289,7 +289,7 @@ class _VendaScreenState extends State<VendaScreen> {
                         decimal: true,
                       ),
                       decoration: const InputDecoration(
-                        labelText: 'Valor',
+                        labelText: 'Valor Recebido',
                         prefixText: 'R\$ ',
                         border: OutlineInputBorder(),
                       ),
@@ -306,10 +306,21 @@ class _VendaScreenState extends State<VendaScreen> {
                         children:
                             pagamentosTemp.map((p) {
                               return Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(
                                     '${p['forma']}: R\$ ${_formatNumber(p['valor'])}',
+                                  ),
+                                  IconButton(
+                                    icon: const Icon(
+                                      Icons.delete,
+                                    ),
+                                    onPressed: () {
+                                      setState(() {
+                                        pagamentosTemp.remove(p);
+                                      });
+                                    },
                                   ),
                                 ],
                               );
@@ -323,7 +334,7 @@ class _VendaScreenState extends State<VendaScreen> {
                         Text(
                           'Total Informado: R\$ ${_formatNumber(totalParcial)}',
                         ),
-                        Text('Total Restante: R\$ ${_formatNumber(restante)}'),
+                        Text('Total Restante: R\$ $restante'),
                       ],
                     ),
                   ],
