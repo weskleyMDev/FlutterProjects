@@ -14,7 +14,7 @@ class _VouchersScreenState extends State<VouchersScreen> {
   Future<void> _mostrarRecibo(
     String codigoVenda,
     List<Map<String, dynamic>> itens,
-    String formaPagamento,
+    List<Map<String, dynamic>> pagamentos,
     double total,
   ) async {
     await showDialog(
@@ -27,9 +27,16 @@ class _VouchersScreenState extends State<VouchersScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Venda: $codigoVenda'),
+                Text(
+                  'Fribé Cortes Especiais',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+                const Divider(),
+                Text(codigoVenda),
                 const SizedBox(height: 8),
-                Text('Forma de pagamento: $formaPagamento'),
+                Text(
+                  'Formas de pagamento:\n${pagamentos.map((p) => '${p['forma']}: R\$ ${p['valor'].toStringAsFixed(2)}').join('\n')}',
+                ),
                 const Divider(),
                 ...itens.map(
                   (item) => Padding(
@@ -66,69 +73,74 @@ class _VouchersScreenState extends State<VouchersScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text("Comprovantes")),
-      body: Expanded(
-        child: StreamBuilder<QuerySnapshot>(
-          stream: _firestore.collection('vendas').snapshots(),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(child: CircularProgressIndicator());
-            }
-            if (snapshot.hasError) {
-              return const Center(child: Text('Erro ao carregar dados'));
-            }
+      body: StreamBuilder<QuerySnapshot>(
+        stream: _firestore.collection('vendas').snapshots(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          }
+          if (snapshot.hasError) {
+            return const Center(child: Text('Erro ao carregar dados'));
+          }
 
-            if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-              return const Center(child: Text('Nenhum comprovante encontrado'));
-            }
+          if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+            return const Center(child: Text('Nenhum comprovante encontrado'));
+          }
 
-            final vendas = snapshot.data!.docs;
+          final vendas = snapshot.data!.docs;
 
-            return ListView.builder(
-              itemCount: vendas.length,
-              itemBuilder: (context, index) {
-                final venda = vendas[index];
-                final codigoVenda = venda['codigoVenda'];
-                final itens = List<Map<String, dynamic>>.from(venda['itens']);
-                final formaPagamento = venda['formaPagamento'];
-                final total = venda['total'];
+          return ListView.builder(
+            itemCount: vendas.length,
+            itemBuilder: (context, index) {
+              final venda = vendas[index];
+              final codigoVenda = venda['codigoVenda'];
+              final itens = List<Map<String, dynamic>>.from(venda['itens']);
+              final pagamentos = List<Map<String, dynamic>>.from(
+                venda['pagamentos'],
+              );
+              pagamentos
+                  .map(
+                    (p) =>
+                        '${p['forma']}: R\$ ${p['valor'].toStringAsFixed(2)}',
+                  )
+                  .join(' | ');
+              final total = venda['total'];
 
-                return Container(
-                  decoration: BoxDecoration(
-                    border: Border(
-                      bottom: BorderSide(
-                        color: Theme.of(context).dividerColor,
-                        width: 1.0,
+              return Container(
+                decoration: BoxDecoration(
+                  border: Border(
+                    bottom: BorderSide(
+                      color: Theme.of(context).dividerColor,
+                      width: 1.0,
+                    ),
+                  ),
+                ),
+                child: ListTile(
+                  title: Text('Venda: $codigoVenda'),
+                  subtitle: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Total: R\$ ${total.toStringAsFixed(2)}',
+                        style: const TextStyle(fontWeight: FontWeight.bold),
                       ),
-                    ),
+                    ],
                   ),
-                  child: ListTile(
-                    title: Text('Venda: $codigoVenda'),
-                    subtitle: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text('Forma de pagamento: $formaPagamento'),
-                        Text(
-                          'Total: R\$ ${total.toStringAsFixed(2)}',
-                          style: const TextStyle(fontWeight: FontWeight.bold),
+                  trailing: IconButton(
+                    icon: const Icon(Icons.print),
+                    onPressed:
+                        () => _mostrarRecibo(
+                          codigoVenda,
+                          itens,
+                          pagamentos,
+                          total,
                         ),
-                      ],
-                    ),
-                    trailing: IconButton(
-                      icon: const Icon(Icons.print),
-                      onPressed:
-                          () => _mostrarRecibo(
-                            codigoVenda,
-                            itens,
-                            formaPagamento,
-                            total,
-                          ),
-                    ),
                   ),
-                );
-              },
-            );
-          },
-        ),
+                ),
+              );
+            },
+          );
+        },
       ),
     );
   }

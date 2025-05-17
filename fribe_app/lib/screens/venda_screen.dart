@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class VendaScreen extends StatefulWidget {
   const VendaScreen({super.key});
@@ -98,6 +99,7 @@ class _VendaScreenState extends State<VendaScreen> {
                         quantidadeController.text.replaceAll(',', '.'),
                       ) ??
                       1.0;
+                      quantidadeDesejada = double.parse(quantidadeDesejada.toStringAsFixed(2));
                   if (quantidadeDesejada <= 0) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
@@ -198,11 +200,12 @@ class _VendaScreenState extends State<VendaScreen> {
   }
 
   double _totalCarrinho() {
-    return carrinho.fold(0.0, (total, item) {
+    final total = carrinho.fold(0.0, (total, item) {
       final preco = item['preco'] ?? 0.0;
       final quantidade = item['quantidade'] ?? 1;
       return total + (preco * quantidade);
     });
+    return double.parse(total.toStringAsFixed(2));
   }
 
   String _gerarCodigoVenda() {
@@ -221,97 +224,150 @@ class _VendaScreenState extends State<VendaScreen> {
 
   Future<void> _finalizarVenda() async {
     if (carrinho.isEmpty) return;
+    List<Map<String, dynamic>> pagamentos = [];
+    final total = _totalCarrinho();
 
-    final formaPagamento = await showDialog<String>(
+    final confirmado = await showDialog<bool>(
       context: context,
       barrierDismissible: false,
       builder: (context) {
-        String selected = 'Dinheiro';
-        return AlertDialog(
-          title: const Text('Forma de Pagamento'),
-          content: DropdownButtonFormField<String>(
-            value: selected,
-            items:
-                ['Dinheiro', 'Débito', 'Crédito', 'Pix']
-                    .map((f) => DropdownMenuItem(value: f, child: Text(f)))
-                    .toList(),
-            onChanged: (value) {
-              selected = value!;
-            },
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(null),
-              child: const Text('Cancelar'),
-            ),
-            TextButton(
-              onPressed: () async {
-                final confirmar = await showDialog<bool>(
-                  context: context,
-                  barrierDismissible: false,
-                  builder:
-                      (context) => AlertDialog(
-                        title: const Text('Confirmar Venda'),
-                        content: SingleChildScrollView(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text('Forma de pagamento: $selected'),
-                              const Divider(),
-                              ...carrinho.map(
-                                (item) => Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                    vertical: 2,
+        String selectedForma = 'Dinheiro';
+        final TextEditingController valorController = TextEditingController();
+        List<Map<String, dynamic>> pagamentosTemp = [];
+        double totalParcial = 0.0;
+
+        return StatefulBuilder(
+          builder: (context, setState) {
+            totalParcial = pagamentosTemp.fold(
+              0.0,
+              (acc, p) => acc + p['valor'],
+            );
+            final restante = total - totalParcial;
+
+            void adicionarPagamento() {
+              final input = valorController.text.replaceAll(',', '.');
+              double valor = double.tryParse(input) ?? 0.0;
+              valor = double.parse(valor.toStringAsFixed(2));
+              if (valor <= 0 || valor > restante) return;
+
+              setState(() {
+                pagamentosTemp.add({'forma': selectedForma, 'valor': valor});
+                valorController.clear();
+              });
+            }
+
+            return AlertDialog(
+              title: const Text('Formas de Pagamento'),
+              content: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    DropdownButtonFormField<String>(
+                      value: selectedForma,
+                      items:
+                          ['Dinheiro', 'Débito', 'Crédito', 'Pix']
+                              .map(
+                                (f) =>
+                                    DropdownMenuItem(value: f, child: Text(f)),
+                              )
+                              .toList(),
+                      onChanged: (value) {
+                        setState(() => selectedForma = value!);
+                      },
+                    ),
+                    const SizedBox(height: 12),
+                    TextField(
+                      controller: valorController,
+                      keyboardType: TextInputType.numberWithOptions(
+                        decimal: true,
+                      ),
+                      decoration: const InputDecoration(
+                        labelText: 'Valor',
+                        prefixText: 'R\$ ',
+                        border: OutlineInputBorder(),
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    ElevatedButton(
+                      onPressed: restante <= 0 ? null : adicionarPagamento,
+                      child: const Text('Receber'),
+                    ),
+                    const SizedBox(height: 12),
+                    if (pagamentosTemp.isNotEmpty) ...[
+                      const SizedBox(height: 8),
+                      Column(
+                        children:
+                            pagamentosTemp.map((p) {
+                              return Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    '${p['forma']}: R\$ ${p['valor'].toStringAsFixed(2)}',
                                   ),
-                                  child: Text(
-                                    '${item['produto']} x${item['quantidade']}(${item['tipo']}) - R\$ ${(item['preco'] * item['quantidade']).toStringAsFixed(2)}',
-                                  ),
-                                ),
-                              ),
-                              const Divider(),
-                              Text(
-                                'TOTAL: R\$ ${_totalCarrinho().toStringAsFixed(2)}',
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              const SizedBox(height: 16),
-                              const Text('Finalizar a venda?'),
-                            ],
+                                ],
+                              );
+                            }).toList(),
+                      ),
+                    ],
+                    const Divider(),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Total Informado: R\$ ${totalParcial.toStringAsFixed(2)}',
+                        ),
+                        Text(
+                          'Total Restante: R\$ ${restante.toStringAsFixed(2)}',
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(false),
+                  child: const Text('Cancelar'),
+                ),
+                TextButton(
+                  onPressed: () {
+                    if (totalParcial < total) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(
+                            'Total insuficiente. Faltam R\$ ${(total - totalParcial).toStringAsFixed(2)}',
                           ),
                         ),
-                        actions: [
-                          TextButton(
-                            onPressed: () => Navigator.of(context).pop(false),
-                            child: const Text('Cancelar'),
-                          ),
-                          TextButton(
-                            onPressed: () => Navigator.of(context).pop(true),
-                            child: const Text('Confirmar'),
-                          ),
-                        ],
-                      ),
-                );
-                if (confirmar == true) {
-                  if (!context.mounted) return;
-                  Navigator.of(context).pop(selected);
-                }
-              },
-              child: const Text('Confirmar'),
-            ),
-          ],
+                      );
+                      return;
+                    }
+                    pagamentos = List<Map<String, dynamic>>.from(
+                      pagamentosTemp,
+                    );
+                    Navigator.of(context).pop(true); // Fecha o diálogo
+                  },
+                  child: const Text('Confirmar'),
+                ),
+              ],
+            );
+          },
         );
       },
     );
 
-    if (formaPagamento == null) return;
+    if (confirmado != true) return;
+
+    if (pagamentos.isEmpty ||
+        pagamentos.fold(0.0, (s, p) => s + p['valor']) < total) {
+      return;
+    }
     final codigoVenda = _gerarCodigoVenda();
 
     await _firestore.collection('vendas').add({
       'codigoVenda': codigoVenda,
       'itens': carrinho,
-      'total': _totalCarrinho(),
-      'formaPagamento': formaPagamento,
+      'total': total,
+      'pagamentos': pagamentos,
       'data': DateTime.now(),
     });
 
@@ -335,12 +391,7 @@ class _VendaScreenState extends State<VendaScreen> {
       }
     }
 
-    await _mostrarRecibo(
-      codigoVenda,
-      carrinho,
-      formaPagamento,
-      _totalCarrinho(),
-    );
+    await _mostrarRecibo(codigoVenda, carrinho, pagamentos, total);
 
     setState(() {
       carrinho.clear();
@@ -356,7 +407,7 @@ class _VendaScreenState extends State<VendaScreen> {
   Future<void> _mostrarRecibo(
     String codigoVenda,
     List<Map<String, dynamic>> itens,
-    String formaPagamento,
+    List<Map<String, dynamic>> pagamentos,
     double total,
   ) async {
     await showDialog(
@@ -371,13 +422,22 @@ class _VendaScreenState extends State<VendaScreen> {
               children: [
                 Text('Venda: $codigoVenda'),
                 const SizedBox(height: 8),
-                Text('Forma de pagamento: $formaPagamento'),
+                const Text(
+                  'Formas de Pagamento:',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                ...pagamentos.map(
+                  (p) => Text(
+                    '${p['forma']}: R\$ ${p['valor'].toStringAsFixed(2)}',
+                  ),
+                ),
                 const Divider(),
                 ...itens.map(
                   (item) => Padding(
                     padding: const EdgeInsets.symmetric(vertical: 2),
                     child: Text(
-                      '${item['produto']} x${item['quantidade']}(${item['tipo']}) - R\$ ${(item['preco'] * item['quantidade']).toStringAsFixed(2)}',
+                      '${item['produto']} x${item['quantidade']} (${item['tipo']}) - '
+                      'R\$ ${(item['preco'] * item['quantidade']).toStringAsFixed(2)}',
                     ),
                   ),
                 ),
@@ -481,7 +541,7 @@ class _VendaScreenState extends State<VendaScreen> {
                           itemCount: produtos.length,
                           itemBuilder: (context, index) {
                             final produto = produtos[index];
-                            final isKg = 
+                            final isKg =
                                 (produto['tipo']?.toString().toUpperCase() ==
                                     'KG');
                             return ListTile(
@@ -500,7 +560,9 @@ class _VendaScreenState extends State<VendaScreen> {
                                     const Text('-'),
                                     const SizedBox(width: 6),
                                     Text(
-                                      isKg ? 'Estoque: ${produto['quantidade'].toStringAsFixed(2)} (${produto['tipo']})' : 'Estoque: ${produto['quantidade']} (${produto['tipo']})',
+                                      isKg
+                                          ? 'Estoque: ${NumberFormat('#,##0.00', 'pt_BR').format(produto['quantidade'])} (${produto['tipo']})'
+                                          : 'Estoque: ${produto['quantidade']} (${produto['tipo']})',
                                     ),
                                   ],
                                 ),
@@ -597,7 +659,9 @@ class _VendaScreenState extends State<VendaScreen> {
                   ),
                   title: Text(item['produto']),
                   subtitle: Text(
-                    'Quantidade: ${item['quantidade']} - Preço: R\$ ${item['preco'].toStringAsFixed(2)}',
+                    item['tipo'] == 'KG'
+                        ? 'Quantidade: ${NumberFormat('#,##0.00', 'pt_BR').format(item['quantidade'])} (${item['tipo']}) - Preço: R\$ ${item['preco'].toStringAsFixed(2)}'
+                        : 'Quantidade: ${item['quantidade']} (${item['tipo']}) - Preço: R\$ ${item['preco'].toStringAsFixed(2)}',
                   ),
                   trailing: IconButton(
                     icon: const Icon(Icons.delete),
