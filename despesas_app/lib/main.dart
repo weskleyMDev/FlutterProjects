@@ -3,11 +3,16 @@ import 'dart:math';
 import 'package:despesas_app/components/chart.dart';
 import 'package:despesas_app/components/transacao_form.dart';
 import 'package:despesas_app/components/transacao_lista.dart';
+import 'package:despesas_app/utils/utils.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:intl/date_symbol_data_local.dart';
 
 import '../model/transacao.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await initializeDateFormatting('pt_BR', null);
   runApp(const DespesasApp());
 }
 
@@ -16,29 +21,30 @@ class DespesasApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ThemeData tema = ThemeData();
-
     return MaterialApp(
       home: const HomePage(),
-      theme: tema.copyWith(
-        colorScheme: tema.colorScheme.copyWith(
-          primary: Colors.green[700],
-          secondary: Colors.green[500],
-        ),
-        textTheme: tema.textTheme.copyWith(
-          headline6: const TextStyle(
-            fontFamily: 'Quicksand',
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-            color: Colors.white,
-          ),
-        ),
+      debugShowCheckedModeBanner: false,
+      localizationsDelegates: const [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: const [
+        Locale('pt', 'BR'),
+      ],
+      theme: ThemeData(
+        useMaterial3: false,
         appBarTheme: const AppBarTheme(
           titleTextStyle: TextStyle(
             fontFamily: 'OpenSans',
             fontSize: 20,
             fontWeight: FontWeight.bold,
           ),
+        ),
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: Colors.green,
+          primary: Colors.green,
+          secondary: Colors.greenAccent,
         ),
       ),
     );
@@ -56,11 +62,8 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   bool _mostrarChart = false;
   final List<Transacao> _transacoes = [];
 
-  // OBSERVA O CICLO DE VIDA DO APLICATIVO
   @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    // print(state);
-  }
+  void didChangeAppLifecycleState(AppLifecycleState state) {}
 
   @override
   void dispose() {
@@ -117,9 +120,9 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
     bool isLandscape = mediaQuery.orientation == Orientation.landscape;
     final appBar = AppBar(
       title: Text(
-        'Despesas App Flutter',
+        capitalizeWords('despesas app flutter'),
         style: TextStyle(
-          fontSize: 20 * mediaQuery.textScaleFactor,
+          fontSize: mediaQuery.textScaler.scale(20),
         ),
       ),
       actions: <Widget>[
@@ -146,35 +149,33 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
         appBar.preferredSize.height -
         mediaQuery.padding.top;
 
-    return MaterialApp(
-      home: Scaffold(
-        appBar: appBar,
-        body: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
-              if (_mostrarChart || !isLandscape)
-                SizedBox(
-                  height: alturaResp * (isLandscape ? 0.7 : 0.3),
-                  child: Chart(recenteTransacao: _recenteTransacao),
-                ),
-              if (!_mostrarChart || !isLandscape)
-                SizedBox(
-                  height: alturaResp * 0.68,
-                  child: TransacaoLista(_transacoes, _deleteTransacao),
-                ),
-            ],
-          ),
+    return Scaffold(
+      appBar: appBar,
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: <Widget>[
+            if (_mostrarChart || !isLandscape)
+              SizedBox(
+                height: alturaResp * (isLandscape ? 0.7 : 0.3),
+                child: Chart(recenteTransacao: _recenteTransacao),
+              ),
+            if (!_mostrarChart || !isLandscape)
+              SizedBox(
+                height: alturaResp * 0.58,
+                child: TransacaoLista(_transacoes, _deleteTransacao),
+              ),
+          ],
         ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            _abrirTransacaoFormModal(context);
-          },
-          backgroundColor: Theme.of(context).colorScheme.primary,
-          child: const Icon(Icons.add),
-        ),
-        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          _abrirTransacaoFormModal(context);
+        },
+        backgroundColor: Theme.of(context).colorScheme.primary,
+        child: const Icon(Icons.add),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }
 }

@@ -44,6 +44,7 @@ class _TransacaoFormState extends State<TransacaoForm> {
   _showDataPicker() {
     showDatePicker(
       context: context,
+      locale: const Locale('pt', 'BR'),
       initialDate: DateTime.now(),
       firstDate: DateTime(2021),
       lastDate: DateTime.now(),

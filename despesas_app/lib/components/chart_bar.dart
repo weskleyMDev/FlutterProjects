@@ -58,7 +58,7 @@ class ChartBar extends StatelessWidget {
             height: constraints.maxHeight * 0.10,
             child: FittedBox(
               child: Text(
-                label,
+                label.toUpperCase(),
               ),
             ),
           ),

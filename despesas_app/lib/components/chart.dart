@@ -26,7 +26,7 @@ class Chart extends StatelessWidget {
         }
       }
 
-      return {'dia': DateFormat.E().format(semanaDia)[0], 'valor': totalSoma};
+      return {'dia': DateFormat.E('pt_BR').format(semanaDia)[0], 'valor': totalSoma};
     }).reversed.toList();
   }
 
@@ -47,8 +47,7 @@ class Chart extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: grupoTransacoes.map((tr) {
-            return Flexible(
-              fit: FlexFit.tight,
+            return Expanded(
               child: ChartBar(
                 (tr['dia'] as String),
                 (tr['valor'] as double),

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import '../model/transacao.dart';
+import '../utils/utils.dart';
 
 class ItemTransacao extends StatefulWidget {
   const ItemTransacao({
@@ -33,9 +34,9 @@ class _ItemTransacaoState extends State<ItemTransacao> {
   @override
   void initState() {
     super.initState();
-    int i = Random().nextInt(5);
+    int i = Random().nextInt(colors.length);
     _backgroundColor = colors[i];
-  }
+  }  
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +46,8 @@ class _ItemTransacaoState extends State<ItemTransacao> {
         vertical: 8.0,
         horizontal: 5.0,
       ),
-      child: ListTile(
+      child: ExpansionTile(
+        textColor: Colors.black,
         leading: CircleAvatar(
           backgroundColor: _backgroundColor,
           foregroundColor: Colors.white,
@@ -61,26 +63,55 @@ class _ItemTransacaoState extends State<ItemTransacao> {
           ),
         ),
         title: Text(
-          widget.tr.titulo,
+          capitalizeWords(widget.tr.titulo),
           style: Theme.of(context).textTheme.titleLarge,
         ),
         subtitle: Text(
-          DateFormat('d MMM y').format(widget.tr.date),
+          DateFormat('E, d MMM y', 'pt_BR').format(widget.tr.date),
         ),
-        trailing: MediaQuery.of(context).size.width > 480
-            ? TextButton.icon(
-                onPressed: () => widget.removeTransacao(widget.tr.id),
-                icon: const Icon(Icons.delete),
-                style: const ButtonStyle(
-                  foregroundColor: MaterialStatePropertyAll(Colors.red),
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Expanded(
+                child: TextButton.icon(
+                  onPressed: () {},
+                  icon: const Icon(Icons.edit),
+                  label: const Text('Editar'),
+                  style: TextButton.styleFrom(
+                    backgroundColor: Colors.white,
+                    foregroundColor: Colors.blue,
+                  ),
                 ),
-                label: const Text('Excluir'),
-              )
-            : IconButton(
-                icon: const Icon(Icons.delete),
-                color: Colors.red,
-                onPressed: () => widget.removeTransacao(widget.tr.id),
               ),
+              Expanded(
+                child: TextButton.icon(
+                  onPressed: () => widget.removeTransacao(widget.tr.id),
+                  icon: const Icon(Icons.delete),
+                  label: const Text('Excluir'),
+                  style: TextButton.styleFrom(
+                    backgroundColor: Colors.white,
+                    foregroundColor: Colors.red,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
+        // trailing: MediaQuery.of(context).size.width > 480
+        //     ? TextButton.icon(
+        //         onPressed: () => widget.removeTransacao(widget.tr.id),
+        //         icon: const Icon(Icons.delete),
+        //         style: const ButtonStyle(
+        //           foregroundColor: WidgetStatePropertyAll(Colors.red),
+        //         ),
+        //         label: const Text('Excluir'),
+        //       )
+        //     : IconButton(
+        //         icon: const Icon(Icons.delete),
+        //         color: Colors.red,
+        //         onPressed: () => widget.removeTransacao(widget.tr.id),
+        //       ),
       ),
     );
   }
