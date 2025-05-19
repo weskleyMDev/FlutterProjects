@@ -35,16 +35,13 @@ class DespesasApp extends StatelessWidget {
       theme: ThemeData(
         useMaterial3: false,
         appBarTheme: const AppBarTheme(
-          titleTextStyle: TextStyle(
-            fontFamily: 'OpenSans',
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-          ),
+          backgroundColor: Colors.purple,
+          foregroundColor: Colors.white,
         ),
         colorScheme: ColorScheme.fromSeed(
-          seedColor: Colors.green,
-          primary: Colors.green,
-          secondary: Colors.greenAccent,
+          seedColor: Colors.amber,
+          primary: Colors.purple,
+          secondary: Colors.amber,
         ),
       ),
     );

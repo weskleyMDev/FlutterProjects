@@ -44,7 +44,7 @@ class _ItemTransacaoState extends State<ItemTransacao> {
       elevation: 5.0,
       margin: const EdgeInsets.symmetric(
         vertical: 8.0,
-        horizontal: 5.0,
+        horizontal: 10.0,
       ),
       child: ExpansionTile(
         textColor: Colors.black,

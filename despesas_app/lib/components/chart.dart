@@ -41,7 +41,7 @@ class Chart extends StatelessWidget {
     grupoTransacoes;
     return Card(
       elevation: 6,
-      margin: const EdgeInsets.all(20),
+      margin: const EdgeInsets.all(10.0),
       child: Padding(
         padding: const EdgeInsets.all(10.0),
         child: Row(
@@ -51,7 +51,7 @@ class Chart extends StatelessWidget {
               child: ChartBar(
                 (tr['dia'] as String),
                 (tr['valor'] as double),
-                _semanaTotal == 0 ? 0 : (tr['valor'] as double) / _semanaTotal,
+                _semanaTotal == 0.0 ? 0.0 : (tr['valor'] as double) / _semanaTotal,
               ),
             );
           }).toList(),
