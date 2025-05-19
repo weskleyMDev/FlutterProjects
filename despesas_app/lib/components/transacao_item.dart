@@ -71,7 +71,7 @@ class _ItemTransacaoState extends State<ItemTransacao> {
         ),
         children: [
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               Expanded(
                 child: TextButton.icon(
@@ -82,6 +82,13 @@ class _ItemTransacaoState extends State<ItemTransacao> {
                     backgroundColor: Colors.white,
                     foregroundColor: Colors.blue,
                   ),
+                ),
+              ),
+              const SizedBox(
+                height: 15.0,
+                child: VerticalDivider(
+                  color: Colors.black,
+                  thickness: 1.0,
                 ),
               ),
               Expanded(
