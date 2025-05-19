@@ -148,22 +148,19 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
 
     return Scaffold(
       appBar: appBar,
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
-            if (_mostrarChart || !isLandscape)
-              SizedBox(
-                height: alturaResp * (isLandscape ? 0.7 : 0.3),
-                child: Chart(recenteTransacao: _recenteTransacao),
-              ),
-            if (!_mostrarChart || !isLandscape)
-              SizedBox(
-                height: alturaResp * 0.58,
-                child: TransacaoLista(_transacoes, _deleteTransacao),
-              ),
-          ],
-        ),
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          if (_mostrarChart || !isLandscape)
+            SizedBox(
+              height: alturaResp * (isLandscape ? 0.7 : 0.3),
+              child: Chart(recenteTransacao: _recenteTransacao),
+            ),
+          if (!_mostrarChart || !isLandscape)
+            Expanded(
+              child: TransacaoLista(_transacoes, _deleteTransacao),
+            ),
+        ],
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {

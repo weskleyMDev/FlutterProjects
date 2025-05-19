@@ -13,7 +13,7 @@ class ChartBar extends StatelessWidget {
       return Column(
         children: <Widget>[
           SizedBox(
-            height: constraints.maxHeight * 0.10,
+            height: constraints.maxHeight * 0.1,
             child: FittedBox(
               fit: BoxFit.cover,
               child: Text(
@@ -22,11 +22,11 @@ class ChartBar extends StatelessWidget {
             ),
           ),
           SizedBox(
-            height: constraints.maxHeight * 0.10,
+            height: constraints.maxHeight * 0.1,
           ),
           SizedBox(
             height: constraints.maxHeight * 0.6,
-            width: 10,
+            width: constraints.maxWidth * 0.1,
             child: Stack(
               alignment: Alignment.bottomCenter,
               children: <Widget>[
@@ -53,10 +53,10 @@ class ChartBar extends StatelessWidget {
             ),
           ),
           SizedBox(
-            height: constraints.maxHeight * 0.10,
+            height: constraints.maxHeight * 0.1,
           ),
           SizedBox(
-            height: constraints.maxHeight * 0.10,
+            height: constraints.maxHeight * 0.1,
             child: FittedBox(
               child: Text(
                 label.toUpperCase(),

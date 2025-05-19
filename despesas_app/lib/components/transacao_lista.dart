@@ -14,26 +14,24 @@ class TransacaoLista extends StatelessWidget {
     return transacoes.isEmpty
         ? LayoutBuilder(
             builder: (ctx, constraints) {
-              return Column(
-                children: [
-                  const SizedBox(
-                    height: 20,
+              return SingleChildScrollView(
+                child: Center(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        'Lista Vazia!',
+                        style: Theme.of(context).textTheme.titleLarge,
+                      ),
+                      SizedBox(height: constraints.maxHeight * 0.05),
+                      Image.asset(
+                        'assets/images/snooze.png',
+                        fit: BoxFit.contain,
+                        height: constraints.maxHeight * 0.6,
+                      ),
+                    ],
                   ),
-                  Text(
-                    'Lista Vazia!',
-                    style: Theme.of(context).textTheme.titleLarge,
-                  ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  SizedBox(
-                    height: constraints.maxHeight * 0.6,
-                    child: Image.asset(
-                      'assets/images/snooze.png',
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                ],
+                ),
               );
             },
           )
@@ -42,7 +40,7 @@ class TransacaoLista extends StatelessWidget {
             itemBuilder: (ctxt, index) {
               final tr = transacoes[index];
               return ItemTransacao(
-                key: GlobalObjectKey(tr),
+                key: ValueKey(tr.id),
                 tr: tr,
                 removeTransacao: removeTransacao,
               );
