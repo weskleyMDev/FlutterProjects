@@ -170,7 +170,7 @@ class _VendasScreenState extends State<VendasScreen> {
                           ...vendasDoDia.map((venda) {
                             final data = (venda['data'] as Timestamp).toDate();
                             final total = venda['total'];
-                            final formaPagamento = venda['formaPagamento'];
+                            final formaPagamento = List<Map<String, dynamic>>.from(venda['pagamentos']);
                             final itens = List<Map<String, dynamic>>.from(
                               venda['itens'],
                             );
@@ -185,7 +185,7 @@ class _VendasScreenState extends State<VendasScreen> {
                                   'Venda às ${DateFormat('HH:mm').format(data)}',
                                 ),
                                 subtitle: Text(
-                                  'Total: R\$ ${total.toStringAsFixed(2)} • Pagamento: $formaPagamento',
+                                  'Total: R\$ ${total.toStringAsFixed(2)} • Pagamento: ${formaPagamento.map((p) => '${p['forma']}: R\$ ${p['valor'].toStringAsFixed(2)}').join(', ')}',
                                 ),
                                 children:
                                     itens.map((item) {

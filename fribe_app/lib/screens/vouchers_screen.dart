@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class VouchersScreen extends StatefulWidget {
   const VouchersScreen({super.key});
@@ -13,6 +14,7 @@ class _VouchersScreenState extends State<VouchersScreen> {
 
   Future<void> _mostrarRecibo(
     String codigoVenda,
+    DateTime data,
     List<Map<String, dynamic>> itens,
     List<Map<String, dynamic>> pagamentos,
     double total,
@@ -33,6 +35,7 @@ class _VouchersScreenState extends State<VouchersScreen> {
                 ),
                 const Divider(),
                 Text(codigoVenda),
+                Text('data: ${DateFormat('dd/MM/yyyy - HH:mm').format(data)}'),
                 const SizedBox(height: 8),
                 Text(
                   'Formas de pagamento:\n${pagamentos.map((p) => '${p['forma']}: R\$ ${p['valor'].toStringAsFixed(2)}').join('\n')}',
@@ -94,6 +97,7 @@ class _VouchersScreenState extends State<VouchersScreen> {
             itemBuilder: (context, index) {
               final venda = vendas[index];
               final codigoVenda = venda['codigoVenda'];
+              final data = (venda['data'] as Timestamp).toDate();
               final itens = List<Map<String, dynamic>>.from(venda['itens']);
               final pagamentos = List<Map<String, dynamic>>.from(
                 venda['pagamentos'],
@@ -131,6 +135,7 @@ class _VouchersScreenState extends State<VouchersScreen> {
                     onPressed:
                         () => _mostrarRecibo(
                           codigoVenda,
+                          data,
                           itens,
                           pagamentos,
                           total,
