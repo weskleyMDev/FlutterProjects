@@ -272,7 +272,7 @@ class _VendaScreenState extends State<VendaScreen> {
                     DropdownButtonFormField<String>(
                       value: selectedForma,
                       items:
-                          ['Dinheiro', 'Débito', 'Crédito', 'Pix']
+                          ['Dinheiro', 'Debito', 'Credito', 'Pix']
                               .map(
                                 (f) =>
                                     DropdownMenuItem(value: f, child: Text(f)),

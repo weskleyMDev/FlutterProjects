@@ -3,9 +3,12 @@
 #
 
 list(APPEND FLUTTER_PLUGIN_LIST
+  charset_converter
   cloud_firestore
   firebase_auth
   firebase_core
+  flutter_pos_printer_platform
+  network_info_plus_windows
 )
 
 list(APPEND FLUTTER_FFI_PLUGIN_LIST

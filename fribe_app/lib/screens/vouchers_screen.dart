@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import '../services/printer_service.dart';
 
 class VouchersScreen extends StatefulWidget {
   const VouchersScreen({super.key});
@@ -11,6 +12,7 @@ class VouchersScreen extends StatefulWidget {
 
 class _VouchersScreenState extends State<VouchersScreen> {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final PrinterService _printerService = PrinterService();
 
   Future<void> _mostrarRecibo(
     String codigoVenda,
@@ -63,13 +65,44 @@ class _VouchersScreenState extends State<VouchersScreen> {
               child: const Text('Cancelar'),
             ),
             TextButton(
-              onPressed: () => Navigator.of(context).pop(),
+              onPressed: () async {
+                try {
+                  await _printerService.printReceipt(
+                    codigoVenda: codigoVenda,
+                    data: data,
+                    itens: itens,
+                    pagamentos: pagamentos,
+                    total: total,
+                  );
+                  if (!context.mounted) return;
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Recibo impresso com sucesso!'),
+                    ),
+                  );
+                } catch (e) {
+                  if (!mounted) return;
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('Erro ao imprimir: ${e.toString()}'),
+                    ),
+                  );
+                }
+                if (!mounted) return;
+                Navigator.of(context).pop();
+              },
               child: const Text('Imprimir'),
             ),
           ],
         );
       },
     );
+  }
+
+  @override
+  void dispose() {
+    _printerService.dispose();
+    super.dispose();
   }
 
   @override
