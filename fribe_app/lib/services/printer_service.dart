@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:esc_pos_printer/esc_pos_printer.dart';
 import 'package:esc_pos_utils/esc_pos_utils.dart';
 import 'package:intl/intl.dart';
@@ -8,12 +11,25 @@ class PrinterService {
   PrinterService._internal();
 
   NetworkPrinter? _printer;
-  static const String printerAddress = '192.168.100.92';
+  static String? _printerAddress;
   bool _isConnected = false;
 
+  Future<void> loadConfig() async {
+    final configFile = File('assets/config.json');
+    if (await configFile.exists()) {
+      final configContent = await configFile.readAsString();
+      final config = json.decode(configContent);
+      _printerAddress = config['printerAddress'];
+    } else {
+      throw Exception('Config file not found');
+    }
+  }
+
   Future<void> connect() async {
+    if (_printerAddress == null) {
+      await loadConfig();
+    }
     try {
-      // Configure for ELGIN i8
       const PaperSize paper = PaperSize.mm80;
       final profile = await CapabilityProfile.load(name: 'default');
 
@@ -24,7 +40,7 @@ class PrinterService {
       }
 
       final PosPrintResult status = await _printer!.connect(
-        printerAddress,
+        _printerAddress!,
         port: 9100,
         timeout: const Duration(seconds: 5),
       );
@@ -57,7 +73,6 @@ class PrinterService {
         throw Exception('Printer initialization failed');
       }
 
-      // Header
       _printer!.text(
         'Fribe Cortes Especiais',
         styles: const PosStyles(
@@ -72,12 +87,10 @@ class PrinterService {
       );
       _printer!.hr();
 
-      // Sale details
       _printer!.text('Codigo: $codigoVenda');
       _printer!.text('Data: ${DateFormat('dd/MM/yyyy - HH:mm').format(data)}');
       _printer!.hr();
 
-      // Items
       _printer!.text(
         'ITENS',
         styles: const PosStyles(align: PosAlign.center, bold: true),
@@ -100,7 +113,6 @@ class PrinterService {
       }
       _printer!.hr();
 
-      // Payment methods
       _printer!.text(
         'PAGAMENTOS',
         styles: const PosStyles(align: PosAlign.center, bold: true),
@@ -122,7 +134,6 @@ class PrinterService {
       }
       _printer!.hr();
 
-      // Total
       _printer!.text(
         'TOTAL: R\$ ${total.toStringAsFixed(2)}',
         styles: const PosStyles(
@@ -132,10 +143,9 @@ class PrinterService {
         ),
       );
 
-      // Footer
       _printer!.feed(2);
       _printer!.text(
-        'Obrigado pela preferência!',
+        'Obrigado pela preferencia!',
         styles: const PosStyles(align: PosAlign.center),
       );
 
@@ -153,7 +163,7 @@ class PrinterService {
         _printer?.disconnect();
       }
     } catch (e) {
-      return;
+      throw Exception('Error during disconnect: $e');
     }
     _printer = null;
     _isConnected = false;
