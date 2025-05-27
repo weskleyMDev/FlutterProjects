@@ -110,7 +110,10 @@ class _VouchersScreenState extends State<VouchersScreen> {
     return Scaffold(
       appBar: AppBar(title: const Text("Comprovantes")),
       body: StreamBuilder<QuerySnapshot>(
-        stream: _firestore.collection('vendas').snapshots(),
+        stream: _firestore
+            .collection('vendas')
+            .orderBy('data', descending: true)
+            .snapshots(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
@@ -119,29 +122,22 @@ class _VouchersScreenState extends State<VouchersScreen> {
             return const Center(child: Text('Erro ao carregar dados'));
           }
 
-          if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+          final docs = snapshot.data?.docs ?? [];
+          if (docs.isEmpty) {
             return const Center(child: Text('Nenhum comprovante encontrado'));
           }
 
-          final vendas = snapshot.data!.docs;
-
           return ListView.builder(
-            itemCount: vendas.length,
+            itemCount: docs.length,
             itemBuilder: (context, index) {
-              final venda = vendas[index];
-              final codigoVenda = venda['codigoVenda'];
-              final data = (venda['data'] as Timestamp).toDate();
-              final itens = List<Map<String, dynamic>>.from(venda['itens']);
+              final doc = docs[index];
+              final data = doc['data'] as Timestamp;
+              final codigoVenda = doc['codigoVenda'] as String;
+              final total = doc['total'] as double;
+              final itens = List<Map<String, dynamic>>.from(doc['itens']);
               final pagamentos = List<Map<String, dynamic>>.from(
-                venda['pagamentos'],
+                doc['pagamentos'],
               );
-              pagamentos
-                  .map(
-                    (p) =>
-                        '${p['forma']}: R\$ ${p['valor'].toStringAsFixed(2)}',
-                  )
-                  .join(' | ');
-              final total = venda['total'];
 
               return Container(
                 decoration: BoxDecoration(
@@ -165,14 +161,13 @@ class _VouchersScreenState extends State<VouchersScreen> {
                   ),
                   trailing: IconButton(
                     icon: const Icon(Icons.print),
-                    onPressed:
-                        () => _mostrarRecibo(
-                          codigoVenda,
-                          data,
-                          itens,
-                          pagamentos,
-                          total,
-                        ),
+                    onPressed: () => _mostrarRecibo(
+                      codigoVenda,
+                      data.toDate(),
+                      itens,
+                      pagamentos,
+                      total,
+                    ),
                   ),
                 ),
               );
