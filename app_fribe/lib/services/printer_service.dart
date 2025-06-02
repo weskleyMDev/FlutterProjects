@@ -17,17 +17,11 @@ class PrinterService {
   static const Duration connectionTimeout = Duration(seconds: 10);
   static const Duration retryDelay = Duration(seconds: 2);
 
-  static const String printerIp = '192.168.100.92';
+  static const String printerIp = '192.168.0.92';
   static const int printerPort = 9100;
 
   Future<void> connect() async {
-    print('Iniciando conexão com a impressora...');
-    print(
-      'Estado atual: _isConnected=$_isConnected, _printerSocket=${_printerSocket != null}',
-    );
-
     if (_isConnected && (_printerSocket != null || _androidPrinter != null)) {
-      print('Já conectado, retornando...');
       return;
     }
 
@@ -35,36 +29,23 @@ class PrinterService {
     while (_retryCount < maxRetries) {
       try {
         if (Platform.isWindows) {
-          print(
-            'Tentando conectar à impressora Windows: $printerIp:$printerPort (Tentativa ${_retryCount + 1})',
-          );
-
-          // Tenta verificar se a porta está acessível antes de conectar
           try {
-            print('Testando acessibilidade da porta...');
             final socket = await Socket.connect(
               printerIp,
               printerPort,
               timeout: const Duration(seconds: 1),
             );
-            print('Teste de porta bem sucedido');
             await socket.close();
           } catch (e) {
-            print('Erro no teste de porta: $e');
             throw Exception('Porta da impressora não está acessível: $e');
           }
 
-          print('Estabelecendo conexão principal...');
           _printerSocket = await Socket.connect(
             printerIp,
             printerPort,
             timeout: connectionTimeout,
           );
-          print('Conexão Socket estabelecida com sucesso');
           _isConnected = true;
-          print(
-            'Estado após conexão: _isConnected=$_isConnected, _printerSocket=${_printerSocket != null}',
-          );
           _retryCount = 0;
           return;
         } else if (Platform.isAndroid) {
@@ -90,13 +71,10 @@ class PrinterService {
         _retryCount = 0;
         return;
       } catch (e) {
-        print('Erro detalhado na tentativa ${_retryCount + 1}: $e');
-        print('Stack trace: ${StackTrace.current}');
         _retryCount++;
         if (_retryCount >= maxRetries) {
           _isConnected = false;
           if (_printerSocket != null) {
-            print('Fechando socket após erro...');
             await _printerSocket!.close();
           }
           _printerSocket = null;
@@ -106,7 +84,6 @@ class PrinterService {
             'Erro ao conectar à impressora após $maxRetries tentativas: $e',
           );
         }
-        print('Aguardando $retryDelay antes da próxima tentativa...');
         await Future.delayed(retryDelay);
       }
     }
@@ -120,15 +97,12 @@ class PrinterService {
     required double total,
   }) async {
     try {
-      print('Iniciando processo de impressão...');
       await connect();
-      print('Conexão estabelecida, gerando dados para impressão...');
 
       final profile = await esc.CapabilityProfile.load();
       final generator = esc.Generator(esc.PaperSize.mm80, profile);
       List<int> bytes = [];
 
-      print('Gerando conteúdo do recibo...');
       bytes += generator.text(
         'Fribe Cortes Especiais',
         styles: const esc.PosStyles(
@@ -210,23 +184,14 @@ class PrinterService {
 
       bytes += generator.cut();
 
-      print('Verificando estado da conexão antes de imprimir...');
-      print('Platform.isWindows: ${Platform.isWindows}');
-      print('_printerSocket: ${_printerSocket != null}');
-      print('_isConnected: $_isConnected');
-
       if (Platform.isWindows && _printerSocket != null) {
-        print('Enviando ${bytes.length} bytes para impressora Windows');
         try {
           _printerSocket!.add(bytes);
           await _printerSocket!.flush();
-          print('Dados enviados com sucesso');
           await _printerSocket!.close();
           _printerSocket = null;
           _isConnected = false;
-          print('Conexão fechada após impressão');
         } catch (e) {
-          print('Erro ao enviar dados para impressora: $e');
           throw Exception('Erro ao enviar dados para impressora: $e');
         }
       } else if (Platform.isAndroid && _androidPrinter != null) {
@@ -252,7 +217,6 @@ class PrinterService {
     _androidPrinter = null;
   }
 
-  // Função utilitária para alinhar valor à direita na mesma linha
   String linhaComValorDireita(
     String esquerda,
     String direita, {

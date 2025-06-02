@@ -25,7 +25,7 @@ class DbService {
   Future<String?> addStock(
     int codigo,
     String produto,
-    int quantidade,
+    double quantidade,
     String tipo,
     double preco,
     String categoria,
@@ -51,7 +51,7 @@ class DbService {
   Future<String?> updateStock(
     int codigo,
     String produto,
-    int quantidade,
+    double quantidade,
     String tipo,
     double preco,
   ) async {

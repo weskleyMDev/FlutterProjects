@@ -38,22 +38,34 @@ class AuthService {
       if (email.trim().isEmpty || password.trim().isEmpty) {
         return 'Preencha todos os campos.';
       }
-      // Autentica
+
       await _firebaseAuth.signInWithEmailAndPassword(
         email: email.trim(),
         password: password.trim(),
       );
 
-      // Aguarda a autenticação ser reconhecida pelo Firebase
       User? user = await _firebaseAuth.authStateChanges().firstWhere(
         (u) => u != null,
       );
 
-      // Agora o usuário está autenticado e pronto para usar
-      DocumentSnapshot userDoc =
-          await _firestore.collection('users').doc(user?.uid).get();
+      DocumentSnapshot userDoc = await _firestore
+          .collection('users')
+          .doc(user?.uid)
+          .get();
 
-      return userDoc['role'];
+      final data = userDoc.data();
+      if (!userDoc.exists ||
+          data == null ||
+          !(data as Map<String, dynamic>).containsKey('role')) {
+        return 'Usuário não encontrado ou sem função definida.';
+      }
+
+      final String? role = userDoc['role'];
+      if (role == null || role.isEmpty) {
+        return 'Função do usuário não definida.';
+      }
+
+      return role;
     } on FirebaseAuthException catch (e) {
       switch (e.code) {
         case 'user-not-found':
@@ -79,8 +91,10 @@ class AuthService {
     User? user = _firebaseAuth.currentUser;
 
     if (user != null) {
-      DocumentSnapshot userDoc =
-          await _firestore.collection('users').doc(user.uid).get();
+      DocumentSnapshot userDoc = await _firestore
+          .collection('users')
+          .doc(user.uid)
+          .get();
 
       return userDoc['role'];
     }

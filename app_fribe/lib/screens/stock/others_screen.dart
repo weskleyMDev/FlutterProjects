@@ -173,9 +173,9 @@ class _OutrosScreenState extends State<OutrosScreen> {
     final result = await dbService.addStock(
       nextCode,
       productController.text,
-      int.parse(quantityController.text),
+      double.parse(quantityController.text.replaceAll(',', '.')),
       selectedType,
-      double.parse(priceController.text),
+      double.parse(priceController.text.replaceAll(',', '.')),
       selectedCategory,
     );
     if (!mounted) return;
@@ -198,9 +198,9 @@ class _OutrosScreenState extends State<OutrosScreen> {
     dbService.updateStock(
       int.parse(codController.text),
       productController.text,
-      int.parse(quantityController.text),
+      double.parse(quantityController.text.replaceAll(',', '.')),
       selectedType,
-      double.parse(priceController.text),
+      double.parse(priceController.text.replaceAll(',', '.')),
     );
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text("Item atualizado com sucesso")),
