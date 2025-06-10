@@ -61,8 +61,8 @@ class CartProduct extends StatelessWidget {
                     final bool? isConfirmed = await _showConfirmDialog(
                       context,
                       "Tem certeza?",
-                      "Deseja remover ${product.name} do carrinho?",
-                      product.name,
+                      "Deseja remover ${product.title} do carrinho?",
+                      product.title,
                     );
                     if (isConfirmed == true && isConfirmed != null) {
                       cart.removeItem(product.productId);
@@ -89,7 +89,7 @@ class CartProduct extends StatelessWidget {
                     ),
                   ),
                 ),
-                title: Text(product.name),
+                title: Text(product.title),
                 subtitle: Text('Quantidade: ${product.quantity}'),
                 trailing: Text(
                   'Subtotal: R\$ ${cart.getItemSubtotal(product.productId).replaceAll('.', ',')}',

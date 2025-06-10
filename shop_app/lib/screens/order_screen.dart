@@ -10,26 +10,37 @@ class OrderScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final orderList = Provider.of<OrderList>(context, listen: false);
+    final orderList = Provider.of<OrderList>(
+      context,
+      listen: false,
+    ).loadOrders();
     return Scaffold(
       drawer: HomeDrawer(),
       appBar: AppBar(title: const Text('Meus Pedidos')),
-      body: LayoutBuilder(
-        builder: (ctx, cont) {
-          return orderList.orders.isEmpty
-              ? Center(
-                  child: Text(
-                    'Nenhum pedido realizado',
-                    style: Theme.of(context).textTheme.bodyLarge,
-                  ),
-                )
-              : ListView.builder(
-                  itemCount: orderList.orders.length,
-                  itemBuilder: (ctx, i) {
-                    final order = orderList.orders[i];
-                    return OrderItem(order: order);
-                  },
-                );
+      body: FutureBuilder(
+        future: orderList,
+        builder: (ctx, snap) {
+          if (snap.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          } else {
+            return Consumer<OrderList>(
+              builder: (ctx, orders, child) => orders.orderCount == 0
+                  ? child!
+                  : ListView.builder(
+                      itemCount: orders.orderCount,
+                      itemBuilder: (ctx, i) {
+                        final order = orders.orders[i];
+                        return OrderItem(order: order);
+                      },
+                    ),
+              child: Center(
+                child: Text(
+                  'Nenhum pedido realizado',
+                  style: Theme.of(context).textTheme.bodyLarge,
+                ),
+              ),
+            );
+          }
         },
       ),
     );

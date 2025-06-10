@@ -140,12 +140,11 @@ class _CartScreenState extends State<CartScreen> {
                   true,
                 );
                 if (isConfirmed == true && isConfirmed != null) {
-                  order.addOrder(cart);
+                  await order.addOrder(cart);
                   cart.clear();
                 }
-                if (!context.mounted) {
-                  return;
-                }
+                if (!context.mounted) return;
+
                 Navigator.of(context).pushNamedAndRemoveUntil(
                   AppRoutes.homeScreen,
                   (route) => false,

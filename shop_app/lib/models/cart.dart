@@ -1,7 +1,6 @@
-import 'dart:math';
-
 import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
+import 'package:uuid/uuid.dart';
 
 import 'cart_item.dart';
 import 'product.dart';
@@ -46,9 +45,9 @@ class Cart with ChangeNotifier {
       _items.putIfAbsent(
         product.id,
         () => CartItem(
-          id: Random().nextInt(99).toString(),
+          id: Uuid().v4(),
           productId: product.id,
-          name: product.title,
+          title: product.title,
           quantity: '1',
           price: product.price,
         ),

@@ -4,14 +4,18 @@ import 'package:provider/provider.dart';
 
 import '../models/product.dart';
 import '../models/product_list.dart';
-import '../utils/app_logger.dart';
 import '../utils/app_routes.dart';
 
-class ProductEdit extends StatelessWidget {
+class ProductEdit extends StatefulWidget {
   const ProductEdit({super.key, required this.product});
 
   final Product product;
 
+  @override
+  State<ProductEdit> createState() => _ProductEditState();
+}
+
+class _ProductEditState extends State<ProductEdit> {
   Future<bool?> _showConfirmDialog(
     BuildContext context,
     String title,
@@ -40,10 +44,11 @@ class ProductEdit extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final productList = Provider.of<ProductList>(context, listen: false);
+    final message = ScaffoldMessenger.of(context);
     return Container(
       margin: const EdgeInsets.all(5.0),
       child: Slidable(
-        key: ValueKey(product.id),
+        key: ValueKey(widget.product.id),
         endActionPane: ActionPane(
           motion: BehindMotion(),
           extentRatio: 0.5,
@@ -52,7 +57,7 @@ class ProductEdit extends StatelessWidget {
               onPressed: (context) {
                 Navigator.of(
                   context,
-                ).pushNamed(AppRoutes.productForm, arguments: product);
+                ).pushNamed(AppRoutes.productForm, arguments: widget.product);
               },
               icon: Icons.edit_sharp,
               label: "Editar",
@@ -68,10 +73,14 @@ class ProductEdit extends StatelessWidget {
                   );
 
                   if (confirm != null && confirm) {
-                    productList.removeProduct(product);
+                    try {
+                      await productList.removeProduct(widget.product);
+                    } catch (e) {
+                      message.showSnackBar(SnackBar(content: Text('$e')));
+                    }
                   }
                 } catch (e) {
-                  AppLogger.error('Erro ao excluir produto: $e');
+                  rethrow;
                 }
               },
               icon: Icons.delete_sharp,
@@ -94,10 +103,10 @@ class ProductEdit extends StatelessWidget {
           ),
           child: ListTile(
             leading: CircleAvatar(
-              backgroundImage: NetworkImage(product.imageUrl),
+              backgroundImage: NetworkImage(widget.product.imageUrl),
             ),
-            title: Text(product.title),
-            subtitle: Text("R\$ ${product.price.replaceAll(".", ",")}"),
+            title: Text(widget.product.title),
+            subtitle: Text("R\$ ${widget.product.price.replaceAll(".", ",")}"),
           ),
         ),
       ),

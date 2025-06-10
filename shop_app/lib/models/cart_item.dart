@@ -4,14 +4,14 @@ import 'dart:convert';
 class CartItem {
   final String id;
   final String productId;
-  final String name;
+  final String title;
   final String quantity;
   final String price;
 
   CartItem({
     required this.id,
     required this.productId,
-    required this.name,
+    required this.title,
     required this.quantity,
     required this.price,
   });
@@ -19,14 +19,14 @@ class CartItem {
   CartItem copyWith({
     String? id,
     String? productId,
-    String? name,
+    String? title,
     String? quantity,
     String? price,
   }) {
     return CartItem(
       id: id ?? this.id,
       productId: productId ?? this.productId,
-      name: name ?? this.name,
+      title: title ?? this.title,
       quantity: quantity ?? this.quantity,
       price: price ?? this.price,
     );
@@ -36,7 +36,7 @@ class CartItem {
     return <String, dynamic>{
       'id': id,
       'productId': productId,
-      'name': name,
+      'title': title,
       'quantity': quantity,
       'price': price,
     };
@@ -46,7 +46,7 @@ class CartItem {
     return CartItem(
       id: map['id'] as String,
       productId: map['productId'] as String,
-      name: map['name'] as String,
+      title: map['title'] as String,
       quantity: map['quantity'] as String,
       price: map['price'] as String,
     );
@@ -58,7 +58,7 @@ class CartItem {
 
   @override
   String toString() {
-    return 'CartItem(id: $id, productId: $productId, name: $name, quantity: $quantity, price: $price)';
+    return 'CartItem(id: $id, productId: $productId, title: $title, quantity: $quantity, price: $price)';
   }
 
   @override
@@ -68,7 +68,7 @@ class CartItem {
     return 
       other.id == id &&
       other.productId == productId &&
-      other.name == name &&
+      other.title == title &&
       other.quantity == quantity &&
       other.price == price;
   }
@@ -77,7 +77,7 @@ class CartItem {
   int get hashCode {
     return id.hashCode ^
       productId.hashCode ^
-      name.hashCode ^
+      title.hashCode ^
       quantity.hashCode ^
       price.hashCode;
   }

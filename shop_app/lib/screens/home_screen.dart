@@ -32,15 +32,12 @@ class _MyHomePageState extends State<MyHomePage> {
     try {
       await Provider.of<ProductList>(context, listen: false).loadProducts();
     } catch (e) {
-      final errorMessage = e.toString().split(': ').length > 1
-          ? e.toString().split(': ').sublist(1).join(': ')
-          : e.toString();
       if (!mounted) return;
       await showDialog<void>(
         context: context,
         builder: (context) => AlertDialog(
           title: const Text("Erro ao carregar produtos"),
-          content: Text('[ERROR]: $errorMessage'),
+          content: Text('[ERROR]: $e'),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),

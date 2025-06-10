@@ -9,6 +9,14 @@ import '../utils/app_routes.dart';
 class ProductScreen extends StatelessWidget {
   const ProductScreen({super.key});
 
+  Future<void> _refreshProducts(BuildContext context) async {
+    try {
+      await Provider.of<ProductList>(context, listen: false).loadProducts();
+    } catch (e) {
+      rethrow;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final products = Provider.of<ProductList>(context);
@@ -25,10 +33,13 @@ class ProductScreen extends StatelessWidget {
         ],
       ),
       drawer: HomeDrawer(),
-      body: ListView.builder(
-        itemCount: products.items.length,
-        itemBuilder: (ctx, index) =>
-            ProductEdit(product: products.items[index]),
+      body: RefreshIndicator(
+        onRefresh: () => _refreshProducts(context),
+        child: ListView.builder(
+          itemCount: products.items.length,
+          itemBuilder: (ctx, index) =>
+              ProductEdit(product: products.items[index]),
+        ),
       ),
     );
   }

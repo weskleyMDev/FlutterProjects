@@ -13,18 +13,16 @@ class OrderItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final String date = order.date != null
-        ? DateFormat(
-            'E dd/MM/y H:mm:ss',
-            'pt_BR',
-          ).format(order.date!).capitalizeAll().replaceAll(".", ",")
-        : 'Data não disponível';
-    final List<CartItem> products = order.products ?? [];
+    final String date = DateFormat(
+      'E dd/MM/y H:mm:ss',
+      'pt_BR',
+    ).format(order.date).capitalizeAll().replaceAll(".", ",");
+    final List<CartItem> products = order.products;
     return Card(
       margin: const EdgeInsets.symmetric(vertical: 5.0, horizontal: 5.0),
       child: ExpansionTile(
         title: Text(
-          'Pedido: ${order.id?.toUpperCase()}',
+          'Pedido: ${order.id.toUpperCase()}',
           style: Theme.of(context).textTheme.titleMedium,
           overflow: TextOverflow.ellipsis,
         ),
@@ -34,7 +32,7 @@ class OrderItem extends StatelessWidget {
           children: [
             Text("Data: $date"),
             Text(
-              'Total: R\$ ${order.total?.replaceAll('.', ',')}',
+              'Total: R\$ ${order.total.replaceAll('.', ',')}',
               style: Theme.of(context).textTheme.bodyMedium,
             ),
           ],
@@ -51,7 +49,7 @@ class OrderItem extends StatelessWidget {
                           Decimal.parse(product.price))
                       .toStringAsFixed(2);
               return ListTile(
-                title: Text(product.name),
+                title: Text(product.title),
                 subtitle: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
