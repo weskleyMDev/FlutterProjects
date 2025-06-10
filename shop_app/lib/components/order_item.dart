@@ -17,7 +17,7 @@ class OrderItem extends StatelessWidget {
         ? DateFormat(
             'E dd/MM/y H:mm:ss',
             'pt_BR',
-          ).format(order.date!).capitalize().replaceAll(".", ",")
+          ).format(order.date!).capitalizeAll().replaceAll(".", ",")
         : 'Data não disponível';
     final List<CartItem> products = order.products ?? [];
     return Card(

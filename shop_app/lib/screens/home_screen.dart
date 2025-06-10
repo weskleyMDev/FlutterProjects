@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../components/home_drawer.dart';
 import '../components/product_gridview.dart';
 import '../models/cart.dart';
+import '../models/product_list.dart';
 import '../utils/app_routes.dart';
 
 class MyHomePage extends StatefulWidget {
@@ -19,6 +20,41 @@ enum FilterOptions { all, favorites }
 
 class _MyHomePageState extends State<MyHomePage> {
   bool _showFavoriteOnly = false;
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadProducts();
+  }
+
+  Future<void> _loadProducts() async {
+    try {
+      await Provider.of<ProductList>(context, listen: false).loadProducts();
+    } catch (e) {
+      final errorMessage = e.toString().split(': ').length > 1
+          ? e.toString().split(': ').sublist(1).join(': ')
+          : e.toString();
+      if (!mounted) return;
+      await showDialog<void>(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text("Erro ao carregar produtos"),
+          content: Text('[ERROR]: $errorMessage'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text("OK"),
+            ),
+          ],
+        ),
+      );
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -63,7 +99,9 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         ],
       ),
-      body: ProductGridView(showFavoriteOnly: _showFavoriteOnly),
+      body: _isLoading
+          ? Center(child: const CircularProgressIndicator())
+          : ProductGridView(showFavoriteOnly: _showFavoriteOnly),
       drawer: const HomeDrawer(),
     );
   }

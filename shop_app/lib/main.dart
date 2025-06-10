@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:shop_app/utils/app_logger.dart';
@@ -15,8 +16,9 @@ import 'screens/product_screen.dart';
 import 'theme/theme.dart';
 import 'utils/app_routes.dart';
 
-void main() {
+Future<void> main() async {
   AppLogger.init(isProduction: false);
+  await dotenv.load(fileName: '.env');
   runApp(const MyApp());
 }
 

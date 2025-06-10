@@ -33,6 +33,13 @@ final ThemeData purpleLightTheme = ThemeData(
   fontFamily: "Lato",
   colorScheme: customLightColorScheme,
   scaffoldBackgroundColor: customLightColorScheme.surface,
+  textTheme: ThemeData.dark().textTheme.copyWith(
+    titleLarge: const TextStyle(
+      color: Colors.red,
+      fontSize: 16,
+      fontWeight: FontWeight.bold,
+    ),
+  ),
   appBarTheme: const AppBarTheme(
     backgroundColor: primaryPurple,
     foregroundColor: Colors.white,
@@ -64,6 +71,13 @@ final ThemeData purpleDarkTheme = ThemeData(
   fontFamily: "Lato",
   colorScheme: customDarkColorScheme,
   scaffoldBackgroundColor: customDarkColorScheme.surface,
+  textTheme: ThemeData.dark().textTheme.copyWith(
+    titleLarge: const TextStyle(
+      color: Colors.red,
+      fontSize: 16,
+      fontWeight: FontWeight.bold,
+    ),
+  ),
   appBarTheme: AppBarTheme(
     backgroundColor: customDarkColorScheme.surface,
     foregroundColor: customDarkColorScheme.onSurface,
