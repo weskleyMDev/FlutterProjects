@@ -22,6 +22,13 @@ class OrderScreen extends StatelessWidget {
         builder: (ctx, snap) {
           if (snap.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
+          } else if (snap.hasError) {
+            return Center(
+              child: Text(
+                'Erro ao carregar pedidos: ${snap.error}',
+                style: Theme.of(context).textTheme.bodyLarge,
+              ),
+            );
           } else {
             return Consumer<OrderList>(
               builder: (ctx, orders, child) => orders.orderCount == 0

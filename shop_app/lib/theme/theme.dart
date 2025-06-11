@@ -53,7 +53,7 @@ final ThemeData purpleLightTheme = ThemeData(
   elevatedButtonTheme: ElevatedButtonThemeData(
     style: ElevatedButton.styleFrom(
       backgroundColor: customLightColorScheme.primary,
-      foregroundColor: customLightColorScheme.onPrimary,
+      foregroundColor: Colors.white,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
     ),
   ),
@@ -91,8 +91,10 @@ final ThemeData purpleDarkTheme = ThemeData(
   elevatedButtonTheme: ElevatedButtonThemeData(
     style: ElevatedButton.styleFrom(
       backgroundColor: customDarkColorScheme.primary,
-      foregroundColor: customDarkColorScheme.onPrimary,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      foregroundColor: Colors.white,
+      padding: const EdgeInsets.symmetric(vertical: 18.0, horizontal: 20.0),
+      textStyle: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
     ),
   ),
   inputDecorationTheme: InputDecorationTheme(

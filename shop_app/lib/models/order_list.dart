@@ -9,7 +9,7 @@ import 'cart.dart';
 import 'order.dart';
 
 class OrderList with ChangeNotifier {
-  static OrderList? _instance = OrderList._internal();
+  static OrderList? _instance;
 
   OrderList._internal();
 

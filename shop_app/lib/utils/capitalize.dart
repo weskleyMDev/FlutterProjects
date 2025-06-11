@@ -31,4 +31,31 @@ extension StringExtensions on String {
     if (trimmed.isEmpty) return '';
     return trimmed[0].toUpperCase() + trimmed.substring(1).toLowerCase();
   }
+
+  String trimIndent() {
+    final lines = split('\n');
+
+    // Remove linhas totalmente em branco no início e fim
+    final trimmedLines = lines
+        .skipWhile((line) => line.trim().isEmpty)
+        .toList()
+        .reversed
+        .skipWhile((line) => line.trim().isEmpty)
+        .toList()
+        .reversed
+        .toList();
+
+    if (trimmedLines.isEmpty) return '';
+
+    // Determina a menor indentação comum
+    final indent = trimmedLines
+        .where((line) => line.trim().isNotEmpty)
+        .map((line) => line.length - line.trimLeft().length)
+        .reduce((a, b) => a < b ? a : b);
+
+    // Remove a indentação comum de todas as linhas
+    return trimmedLines
+        .map((line) => line.length >= indent ? line.substring(indent) : line)
+        .join('\n');
+  }
 }
