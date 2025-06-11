@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../models/cart.dart';
 import '../models/product.dart';
 import '../models/product_list.dart';
+import '../providers/auth_login.dart';
 import '../utils/app_routes.dart';
 
 class ProductItem extends StatelessWidget {
@@ -11,8 +12,9 @@ class ProductItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final auth = Provider.of<AuthLogin>(context, listen: false);
     final product = Provider.of<Product>(context, listen: false);
-    final provider = Provider.of<ProductList>(context, listen: false);
+    final products = Provider.of<ProductList>(context, listen: false);
     final cart = Provider.of<Cart>(context, listen: false);
     return ClipRRect(
       borderRadius: BorderRadiusGeometry.circular(10.0),
@@ -22,7 +24,7 @@ class ProductItem extends StatelessWidget {
           leading: Consumer<Product>(
             builder: (ctx, product, _) => IconButton(
               onPressed: () {
-                provider.toggleFavorite(product);
+                products.toggleUserFavorite(product, auth.uid ?? '');
               },
               icon: product.isFavorite
                   ? Icon(Icons.favorite, color: Colors.red.shade700)

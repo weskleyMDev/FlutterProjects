@@ -49,7 +49,6 @@ class Product with ChangeNotifier {
       'description': description,
       'imageUrl': imageUrl,
       'price': price,
-      'isFavorite': isFavorite,
     };
   }
 
@@ -57,12 +56,11 @@ class Product with ChangeNotifier {
 
   factory Product.fromMap(Map<String, dynamic> map) {
     return Product(
-      id: map['id'] as String,
-      title: map['title'] as String,
-      description: map['description'] as String,
-      imageUrl: map['imageUrl'] as String,
-      price: map['price'] as String,
-      isFavorite: map['isFavorite'] as bool,
+      id: map['id'] ?? '',
+      title: map['title'] ?? '',
+      description: map['description'] ?? '',
+      imageUrl: map['imageUrl'] ?? '',
+      price: map['price'] ?? '',
     );
   }
 

@@ -15,7 +15,7 @@ class HomeDrawer extends StatelessWidget {
             leading: const Icon(Icons.shopify_sharp),
             title: const Text('Loja'),
             onTap: () {
-              Navigator.of(context).pushReplacementNamed(AppRoutes.homeScreen);
+              Navigator.of(context).pushReplacementNamed(AppRoutes.authScreen);
             },
           ),
           ListTile(

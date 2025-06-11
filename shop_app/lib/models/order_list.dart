@@ -9,26 +9,23 @@ import 'cart.dart';
 import 'order.dart';
 
 class OrderList with ChangeNotifier {
-  static OrderList? _instance;
+  final String _token;
+  final List<Order> _orders;
 
-  OrderList._internal();
+  OrderList([this._token = '', this._orders = const []]);
 
-  static OrderList? get instance {
-    _instance ??= OrderList._internal();
-    return _instance;
-  }
-
-  final List<Order> _orders = [];
-  final url = Uri.parse(dotenv.get('firebase_url', fallback: ''));
+  final url = dotenv.get('base_url', fallback: '');
 
   List<Order> get orders => [..._orders];
+  String get token => _token;
 
   int get orderCount => _orders.length;
 
   Future<void> loadOrders() async {
+    final uri = Uri.https(url, '/orders.json', {'auth': token});
     try {
       final response = await get(
-        url.replace(path: 'orders.json'),
+        uri,
         headers: {'Content-Type': 'application/json'},
       );
       if (response.body == 'null') return;
@@ -63,7 +60,7 @@ class OrderList with ChangeNotifier {
 
     try {
       final response = await post(
-        url.replace(path: 'orders.json'),
+        Uri.https(url, '/orders.json', {'auth': token}),
         headers: {'Content-Type': 'application/json'},
         body: order.toJson(),
       );

@@ -1,6 +1,5 @@
 class AppRoutes {
-  static const String loginScreen = "/";
-  static const String homeScreen = "/home-screen";
+  static const String authScreen = "/";
   static const String productDetails = "/product-details";
   static const String productScreen = "/product-screen";
   static const String productForm = "/product-form";

@@ -8,9 +8,7 @@ import '../models/product_list.dart';
 import '../utils/app_routes.dart';
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  final String title;
+  const MyHomePage({super.key});
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
@@ -37,7 +35,7 @@ class _MyHomePageState extends State<MyHomePage> {
         context: context,
         builder: (context) => AlertDialog(
           title: const Text("Erro ao carregar produtos"),
-          content: Text('[ERROR]: $e'),
+          content: Text('$e'),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
@@ -57,7 +55,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title),
+        title: Text('Minha Loja'),
         actions: [
           Consumer<Cart>(
             child: IconButton(

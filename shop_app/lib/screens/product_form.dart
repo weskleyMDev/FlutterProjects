@@ -95,16 +95,22 @@ class _ProductFormState extends State<ProductForm> {
       final errorMessage = e.toString().split(': ').length > 1
           ? e.toString().split(': ').sublist(1).join(': ')
           : e.toString();
-      await showDialog<void>(context: context, builder: (context) => AlertDialog(
-        title: const Text("Erro ao salvar produto"),
-        content: Text('[ERROR]: $errorMessage'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text("OK"),
-          ),
-        ],
-      ));
+      await showDialog<void>(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) => AlertDialog(
+          icon: Icon(Icons.warning_amber_sharp, size: 36.0),
+          iconColor: Colors.amber,
+          title: const Text("Erro ao salvar produto"),
+          content: Text('[ERROR]: $errorMessage'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text("OK"),
+            ),
+          ],
+        ),
+      );
     } finally {
       if (mounted) setState(() => _isLoading = false);
     }

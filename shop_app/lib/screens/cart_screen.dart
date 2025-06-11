@@ -115,7 +115,7 @@ class _CartScreenState extends State<CartScreen> {
                                   return;
                                 }
                                 Navigator.of(context).pushNamedAndRemoveUntil(
-                                  AppRoutes.homeScreen,
+                                  AppRoutes.authScreen,
                                   (route) => false,
                                 );
                               },
@@ -146,7 +146,7 @@ class _CartScreenState extends State<CartScreen> {
                 if (!context.mounted) return;
 
                 Navigator.of(context).pushNamedAndRemoveUntil(
-                  AppRoutes.homeScreen,
+                  AppRoutes.authScreen,
                   (route) => false,
                 );
               },

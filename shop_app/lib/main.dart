@@ -8,9 +8,8 @@ import 'models/cart.dart';
 import 'models/order_list.dart';
 import 'models/product_list.dart';
 import 'providers/auth_login.dart';
+import 'screens/auth_home.dart';
 import 'screens/cart_screen.dart';
-import 'screens/home_screen.dart';
-import 'screens/login_screen.dart';
 import 'screens/order_screen.dart';
 import 'screens/product_details.dart';
 import 'screens/product_form.dart';
@@ -31,10 +30,22 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => ProductList()),
-        ChangeNotifierProvider(create: (_) => Cart()),
-        ChangeNotifierProvider(create: (_) => OrderList.instance),
         ChangeNotifierProvider(create: (_) => AuthLogin.instance),
+        ChangeNotifierProxyProvider<AuthLogin, ProductList>(
+          create: (_) {
+            return ProductList();
+          },
+          update: (ctx, auth, previous) =>
+              ProductList(auth.token ?? '', auth.uid ?? '', previous?.items ?? []),
+        ),
+        ChangeNotifierProxyProvider<AuthLogin, OrderList>(
+          create: (_) {
+            return OrderList();
+          },
+          update: (ctx, auth, previous) =>
+              OrderList(auth.token ?? '', previous?.orders ?? []),
+        ),
+        ChangeNotifierProvider(create: (_) => Cart()),
       ],
       child: MaterialApp(
         title: 'Shopping App',
@@ -50,12 +61,10 @@ class MyApp extends StatelessWidget {
         darkTheme: purpleDarkTheme,
         themeMode: ThemeMode.system,
         routes: {
-          AppRoutes.loginScreen: (context) => const LoginScreen(),
+          AppRoutes.authScreen: (context) => const AuthOrHome(),
           AppRoutes.productDetails: (context) => const ProductDetails(),
           AppRoutes.cartScreen: (context) => const CartScreen(),
           AppRoutes.orders: (context) => const OrderScreen(),
-          AppRoutes.homeScreen: (context) =>
-              const MyHomePage(title: 'Minha Loja'),
           AppRoutes.productScreen: (context) => const ProductScreen(),
           AppRoutes.productForm: (context) => const ProductForm(),
         },

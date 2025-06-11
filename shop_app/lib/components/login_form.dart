@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shop_app/exceptions/auth_exception.dart';
 import 'package:shop_app/providers/auth_login.dart';
 import 'package:shop_app/utils/capitalize.dart';
 
@@ -55,16 +56,32 @@ class _LoginFormState extends State<LoginForm> {
 
     _formKey.currentState?.save();
     final auth = Provider.of<AuthLogin>(context, listen: false);
-
-    if (_isLoginMode) {
-    } else {
-      try {
+    try {
+      if (_isLoginMode) {
+        await auth.signin(_loginData['email']!, _loginData['password']!);
+      } else {
         await auth.signup(_loginData['email']!, _loginData['password']!);
-      } catch (e) {
-        rethrow;
-      } finally {
-        setState(() => _isLoading = false);
       }
+    } on AuthException catch (e) {
+      if (!mounted) return;
+      await showDialog<void>(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) => AlertDialog(
+          icon: Icon(Icons.warning_amber_sharp, size: 36.0,),
+          iconColor: Colors.amber,          
+          title: const Text("Erro ao auntenticar!"),
+          content: Text('[ERROR]: $e', textAlign: TextAlign.center,),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text("OK"),
+            ),
+          ],
+        ),
+      );
+    } finally {
+      setState(() => _isLoading = false);
     }
   }
 
@@ -135,7 +152,8 @@ class _LoginFormState extends State<LoginForm> {
                             - Ao menos um dos caracteres: ._+-;
                             - No mínimo 8 caracteres;
                             - Está no formato nome@dominio.com
-                            '''.trimIndent();
+                            '''
+                                .trimIndent();
                           }
                           return null;
                         },
