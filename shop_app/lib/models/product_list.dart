@@ -55,7 +55,7 @@ class ProductList with ChangeNotifier {
 
       if (index >= 0) {
         final response = await put(
-          Uri.https(url, '/user-favorite/$uid/${product.id}.json', {
+          Uri.https(url, '/user-favorites/$uid/${product.id}.json', {
             'auth': token,
           }),
           headers: {'Content-Type': 'application/json'},
@@ -77,7 +77,7 @@ class ProductList with ChangeNotifier {
 
   Future<void> loadProducts() async {
     final uri = Uri.https(url, '/products.json', {'auth': token});
-    final uriFav = Uri.https(url, '/user-favorite/$uid.json', {'auth': token});
+    final uriFav = Uri.https(url, '/user-favorites/$uid.json', {'auth': token});
     try {
       final response = await get(
         uri,

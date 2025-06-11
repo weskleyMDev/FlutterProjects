@@ -11,6 +11,17 @@ class AuthOrHome extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final auth = Provider.of<AuthLogin>(context);
-    return auth.isAuth ? MyHomePage() : LoginScreen();
+    return FutureBuilder(
+      future: auth.tryAutoLogin(),
+      builder: (ctx, snap) {
+        if (snap.connectionState == ConnectionState.waiting) {
+          return Center(child: CircularProgressIndicator());
+        } else if (snap.hasError) {
+          return Center(child: Text('Error: ${snap.error}'));
+        } else {
+          return auth.isAuth ? MyHomePage() : LoginScreen();
+        }
+      },
+    );
   }
 }

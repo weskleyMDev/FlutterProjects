@@ -10,19 +10,21 @@ import 'order.dart';
 
 class OrderList with ChangeNotifier {
   final String _token;
+  final String _uid;
   final List<Order> _orders;
 
-  OrderList([this._token = '', this._orders = const []]);
+  OrderList([this._token = '', this._uid = '', this._orders = const []]);
 
   final url = dotenv.get('base_url', fallback: '');
 
   List<Order> get orders => [..._orders];
   String get token => _token;
+  String get uid => _uid;
 
   int get orderCount => _orders.length;
 
   Future<void> loadOrders() async {
-    final uri = Uri.https(url, '/orders.json', {'auth': token});
+    final uri = Uri.https(url, '/user-orders/$uid.json', {'auth': token});
     try {
       final response = await get(
         uri,
@@ -60,7 +62,7 @@ class OrderList with ChangeNotifier {
 
     try {
       final response = await post(
-        Uri.https(url, '/orders.json', {'auth': token}),
+        Uri.https(url, '/user-orders/$uid.json', {'auth': token}),
         headers: {'Content-Type': 'application/json'},
         body: order.toJson(),
       );
