@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../utils/custom_switch_route.dart';
+
 const Color primaryPurple = Color(0xFF7B1FA2);
 const Color secondaryPurple = Color(0xFFCE93D8);
 const Color tertiaryPurple = Color(0xFFE1BEE7);
@@ -71,6 +73,12 @@ final ThemeData purpleDarkTheme = ThemeData(
   fontFamily: "Lato",
   colorScheme: customDarkColorScheme,
   scaffoldBackgroundColor: customDarkColorScheme.surface,
+  pageTransitionsTheme: PageTransitionsTheme(
+    builders: {
+      TargetPlatform.android: CustomPageTransitionBuilder(),
+      TargetPlatform.windows: CustomPageTransitionBuilder(),
+    }
+  ),
   textTheme: ThemeData.dark().textTheme.copyWith(
     titleLarge: const TextStyle(
       color: Colors.red,

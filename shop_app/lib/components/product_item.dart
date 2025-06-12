@@ -62,7 +62,14 @@ class ProductItem extends StatelessWidget {
             AppRoutes.productDetails,
             arguments: product,
           ),
-          child: Image.network(product.imageUrl, fit: BoxFit.cover),
+          child: Hero(
+            tag: product.id,
+            child: FadeInImage(
+              placeholder: AssetImage('assets/images/android.png'),
+              image: NetworkImage(product.imageUrl),
+              fit: BoxFit.cover,
+            ),
+          ),
         ),
       ),
     );
