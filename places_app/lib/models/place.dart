@@ -7,7 +7,7 @@ import 'place_location.dart';
 class Place {
   final String id;
   final String title;
-  final PlaceLocation location;
+  final PlaceLocation? location;
   final File image;
 
   Place({
@@ -24,7 +24,7 @@ class Place {
     File? image,
   }) {
     return Place(
-      id: id ?? this.id,
+      id: id ?? '',
       title: title ?? this.title,
       location: location ?? this.location,
       image: image ?? this.image,
@@ -35,7 +35,7 @@ class Place {
     return <String, dynamic>{
       'id': id,
       'title': title,
-      'location': location.toMap(),
+      'location': location?.toMap(),
       'image': image.path,
     };
   }
@@ -44,14 +44,15 @@ class Place {
     return Place(
       id: map['id'] as String,
       title: map['title'] as String,
-      location: PlaceLocation.fromMap(map['location'] as Map<String,dynamic>),
+      location: PlaceLocation.fromMap(map['location'] as Map<String, dynamic>),
       image: File(map['image'] as String),
     );
   }
 
   String toJson() => json.encode(toMap());
 
-  factory Place.fromJson(String source) => Place.fromMap(json.decode(source) as Map<String, dynamic>);
+  factory Place.fromJson(String source) =>
+      Place.fromMap(json.decode(source) as Map<String, dynamic>);
 
   @override
   String toString() {
@@ -61,19 +62,15 @@ class Place {
   @override
   bool operator ==(covariant Place other) {
     if (identical(this, other)) return true;
-  
-    return 
-      other.id == id &&
-      other.title == title &&
-      other.location == location &&
-      other.image == image;
+
+    return other.id == id &&
+        other.title == title &&
+        other.location == location &&
+        other.image == image;
   }
 
   @override
   int get hashCode {
-    return id.hashCode ^
-      title.hashCode ^
-      location.hashCode ^
-      image.hashCode;
+    return id.hashCode ^ title.hashCode ^ location.hashCode ^ image.hashCode;
   }
 }

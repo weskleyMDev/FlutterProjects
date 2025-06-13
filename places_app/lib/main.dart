@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:provider/provider.dart';
 
+import 'providers/places_provider.dart';
 import 'screens/home_screen.dart';
 import 'screens/place_form_screen.dart';
 import 'themes/text_theme.dart';
@@ -23,21 +25,24 @@ class MyApp extends StatelessWidget {
       "Nunito",
     );
     final MaterialTheme theme = MaterialTheme(textTheme);
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Places App',
-      theme: brightness == Brightness.light ? theme.light() : theme.dark(),
-      locale: const Locale('pt', 'BR'),
-      supportedLocales: const [Locale('pt', 'BR')],
-      localizationsDelegates: const [
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-      ],
-      routes: {
-        AppRoutes.home: (_) => HomeScreen(),
-        AppRoutes.placeForm: (_) => PlaceFormScreen(),
-      },
+    return ChangeNotifierProvider(
+      create: (context) => PlacesProvider(),
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        title: 'Places App',
+        theme: brightness == Brightness.light ? theme.light() : theme.dark(),
+        locale: const Locale('pt', 'BR'),
+        supportedLocales: const [Locale('pt', 'BR')],
+        localizationsDelegates: const [
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        routes: {
+          AppRoutes.home: (_) => HomeScreen(),
+          AppRoutes.placeForm: (_) => PlaceFormScreen(),
+        },
+      ),
     );
   }
 }

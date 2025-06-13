@@ -346,6 +346,12 @@ class MaterialTheme {
      ),
      scaffoldBackgroundColor: colorScheme.surface,
      canvasColor: colorScheme.surface,
+     snackBarTheme: SnackBarThemeData().copyWith(
+      contentTextStyle: TextStyle().copyWith(
+        color: Colors.red.shade700,
+        fontWeight: FontWeight.bold,
+      )
+     )
   );
 
 
