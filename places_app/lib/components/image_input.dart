@@ -67,14 +67,18 @@ class _ImageInputState extends State<ImageInput> {
           decoration: BoxDecoration(
             border: Border.all(width: 1.0, color: Colors.grey),
           ),
-          alignment: Alignment.center,
           child: _storedImage != null
               ? Image.file(
                   _storedImage!,
                   width: double.infinity,
                   fit: BoxFit.cover,
                 )
-              : Text('Nenhuma Imagem Selecionada', textAlign: TextAlign.center),
+              : Center(
+                  child: Text(
+                    'Nenhuma Imagem Selecionada',
+                    textAlign: TextAlign.center,
+                  ),
+                ),
         ),
         _storedImage == null
             ? Positioned(
@@ -89,7 +93,7 @@ class _ImageInputState extends State<ImageInput> {
                 onPressed: _takePicture,
                 icon: Icon(
                   Icons.refresh_sharp,
-                  size: 36.0,
+                  size: 42.0,
                   color: Colors.black54,
                 ),
               ),

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../components/image_input.dart';
+import '../components/location_input.dart';
 import '../providers/places_provider.dart';
 
 class PlaceFormScreen extends StatefulWidget {
@@ -119,6 +120,10 @@ class _PlaceFormScreenState extends State<PlaceFormScreen> {
                         textInputAction: TextInputAction.done,
                         onFieldSubmitted: (_) => _submitForm(),
                       ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8.0),
+                      child: LocationInput(),
                     ),
                   ],
                 ),

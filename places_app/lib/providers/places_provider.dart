@@ -17,7 +17,6 @@ class PlacesProvider with ChangeNotifier {
 
   Future<void> loadPlaces() async {
     final dataList = await DBServices.getData('places');
-    print("Loaded places from database: $dataList");
     _places = dataList.map((item) => Place.fromMap(item).copyWith(
       id: item['id'],
       title: item['title'],
@@ -36,7 +35,6 @@ class PlacesProvider with ChangeNotifier {
       'title': newPlace.title,
       'image': newPlace.image?.path,
     });
-    print("Place added to database: ${newPlace.toMap()}");
     notifyListeners();
   }
 
