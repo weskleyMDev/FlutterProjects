@@ -17,12 +17,16 @@ class PlacesProvider with ChangeNotifier {
 
   Future<void> loadPlaces() async {
     final dataList = await DBServices.getData('places');
-    _places = dataList.map((item) => Place.fromMap(item).copyWith(
-      id: item['id'],
-      title: item['title'],
-      location: null,
-      image: File(item['image'])
-    )).toList();
+    _places = dataList
+        .map(
+          (item) => Place.fromMap(item).copyWith(
+            id: item['id'],
+            title: item['title'],
+            description: item['description'],
+            image: File(item['image']),
+          ),
+        )
+        .toList();
     notifyListeners();
   }
 
@@ -33,6 +37,7 @@ class PlacesProvider with ChangeNotifier {
     DBServices.insert('places', {
       'id': newPlace.id,
       'title': newPlace.title,
+      'description': newPlace.description,
       'image': newPlace.image?.path,
     });
     notifyListeners();
@@ -49,12 +54,14 @@ class PlacesProvider with ChangeNotifier {
   void savePlace(Map<String, String> data, File image) {
     final String id = data['id'] ?? '';
     final String title = data['title'] ?? '';
+    final String description = data['description'] ?? '';
     final PlaceLocation? location = null;
     final File pickedImage = image;
 
     final newPlace = Place(
       id: id,
       title: title,
+      description: description,
       location: location,
       image: pickedImage,
     );

@@ -7,12 +7,14 @@ import 'place_location.dart';
 class Place {
   final String id;
   final String title;
+  final String description;
   final PlaceLocation? location;
   final File? image;
 
   Place({
     required this.id,
     required this.title,
+    required this.description,
     required this.location,
     required this.image,
   });
@@ -20,12 +22,14 @@ class Place {
   Place copyWith({
     String? id,
     String? title,
+    String? description,
     PlaceLocation? location,
     File? image,
   }) {
     return Place(
       id: id ?? '',
       title: title ?? this.title,
+      description: description ?? this.description,
       location: location ?? this.location,
       image: image ?? this.image,
     );
@@ -35,6 +39,7 @@ class Place {
     return <String, dynamic>{
       'id': id,
       'title': title,
+      'description': description,
       'location': location?.toMap(),
       'image': image?.path,
     };
@@ -42,12 +47,11 @@ class Place {
 
   factory Place.fromMap(Map<String, dynamic> map) {
     return Place(
-      id: map['id'] as String,
-      title: map['title'] as String,
-      location: map['location'] != null
-          ? PlaceLocation.fromMap(map['location'] as Map<String, dynamic>)
-          : null,
-      image: map['image'] != null ? File(map['image'] as String) : null,
+      id: map['id'] ?? '',
+      title: map['title'] ?? '',
+      description: map['description'] ?? '',
+      location: map['location'],// ?? PlaceLocation.fromMap(map['location'] as Map<String, dynamic>),
+      image: File(map['image'] ?? ''),
     );
   }
 

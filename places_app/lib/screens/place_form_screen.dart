@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../components/image_input.dart';
-import '../components/location_input.dart';
 import '../providers/places_provider.dart';
+//import '../components/location_input.dart';
 
 class PlaceFormScreen extends StatefulWidget {
   const PlaceFormScreen({super.key});
@@ -106,7 +106,7 @@ class _PlaceFormScreenState extends State<PlaceFormScreen> {
                           prefixIcon: Icon(Icons.description_sharp),
                         ),
                         onSaved: (description) =>
-                            _formData['title'] = description ?? '',
+                            _formData['description'] = description ?? '',
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return 'Preencha o campo descrição';
@@ -121,10 +121,10 @@ class _PlaceFormScreenState extends State<PlaceFormScreen> {
                         onFieldSubmitted: (_) => _submitForm(),
                       ),
                     ),
-                    Padding(
+                    /* Padding(
                       padding: const EdgeInsets.symmetric(vertical: 8.0),
                       child: LocationInput(),
-                    ),
+                    ), */
                   ],
                 ),
                 Container(

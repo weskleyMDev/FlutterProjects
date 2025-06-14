@@ -43,6 +43,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                         as ImageProvider,
                             ),
                             title: Text(place.title),
+                            subtitle: Text(place.description),
                           );
                         },
                       ),
