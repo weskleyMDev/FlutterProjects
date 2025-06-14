@@ -4,9 +4,10 @@ import 'package:flutter/material.dart';
 
 import '../models/place.dart';
 import '../models/place_location.dart';
+import '../utils/db_services.dart';
 
 class PlacesProvider with ChangeNotifier {
-  final List<Place> _places = [];
+  List<Place> _places = [];
 
   List<Place> get places => List.unmodifiable(_places);
 
@@ -14,9 +15,28 @@ class PlacesProvider with ChangeNotifier {
 
   Place getItemByIndex(int index) => _places[index];
 
+  Future<void> loadPlaces() async {
+    final dataList = await DBServices.getData('places');
+    print("Loaded places from database: $dataList");
+    _places = dataList.map((item) => Place.fromMap(item).copyWith(
+      id: item['id'],
+      title: item['title'],
+      location: null,
+      image: File(item['image'])
+    )).toList();
+    notifyListeners();
+  }
+
   void addPlace(Place place) {
     final id = DateTime.now().toIso8601String();
-    _places.add(place.copyWith(id: id));
+    final newPlace = place.copyWith(id: id);
+    _places.add(newPlace);
+    DBServices.insert('places', {
+      'id': newPlace.id,
+      'title': newPlace.title,
+      'image': newPlace.image?.path,
+    });
+    print("Place added to database: ${newPlace.toMap()}");
     notifyListeners();
   }
 

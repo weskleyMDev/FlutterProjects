@@ -1,6 +1,9 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart' as sqflite_ffi;
 
 import 'providers/places_provider.dart';
 import 'screens/home_screen.dart';
@@ -10,6 +13,9 @@ import 'themes/theme.dart';
 import 'utils/app_routes.dart';
 
 void main() {
+  if (Platform.isWindows) {
+    sqflite_ffi.databaseFactory = sqflite_ffi.databaseFactoryFfi;
+  }
   runApp(const MyApp());
 }
 

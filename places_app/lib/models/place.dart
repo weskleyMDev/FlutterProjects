@@ -8,7 +8,7 @@ class Place {
   final String id;
   final String title;
   final PlaceLocation? location;
-  final File image;
+  final File? image;
 
   Place({
     required this.id,
@@ -36,7 +36,7 @@ class Place {
       'id': id,
       'title': title,
       'location': location?.toMap(),
-      'image': image.path,
+      'image': image?.path,
     };
   }
 
@@ -44,8 +44,10 @@ class Place {
     return Place(
       id: map['id'] as String,
       title: map['title'] as String,
-      location: PlaceLocation.fromMap(map['location'] as Map<String, dynamic>),
-      image: File(map['image'] as String),
+      location: map['location'] != null
+          ? PlaceLocation.fromMap(map['location'] as Map<String, dynamic>)
+          : null,
+      image: map['image'] != null ? File(map['image'] as String) : null,
     );
   }
 
