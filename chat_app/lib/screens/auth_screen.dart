@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 
 import '../components/auth_form.dart';
+import '../factorys/local_services_factory.dart';
+import '../factorys/services_factory.dart';
 import '../models/auth_form_data.dart';
-import '../services/auth/auth_service_imp.dart';
+import '../services/auth/auth_service.dart';
 
 class AuthScreen extends StatefulWidget {
   const AuthScreen({super.key});
@@ -16,11 +18,13 @@ class _AuthScreenState extends State<AuthScreen> {
 
   Future<void> _handleSubmitedForm(AuthFormData formData) async {
     try {
+      final ServicesFactory localServices = LocalServicesFactory();
+      final AuthService localAuth = localServices.createAuthService();
       setState(() => _isLoading = true);
       if (formData.isLogin) {
-        await AuthServiceImp().signin(formData.email, formData.password);
+        await localAuth.signin(formData.email, formData.password);
       } else {
-        await AuthServiceImp().signup(
+        await localAuth.signup(
           formData.name,
           formData.email,
           formData.password,

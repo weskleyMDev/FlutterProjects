@@ -2,13 +2,16 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 
-import '../services/auth/auth_service_imp.dart';
+import '../factorys/local_services_factory.dart';
+import '../factorys/services_factory.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final ServicesFactory localServices = LocalServicesFactory();
+    final localAuth = localServices.createAuthService();
     return Scaffold(
       appBar: AppBar(title: const Text('Home')),
       body: Center(
@@ -17,11 +20,11 @@ class HomeScreen extends StatelessWidget {
             CircleAvatar(
               radius: 50,
               backgroundImage: FileImage(
-                File(AuthServiceImp().currentUser!.imageUrl),
+                File(localAuth.currentUser!.imageUrl),
               ),
             ),
             ElevatedButton(
-              onPressed: () => AuthServiceImp().signout(),
+              onPressed: () => localAuth.signout(),
               child: const Text('Sign out'),
             ),
           ],

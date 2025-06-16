@@ -6,7 +6,7 @@ import 'package:chat_app/models/user.dart';
 
 import 'auth_service.dart';
 
-class AuthServiceImp implements AuthService {
+class LocalAuthService implements AuthService {
   static User? _currentUser;
   static MultiStreamController<User?>? _controller;
   static final Map<String, User> _users = {};
