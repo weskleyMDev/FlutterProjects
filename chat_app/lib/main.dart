@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'screens/auth_screen.dart';
+import 'screens/auth_home.dart';
 import 'themes/font.dart';
 import 'themes/theme.dart';
 
@@ -22,7 +22,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: brightness == Brightness.light ? theme.light() : theme.dark(),
-      home: const AuthScreen(),
+      home: const AuthOrHome(),
     );
   }
 }
