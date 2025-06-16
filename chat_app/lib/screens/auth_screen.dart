@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import '../components/auth_form.dart';
 import '../factorys/local_services_factory.dart';
-import '../factorys/services_factory.dart';
 import '../models/auth_form_data.dart';
 import '../services/auth/auth_service.dart';
 
@@ -18,8 +17,8 @@ class _AuthScreenState extends State<AuthScreen> {
 
   Future<void> _handleSubmitedForm(AuthFormData formData) async {
     try {
-      final ServicesFactory localServices = LocalServicesFactory();
-      final AuthService localAuth = localServices.createAuthService();
+      final AuthService localAuth = LocalServicesFactory.instance
+          .createAuthService();
       setState(() => _isLoading = true);
       if (formData.isLogin) {
         await localAuth.signin(formData.email, formData.password);

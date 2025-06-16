@@ -343,6 +343,9 @@ class MaterialTheme {
       bodyColor: colorScheme.onSurface,
       displayColor: colorScheme.onSurface,
     ),
+    appBarTheme: AppBarTheme().copyWith(
+      centerTitle: true,
+    ),
     scaffoldBackgroundColor: colorScheme.surface,
     canvasColor: colorScheme.surface,
   );

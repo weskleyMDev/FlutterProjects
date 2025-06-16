@@ -7,12 +7,20 @@ import 'package:chat_app/models/user.dart';
 import 'auth_service.dart';
 
 class LocalAuthService implements AuthService {
+  static final _defaultUser = User(
+    id: 'a',
+    name: 'Juca',
+    email: 'juca@fribe.com',
+    imageUrl: 'assets/images/user_image_pattern.png'
+  );
   static User? _currentUser;
   static MultiStreamController<User?>? _controller;
-  static final Map<String, User> _users = {};
+  static final Map<String, User> _users = {
+    _defaultUser.email: _defaultUser
+  };
   static final Stream<User?> _userStream = Stream<User?>.multi((controller) {
     _controller = controller;
-    _updateUser(null);
+    _updateUser(_defaultUser);
   });
 
   @override
