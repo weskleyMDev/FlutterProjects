@@ -19,13 +19,14 @@ class MessageBox extends StatelessWidget {
   Widget _showUserImage(String url) {
     ImageProvider? provider;
     final uri = Uri.parse(url);
-    
+
     if (uri.path.contains('assets')) {
       provider = AssetImage(uri.toString());
     } else if (uri.scheme == 'http') {
       provider = NetworkImage(uri.toString());
     } else {
-      provider = FileImage(File(uri.toString()));
+      String decodePath = Uri.decodeFull(uri.path);
+      provider = FileImage(File(decodePath));
     }
 
     return CircleAvatar(backgroundImage: provider);
