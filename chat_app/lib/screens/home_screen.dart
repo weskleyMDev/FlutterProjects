@@ -38,11 +38,14 @@ class HomeScreen extends StatelessWidget {
         ],
       ),
       body: Center(
-        child: Column(
-          children: [
-            Expanded(child: Messages()),
-            NewMessage(),
-          ],
+        child: Container(
+          margin: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
+          child: Column(
+            children: [
+              Expanded(child: Messages()),
+              NewMessage(),
+            ],
+          ),
         ),
       ),
     );
