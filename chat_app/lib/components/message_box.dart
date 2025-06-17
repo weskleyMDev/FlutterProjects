@@ -39,7 +39,6 @@ class MessageBox extends StatelessWidget {
       mainAxisAlignment: isCurrentUser
           ? MainAxisAlignment.end
           : MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         if (!isCurrentUser) _showUserImage(message.userImage),
         ChatBubble(

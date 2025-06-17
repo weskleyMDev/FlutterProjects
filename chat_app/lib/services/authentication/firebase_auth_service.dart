@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:chat_app/models/user.dart';
-import 'package:chat_app/services/auth/auth_service.dart';
+import 'package:chat_app/services/authentication/auth_service.dart';
 
 class FirebaseAuthService implements AuthService {
   @override

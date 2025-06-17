@@ -7,12 +7,7 @@ abstract class AuthService {
 
   Stream<User?> get userChanges;
 
-  Future<void> signup(
-    String name,
-    String email,
-    String password,
-    File? image,
-  );
+  Future<void> signup(String name, String email, String password, File? image);
   Future<void> signin(String email, String password);
   Future<void> signout();
 }

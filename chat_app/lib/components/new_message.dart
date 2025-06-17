@@ -26,13 +26,22 @@ class _NewMessageState extends State<NewMessage> {
   @override
   Widget build(BuildContext context) {
     return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
-        Container(
-          margin: const EdgeInsets.only(right: 5.0),
-          child: IconButton(
-            onPressed: () {},
-            icon: Icon(Icons.emoji_emotions_outlined),
+        SizedBox(
+          width: 50.0,
+          height: 50.0,
+          child: Stack(
+            children: [
+              Positioned(
+                top: 8.0,
+                child: IconButton(
+                  onPressed: () {},
+                  icon: Icon(Icons.emoji_emotions_outlined),
+                ),
+              ),
+            ],
           ),
         ),
         Expanded(
@@ -46,11 +55,20 @@ class _NewMessageState extends State<NewMessage> {
         ),
         Container(
           margin: const EdgeInsets.only(left: 5.0),
-          child: IconButton(
-            onPressed: _textController.text.trim().isEmpty
-                ? null
-                : _sendMessage,
-            icon: Icon(Icons.send_sharp),
+          width: 50.0,
+          height: 50.0,
+          child: Stack(
+            children: [
+              Positioned(
+                top: 8.0,
+                child: IconButton(
+                  onPressed: _textController.text.trim().isEmpty
+                      ? null
+                      : _sendMessage,
+                  icon: Icon(Icons.send_sharp),
+                ),
+              ),
+            ],
           ),
         ),
       ],

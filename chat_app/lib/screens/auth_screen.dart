@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../components/auth_form.dart';
 import '../factorys/local_services_factory.dart';
 import '../models/auth_form_data.dart';
-import '../services/auth/auth_service.dart';
+import '../services/authentication/auth_service.dart';
 
 class AuthScreen extends StatefulWidget {
   const AuthScreen({super.key});

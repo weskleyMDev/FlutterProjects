@@ -6,24 +6,7 @@ import '../../models/user.dart';
 import 'data_service.dart';
 
 class LocalDataService implements DataService {
-  static final defaultMessage1 = ChatMessage(
-    id: '1',
-    text:
-        'Ola! sadsadsad adasdasdas sadasdasdsa asdasdasdas sasdasdasdsa dasdasdsadasdsa dasdsadsadsad asdsadasdas',
-    createAt: DateTime.now(),
-    userId: 'a',
-    userName: 'Juca',
-    userImage: 'assets/images/user_image_pattern.png',
-  );
-  static final defaultMessage2 = ChatMessage(
-    id: '2',
-    text: 'Mundo!',
-    createAt: DateTime.now(),
-    userId: 'b',
-    userName: 'Cleide',
-    userImage: 'assets/images/user_image_pattern.png',
-  );
-  static final List<ChatMessage> _messages = [defaultMessage1, defaultMessage2];
+  static final List<ChatMessage> _messages = [];
   static MultiStreamController<List<ChatMessage>>? _controller;
   static final _msgStream = Stream<List<ChatMessage>>.multi((controller) {
     _controller = controller;

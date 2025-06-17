@@ -1,18 +1,26 @@
-import 'package:chat_app/services/auth/auth_service.dart';
+import 'package:chat_app/services/authentication/auth_service.dart';
 import 'package:chat_app/services/data/data_service.dart';
 
-import '../services/auth/firebase_auth_service.dart';
+import '../services/authentication/firebase_auth_service.dart';
 import '../services/data/firebase_data_service.dart';
+import '../services/notification/firebase_notification_service.dart';
 import 'services_factory.dart';
 
 class FirebaseServicesFactory implements ServicesFactory {
-  @override
-  AuthService createAuthService() {
-    return FirebaseAuthService();
-  }
+  static FirebaseServicesFactory? _instance;
+
+  FirebaseServicesFactory._internal();
+
+  static FirebaseServicesFactory get instance =>
+      _instance ??= FirebaseServicesFactory._internal();
 
   @override
-  DataService createDataService() {
-    return FirebaseDataService();
-  }
+  AuthService createAuthService() => FirebaseAuthService();
+
+  @override
+  DataService createDataService() => FirebaseDataService();
+
+  @override
+  FirebaseNotificationService createNotificationService() =>
+      FirebaseNotificationService();
 }

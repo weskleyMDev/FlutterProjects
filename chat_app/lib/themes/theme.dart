@@ -344,7 +344,7 @@ class MaterialTheme {
       displayColor: colorScheme.onSurface,
     ),
     appBarTheme: AppBarTheme().copyWith(
-      centerTitle: true,
+      backgroundColor: colorScheme.inversePrimary,
     ),
     scaffoldBackgroundColor: colorScheme.surface,
     canvasColor: colorScheme.surface,
