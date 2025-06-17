@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "970634438286",
+    "project_id": "chat-app-bce25",
+    "storage_bucket": "chat-app-bce25.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:970634438286:android:3ec467189ed41cf37c0bdf",
+        "android_client_info": {
+          "package_name": "com.weskley.chat_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC4QMRHnBzlQIoIxj47qQHnJTqg_kh8IRE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
