@@ -39,7 +39,6 @@ class ChatMessage {
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
-      'id': id,
       'text': text,
       'createAt': createAt.toIso8601String(),
       'userId': userId,
@@ -48,9 +47,9 @@ class ChatMessage {
     };
   }
 
-  factory ChatMessage.fromMap(Map<String, dynamic> map) {
+  factory ChatMessage.fromMap(Map<String, dynamic> map, String id) {
     return ChatMessage(
-      id: map['id'] as String,
+      id: id,
       text: map['text'] as String,
       createAt: DateTime.parse(map['createAt'] as String),
       userId: map['userId'] as String,
@@ -61,7 +60,8 @@ class ChatMessage {
 
   String toJson() => json.encode(toMap());
 
-  factory ChatMessage.fromJson(String source) => ChatMessage.fromMap(json.decode(source) as Map<String, dynamic>);
+  factory ChatMessage.fromJson(String source, String id) =>
+      ChatMessage.fromMap(json.decode(source) as Map<String, dynamic>, id);
 
   @override
   String toString() {
@@ -71,23 +71,22 @@ class ChatMessage {
   @override
   bool operator ==(covariant ChatMessage other) {
     if (identical(this, other)) return true;
-  
-    return 
-      other.id == id &&
-      other.text == text &&
-      other.createAt == createAt &&
-      other.userId == userId &&
-      other.userName == userName &&
-      other.userImage == userImage;
+
+    return other.id == id &&
+        other.text == text &&
+        other.createAt == createAt &&
+        other.userId == userId &&
+        other.userName == userName &&
+        other.userImage == userImage;
   }
 
   @override
   int get hashCode {
     return id.hashCode ^
-      text.hashCode ^
-      createAt.hashCode ^
-      userId.hashCode ^
-      userName.hashCode ^
-      userImage.hashCode;
+        text.hashCode ^
+        createAt.hashCode ^
+        userId.hashCode ^
+        userName.hashCode ^
+        userImage.hashCode;
   }
 }

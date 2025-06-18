@@ -7,7 +7,6 @@ import '../factorys/firebase_services_factory.dart';
 import '../models/chat_notification.dart';
 import '../services/notification/local_notification_service.dart';
 import '../utils/app_routes.dart';
-import 'auth_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -20,16 +19,13 @@ class HomeScreen extends StatelessWidget {
       listen: false,
     );
     final user = auth.currentUser;
-    if (user == null) {
-      return const AuthScreen();
-    }
     final newNotification = ChatNotification(
       title: 'New Message',
       body: 'You have a new message',
     );
     return Scaffold(
       appBar: AppBar(
-        title: Text(user.name),
+        title: Text(user!.name),
         actions: [
           IconButton(
             icon: const Icon(Icons.add_sharp),

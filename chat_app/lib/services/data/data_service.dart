@@ -3,5 +3,5 @@ import '../../models/chat_user.dart';
 
 abstract class DataService {
   Stream<List<ChatMessage>> messagesStream();
-  Future<ChatMessage> saveMessage(String text, ChatUser user);
+  Future<ChatMessage?> saveMessage(String text, ChatUser user);
 }
