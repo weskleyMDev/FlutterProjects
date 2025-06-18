@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
+import '../factorys/firebase_services_factory.dart';
 import '../factorys/local_services_factory.dart';
 import '../models/chat_message.dart';
 import '../screens/loading_screen.dart';
-import '../services/data/data_service.dart';
 import 'message_box.dart';
 
 class Messages extends StatelessWidget {
@@ -11,9 +11,8 @@ class Messages extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final DataService localData = LocalServicesFactory.instance
-        .createDataService();
-    final auth = LocalServicesFactory.instance.createAuthService();
+    final localData = LocalServicesFactory.instance.createDataService();
+    final auth = FirebaseServicesFactory.instance.createAuthService();
     final currentUser = auth.currentUser;
     return StreamBuilder<List<ChatMessage>>(
       stream: localData.messagesStream(),

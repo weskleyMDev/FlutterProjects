@@ -10,15 +10,15 @@ import 'loading_screen.dart';
 class AuthOrHome extends StatelessWidget {
   const AuthOrHome({super.key});
 
-  Future<void> _init(BuildContext context) async {
-    await Firebase.initializeApp();
+  Future<FirebaseApp> _initializeFirebase() {
+    return Firebase.initializeApp();
   }
 
   @override
   Widget build(BuildContext context) {
     final auth = FirebaseServicesFactory.instance.createAuthService();
     return FutureBuilder(
-      future: _init(context),
+      future: _initializeFirebase(),
       builder: (context, asyncSnapshot) {
         if (asyncSnapshot.connectionState == ConnectionState.waiting) {
           return LoadingScreen();
@@ -29,7 +29,7 @@ class AuthOrHome extends StatelessWidget {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return LoadingScreen();
               } else {
-                return (snapshot.hasData) ? HomeScreen() : AuthScreen();
+                return (snapshot.hasData) ? const HomeScreen() : const AuthScreen();
               }
             },
           );

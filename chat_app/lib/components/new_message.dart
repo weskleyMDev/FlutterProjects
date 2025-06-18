@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../factorys/firebase_services_factory.dart';
 import '../factorys/local_services_factory.dart';
 
 class NewMessage extends StatefulWidget {
@@ -11,11 +12,11 @@ class NewMessage extends StatefulWidget {
 
 class _NewMessageState extends State<NewMessage> {
   final _textController = TextEditingController();
-  final localAuth = LocalServicesFactory.instance.createAuthService();
+  final auth = FirebaseServicesFactory.instance.createAuthService();
   final localData = LocalServicesFactory.instance.createDataService();
 
   Future<void> _sendMessage() async {
-    final user = localAuth.currentUser;
+    final user = auth.currentUser;
     if (user != null && _textController.text.trim().isNotEmpty) {
       await localData.saveMessage(_textController.text, user);
       _textController.clear();
