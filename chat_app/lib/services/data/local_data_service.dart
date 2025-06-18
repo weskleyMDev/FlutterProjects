@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:math';
 
 import '../../models/chat_message.dart';
-import '../../models/user.dart';
+import '../../models/chat_user.dart';
 import 'data_service.dart';
 
 class LocalDataService implements DataService {
@@ -19,7 +19,7 @@ class LocalDataService implements DataService {
   }
 
   @override
-  Future<ChatMessage> saveMessage(String text, User user) async {
+  Future<ChatMessage> saveMessage(String text, ChatUser user) async {
     final message = ChatMessage(
       id: Random().nextDouble().toString(),
       text: text,

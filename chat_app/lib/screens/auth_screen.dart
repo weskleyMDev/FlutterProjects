@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../components/auth_form.dart';
-import '../factorys/local_services_factory.dart';
+import '../factorys/firebase_services_factory.dart';
 import '../models/auth_form_data.dart';
 import '../services/authentication/auth_service.dart';
 
@@ -14,16 +14,17 @@ class AuthScreen extends StatefulWidget {
 
 class _AuthScreenState extends State<AuthScreen> {
   bool _isLoading = false;
+  final AuthService auth = FirebaseServicesFactory.instance.createAuthService();
 
   Future<void> _handleSubmitedForm(AuthFormData formData) async {
     try {
-      final AuthService localAuth = LocalServicesFactory.instance
-          .createAuthService();
-      setState(() => _isLoading = true);
+      if (mounted) {
+        setState(() => _isLoading = true);
+      }
       if (formData.isLogin) {
-        await localAuth.signin(formData.email, formData.password);
+        await auth.signIn(formData.email, formData.password);
       } else {
-        await localAuth.signup(
+        await auth.signUp(
           formData.name,
           formData.email,
           formData.password,
@@ -33,7 +34,9 @@ class _AuthScreenState extends State<AuthScreen> {
     } catch (_) {
       rethrow;
     } finally {
-      setState(() => _isLoading = false);
+      if (mounted) {
+        setState(() => _isLoading = false);
+      }
     }
   }
 

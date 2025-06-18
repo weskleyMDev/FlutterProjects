@@ -2,56 +2,58 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:math';
 
-import 'package:chat_app/models/user.dart';
+import 'package:chat_app/models/chat_user.dart';
 
 import 'auth_service.dart';
 
 class LocalAuthService implements AuthService {
-  static final _defaultUser = User(
+  static final _defaultUser = ChatUser(
     id: 'a',
     name: 'Juca',
     email: 'juca@fribe.com',
-    imageUrl: 'assets/images/user_image_pattern.png'
+    imageUrl: 'assets/images/user_image_pattern.png',
   );
-  static User? _currentUser;
-  static MultiStreamController<User?>? _controller;
-  static final Map<String, User> _users = {
-    _defaultUser.email: _defaultUser
+  static ChatUser? _currentUser;
+  static MultiStreamController<ChatUser?>? _controller;
+  static final Map<String, ChatUser> _users = {
+    _defaultUser.email: _defaultUser,
   };
-  static final Stream<User?> _userStream = Stream<User?>.multi((controller) {
+  static final Stream<ChatUser?> _userStream = Stream<ChatUser?>.multi((
+    controller,
+  ) {
     _controller = controller;
     _updateUser(_defaultUser);
   });
 
   @override
-  User? get currentUser => _currentUser;
+  ChatUser? get currentUser => _currentUser;
 
   @override
-  Stream<User?> get userChanges => _userStream;
+  Stream<ChatUser?> get userChanges => _userStream;
 
-  static void _updateUser(User? user) {
+  static void _updateUser(ChatUser? user) {
     _currentUser = user;
     _controller?.add(_currentUser);
   }
 
   @override
-  Future<void> signin(String email, String password) async {
+  Future<void> signIn(String email, String password) async {
     _updateUser(_users[email]);
   }
 
   @override
-  Future<void> signout() async {
+  Future<void> signOut() async {
     _updateUser(null);
   }
 
   @override
-  Future<void> signup(
+  Future<void> signUp(
     String name,
     String email,
     String password,
     File? image,
   ) async {
-    final newUser = User(
+    final newUser = ChatUser(
       id: Random().nextDouble().toString(),
       name: name,
       email: email,

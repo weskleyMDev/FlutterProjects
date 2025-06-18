@@ -13,8 +13,8 @@ class Messages extends StatelessWidget {
   Widget build(BuildContext context) {
     final DataService localData = LocalServicesFactory.instance
         .createDataService();
-    final localAuth = LocalServicesFactory.instance.createAuthService();
-    final currentUser = localAuth.currentUser;
+    final auth = LocalServicesFactory.instance.createAuthService();
+    final currentUser = auth.currentUser;
     return StreamBuilder<List<ChatMessage>>(
       stream: localData.messagesStream(),
       builder: (context, snapshot) {

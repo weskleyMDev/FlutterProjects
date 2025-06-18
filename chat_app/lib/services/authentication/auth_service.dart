@@ -1,13 +1,13 @@
 import 'dart:io';
 
-import '../../models/user.dart';
+import '../../models/chat_user.dart';
 
 abstract class AuthService {
-  User? get currentUser;
+  ChatUser? get currentUser;
 
-  Stream<User?> get userChanges;
+  Stream<ChatUser?> get userChanges;
 
-  Future<void> signup(String name, String email, String password, File? image);
-  Future<void> signin(String email, String password);
-  Future<void> signout();
+  Future<void> signUp(String name, String email, String password, File? image);
+  Future<void> signIn(String email, String password);
+  Future<void> signOut();
 }

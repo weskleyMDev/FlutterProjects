@@ -25,8 +25,12 @@ class MessageBox extends StatelessWidget {
     } else if (uri.scheme == 'http') {
       provider = NetworkImage(uri.toString());
     } else {
-      String decodePath = Uri.decodeFull(uri.path);
-      provider = FileImage(File(decodePath));
+      try {
+        String decodePath = Uri.decodeFull(uri.path);
+        provider = FileImage(File(decodePath));
+      } catch (_) {
+        provider = AssetImage(uri.toString());
+      }
     }
 
     return CircleAvatar(backgroundImage: provider);

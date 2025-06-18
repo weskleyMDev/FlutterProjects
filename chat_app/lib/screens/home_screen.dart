@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../components/messages.dart';
 import '../components/new_message.dart';
-import '../factorys/local_services_factory.dart';
+import '../factorys/firebase_services_factory.dart';
 import '../models/chat_notification.dart';
 import '../services/notification/local_notification_service.dart';
 import '../utils/app_routes.dart';
@@ -13,7 +13,7 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final localService = LocalServicesFactory.instance.createAuthService();
+    final auth = FirebaseServicesFactory.instance.createAuthService();
     final notifyService = Provider.of<LocalNotificationService>(
       context,
       listen: false,
@@ -24,7 +24,7 @@ class HomeScreen extends StatelessWidget {
     );
     return Scaffold(
       appBar: AppBar(
-        title: Text(localService.currentUser!.name),
+        title: Text(auth.currentUser!.name),
         actions: [
           IconButton(
             icon: const Icon(Icons.add_sharp),
@@ -61,7 +61,7 @@ class HomeScreen extends StatelessWidget {
             ],
             onSelected: (value) {
               if (value == 'logout') {
-                localService.signout();
+                auth.signOut();
               }
             },
           ),
