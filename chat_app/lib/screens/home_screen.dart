@@ -5,7 +5,7 @@ import '../components/messages.dart';
 import '../components/new_message.dart';
 import '../factorys/local_services_factory.dart';
 import '../models/chat_notification.dart';
-import '../services/notification/firebase_notification_service.dart';
+import '../services/notification/local_notification_service.dart';
 import '../utils/app_routes.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -14,7 +14,7 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final localService = LocalServicesFactory.instance.createAuthService();
-    final notifyService = Provider.of<FirebaseNotificationService>(
+    final notifyService = Provider.of<LocalNotificationService>(
       context,
       listen: false,
     );
@@ -24,7 +24,7 @@ class HomeScreen extends StatelessWidget {
     );
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Home'),
+        title: Text(localService.currentUser!.name),
         actions: [
           IconButton(
             icon: const Icon(Icons.add_sharp),
@@ -32,7 +32,7 @@ class HomeScreen extends StatelessWidget {
               notifyService.addNotification(newNotification);
             },
           ),
-          Consumer<FirebaseNotificationService>(
+          Consumer<LocalNotificationService>(
             child: IconButton(
               onPressed: () {
                 Navigator.of(context).pushNamed(AppRoutes.notifications);

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'factorys/firebase_services_factory.dart';
+import 'factorys/local_services_factory.dart';
 import 'screens/auth_home.dart';
 import 'screens/notification_screen.dart';
 import 'themes/font.dart';
@@ -26,7 +26,7 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(
           create: (_) =>
-              FirebaseServicesFactory.instance.createNotificationService(),
+              LocalServicesFactory.instance.createNotificationService(),
         ),
       ],
       child: MaterialApp(
