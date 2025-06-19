@@ -21,18 +21,22 @@ class MessageBox extends StatelessWidget {
     final uri = Uri.parse(url);
 
     if (uri.path.contains('assets')) {
-      provider = AssetImage(uri.toString());
+      provider = AssetImage('assets/images/user_image_pattern.png');
     } else if (uri.scheme == 'http') {
       provider = NetworkImage(uri.toString());
     } else {
       try {
         String decodePath = Uri.decodeFull(uri.path);
-        provider = FileImage(File(decodePath));
+        final file = File(decodePath);
+        if (file.existsSync()) {
+          provider = FileImage(file);
+        } else {
+          provider = AssetImage('assets/images/user_image_pattern.png');
+        }
       } catch (_) {
-        provider = AssetImage(uri.toString());
+        provider = AssetImage('assets/images/user_image_pattern.png');
       }
     }
-
     return CircleAvatar(backgroundImage: provider);
   }
 

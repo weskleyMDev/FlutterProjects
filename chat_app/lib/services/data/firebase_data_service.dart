@@ -14,14 +14,17 @@ class FirebaseDataService implements DataService {
         .withConverter(fromFirestore: _fromFirestore, toFirestore: _toFirestore)
         .orderBy('createAt', descending: true)
         .snapshots();
-    return Stream<List<ChatMessage>>.multi((controller) {
+    return snapshots.map(
+      (snapshot) => snapshot.docs.map((doc) => doc.data()).toList(),
+    );
+    /* return Stream<List<ChatMessage>>.multi((controller) {
       snapshots.listen((event) {
         List<ChatMessage> messages = event.docs
             .map((doc) => doc.data())
             .toList();
         controller.add(messages);
-      });
-    });
+      }); 
+    }); */
   }
 
   @override
