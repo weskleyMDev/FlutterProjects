@@ -1,38 +1,53 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../components/messages.dart';
 import '../components/new_message.dart';
 import '../factorys/firebase_services_factory.dart';
-import '../models/chat_notification.dart';
 import '../services/notification/local_notification_service.dart';
 import '../utils/app_routes.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
+  Widget _showUserImage(String url) {
+    ImageProvider? provider;
+    final uri = Uri.parse(url);
+
+    if (uri.path.contains('assets')) {
+      provider = AssetImage('assets/images/user_image_pattern.png');
+    } else if (uri.scheme == 'http') {
+      provider = NetworkImage(uri.toString());
+    } else {
+      try {
+        String decodePath = Uri.decodeFull(uri.path);
+        final file = File(decodePath);
+        if (file.existsSync()) {
+          provider = FileImage(file);
+        } else {
+          provider = AssetImage('assets/images/user_image_pattern.png');
+        }
+      } catch (_) {
+        provider = AssetImage('assets/images/user_image_pattern.png');
+      }
+    }
+    return CircleAvatar(backgroundImage: provider);
+  }
+
   @override
   Widget build(BuildContext context) {
     final auth = FirebaseServicesFactory.instance.createAuthService();
-    final notifyService = Provider.of<LocalNotificationService>(
-      context,
-      listen: false,
-    );
     final user = auth.currentUser;
-    final newNotification = ChatNotification(
-      title: 'New Message',
-      body: 'You have a new message',
-    );
     return Scaffold(
       appBar: AppBar(
-        title: Text(user!.name),
+        leading: Padding(
+          padding: const EdgeInsets.only(top: 8.0, left: 8.0, bottom: 8.0),
+          child: _showUserImage(user!.imageUrl),
+        ),
+        title: Text(user.name),
         actions: [
-          IconButton(
-            icon: const Icon(Icons.add_sharp),
-            onPressed: () {
-              notifyService.addNotification(newNotification);
-            },
-          ),
           Consumer<LocalNotificationService>(
             child: IconButton(
               onPressed: () {
