@@ -14,7 +14,7 @@ class MineField extends StatefulWidget {
 
 class _MineFieldState extends State<MineField> {
   bool? _winner;
-  final _gameBoard = GameBoard(lines: 10, columns: 10, amountBombs: 5);
+  GameBoard? _gameBoard = GameBoard(lines: 10, columns: 10, amountBombs: 5);
 
   Future<void> _showConfirmDialog() {
     return showDialog(
@@ -39,7 +39,7 @@ class _MineFieldState extends State<MineField> {
   void _reset() {
     setState(() {
       _winner = null;
-      _gameBoard.reset();
+      _gameBoard?.reset();
     });
   }
 
@@ -48,12 +48,12 @@ class _MineFieldState extends State<MineField> {
     setState(() {
       try {
         field.open();
-        if (_gameBoard.isGameOver) {
+        if (_gameBoard!.isGameOver) {
           _winner = true;
         }
       } on Explosion {
         _winner = false;
-        _gameBoard.showBombs();
+        _gameBoard?.showBombs();
       }
     });
   }
@@ -62,20 +62,37 @@ class _MineFieldState extends State<MineField> {
     if (_winner != null) return;
     setState(() {
       field.switchMark();
-      if (_gameBoard.isGameOver) {
+      if (_gameBoard!.isGameOver) {
         _winner = true;
       }
     });
+  }
+
+  GameBoard _getGameBoard(double width, double height) {
+    if (_gameBoard == null) {
+      int amountColumns = 15;
+      double sizeField = width / amountColumns;
+      int amountRows = (height / sizeField).floor();
+
+      _gameBoard = GameBoard(
+        lines: amountRows,
+        columns: amountColumns,
+        amountBombs: 4,
+      );
+    }
+    return _gameBoard!;
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: ResultGame(winner: _winner, onRestart: _reset),
-      body: BoardGame(
-        gameBoard: _gameBoard,
-        onOpen: _onOpen,
-        onSwitchMark: _onSwitchMark,
+      body: LayoutBuilder(
+        builder: (context, constraints) => BoardGame(
+          gameBoard: _getGameBoard(constraints.maxWidth, constraints.maxHeight),
+          onOpen: _onOpen,
+          onSwitchMark: _onSwitchMark,
+        ),
       ),
     );
   }
