@@ -3,6 +3,9 @@ import 'package:counter_app/providers/counter.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import 'my_home.dart';
+import 'store/counter.store.dart';
+
 void main() {
   runApp(const CounterApp());
 }
@@ -14,7 +17,10 @@ class CounterApp extends StatelessWidget {
   Widget build(BuildContext context) {
     ThemeData theme = ThemeData();
     return MultiProvider(
-      providers: [ChangeNotifierProvider<ICounter>(create: (_) => Counter())],
+      providers: [
+        ChangeNotifierProvider<ICounter>(create: (_) => Counter()),
+        Provider(create: (_) => CounterStore()),
+      ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'Counter App',
@@ -62,7 +68,7 @@ class CounterApp extends StatelessWidget {
             ),
           ),
         ),
-        home: const HomePage(),
+        home: const MyHomePage(),
       ),
     );
   }
