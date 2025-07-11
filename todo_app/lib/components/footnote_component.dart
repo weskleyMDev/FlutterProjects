@@ -1,29 +1,35 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:provider/provider.dart';
+
+import '../store/todo.store.dart';
 
 class FootnoteComponent extends StatelessWidget {
   const FootnoteComponent({super.key});
 
   @override
   Widget build(BuildContext context) {
-    String contador = '100';
+    final store = Provider.of<ToDoStore>(context);
     return Row(
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
         Expanded(
-          child: Text.rich(
-            TextSpan(
-              text: 'Você possui '.toUpperCase(),
-              children: [
-                TextSpan(
-                  text: contador,
-                  style: TextStyle(fontWeight: FontWeight.w900),
-                ),
-                TextSpan(text: ' tarefas.'.toUpperCase()),
-              ],
+          child: Observer(
+            builder: (_) => Text.rich(
+              TextSpan(
+                text: 'Você possui '.toUpperCase(),
+                children: [
+                  TextSpan(
+                    text: store.items.length.toString(),
+                    style: TextStyle(fontWeight: FontWeight.w900),
+                  ),
+                  TextSpan(text: ' tarefas.'.toUpperCase()),
+                ],
+              ),
             ),
           ),
         ),
-        OutlinedButton(onPressed: () {}, child: Text('REMOVER TUDO')),
+        OutlinedButton(onPressed: store.removeAll, child: Text('REMOVER TUDO')),
       ],
     );
   }

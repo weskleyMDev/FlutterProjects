@@ -10,6 +10,7 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: LayoutBuilder(
         builder: (context, constraints) => SafeArea(
           child: Center(
@@ -26,10 +27,12 @@ class HomePage extends StatelessWidget {
                       style: Theme.of(context).textTheme.displayLarge,
                     ),
                     const SizedBox(height: 16.0),
-                    InputComponent(),
-                    Container(
-                      margin: const EdgeInsets.symmetric(vertical: 16.0),
-                      child: const ListComponent(),
+                    const InputComponent(),
+                    Flexible(
+                      child: Container(
+                        margin: const EdgeInsets.symmetric(vertical: 16.0),
+                        child: const ListComponent(),
+                      ),
                     ),
                     const FootnoteComponent(),
                   ],
