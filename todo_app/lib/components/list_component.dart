@@ -44,7 +44,7 @@ class ListComponent extends StatelessWidget {
                       onPressed: (_) {
                         try {
                           store.removeTodo(item);
-                          ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                          ScaffoldMessenger.of(context).clearSnackBars();
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
                               content: Text('Tarefa removida!'),
@@ -56,7 +56,7 @@ class ListComponent extends StatelessWidget {
                                   } on AddToDoException catch (e) {
                                     ScaffoldMessenger.of(
                                       context,
-                                    ).hideCurrentSnackBar();
+                                    ).clearSnackBars();
                                     ScaffoldMessenger.of(context).showSnackBar(
                                       SnackBar(content: Text(e.toString())),
                                     );
@@ -66,7 +66,7 @@ class ListComponent extends StatelessWidget {
                             ),
                           );
                         } on RemoveToDoException catch (e) {
-                          ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                          ScaffoldMessenger.of(context).clearSnackBars();
                           ScaffoldMessenger.of(
                             context,
                           ).showSnackBar(SnackBar(content: Text(e.toString())));
