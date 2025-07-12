@@ -10,6 +10,7 @@ class FootnoteComponent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final store = Provider.of<ToDoStore>(context);
+
     return Row(
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
@@ -36,8 +37,47 @@ class FootnoteComponent extends StatelessWidget {
             ),
           ),
         ),
-        OutlinedButton(onPressed: store.removeAll, child: Text('REMOVER TUDO')),
+        OutlinedButton(
+          onPressed: () async {
+            try {
+              if (store.items.isEmpty) return;
+              final confirm = await _confirmDialog(
+                context,
+                'Excluir Tarefas?',
+                'Deseja excluir todas as tarefas?',
+              );
+              if (confirm != null && confirm) {
+                store.removeAll();
+              }
+            } catch (e) {
+              rethrow;
+            }
+          },
+          child: Text('REMOVER TUDO'),
+        ),
       ],
     );
   }
+
+  Future<bool?> _confirmDialog(
+    BuildContext context,
+    String title,
+    String message,
+  ) async => showDialog<bool>(
+    context: context,
+    builder: (context) => AlertDialog(
+      title: Text(title),
+      content: Text(message),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(false),
+          child: const Text('Cancelar'),
+        ),
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(true),
+          child: const Text('Ok'),
+        ),
+      ],
+    ),
+  );
 }
