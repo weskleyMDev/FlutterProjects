@@ -21,9 +21,16 @@ class FootnoteComponent extends StatelessWidget {
                 children: [
                   TextSpan(
                     text: store.items.length.toString(),
-                    style: TextStyle(fontWeight: FontWeight.w900),
+                    style: TextStyle(
+                      fontWeight: FontWeight.w900,
+                      fontSize: 18.0,
+                    ),
                   ),
-                  TextSpan(text: ' tarefas.'.toUpperCase()),
+                  TextSpan(
+                    text: store.items.length == 1
+                        ? ' tarefa.'.toUpperCase()
+                        : ' tarefas.'.toUpperCase(),
+                  ),
                 ],
               ),
             ),

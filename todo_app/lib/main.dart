@@ -4,6 +4,8 @@ import 'package:provider/provider.dart';
 
 import 'pages/home_page.dart';
 import 'store/todo.store.dart';
+import 'utils/google_fonts.dart';
+import 'utils/theme.dart';
 
 void main() {
   runApp(const MyApp());
@@ -14,6 +16,9 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final brightness = View.of(context).platformDispatcher.platformBrightness;
+    final textTheme = createTextTheme(context, "Oxanium", "Nova Square");
+    final theme = MaterialTheme(textTheme);
     return MultiProvider(
       providers: [Provider(create: (_) => ToDoStore())],
       child: MaterialApp(
@@ -26,34 +31,7 @@ class MyApp extends StatelessWidget {
           GlobalCupertinoLocalizations.delegate,
         ],
         title: 'ToDo App',
-        darkTheme: ThemeData(
-          useMaterial3: true,
-          colorScheme: ColorScheme.fromSeed(
-            seedColor: Colors.green,
-            brightness: Brightness.dark,
-          ),
-          outlinedButtonTheme: OutlinedButtonThemeData(
-            style: OutlinedButton.styleFrom(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10.0),
-              ),
-              padding: const EdgeInsets.symmetric(
-                vertical: 20.0,
-                horizontal: 12.0,
-              ),
-            ),
-          ),
-          inputDecorationTheme: InputDecorationTheme().copyWith(
-            border: OutlineInputBorder(),
-          ),
-          textTheme: TextTheme().copyWith(
-            displayLarge: TextStyle(
-              fontSize: 28.0,
-              fontWeight: FontWeight.bold,
-            ),
-            titleLarge: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
-          ),
-        ),
+        theme: brightness == Brightness.light ? theme.light() : theme.dark(),
         home: const HomePage(),
       ),
     );

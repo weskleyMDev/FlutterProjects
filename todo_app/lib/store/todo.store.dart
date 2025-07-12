@@ -12,6 +12,9 @@ abstract class ToDoStoreBase with Store {
   @observable
   ObservableList<ToDo> _items = ObservableList<ToDo>();
 
+  @observable
+  int? openedIndex;
+
   @computed
   List<ToDo> get items => List.unmodifiable(_items);
 

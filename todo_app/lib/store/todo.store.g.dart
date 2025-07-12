@@ -35,6 +35,24 @@ mixin _$ToDoStore on ToDoStoreBase, Store {
     });
   }
 
+  late final _$openedIndexAtom = Atom(
+    name: 'ToDoStoreBase.openedIndex',
+    context: context,
+  );
+
+  @override
+  int? get openedIndex {
+    _$openedIndexAtom.reportRead();
+    return super.openedIndex;
+  }
+
+  @override
+  set openedIndex(int? value) {
+    _$openedIndexAtom.reportWrite(value, super.openedIndex, () {
+      super.openedIndex = value;
+    });
+  }
+
   late final _$ToDoStoreBaseActionController = ActionController(
     name: 'ToDoStoreBase',
     context: context,
@@ -79,6 +97,7 @@ mixin _$ToDoStore on ToDoStoreBase, Store {
   @override
   String toString() {
     return '''
+openedIndex: ${openedIndex},
 items: ${items}
     ''';
   }

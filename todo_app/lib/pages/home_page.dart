@@ -24,7 +24,7 @@ class HomePage extends StatelessWidget {
                   children: [
                     Text(
                       'Lista de Tarefas',
-                      style: Theme.of(context).textTheme.displayLarge,
+                      style: Theme.of(context).textTheme.headlineMedium,
                     ),
                     const SizedBox(height: 16.0),
                     const InputComponent(),
