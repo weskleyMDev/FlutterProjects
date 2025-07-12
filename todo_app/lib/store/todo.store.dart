@@ -12,9 +12,6 @@ abstract class ToDoStoreBase with Store {
   @observable
   ObservableList<ToDo> _items = ObservableList<ToDo>();
 
-  @observable
-  int? openedIndex;
-
   @computed
   List<ToDo> get items => List.unmodifiable(_items);
 
@@ -25,6 +22,18 @@ abstract class ToDoStoreBase with Store {
         throw AddToDoException('null_todo');
       }
       _items.add(todo);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  @action
+  void redoAdd(ToDo? todo, int? index) {
+    try {
+      if (todo == null || index == null) {
+        throw AddToDoException('null_todo');
+      }
+      _items.insert(index, todo);
     } catch (e) {
       rethrow;
     }
