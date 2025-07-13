@@ -10,6 +10,7 @@ Um aplicativo de tarefas simples e eficiente feito com Flutter. Permite adiciona
 
 ![Demonstração do app](https://drive.google.com/uc?export=view&id=1-2DS_oW5D5i_k6vxo63lK0fHtMmfYW0L)
 
+
 ---
 
 ## 📸 Capturas de Tela
