@@ -20,14 +20,32 @@ Um aplicativo de tarefas simples e eficiente feito com Flutter. Permite adiciona
 
 ---
 
-## 📦 Como rodar localmente
+## 💻 Como rodar localmente
 
 Siga os passos abaixo para clonar, instalar as dependências e executar o projeto Flutter em sua máquina:
 
-1. **Clone o repositório**
+1. 🧱 **Clone o repositório**
    ```bash
    git clone https://github.com/weskleyMDev/FlutterProjects.git
 
-2. **Acesse o diretório do projeto**
+2. 📂 **Acesse o diretório do projeto**
    ```bash
    cd FlutterProjects/todo_app
+
+3. 🧑‍💻 **Abra em sua IDE de preferência**
+
+4. 🧪 **Verifique o ambiente Flutter**
+   Certifique-se de que o Flutter está instalado corretamente:
+   ```bash
+   flutter doctor
+
+5. 📦 **Instale as dependências**
+   ```bash
+   flutter pub get
+
+6. 📱 **Conecte um dispositivo ou inicie um emulador**
+   Use um emulador Android ou um dispositivo físico conectado via USB.
+
+7. ▶️ **Execute o app**
+   ```bash
+   flutter run
