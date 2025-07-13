@@ -20,7 +20,12 @@ class ToDoComponent extends StatelessWidget {
         side: BorderSide(color: Theme.of(context).colorScheme.outline),
       ),
       leading: CircleAvatar(child: Text('${index + 1}')),
-      title: Text(todo.title, style: Theme.of(context).textTheme.titleLarge),
+      title: Text(
+        todo.title,
+        style: Theme.of(context).textTheme.titleLarge,
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+      ),
       subtitle: Text(
         date
             .split(' ')
