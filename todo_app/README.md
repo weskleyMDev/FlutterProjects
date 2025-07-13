@@ -8,7 +8,7 @@ Um aplicativo de tarefas simples e eficiente feito com Flutter. Permite adiciona
 
 📽️ Veja o app em funcionamento:
 
-![Demonstração do app](https://imgur.com/a/cDIEC5X)
+![Demonstração do app](https://github.com/user-attachments/assets/bc9603d5-a99b-48cf-8e9d-e8e52d7b7af8)
 
 ---
 
