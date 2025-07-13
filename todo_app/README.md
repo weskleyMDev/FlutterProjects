@@ -8,9 +8,7 @@ Um aplicativo de tarefas simples e eficiente feito com Flutter. Permite adiciona
 
 📽️ Veja o app em funcionamento:
 
-> **[Insira aqui o link para o GIF ou vídeo no Drive]**
-
-![Demonstração do app](https://drive.google.com/file/d/1-2DS_oW5D5i_k6vxo63lK0fHtMmfYW0L/view?usp=sharing)
+![Demonstração do app](https://drive.google.com/uc?export=view&id=1-2DS_oW5D5i_k6vxo63lK0fHtMmfYW0L)
 
 ---
 
@@ -28,4 +26,4 @@ Siga os passos abaixo para clonar, instalar as dependências e executar o projet
 
 1. **Clone o repositório**
    ```bash
-   git clone https://github.com/SEU_USUARIO/FlutterProjects.git
+   git clone https://github.com/weskleyMDev/FlutterProjects.git
