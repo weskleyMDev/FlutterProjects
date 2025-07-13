@@ -12,4 +12,5 @@ Este repositório contém múltiplos projetos Flutter desenvolvidos com o objeti
 
 ## 🧪 Projetos incluídos
 
-- ✅ `todo_app` – Aplicativo simples de tarefas com funcionalidade de adicionar e excluir itens
+- ✅ `todo_app` – Aplicativo simples de tarefas com funcionalidade de adicionar e excluir itens. Desenvolvido com MobX, Provider e SQFLite.
+- ✅ `shop_app` – Aplicativo de uma loja de produtos espotivos com funcionalidades de adicionar/excluir/editar produto, carrinho de compras e pedidos. Desenvolvido com Firebase RealTime Database, Authentication e Provider.
