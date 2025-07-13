@@ -10,7 +10,7 @@ Um aplicativo de tarefas simples e eficiente feito com Flutter. Permite adiciona
 
 > **[Insira aqui o link para o GIF ou vídeo no Drive]**
 
-![Demonstração do app](https://drive.google.com/uc?export=view&id=ID_DO_ARQUIVO)
+![Demonstração do app](https://drive.google.com/file/d/1-2DS_oW5D5i_k6vxo63lK0fHtMmfYW0L/view?usp=sharing)
 
 ---
 
