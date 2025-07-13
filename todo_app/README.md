@@ -32,20 +32,21 @@ Siga os passos abaixo para clonar, instalar as dependências e executar o projet
    ```bash
    cd FlutterProjects/todo_app
 
-3. 🧑‍💻 **Abra em sua IDE de preferência**
+3. 🧑‍💻 **Abra o projeto em uma IDE**
+   Abra a pasta do projeto em uma IDE como: VSCode, Android Studio, etc.
 
-4. 🧪 **Verifique o ambiente Flutter**
+5. 🧪 **Verifique o ambiente Flutter**
    Certifique-se de que o Flutter está instalado corretamente:
    ```bash
    flutter doctor
 
-5. 📦 **Instale as dependências**
+6. 📦 **Instale as dependências**
    ```bash
    flutter pub get
 
-6. 📱 **Conecte um dispositivo ou inicie um emulador**
+7. 📱 **Conecte um dispositivo ou inicie um emulador**
    Use um emulador Android ou um dispositivo físico conectado via USB.
 
-7. ▶️ **Execute o app**
+8. ▶️ **Execute o app**
    ```bash
    flutter run
