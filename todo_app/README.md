@@ -1,16 +1,14 @@
-# todo_app
+# 📝 To-Do App Flutter
 
-A new Flutter project.
+Um aplicativo de tarefas simples e eficiente feito com Flutter. Permite adicionar, excluir e marcar tarefas como concluídas. Totalmente responsivo e com suporte a temas claro/escuro.
 
-## Getting Started
+---
 
-This project is a starting point for a Flutter application.
+## 🎥 Demonstração
 
-A few resources to get you started if this is your first Flutter project:
+📽️ Veja o app em funcionamento:
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+> **[Insira aqui o link para o GIF ou vídeo no Drive]**
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+```md
+![Demonstração do app](https://drive.google.com/uc?export=view&id=ID_DO_ARQUIVO)
