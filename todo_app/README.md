@@ -18,7 +18,7 @@ Um aplicativo de tarefas simples e eficiente feito com Flutter. Permite adiciona
 
 | Tela Principal | Adicionar Tarefa | Tema Escuro |
 |----------------|------------------|-------------|
-| ![main](screenshots/home.png) | ![add](screenshots/add_task.png) | ![dark](screenshots/dark_mode.png) |
+| ![main](https://drive.google.com/file/d/1-Fwuifxacs_CiWsDPgZTxKHnDdULMD84/view?usp=sharing) | ![add](screenshots/add_task.png) | ![dark](screenshots/dark_mode.png) |
 
 ---
 
