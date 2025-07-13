@@ -17,7 +17,7 @@ Um aplicativo de tarefas simples e eficiente feito com Flutter. Permite adiciona
 
 | Tela Principal | Excluir Tarefa |
 |----------------|------------------|
-| ![main](https://drive.google.com/file/d/1-Fwuifxacs_CiWsDPgZTxKHnDdULMD84/view?usp=sharing) | ![remove](https://drive.google.com/file/d/1-AnXmzBTOn33aini0jwoUT4bPEmfXeQe/view?usp=sharing)
+| ![main](https://drive.google.com/uc?export=view&id=1-Fwuifxacs_CiWsDPgZTxKHnDdULMD84) | ![remove](https://drive.google.com/uc?export=view&id=1-AnXmzBTOn33aini0jwoUT4bPEmfXeQe) |
 
 ---
 
