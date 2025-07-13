@@ -45,7 +45,7 @@ Siga os passos abaixo para clonar, instalar as dependências e executar o projet
    flutter pub get
 
 7. 📱 **Conecte um dispositivo ou inicie um emulador**  
-   - Use um emulador Android ou um dispositivo físico conectado via USB.
+   Use um emulador Android ou um dispositivo físico conectado via USB.
 
 8. ▶️ **Execute o app**  
    ```bash
