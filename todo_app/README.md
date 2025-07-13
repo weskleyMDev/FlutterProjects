@@ -29,5 +29,5 @@ Siga os passos abaixo para clonar, instalar as dependências e executar o projet
    git clone https://github.com/weskleyMDev/FlutterProjects.git
 
 2. **Acesse o diretório do projeto**
-  ```bash
-  cd FlutterProjects/todo_app
+   ```bash
+   cd FlutterProjects/todo_app
