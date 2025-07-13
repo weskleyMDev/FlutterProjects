@@ -13,4 +13,3 @@ Este repositório contém múltiplos projetos Flutter desenvolvidos com o objeti
 ## 🧪 Projetos incluídos
 
 - ✅ `todo_app` – Aplicativo simples de tarefas com funcionalidade de adicionar e excluir itens
-- 🛠️ (adicione outros projetos conforme forem sendo criados)
