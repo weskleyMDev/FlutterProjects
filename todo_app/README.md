@@ -10,5 +10,22 @@ Um aplicativo de tarefas simples e eficiente feito com Flutter. Permite adiciona
 
 > **[Insira aqui o link para o GIF ou vídeo no Drive]**
 
-```md
 ![Demonstração do app](https://drive.google.com/uc?export=view&id=ID_DO_ARQUIVO)
+
+---
+
+## 📸 Capturas de Tela
+
+| Tela Principal | Adicionar Tarefa | Tema Escuro |
+|----------------|------------------|-------------|
+| ![main](screenshots/home.png) | ![add](screenshots/add_task.png) | ![dark](screenshots/dark_mode.png) |
+
+---
+
+## 📦 Como rodar localmente
+
+Siga os passos abaixo para clonar, instalar as dependências e executar o projeto Flutter em sua máquina:
+
+1. **Clone o repositório**
+   ```bash
+   git clone https://github.com/SEU_USUARIO/FlutterProjects.git
