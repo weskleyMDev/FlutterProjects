@@ -3,12 +3,16 @@ import 'package:mobx/mobx.dart';
 import '../exceptions/add_todo_exception.dart';
 import '../exceptions/remove_todo_exception.dart';
 import '../models/todo.dart';
+import '../services/db/idatabase_service.dart';
+import '../services/db/local_db_service.dart';
 
 part 'todo.store.g.dart';
 
 class ToDoStore = ToDoStoreBase with _$ToDoStore;
 
 abstract class ToDoStoreBase with Store {
+  final IDatabaseService db = LocalDbService();
+
   @observable
   ObservableList<ToDo> _items = ObservableList<ToDo>();
 
@@ -16,46 +20,52 @@ abstract class ToDoStoreBase with Store {
   List<ToDo> get items => List.unmodifiable(_items);
 
   @action
-  void addTodo(ToDo? todo) {
-    try {
-      if (todo == null) {
-        throw AddToDoException('null_todo');
-      }
-      _items.add(todo);
-    } catch (e) {
-      rethrow;
+  Future<void> loadTodoList() async {
+    final dataList = await db.getData(table: 'todo');
+    if (dataList.isEmpty) {
+      _items.clear();
+      return;
+    }
+    _items = dataList.map((t) => ToDo.fromMap(t)).toList().asObservable();
+  }
+
+  @action
+  Future<void> insertTodo({required ToDo todo}) async {
+    final index = _items.indexWhere((element) => element.id == todo.id);
+    if (index != -1) throw AddToDoException('same_todo_id');
+    await db.insertData(table: 'todo', data: todo.toMap());
+    _items.add(todo);
+  }
+
+  @action
+  Future<void> redoInsert({required ToDo todo}) async {
+    await db.insertData(table: 'todo', data: todo.toMap());
+    _items.add(todo);
+  }
+
+  @action
+  Future<void> deleteTodo({required ToDo todo}) async {
+    final index = _items.indexWhere((t) => t.id == todo.id);
+    if (index != -1) {
+      await db.deleteData(table: 'todo', id: todo.id);
+      _items.removeAt(index);
+    } else {
+      throw RemoveToDoException('todo_not_found');
     }
   }
 
   @action
-  void redoAdd(ToDo? todo, int? index) {
-    try {
-      if (todo == null || index == null) {
-        throw AddToDoException('null_todo');
-      }
-      _items.insert(index, todo);
-    } catch (e) {
-      rethrow;
+  Future<void> updateTodo({required ToDo todo}) async {
+    final index = _items.indexWhere((t) => t.id == todo.id);
+    if (index != -1) {
+      await db.updateData(table: 'todo', data: todo.toMap());
+      _items[index] = todo;
     }
   }
 
   @action
-  void removeTodo(ToDo? todo) {
-    try {
-      if (todo == null) {
-        throw RemoveToDoException('null_todo');
-      }
-      final index = _items.indexWhere((t) => t.id == todo.id);
-      if (index != -1) {
-        _items.removeAt(index);
-      } else {
-        throw RemoveToDoException('todo_not_found');
-      }
-    } catch (e) {
-      rethrow;
-    }
+  Future<void> deleteAll() async {
+    await db.clearData(table: 'todo');
+    _items.clear();
   }
-
-  @action
-  void removeAll() => _items.clear();
 }

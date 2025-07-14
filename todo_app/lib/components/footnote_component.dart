@@ -47,7 +47,7 @@ class FootnoteComponent extends StatelessWidget {
                 'Deseja excluir todas as tarefas?',
               );
               if (confirm != null && confirm) {
-                store.removeAll();
+                store.deleteAll();
               }
             } catch (e) {
               rethrow;

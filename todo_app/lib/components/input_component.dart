@@ -21,7 +21,7 @@ class InputComponent extends StatelessWidget {
         title: textController.text.trim().capitalize(),
         date: DateTime.now(),
       );
-      store.addTodo(todo);
+      store.insertTodo(todo: todo);
       textController.clear();
     }
 

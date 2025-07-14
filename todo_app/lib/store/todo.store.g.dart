@@ -35,57 +35,64 @@ mixin _$ToDoStore on ToDoStoreBase, Store {
     });
   }
 
-  late final _$ToDoStoreBaseActionController = ActionController(
-    name: 'ToDoStoreBase',
+  late final _$loadTodoListAsyncAction = AsyncAction(
+    'ToDoStoreBase.loadTodoList',
     context: context,
   );
 
   @override
-  void addTodo(ToDo? todo) {
-    final _$actionInfo = _$ToDoStoreBaseActionController.startAction(
-      name: 'ToDoStoreBase.addTodo',
-    );
-    try {
-      return super.addTodo(todo);
-    } finally {
-      _$ToDoStoreBaseActionController.endAction(_$actionInfo);
-    }
+  Future<void> loadTodoList() {
+    return _$loadTodoListAsyncAction.run(() => super.loadTodoList());
   }
 
-  @override
-  void redoAdd(ToDo? todo, int? index) {
-    final _$actionInfo = _$ToDoStoreBaseActionController.startAction(
-      name: 'ToDoStoreBase.redoAdd',
-    );
-    try {
-      return super.redoAdd(todo, index);
-    } finally {
-      _$ToDoStoreBaseActionController.endAction(_$actionInfo);
-    }
-  }
+  late final _$insertTodoAsyncAction = AsyncAction(
+    'ToDoStoreBase.insertTodo',
+    context: context,
+  );
 
   @override
-  void removeTodo(ToDo? todo) {
-    final _$actionInfo = _$ToDoStoreBaseActionController.startAction(
-      name: 'ToDoStoreBase.removeTodo',
-    );
-    try {
-      return super.removeTodo(todo);
-    } finally {
-      _$ToDoStoreBaseActionController.endAction(_$actionInfo);
-    }
+  Future<void> insertTodo({required ToDo todo}) {
+    return _$insertTodoAsyncAction.run(() => super.insertTodo(todo: todo));
   }
 
+  late final _$redoInsertAsyncAction = AsyncAction(
+    'ToDoStoreBase.redoInsert',
+    context: context,
+  );
+
   @override
-  void removeAll() {
-    final _$actionInfo = _$ToDoStoreBaseActionController.startAction(
-      name: 'ToDoStoreBase.removeAll',
-    );
-    try {
-      return super.removeAll();
-    } finally {
-      _$ToDoStoreBaseActionController.endAction(_$actionInfo);
-    }
+  Future<void> redoInsert({required ToDo todo}) {
+    return _$redoInsertAsyncAction.run(() => super.redoInsert(todo: todo));
+  }
+
+  late final _$deleteTodoAsyncAction = AsyncAction(
+    'ToDoStoreBase.deleteTodo',
+    context: context,
+  );
+
+  @override
+  Future<void> deleteTodo({required ToDo todo}) {
+    return _$deleteTodoAsyncAction.run(() => super.deleteTodo(todo: todo));
+  }
+
+  late final _$updateTodoAsyncAction = AsyncAction(
+    'ToDoStoreBase.updateTodo',
+    context: context,
+  );
+
+  @override
+  Future<void> updateTodo({required ToDo todo}) {
+    return _$updateTodoAsyncAction.run(() => super.updateTodo(todo: todo));
+  }
+
+  late final _$deleteAllAsyncAction = AsyncAction(
+    'ToDoStoreBase.deleteAll',
+    context: context,
+  );
+
+  @override
+  Future<void> deleteAll() {
+    return _$deleteAllAsyncAction.run(() => super.deleteAll());
   }
 
   @override
