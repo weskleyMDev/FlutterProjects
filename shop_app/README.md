@@ -14,9 +14,9 @@ Um aplicativo de tarefas simples e eficiente feito com Flutter. Permite adiciona
 
 ## 📸 Capturas de Tela
 
-| Tela Principal | Excluir Tarefa |
-|----------------|------------------|
-| <img src="https://drive.google.com/uc?export=view&id=1-Fwuifxacs_CiWsDPgZTxKHnDdULMD84" height="400" /> | <img src="https://drive.google.com/uc?export=view&id=1-AnXmzBTOn33aini0jwoUT4bPEmfXeQe" height="400" /> |
+| Tela Principal | Tela Produtos | Tela Pedidos |
+|----------------|------------------|------------------|
+| <img src="https://github.com/user-attachments/assets/e98cfb0d-1b14-4a38-b3b6-628595dd97c7" height="400" /> | <img src="https://github.com/user-attachments/assets/50212b36-9ecb-430a-a8d2-0df354d35ae8" height="400" /> | <img src="https://github.com/user-attachments/assets/4726012a-15da-4b4b-8f71-ed807954f5c7" height="400" /> |
 
 ---
 
