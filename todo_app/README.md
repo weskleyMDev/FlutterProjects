@@ -1,10 +1,10 @@
 # 📝 To-Do App Flutter
 
-Um aplicativo de tarefas simples e eficiente feito com Flutter. Permite adicionar, excluir e marcar tarefas como concluídas. Totalmente responsivo e com suporte a temas claro/escuro.
+A simple and efficient to-do app built with Flutter. Allows you to add, delete, and mark tasks as complete. Fully responsive and supports light/dark themes.
 
 ---
 
-## 🤖 Tecnologias Utilizadas
+## 🤖 Technologies Used
 
 <div>
   <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/flutter/flutter-original.svg" width="50" /> 
@@ -15,7 +15,7 @@ Um aplicativo de tarefas simples e eficiente feito com Flutter. Permite adiciona
 
 ---
 
-## 🎥 Demonstração
+## 🎥 Demo
 
 <p align="left">
   <img src="https://github.com/user-attachments/assets/bc9603d5-a99b-48cf-8e9d-e8e52d7b7af8" alt="Demonstração do app" height="400"/>
@@ -23,41 +23,41 @@ Um aplicativo de tarefas simples e eficiente feito com Flutter. Permite adiciona
 
 ---
 
-## 📸 Capturas de Tela
+## 📸 Screenshots
 
-| Tela Principal | Excluir Tarefa |
+| Main Screen | Delete Task |
 |----------------|------------------|
 | <img src="https://drive.google.com/uc?export=view&id=1-Fwuifxacs_CiWsDPgZTxKHnDdULMD84" height="400" /> | <img src="https://drive.google.com/uc?export=view&id=1-AnXmzBTOn33aini0jwoUT4bPEmfXeQe" height="400" /> |
 
 ---
 
-## 💻 Como rodar localmente  
+## 💻 How to run locally  
 
-Siga os passos abaixo para clonar, instalar as dependências e executar o projeto Flutter em sua máquina:
+Follow the steps below to clone, install dependencies, and run the Flutter project on your machine:
 
-1. 🧱 **Clone o repositório**  
+1. 🧱 **Clone the repository**  
    ```bash
    git clone https://github.com/weskleyMDev/FlutterProjects.git
 
-2. 📂 **Acesse o diretório do projeto**  
+2. 📂 **Access the project directory**  
    ```bash
    cd FlutterProjects/todo_app
 
-3. 🧑‍💻 **Abra o projeto em uma IDE**  
-   Abra a pasta do projeto em uma IDE como: VSCode, Android Studio, etc.
+3. 🧑‍💻 **Open the project in an IDE**  
+   Open the project folder in an IDE such as: VSCode, Android Studio or IntelliJ IDEA.
 
-5. 🧪 **Verifique o ambiente Flutter**  
-   Certifique-se de que o Flutter está instalado corretamente:
+5. 🧪 **Check the Flutter environment**  
+   Make sure Flutter is installed correctly.
    ```bash
    flutter doctor
 
-6. 📦 **Instale as dependências**  
+6. 📦 **Install dependencies**  
    ```bash
    flutter pub get
 
-7. 📱 **Conecte um dispositivo ou inicie um emulador**  
-   Use um emulador Android ou um dispositivo físico conectado via USB.
+7. 📱 **Connect a device or launch an emulator**  
+   Use an Android emulator or a physical device connected via USB.
 
-8. ▶️ **Execute o app**  
+8. ▶️ **Run the app**  
    ```bash
    flutter run
