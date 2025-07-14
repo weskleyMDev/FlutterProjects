@@ -22,6 +22,7 @@ class InputComponent extends StatelessWidget {
         date: DateTime.now(),
       );
       store.insertTodo(todo: todo);
+      store.loadTodoList();
       textController.clear();
     }
 
