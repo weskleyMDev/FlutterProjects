@@ -1,16 +1,33 @@
-# shop_app
+# 📝 To-Do App Flutter
 
-A new Flutter project.
+Um aplicativo de tarefas simples e eficiente feito com Flutter. Permite adicionar, excluir e marcar tarefas como concluídas. Totalmente responsivo e com suporte a temas claro/escuro.
 
-## Getting Started
+---
 
-This project is a starting point for a Flutter application.
+## 🎥 Demonstração
 
-A few resources to get you started if this is your first Flutter project:
+| Comprar Produto | Novo Produto |
+|----------------|------------------|
+| <p align="left"><img src="https://github.com/user-attachments/assets/d2816b15-b4e1-41e1-8059-f7d76b91eefe" alt="Demonstração compra" height="400"/></p> | <p align="left"><img src="https://github.com/user-attachments/assets/e13a3a78-737e-488c-9c47-fab1191d6310" alt="Demonstração novo" height="400"/></p>
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+---
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## 📸 Capturas de Tela
+
+| Tela Principal | Excluir Tarefa |
+|----------------|------------------|
+| <img src="https://drive.google.com/uc?export=view&id=1-Fwuifxacs_CiWsDPgZTxKHnDdULMD84" height="400" /> | <img src="https://drive.google.com/uc?export=view&id=1-AnXmzBTOn33aini0jwoUT4bPEmfXeQe" height="400" /> |
+
+---
+
+## 📦 Como rodar localmente
+
+Siga os passos abaixo para clonar, instalar as dependências e executar o projeto Flutter em sua máquina:
+
+1. **Clone o repositório**
+   ```bash
+   git clone https://github.com/weskleyMDev/FlutterProjects.git
+
+2. **Acesse o diretório do projeto**
+   ```bash
+   cd FlutterProjects/todo_app
