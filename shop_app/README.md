@@ -1,10 +1,10 @@
 # 📝 Shop App Flutter
 
-Um aplicativo de loja online feito com Flutter e com Firebase. Permite adicionar, excluir e atualizar produtos. Além disso, permite realizar compras e gerenciar carrinho. Pedidos e Favoritos são exibidos de acordo com o usuário logado e autenticado.
+An online store app built with Flutter and Firebase. It allows you to add, delete, and update products. It also allows you to make purchases and manage your cart. Orders and Favorites are displayed based on the logged-in and authenticated user.
 
 ---
 
-## 🤖 Tecnologias Utilizadas
+## 🤖 Technologies Used
 
 <div>
   <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/flutter/flutter-original.svg" width="50" /> 
@@ -14,9 +14,9 @@ Um aplicativo de loja online feito com Flutter e com Firebase. Permite adicionar
 
 ---
 
-## 🎥 Demonstração
+## 🎥 Demo
 
-| Comprar Produto | Novo Produto |
+| Buy Product | New Product |
 |----------------|------------------|
 | <p align="left"><img src="https://github.com/user-attachments/assets/d2816b15-b4e1-41e1-8059-f7d76b91eefe" alt="Demonstração compra" height="400"/></p> | <p align="left"><img src="https://github.com/user-attachments/assets/e13a3a78-737e-488c-9c47-fab1191d6310" alt="Demonstração novo" height="400"/></p>
 
@@ -24,39 +24,39 @@ Um aplicativo de loja online feito com Flutter e com Firebase. Permite adicionar
 
 ## 📸 Capturas de Tela
 
-| Tela Principal | Tela Produtos | Tela Pedidos |
+| Main Screen | Products Screen | Orders Screen |
 |----------------|------------------|------------------|
 | <img src="https://github.com/user-attachments/assets/e98cfb0d-1b14-4a38-b3b6-628595dd97c7" height="400" /> | <img src="https://github.com/user-attachments/assets/50212b36-9ecb-430a-a8d2-0df354d35ae8" height="400" /> | <img src="https://github.com/user-attachments/assets/4726012a-15da-4b4b-8f71-ed807954f5c7" height="400" /> |
 
 ---
 
-## 💻 Como rodar localmente  
+## 💻 How to run locally  
 
-Siga os passos abaixo para clonar, instalar as dependências e executar o projeto Flutter em sua máquina:
+Follow the steps below to clone, install dependencies, and run the Flutter project on your machine:
 
-1. 🧱 **Clone o repositório**  
+1. 🧱 **Clone the repository**  
    ```bash
    git clone https://github.com/weskleyMDev/FlutterProjects.git
 
-2. 📂 **Acesse o diretório do projeto**  
+2. 📂 **Access the project directory**  
    ```bash
    cd FlutterProjects/shop_app
 
-3. 🧑‍💻 **Abra o projeto em uma IDE**  
-   Abra a pasta do projeto em uma IDE como: VSCode, Android Studio, etc.
+3. 🧑‍💻 **Open the project in an IDE**  
+   Open the project folder in an IDE such as: VSCode, Android Studio or IntelliJ IDEA.
 
-4. 🧪 **Verifique o ambiente Flutter**  
-   Certifique-se de que o Flutter está instalado corretamente:
+4. 🧪 **Check the Flutter environment**  
+   Make sure Flutter is installed correctly.
    ```bash
    flutter doctor
 
-5. 📦 **Instale as dependências**  
+5. 📦 **Install dependencies**  
    ```bash
    flutter pub get
 
-6. 📱 **Conecte um dispositivo ou inicie um emulador**  
-   Use um emulador Android ou um dispositivo físico conectado via USB.
+6. 📱 **Connect a device or launch an emulator**  
+   Use an Android emulator or a physical device connected via USB.
 
-7. ▶️ **Execute o app**  
+7. ▶️ **Run the app**  
    ```bash
    flutter run
