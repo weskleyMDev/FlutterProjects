@@ -4,6 +4,17 @@ Um aplicativo de tarefas simples e eficiente feito com Flutter. Permite adiciona
 
 ---
 
+## 🤖 Tecnologias Utilizadas
+
+<div>
+  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/flutter/flutter-original.svg" width="50" /> 
+  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/dart/dart-original.svg" width="50" /> 
+  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/mobx/mobx-original.svg" width="50" /> 
+  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/sqlite/sqlite-original.svg" width="50" />
+</div>
+
+---
+
 ## 🎥 Demonstração
 
 <p align="left">
@@ -20,14 +31,33 @@ Um aplicativo de tarefas simples e eficiente feito com Flutter. Permite adiciona
 
 ---
 
-## 📦 Como rodar localmente
+## 💻 Como rodar localmente  
 
 Siga os passos abaixo para clonar, instalar as dependências e executar o projeto Flutter em sua máquina:
 
-1. **Clone o repositório**
+1. 🧱 **Clone o repositório**  
    ```bash
    git clone https://github.com/weskleyMDev/FlutterProjects.git
 
-2. **Acesse o diretório do projeto**
+2. 📂 **Acesse o diretório do projeto**  
    ```bash
    cd FlutterProjects/todo_app
+
+3. 🧑‍💻 **Abra o projeto em uma IDE**  
+   Abra a pasta do projeto em uma IDE como: VSCode, Android Studio, etc.
+
+5. 🧪 **Verifique o ambiente Flutter**  
+   Certifique-se de que o Flutter está instalado corretamente:
+   ```bash
+   flutter doctor
+
+6. 📦 **Instale as dependências**  
+   ```bash
+   flutter pub get
+
+7. 📱 **Conecte um dispositivo ou inicie um emulador**  
+   Use um emulador Android ou um dispositivo físico conectado via USB.
+
+8. ▶️ **Execute o app**  
+   ```bash
+   flutter run
