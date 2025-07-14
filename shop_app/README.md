@@ -40,7 +40,7 @@ Siga os passos abaixo para clonar, instalar as dependências e executar o projet
 
 2. 📂 **Acesse o diretório do projeto**  
    ```bash
-   cd FlutterProjects/todo_app
+   cd FlutterProjects/shop_app
 
 3. 🧑‍💻 **Abra o projeto em uma IDE**  
    Abra a pasta do projeto em uma IDE como: VSCode, Android Studio, etc.
