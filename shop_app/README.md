@@ -1,6 +1,6 @@
 # 📝 Shop App Flutter
 
-Um aplicativo de tarefas simples e eficiente feito com Flutter. Permite adicionar, excluir e marcar tarefas como concluídas. Totalmente responsivo e com suporte a temas claro/escuro.
+Um aplicativo de loja online feito com Flutter e com Firebase. Permite adicionar, excluir e atualizar produtos. Além disso, permite realizar compras e gerenciar carrinho. Pedidos e Favoritos são exibidos de acordo com o usuário logado e autenticado.
 
 ---
 
@@ -45,18 +45,18 @@ Siga os passos abaixo para clonar, instalar as dependências e executar o projet
 3. 🧑‍💻 **Abra o projeto em uma IDE**  
    Abra a pasta do projeto em uma IDE como: VSCode, Android Studio, etc.
 
-5. 🧪 **Verifique o ambiente Flutter**  
+4. 🧪 **Verifique o ambiente Flutter**  
    Certifique-se de que o Flutter está instalado corretamente:
    ```bash
    flutter doctor
 
-6. 📦 **Instale as dependências**  
+5. 📦 **Instale as dependências**  
    ```bash
    flutter pub get
 
-7. 📱 **Conecte um dispositivo ou inicie um emulador**  
+6. 📱 **Conecte um dispositivo ou inicie um emulador**  
    Use um emulador Android ou um dispositivo físico conectado via USB.
 
-8. ▶️ **Execute o app**  
+7. ▶️ **Execute o app**  
    ```bash
    flutter run
