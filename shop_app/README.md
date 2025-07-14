@@ -22,7 +22,7 @@ An online store app built with Flutter and Firebase. It allows you to add, delet
 
 ---
 
-## 📸 Capturas de Tela
+## 📸 Screenshots
 
 | Main Screen | Products Screen | Orders Screen |
 |----------------|------------------|------------------|
