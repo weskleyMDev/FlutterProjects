@@ -53,6 +53,7 @@ Follow the steps below to clone, install dependencies, and run the Flutter proje
 5. 📦 **Install dependencies**  
    ```bash
    flutter pub get
+* *You also need to configure the Realtime Database in your Firebase console.*  
 
 6. 📱 **Connect a device or launch an emulator**  
    Use an Android emulator or a physical device connected via USB.
