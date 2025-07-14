@@ -6,11 +6,11 @@ Some Flutter projects developed by me to improve and showcase my skills with the
 
 ## 🚀 Sobre
 
-Este repositório contém múltiplos projetos Flutter desenvolvidos com o objetivo de praticar conceitos do framework, explorar pacotes da comunidade e criar soluções funcionais com boas práticas de desenvolvimento mobile.
+This repository contains multiple Flutter projects developed with the goal of practicing framework concepts, exploring community packages, and creating functional solutions with good mobile development practices.
 
 ---
 
 ## 🧪 Projetos incluídos
 
-- ✅ [**`todo_app`**](https://github.com/weskleyMDev/FlutterProjects/tree/main/todo_app) – Aplicativo simples de tarefas com funcionalidade de adicionar e excluir itens. Desenvolvido juntamente com MobX, Provider e SQFLite.
-- ✅ [**`shop_app`**](https://github.com/weskleyMDev/FlutterProjects/tree/main/shop_app) – Aplicativo de uma loja de produtos espotivos com funcionalidades de adicionar/excluir/editar produto, carrinho de compras e pedidos. Desenvolvido juntamente com Firebase RealTime Database, Authentication e Provider.
+- ✅ [**`todo_app`**](https://github.com/weskleyMDev/FlutterProjects/tree/main/todo_app) – Simple to-do app with add and delete functionality. Developed in conjunction with MobX, Provider, and SQFLite.
+- ✅ [**`shop_app`**](https://github.com/weskleyMDev/FlutterProjects/tree/main/shop_app) – A sports merchandise store app with product add/delete/edit, shopping cart, and order functionality. Developed with Firebase RealTime Database, Authentication, and Provider.
