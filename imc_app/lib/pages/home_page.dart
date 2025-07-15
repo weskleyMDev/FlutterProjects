@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import '../components/calculate_button.dart';
+import '../components/result_label.dart';
 import '../components/input_data.dart';
-import '../components/profile_image.dart';
+import '../components/profile_data.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -26,11 +26,11 @@ class HomePage extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const ProfileImage(),
-                  const SizedBox(height: 10.0),
+                  const ProfileData(),
+                  const SizedBox(height: 30.0),
                   const InputData(),
                   const SizedBox(height: 10.0),
-                  const CalculateButton(),
+                  const ResultLabel(),
                 ],
               ),
             ),

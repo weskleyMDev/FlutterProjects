@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:provider/provider.dart';
 
 import 'pages/home_page.dart';
+import 'providers/calculate.dart';
 import 'utils/fonts.dart';
 import 'utils/theme.dart';
 
@@ -21,18 +23,23 @@ class MyApp extends StatelessWidget {
       bodyFont: 'Schibsted Grotesk',
     );
     final theme = MaterialTheme(textTheme: textTheme);
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      locale: const Locale('pt', 'BR'),
-      supportedLocales: const [Locale('pt', 'BR'), Locale('en', 'US')],
-      localizationsDelegates: const [
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => CalculateProvider()),
       ],
-      title: 'IMC App',
-      theme: brightness == Brightness.light ? theme.light() : theme.dark(),
-      home: const HomePage(),
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        locale: const Locale('pt', 'BR'),
+        supportedLocales: const [Locale('pt', 'BR'), Locale('en', 'US')],
+        localizationsDelegates: const [
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        title: 'IMC App',
+        theme: brightness == Brightness.light ? theme.light() : theme.dark(),
+        home: const HomePage(),
+      ),
     );
   }
 }

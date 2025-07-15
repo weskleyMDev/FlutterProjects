@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
-class ProfileImage extends StatelessWidget {
-  const ProfileImage({super.key});
+class ProfileData extends StatelessWidget {
+  const ProfileData({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -10,7 +10,7 @@ class ProfileImage extends StatelessWidget {
       builder: (context, constraints) {
         return Column(
           children: [
-            SvgPicture.asset('assets/images/person.svg', height: 100.0),
+            SvgPicture.asset('assets/images/person.svg', height: 150.0),
             SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: ConstrainedBox(
