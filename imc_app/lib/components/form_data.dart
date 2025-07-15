@@ -4,15 +4,14 @@ import 'package:provider/provider.dart';
 import '../providers/calculate.dart';
 import '../providers/fields.dart';
 
-class InputData extends StatefulWidget {
-  const InputData({super.key});
+class FormData extends StatefulWidget {
+  const FormData({super.key});
 
   @override
-  State<InputData> createState() => _InputDataState();
+  State<FormData> createState() => _FormDataState();
 }
 
-class _InputDataState extends State<InputData> {
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+class _FormDataState extends State<FormData> {
   final FocusNode _weightFocus = FocusNode();
   final _heightController = TextEditingController();
   final _weightController = TextEditingController();
@@ -27,9 +26,10 @@ class _InputDataState extends State<InputData> {
   }
 
   Future<void> _submitForm() async {
-    final bool isValid = _formKey.currentState?.validate() ?? false;
+    final provider = Provider.of<FieldsProvider>(context, listen: false);
+    final bool isValid = provider.formKey.currentState?.validate() ?? false;
     if (!isValid) return;
-    _formKey.currentState?.save();
+    provider.formKey.currentState?.save();
     final Map<String, dynamic> data = {
       'height': _formData['height'],
       'weight': _formData['weight'],
@@ -38,13 +38,14 @@ class _InputDataState extends State<InputData> {
       context,
       listen: false,
     ).calculateBMI(data: data);
+    setState(() => _formData.clear());
   }
 
   @override
   Widget build(BuildContext context) {
-    final provider = Provider.of<FieldsProvider>(context, listen: false);
+    final provider = Provider.of<FieldsProvider>(context);
     return Form(
-      key: _formKey,
+      key: provider.formKey,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -86,10 +87,7 @@ class _InputDataState extends State<InputData> {
             onSaved: (weight) => _formData['weight'] =
                 double.tryParse(weight?.trim().replaceAll(',', '.') ?? '0.0') ??
                 0.0,
-            onFieldSubmitted: (_) {
-              _submitForm();
-              provider.clearFields(context);
-            },
+            onFieldSubmitted: (_) => _submitForm(),
             validator: (value) {
               final weight = value?.trim() ?? '';
               if (weight.isEmpty) {
@@ -104,10 +102,7 @@ class _InputDataState extends State<InputData> {
           ),
           const SizedBox(height: 10),
           ElevatedButton(
-            onPressed: () {
-              _submitForm();
-              provider.clearFields(context);
-            },
+            onPressed: _submitForm,
             child: Container(
               margin: const EdgeInsets.symmetric(vertical: 10.0),
               child: Text(

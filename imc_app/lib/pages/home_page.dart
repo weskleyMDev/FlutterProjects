@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../components/input_data.dart';
+import '../components/form_data.dart';
 import '../components/profile_data.dart';
 import '../components/result_label.dart';
 import '../providers/fields.dart';
@@ -38,7 +38,7 @@ class HomePage extends StatelessWidget {
                 children: [
                   const ProfileData(),
                   const SizedBox(height: 30.0),
-                  const InputData(),
+                  const FormData(),
                   const SizedBox(height: 10.0),
                   const ResultLabel(),
                 ],
