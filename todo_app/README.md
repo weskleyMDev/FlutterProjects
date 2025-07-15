@@ -46,18 +46,18 @@ Follow the steps below to clone, install dependencies, and run the Flutter proje
 3. 🧑‍💻 **Open the project in an IDE**  
    Open the project folder in an IDE such as: VSCode, Android Studio or IntelliJ IDEA.
 
-5. 🧪 **Check the Flutter environment**  
+4. 🧪 **Check the Flutter environment**  
    Make sure Flutter is installed correctly.
    ```bash
    flutter doctor
 
-6. 📦 **Install dependencies**  
+5. 📦 **Install dependencies**  
    ```bash
    flutter pub get
 
-7. 📱 **Connect a device or launch an emulator**  
+6. 📱 **Connect a device or launch an emulator**  
    Use an Android emulator or a physical device connected via USB.
 
-8. ▶️ **Run the app**  
+7. ▶️ **Run the app**  
    ```bash
    flutter run
