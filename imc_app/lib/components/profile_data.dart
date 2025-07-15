@@ -18,7 +18,10 @@ class ProfileData extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text('Name: Weskley'),
+                    Text(
+                      'Name: Weskley',
+                      style: Theme.of(context).textTheme.bodyLarge,
+                    ),
                     SizedBox(
                       height: 14.0,
                       child: VerticalDivider(
@@ -26,7 +29,10 @@ class ProfileData extends StatelessWidget {
                         color: Theme.of(context).colorScheme.outline,
                       ),
                     ),
-                    Text('Age: 25'),
+                    Text(
+                      'Age: 25',
+                      style: Theme.of(context).textTheme.bodyLarge,
+                    ),
                   ],
                 ),
               ),

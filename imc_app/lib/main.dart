@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 
 import 'pages/home_page.dart';
 import 'providers/calculate.dart';
+import 'providers/fields.dart';
 import 'utils/fonts.dart';
 import 'utils/theme.dart';
 
@@ -26,6 +27,7 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => CalculateProvider()),
+        ChangeNotifierProvider(create: (_) => FieldsProvider()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

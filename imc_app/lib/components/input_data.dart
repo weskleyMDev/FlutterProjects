@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/calculate.dart';
+import '../providers/fields.dart';
 
 class InputData extends StatefulWidget {
   const InputData({super.key});
@@ -37,12 +38,11 @@ class _InputDataState extends State<InputData> {
       context,
       listen: false,
     ).calculateBMI(data: data);
-    _heightController.clear();
-    _weightController.clear();
   }
 
   @override
   Widget build(BuildContext context) {
+    final provider = Provider.of<FieldsProvider>(context, listen: false);
     return Form(
       key: _formKey,
       child: Column(
@@ -53,8 +53,9 @@ class _InputDataState extends State<InputData> {
               labelText: 'Height',
               border: OutlineInputBorder(),
             ),
-            controller: _heightController,
+            controller: provider.heightController,
             textInputAction: TextInputAction.next,
+            keyboardType: TextInputType.numberWithOptions(decimal: true),
             onSaved: (height) => _formData['height'] =
                 double.tryParse(height?.trim().replaceAll(',', '.') ?? '0.0') ??
                 0.0,
@@ -79,12 +80,16 @@ class _InputDataState extends State<InputData> {
               labelText: 'Weight',
               border: OutlineInputBorder(),
             ),
-            controller: _weightController,
+            controller: provider.weightController,
             textInputAction: TextInputAction.done,
+            keyboardType: TextInputType.numberWithOptions(decimal: true),
             onSaved: (weight) => _formData['weight'] =
                 double.tryParse(weight?.trim().replaceAll(',', '.') ?? '0.0') ??
                 0.0,
-            onFieldSubmitted: (_) => _submitForm(),
+            onFieldSubmitted: (_) {
+              _submitForm();
+              provider.clearFields(context);
+            },
             validator: (value) {
               final weight = value?.trim() ?? '';
               if (weight.isEmpty) {
@@ -99,7 +104,10 @@ class _InputDataState extends State<InputData> {
           ),
           const SizedBox(height: 10),
           ElevatedButton(
-            onPressed: _submitForm,
+            onPressed: () {
+              _submitForm();
+              provider.clearFields(context);
+            },
             child: Container(
               margin: const EdgeInsets.symmetric(vertical: 10.0),
               child: Text(

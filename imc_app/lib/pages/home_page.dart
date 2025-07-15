@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-import '../components/result_label.dart';
 import '../components/input_data.dart';
 import '../components/profile_data.dart';
+import '../components/result_label.dart';
+import '../providers/fields.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -14,7 +16,15 @@ class HomePage extends StatelessWidget {
         title: const Text('BMI Calculator'),
         centerTitle: true,
         actions: [
-          IconButton(onPressed: () {}, icon: Icon(Icons.refresh_sharp)),
+          IconButton(
+            onPressed: () {
+              Provider.of<FieldsProvider>(
+                context,
+                listen: false,
+              ).clearAll(context);
+            },
+            icon: Icon(Icons.refresh_sharp),
+          ),
         ],
       ),
       body: LayoutBuilder(

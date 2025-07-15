@@ -10,13 +10,17 @@ class ResultLabel extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [        
+      children: [
         SizedBox(height: 16.0),
         Consumer<CalculateProvider>(
           builder: (context, provider, _) => Text(
-            'Provide your data! ${provider.result}',
-            style: Theme.of(context).textTheme.labelLarge,
+            provider.label.isEmpty
+                ? 'Enter your height and weight.'
+                : provider.label,
+            style: Theme.of(context).textTheme.bodyLarge,
             textAlign: TextAlign.center,
+            overflow: TextOverflow.ellipsis,
+            maxLines: 1,
           ),
         ),
       ],
