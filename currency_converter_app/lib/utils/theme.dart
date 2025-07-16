@@ -8,7 +8,7 @@ class MaterialTheme {
   ThemeData light() => _theme(_lightScheme());
 
   static ColorScheme _darkScheme() =>
-      ColorScheme.fromSeed(seedColor: Colors.red, brightness: Brightness.dark);
+      ColorScheme.fromSeed(seedColor: Colors.green.shade700, brightness: Brightness.dark);
   ThemeData dark() => _theme(_darkScheme());
 
   ThemeData _theme(ColorScheme colorScheme) => ThemeData(

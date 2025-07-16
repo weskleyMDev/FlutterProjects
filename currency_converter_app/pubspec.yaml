@@ -29,11 +29,13 @@ environment:
 # versions available, run `flutter pub outdated`.
 dependencies:
   cupertino_icons: ^1.0.8
+  decimal: ^3.2.4
   flutter:
     sdk: flutter
   flutter_dotenv: ^5.2.1
   flutter_localizations:
     sdk: flutter
+  flutter_svg: ^2.2.0
   http: ^1.4.0
   intl: ^0.20.2
   provider: ^6.1.5
@@ -55,6 +57,7 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - .env
+    - assets/images/currency-exchange.svg
   #   - images/a_dot_ham.jpeg
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
