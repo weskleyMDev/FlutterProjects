@@ -66,4 +66,5 @@ class DefaultFirebaseOptions {
     storageBucket: 'teste-fribe.firebasestorage.app',
     measurementId: 'G-1PV53EN2KL',
   );
+
 }
