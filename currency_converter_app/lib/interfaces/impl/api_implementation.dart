@@ -18,7 +18,7 @@ class ApiImplementation implements ApiInterface {
       uri,
       headers: {'Content-Type': 'application/json'},
     );
-    final Map<String, dynamic> data = json.decode(response.body);
+    final Map data = json.decode(response.body);
     return data;
   }
 }
