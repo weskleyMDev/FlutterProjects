@@ -1,16 +1,46 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
-class LoginForm extends StatelessWidget {
-  const LoginForm({super.key});
+import '../models/login_form_data.dart';
+
+class LoginForm extends StatefulWidget {
+  const LoginForm({super.key, required this.onSubmit});
+
+  final void Function(LoginFormData) onSubmit;
+
+  @override
+  State<LoginForm> createState() => _LoginFormState();
+}
+
+class _LoginFormState extends State<LoginForm> {
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final LoginFormData _formData = LoginFormData();
+  bool _isVisible = false;
+
+  void _showSnackbar(String message) {
+    ScaffoldMessenger.of(context).clearSnackBars();
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message), duration: const Duration(seconds: 2)),
+    );
+  }
+
+  void _submitForm() {
+    try {
+      final bool isValid = _formKey.currentState?.validate() ?? false;
+      if (!isValid) throw Exception('Form is not valid!');
+      _formKey.currentState?.save();
+      widget.onSubmit(_formData);
+    } catch (e) {
+      _showSnackbar(e.toString().replaceFirst('Exception: ', ''));
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    final formKey = GlobalKey<FormState>();
     return Card(
       margin: const EdgeInsets.all(12.0),
       child: Form(
-        key: formKey,
+        key: _formKey,
         child: Container(
           margin: const EdgeInsets.all(12.0),
           child: Column(
@@ -19,31 +49,84 @@ class LoginForm extends StatelessWidget {
             children: [
               Container(
                 margin: const EdgeInsets.only(bottom: 12.0),
-                child: SvgPicture.asset('assets/images/logo.svg'),
+                child: SvgPicture.asset(
+                  'assets/images/logo.svg',
+                  height: 200.0,
+                ),
               ),
               Container(
                 margin: const EdgeInsets.only(bottom: 12.0),
                 child: TextFormField(
+                  key: const ValueKey('email'),
+                  initialValue: _formData.email,
+                  onChanged: (value) => _formData.email = value,
                   decoration: const InputDecoration(
                     labelText: 'Email',
                     border: OutlineInputBorder(),
                     prefixIcon: Icon(Icons.mail_outline_sharp),
                   ),
+                  validator: (value) {
+                    final name = value?.trim() ?? '';
+                    if (name.isEmpty) return 'Email is required!';
+                    if (!RegExp(
+                      r'^[a-z0-9._-]+@[a-z0-9.-]+\.[a-zA-Z]{2,}$',
+                    ).hasMatch(name)) {
+                      return 'Invalid email format!';
+                    }
+                    return null;
+                  },
                 ),
               ),
               Container(
                 margin: const EdgeInsets.only(bottom: 12.0),
                 child: TextFormField(
+                  key: const ValueKey('password'),
+                  initialValue: _formData.password,
+                  onChanged: (value) => _formData.password = value,
+                  obscureText: !_isVisible,
                   decoration: InputDecoration(
                     labelText: 'Password',
                     border: OutlineInputBorder(),
                     prefixIcon: Icon(Icons.lock_outline_sharp),
-                    suffixIcon: IconButton(onPressed: (){}, icon: Icon(Icons.visibility_off_outlined)),
+                    suffixIcon: IconButton(
+                      onPressed: () {
+                        setState(() {
+                          _isVisible = !_isVisible;
+                        });
+                      },
+                      icon: Icon(
+                        _isVisible
+                            ? Icons.visibility_outlined
+                            : Icons.visibility_off_outlined,
+                      ),
+                    ),
                   ),
+                  validator: (value) {
+                    final password = value?.trim() ?? '';
+                    if (password.isEmpty) return 'Password is required!';
+                    if (password.length < 6) {
+                      return 'Password must be at least 6 characters!';
+                    }
+                    return null;
+                  },
                 ),
               ),
               const SizedBox(height: 22.0),
-              ElevatedButton(onPressed: () {}, child: const Text('LOGIN')),
+              ElevatedButton(
+                onPressed: _submitForm,
+                child: Text(_formData.isLogin ? 'LOGIN' : 'REGISTER'),
+              ),
+              const SizedBox(height: 50.0),
+              TextButton(
+                onPressed: () {
+                  setState(() {
+                    _formData.toggleMode();
+                  });
+                },
+                child: Text(
+                  _formData.isLogin ? 'Create an new account' : 'Go to login',
+                ),
+              ),
             ],
           ),
         ),
