@@ -30,7 +30,7 @@ environment:
 dependencies:
   cloud_firestore: ^5.6.11
   cupertino_icons: ^1.0.8
-  dotenv: ^4.2.0
+  flutter_dotenv: ^5.2.1
   esc_pos_printer: ^4.1.0
   esc_pos_utils: ^1.1.0
   file_picker: ^10.2.0
@@ -63,7 +63,7 @@ dev_dependencies:
 flutter_icons:
   android: true
   image_path: "assets/icon/icon.png"
-  min_sdk_android: 21
+  min_sdk_android: 23
   windows:
     generate: true
     image_path: "assets/icon/icon.png"
@@ -79,8 +79,9 @@ flutter:
   # the material Icons class.
   uses-material-design: true
   # To add assets to your application, add an assets section, like this:
-  # assets:
-  #   - images/a_dot_burr.jpeg
+  assets:
+    - .env
+    - assets/images/logo.svg
   #   - images/a_dot_ham.jpeg
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
