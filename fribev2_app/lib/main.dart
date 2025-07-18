@@ -3,11 +3,11 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 
-import 'components/login_home.dart';
 import 'services/auth/firebase_auth_service.dart';
 import 'services/stock/firebase_stock_service.dart';
 import 'stores/auth.store.dart';
 import 'stores/stock.store.dart';
+import 'utils/app_routes.dart';
 import 'utils/theme.dart';
 
 Future<void> main() async {
@@ -29,7 +29,7 @@ class MyApp extends StatelessWidget {
           create: (_) => StockStore(stockService: FirebaseStockService()),
         ),
       ],
-      child: MaterialApp(
+      child: MaterialApp.router(
         title: 'Fribe Cortes Especiais',
         debugShowCheckedModeBanner: false,
         locale: const Locale('pt', 'BR'),
@@ -40,7 +40,7 @@ class MyApp extends StatelessWidget {
           GlobalCupertinoLocalizations.delegate,
         ],
         theme: brightness == Brightness.light ? theme.light() : theme.dark(),
-        home: const LoginOrHome(),
+        routerConfig: router,
       ),
     );
   }

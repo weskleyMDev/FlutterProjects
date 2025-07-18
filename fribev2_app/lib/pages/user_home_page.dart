@@ -24,7 +24,7 @@ class UserHomePage extends StatelessWidget {
           IconButton(
             onPressed: () => stockStore.addToStock(
               product: StockFormData(
-                name: 'New Product',
+                name: 'Wall Product',
                 category: 'Category',
                 measure: 'kg',
                 amount: '1',

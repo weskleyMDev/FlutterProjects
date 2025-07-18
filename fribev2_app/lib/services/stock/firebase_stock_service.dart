@@ -14,7 +14,7 @@ class FirebaseStockService implements IStockService {
     final snapshots = _firestore
         .collection('stock')
         .withConverter(fromFirestore: _fromFirestore, toFirestore: _toFirestore)
-        .orderBy('name', descending: true)
+        .orderBy('name')
         .snapshots();
     return snapshots.map(
       (snapshot) => snapshot.docs.map((doc) => doc.data()).toList(),

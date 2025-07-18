@@ -15,12 +15,12 @@ class StockFormData {
   String? imageUrl;
 
   StockFormData({
-    required this.name,
-    required this.category,
-    required this.measure,
-    required this.amount,
-    required this.price,
-    this.imageUrl,
+    this.name = '',
+    this.category = '',
+    this.measure = '',
+    this.amount = '',
+    this.price = '',
+    this.imageUrl = '',
   });
 
   void toggleCategory(StockCategory newCategory) {
