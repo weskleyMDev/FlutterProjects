@@ -4,10 +4,9 @@ enum FormMode { login, register }
 class LoginFormData {
   String email;
   String password;
-  final String role;
   FormMode _mode = FormMode.login;
 
-  LoginFormData({this.email = '', this.password = ''}) : role = 'user';
+  LoginFormData({this.email = '', this.password = ''});
 
   bool get isLogin => _mode == FormMode.login;
   bool get isRegister => _mode == FormMode.register;
@@ -20,6 +19,6 @@ class LoginFormData {
 
   @override
   String toString() {
-    return 'LoginFormData(email: $email, password: $password, role: $role)';
+    return 'LoginFormData(email: $email, password: $password)';
   }
 }

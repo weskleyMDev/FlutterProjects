@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import '../../models/form_data/stock_form_data.dart';
 import '../../models/product.dart';
 import 'data_service.dart';
 
@@ -40,8 +41,14 @@ class LocalDataService implements IDataService {
   Stream<List<Product>> getProducts() => _productStream;
 
   @override
-  Future<Product> save(Product product) async {
-    final Product newProduct = product;
+  Future<Product> save({required StockFormData product}) async {
+    final Product newProduct = Product(
+      name: product.name,
+      category: product.category,
+      measure: product.measure,
+      amount: product.amount,
+      price: product.price,
+    );
     _products.add(newProduct);
     _controller?.add(_products);
     return newProduct;

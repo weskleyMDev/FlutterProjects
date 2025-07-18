@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
-import '../models/login_form_data.dart';
+import '../models/form_data/login_form_data.dart';
 
 class LoginForm extends StatefulWidget {
   const LoginForm({super.key, required this.onSubmit});

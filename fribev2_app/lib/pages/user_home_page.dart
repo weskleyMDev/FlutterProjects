@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../models/form_data/stock_form_data.dart';
 import '../models/product.dart';
-import '../services/data/local_data_service.dart';
+import '../services/data/firebase_product_service.dart';
 import '../stores/auth.store.dart';
 
 class UserHomePage extends StatelessWidget {
@@ -20,14 +21,13 @@ class UserHomePage extends StatelessWidget {
             icon: Icon(Icons.exit_to_app_sharp),
           ),
           IconButton(
-            onPressed: () => LocalDataService().save(
-              Product(
-                id: DateTime.now().toString(),
+            onPressed: () => FirebaseDataService().save(
+              product: StockFormData(
                 name: 'New Product',
-                price: '0.00',
-                category: 'General',
-                type: 'UN',
-                stock: '0',
+                category: 'Category',
+                measure: 'kg',
+                amount: '1',
+                price: '10.00',
               ),
             ),
             icon: const Icon(Icons.add),
@@ -35,7 +35,7 @@ class UserHomePage extends StatelessWidget {
         ],
       ),
       body: StreamBuilder<List<Product>>(
-        stream: LocalDataService().getProducts(),
+        stream: FirebaseDataService().getProducts(),
         builder: (context, snapshot) {
           switch (snapshot.connectionState) {
             case ConnectionState.none:

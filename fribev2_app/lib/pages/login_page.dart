@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../components/login_form.dart';
-import '../models/login_form_data.dart';
+import '../models/form_data/login_form_data.dart';
 import '../stores/auth.store.dart';
 
 class LoginPage extends StatefulWidget {
