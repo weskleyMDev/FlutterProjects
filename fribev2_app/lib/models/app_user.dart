@@ -6,7 +6,7 @@ class AppUser {
   final String email;
   final String role;
 
-  AppUser({required this.id, required this.email, required this.role});
+  AppUser({required this.id, required this.email, this.role = 'user'});
 
   AppUser copyWith({String? id, String? email, String? role}) {
     return AppUser(
@@ -16,8 +16,8 @@ class AppUser {
     );
   }
 
-  Map<String, dynamic> toMap(String uid) {
-    return <String, dynamic>{'id': uid, 'email': email, 'role': role};
+  Map<String, dynamic> toMap() {
+    return <String, dynamic>{'email': email, 'role': role};
   }
 
   factory AppUser.fromMap(Map<String, dynamic> map, String uid) {
@@ -28,7 +28,7 @@ class AppUser {
     );
   }
 
-  String toJson() => json.encode(toMap(id));
+  String toJson() => json.encode(toMap());
 
   factory AppUser.fromJson(String source, String uid) =>
       AppUser.fromMap(json.decode(source) as Map<String, dynamic>, uid);

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
-import 'pages/login_page.dart';
+import 'components/login_home.dart';
 import 'utils/theme.dart';
 
 Future<void> main() async {
@@ -27,8 +27,8 @@ class MyApp extends StatelessWidget {
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
       ],
-      theme: brightness == Brightness.light ? theme.light(): theme.dark(),
-      home: const LoginPage(),
+      theme: brightness == Brightness.light ? theme.light() : theme.dark(),
+      home: const LoginOrHome(),
     );
   }
 }

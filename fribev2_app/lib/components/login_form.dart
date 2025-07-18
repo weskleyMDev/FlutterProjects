@@ -27,8 +27,7 @@ class _LoginFormState extends State<LoginForm> {
   void _submitForm() {
     try {
       final bool isValid = _formKey.currentState?.validate() ?? false;
-      if (!isValid) throw Exception('Form is not valid!');
-      _formKey.currentState?.save();
+      if (!isValid) throw Exception('Fill in all the fields of the form!');
       widget.onSubmit(_formData);
     } catch (e) {
       _showSnackbar(e.toString().replaceFirst('Exception: ', ''));

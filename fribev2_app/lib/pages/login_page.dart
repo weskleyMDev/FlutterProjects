@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../components/login_form.dart';
 import '../models/login_form_data.dart';
+import '../services/auth/local_auth_service.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -13,7 +14,21 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   bool _isLoading = false;
   void _handleloginData(LoginFormData formData) {
-    setState(() => _isLoading = true);
+    try {
+      setState(() => _isLoading = true);
+      if (formData.isLogin) {
+        LocalAuthService().login(email: formData.email, password: formData.password);
+      } else {
+        LocalAuthService().signup(email: formData.email, password: formData.password);
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).clearSnackBars();
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Error processing login: $e')));
+    } finally {
+      setState(() => _isLoading = false);
+    }
   }
 
   @override
