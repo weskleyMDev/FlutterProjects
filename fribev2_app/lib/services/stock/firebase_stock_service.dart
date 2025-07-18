@@ -4,9 +4,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../../models/form_data/stock_form_data.dart';
 import '../../models/product.dart';
-import 'data_service.dart';
+import 'stock_service.dart';
 
-class FirebaseDataService implements IDataService {
+class FirebaseStockService implements IStockService {
   static final _firestore = FirebaseFirestore.instance;
 
   @override

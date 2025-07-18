@@ -5,7 +5,9 @@ import 'package:provider/provider.dart';
 
 import 'components/login_home.dart';
 import 'services/auth/firebase_auth_service.dart';
+import 'services/stock/firebase_stock_service.dart';
 import 'stores/auth.store.dart';
+import 'stores/stock.store.dart';
 import 'utils/theme.dart';
 
 Future<void> main() async {
@@ -23,6 +25,9 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         Provider(create: (_) => AuthStore(authService: FirebaseAuthService())),
+        Provider(
+          create: (_) => StockStore(stockService: FirebaseStockService()),
+        ),
       ],
       child: MaterialApp(
         title: 'Fribe Cortes Especiais',

@@ -3,8 +3,8 @@ import 'package:provider/provider.dart';
 
 import '../models/form_data/stock_form_data.dart';
 import '../models/product.dart';
-import '../services/data/firebase_product_service.dart';
 import '../stores/auth.store.dart';
+import '../stores/stock.store.dart';
 
 class UserHomePage extends StatelessWidget {
   const UserHomePage({super.key});
@@ -12,6 +12,7 @@ class UserHomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final authStore = Provider.of<AuthStore>(context, listen: false);
+    final stockStore = Provider.of<StockStore>(context);
     return Scaffold(
       appBar: AppBar(
         title: Text(authStore.currentUser?.email ?? 'User Home'),
@@ -21,7 +22,7 @@ class UserHomePage extends StatelessWidget {
             icon: Icon(Icons.exit_to_app_sharp),
           ),
           IconButton(
-            onPressed: () => FirebaseDataService().save(
+            onPressed: () => stockStore.addToStock(
               product: StockFormData(
                 name: 'New Product',
                 category: 'Category',
@@ -35,7 +36,7 @@ class UserHomePage extends StatelessWidget {
         ],
       ),
       body: StreamBuilder<List<Product>>(
-        stream: FirebaseDataService().getProducts(),
+        stream: stockStore.stock,
         builder: (context, snapshot) {
           switch (snapshot.connectionState) {
             case ConnectionState.none:

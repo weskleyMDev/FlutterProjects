@@ -2,9 +2,9 @@ import 'dart:async';
 
 import '../../models/form_data/stock_form_data.dart';
 import '../../models/product.dart';
-import 'data_service.dart';
+import 'stock_service.dart';
 
-class LocalDataService implements IDataService {
+class LocalStockService implements IStockService {
   static final List<Product> _products = [
     // Product(
     //   id: '1',

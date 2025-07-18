@@ -1,7 +1,7 @@
 import 'package:mobx/mobx.dart';
 
-import '../models/app_user.dart';
-import '../services/auth/iauth_service.dart';
+import '../../models/app_user.dart';
+import '../../services/auth/iauth_service.dart';
 part 'auth.store.g.dart';
 
 class AuthStore = AuthStoreBase with _$AuthStore;
