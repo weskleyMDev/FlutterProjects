@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../components/login_form.dart';
 import '../models/login_form_data.dart';
-import '../services/auth/local_auth_service.dart';
+import '../stores/auth.store.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -14,12 +15,13 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   bool _isLoading = false;
   void _handleloginData(LoginFormData formData) {
+    final authStore = Provider.of<AuthStore>(context, listen: false);
     try {
       setState(() => _isLoading = true);
       if (formData.isLogin) {
-        LocalAuthService().login(email: formData.email, password: formData.password);
+        authStore.login(email: formData.email, password: formData.password);
       } else {
-        LocalAuthService().signup(email: formData.email, password: formData.password);
+        authStore.signup(email: formData.email, password: formData.password);
       }
     } catch (e) {
       ScaffoldMessenger.of(context).clearSnackBars();
