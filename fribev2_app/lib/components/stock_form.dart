@@ -5,7 +5,7 @@ import '../models/form_data/stock_form_data.dart';
 const List<String> _categories = [
   '',
   'BOVINO',
-  'SUÍNO',
+  'SUINO',
   'OVINO',
   'AVES',
   'OUTROS',

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../models/form_data/stock_form_data.dart';
-import '../models/product.dart';
 import '../stores/auth.store.dart';
 import '../stores/stock.store.dart';
 
@@ -35,34 +34,34 @@ class UserHomePage extends StatelessWidget {
           ),
         ],
       ),
-      body: StreamBuilder<List<Product>>(
-        stream: stockStore.stock,
-        builder: (context, snapshot) {
-          switch (snapshot.connectionState) {
-            case ConnectionState.none:
-            case ConnectionState.waiting:
-              return const Center(child: CircularProgressIndicator());
-            default:
-              if (snapshot.hasError) {
-                return Center(child: Text('Error: ${snapshot.error}'));
-              }
-              if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                return const Center(child: Text('No products available.'));
-              }
-              final products = snapshot.data!;
-              return ListView.builder(
-                itemCount: products.length,
-                itemBuilder: (context, index) {
-                  final product = products[index];
-                  return ListTile(
-                    title: Text(product.name),
-                    subtitle: Text('Price: ${product.price}'),
-                  );
-                },
-              );
-          }
-        },
-      ),
+      // body: StreamBuilder<List<Product>>(
+      //   stream: stockStore.stock,
+      //   builder: (context, snapshot) {
+      //     switch (snapshot.connectionState) {
+      //       case ConnectionState.none:
+      //       case ConnectionState.waiting:
+      //         return const Center(child: CircularProgressIndicator());
+      //       default:
+      //         if (snapshot.hasError) {
+      //           return Center(child: Text('Error: ${snapshot.error}'));
+      //         }
+      //         if (!snapshot.hasData || snapshot.data!.isEmpty) {
+      //           return const Center(child: Text('No products available.'));
+      //         }
+      //         final products = snapshot.data!;
+      //         return ListView.builder(
+      //           itemCount: products.length,
+      //           itemBuilder: (context, index) {
+      //             final product = products[index];
+      //             return ListTile(
+      //               title: Text(product.name),
+      //               subtitle: Text('Price: ${product.price}'),
+      //             );
+      //           },
+      //         );
+      //     }
+      //   },
+      // ),
     );
   }
 }

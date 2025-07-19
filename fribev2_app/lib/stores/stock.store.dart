@@ -14,7 +14,7 @@ abstract class StockStoreBase with Store {
   final IStockService stockService;
 
   @computed
-  Stream<List<Product>> get stock => stockService.getProducts();
+  Stream<List<Product>> get products => stockService.getProducts();
 
   @action
   Future<Product?> addToStock({required StockFormData product}) async =>

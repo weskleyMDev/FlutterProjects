@@ -9,13 +9,13 @@ part of 'stock.store.dart';
 // ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic, no_leading_underscores_for_local_identifiers
 
 mixin _$StockStore on StockStoreBase, Store {
-  Computed<Stream<List<Product>>>? _$stockComputed;
+  Computed<Stream<List<Product>>>? _$productsComputed;
 
   @override
-  Stream<List<Product>> get stock =>
-      (_$stockComputed ??= Computed<Stream<List<Product>>>(
-        () => super.stock,
-        name: 'StockStoreBase.stock',
+  Stream<List<Product>> get products =>
+      (_$productsComputed ??= Computed<Stream<List<Product>>>(
+        () => super.products,
+        name: 'StockStoreBase.products',
       )).value;
 
   late final _$addToStockAsyncAction = AsyncAction(
@@ -33,7 +33,7 @@ mixin _$StockStore on StockStoreBase, Store {
   @override
   String toString() {
     return '''
-stock: ${stock}
+products: ${products}
     ''';
   }
 }
