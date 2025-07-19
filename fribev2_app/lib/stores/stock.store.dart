@@ -10,30 +10,72 @@ class StockStore = StockStoreBase with _$StockStore;
 
 abstract class StockStoreBase with Store {
   StockStoreBase({required this.stockService}) {
-    _initProductListener();
+    _searchReaction = reaction<String>(
+      (_) => searchQuery,
+      (_) => loadProductByCategory(),
+      delay: 300,
+    );
+    preloadProducts();
   }
 
-  final IStockService stockService;
+  IStockService stockService;
+
+  late ReactionDisposer _searchReaction;
 
   @observable
-  late Stream<List<Product>> _productStream = stockService.getProducts();
+  String searchQuery = '';
 
   @observable
-  ObservableList<Product> productList = ObservableList<Product>();
+  String currentCategory = '';
 
-  @action
-  void _initProductListener() {
-    _productStream.listen((data) {
-      productList
-        ..clear()
-        ..addAll(data);
-    });
-  }
+  @observable
+  ObservableList<Product> _productList = ObservableList<Product>();
+
+  @observable
+  List<Product> allProducts = [];
 
   @computed
-  Stream<List<Product>> get products => _productStream;
+  List<Product> get productList => List.unmodifiable(_productList);
+
+  @action
+  Future<void> preloadProducts() async {
+    allProducts = await stockService.getProducts().first;
+    loadProductByCategory();
+  }
+
+  @action
+  Future<void> loadProductByCategory() async {
+    final query = searchQuery.toLowerCase();
+    final filtered = allProducts.where((p) {
+      final matchesName = p.name.toLowerCase().contains(query);
+      final matchesCategory =
+          p.category.toUpperCase() == currentCategory.toUpperCase();
+      return matchesName && matchesCategory;
+    }).toList();
+
+    _productList
+      ..clear()
+      ..addAll(filtered);
+  }
 
   @action
   Future<Product?> addToStock({required StockFormData product}) async =>
       await stockService.save(product: product);
+
+  @action
+  void setCategory(String category) {
+    currentCategory = category;
+    loadProductByCategory();
+  }
+
+  @action
+  void reset() {
+    searchQuery = '';
+    currentCategory = '';
+    _productList.clear();
+  }
+
+  void dispose() {
+    _searchReaction();
+  }
 }

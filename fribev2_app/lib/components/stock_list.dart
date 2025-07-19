@@ -3,7 +3,6 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:provider/provider.dart';
 
-import '../models/product.dart';
 import '../stores/stock.store.dart';
 import 'stock_search.dart';
 
@@ -17,72 +16,62 @@ class StockList extends StatefulWidget {
 }
 
 class _StockListState extends State<StockList> {
-  final _searchController = TextEditingController();
+  late StockStore stockStore;
+  bool _initialized = false;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    stockStore = Provider.of<StockStore>(context, listen: false);
+
+    if (!_initialized) {
+      stockStore.setCategory(widget.category);
+      _initialized = true;
+    }
+  }
 
   @override
   void initState() {
     super.initState();
-    _searchController.addListener(() {
-      setState(() {});
-    });
+    Provider.of<StockStore>(
+      context,
+      listen: false,
+    ).setCategory(widget.category);
   }
 
   @override
   void dispose() {
-    _searchController.dispose();
+    stockStore.reset();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     final stockStore = Provider.of<StockStore>(context);
-    return Column(
-      children: [
-        StockSearch(controller: _searchController),
-        Expanded(
-          child: Observer(
-            builder: (_) {
-              return StreamBuilder<List<Product>>(
-                stream: stockStore.products,
-                builder: (context, snapshot) {
-                  final allProducts = snapshot.data ?? [];
-              
-                  final filteredProducts = allProducts.where((p) {
-                    final query = _searchController.text.toLowerCase();
-                    final categoryMatch =
-                        p.category.toUpperCase() == widget.category;
-                    final nameMatch = p.name.toLowerCase().contains(
-                      query,
-                    );
-                    return categoryMatch && nameMatch;
-                  }).toList();
-              
-                  if (snapshot.connectionState ==
-                      ConnectionState.waiting) {
-                    return const Center(
-                      child: CircularProgressIndicator(),
-                    );
-                  }
-              
-                  if (snapshot.hasError) {
-                    return Center(child: Text('Erro: ${snapshot.error}'));
-                  }
-              
-                  if (filteredProducts.isEmpty) {
-                    return const Center(
-                      child: Text('Nenhum produto encontrado.'),
-                    );
-                  }
-              
-                  return ListView.builder(
-                    itemCount: filteredProducts.length,
+    return Observer(
+      builder: (context) => Column(
+        children: [
+          StockSearch(onChange: (value) => stockStore.searchQuery = value),
+          const SizedBox(height: 12),
+          stockStore.productList.isEmpty
+              ? Expanded(
+                  child: const Center(
+                    child: Text('Nenhum produto encontrado.'),
+                  ),
+                )
+              : Expanded(
+                  child: ListView.builder(
+                    itemCount: stockStore.productList.length,
                     itemBuilder: (context, index) {
-                      final product = filteredProducts[index];
+                      final product = stockStore.productList[index];
                       return Container(
-                        margin: const EdgeInsets.only(bottom: 10.0, left: 10.0, right: 10.0),
+                        margin: const EdgeInsets.symmetric(
+                          vertical: 5.0,
+                          horizontal: 16.0,
+                        ),
                         child: Slidable(
                           endActionPane: ActionPane(
-                            extentRatio: 0.30,
+                            extentRatio: 0.35,
                             motion: BehindMotion(),
                             children: [
                               SlidableAction(
@@ -120,13 +109,10 @@ class _StockListState extends State<StockList> {
                         ),
                       );
                     },
-                  );
-                },
-              );
-            },
-          ),
-        ),
-      ],
+                  ),
+                ),
+        ],
+      ),
     );
   }
 }

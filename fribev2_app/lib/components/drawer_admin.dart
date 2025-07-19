@@ -35,13 +35,12 @@ class DrawerAdmin extends StatelessWidget {
                     ListTile(
                       leading: const Icon(Icons.storage_sharp),
                       title: const Text('Estoque'),
-                      onTap: () => context.go('/stock-home'),
+                      onTap: () => context.goNamed('stock-home'),
                     ),
                     ListTile(
                       leading: const Icon(Icons.point_of_sale_sharp),
                       title: const Text('Vendas'),
                       onTap: () {
-                        print(authStore.currentUser?.id);
                       },
                     ),
                     Spacer(),

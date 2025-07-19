@@ -2,7 +2,7 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import '../components/login_home.dart';
-import '../pages/stock/stock_bovine_page.dart';
+import '../pages/stock/stock_category_page.dart';
 import '../pages/stock/stock_home_page.dart';
 import '../pages/stock_form_page.dart';
 import '../stores/auth.store.dart';
@@ -27,11 +27,19 @@ final GoRouter router = GoRouter(
     ),
     GoRoute(
       path: '/stock-home',
-      builder: (context, state) => const StockHomePage(),
+      name: 'stock-home',
+      builder: (context, state) {
+        return StockHomePage();
+      },
     ),
     GoRoute(
-      path: '/stock-bovine',
-      builder: (context, state) => const StockBovinePage(),
+      path: '/stock/:title/:category',
+      name: 'stock-category',
+      builder: (context, state) {
+        final title = state.pathParameters['title']!;
+        final category = state.pathParameters['category']!;
+        return StockCategoryPage(title: title, category: category);
+      },
     ),
   ],
 );
