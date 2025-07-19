@@ -59,8 +59,11 @@ abstract class StockStoreBase with Store {
   }
 
   @action
-  Future<Product?> addToStock({required StockFormData product}) async =>
-      await stockService.saveProduct(product: product);
+  Future<Product?> addToStock({required StockFormData product}) async {
+    final newProduct = await stockService.saveProduct(product: product);
+    await preloadProducts();
+    return newProduct;
+  }
 
   @action
   Future<void> removeProductById({required Product product}) async {

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../models/form_data/stock_form_data.dart';
 import '../models/product.dart';
@@ -96,7 +97,11 @@ class _StockFormState extends State<StockForm> {
       }
       _formKey.currentState?.reset();
       _clearFFields();
-      _showSnackbar('Produto salvo com sucesso!');
+      _showSnackbar(
+        widget.product == null
+            ? 'Produto salvo com sucesso!'
+            : 'Produto atualizado com sucesso!',
+      );
     } catch (e) {
       _showSnackbar(e.toString().replaceFirst('Exception: ', ''));
     }
@@ -167,7 +172,7 @@ class _StockFormState extends State<StockForm> {
                   inputAction: TextInputAction.next,
                   onChanged: (value) =>
                       _formData.price = value.trim().replaceAll(',', '.'),
-                  prefix: Icons.attach_money_outlined,
+                  prefix: FontAwesomeIcons.brazilianRealSign,
                   validator: (value) {
                     final price = value?.trim().replaceAll(',', '.') ?? '0.00';
                     if (price.isEmpty) {

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 
 import '../../components/stock_list.dart';
+import '../../stores/stock.store.dart';
 
 class StockCategoryPage extends StatelessWidget {
   const StockCategoryPage({
@@ -31,6 +33,16 @@ class StockCategoryPage extends StatelessWidget {
         ],
       ),
       body: StockList(category: category),
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () {
+          Provider.of<StockStore>(
+            context,
+            listen: false,
+          ).removeAllByCategory(category: category);
+        },
+        label: Text('REMOVER TUDO'),
+        icon: Icon(Icons.dangerous_outlined),
+      ),
     );
   }
 }
