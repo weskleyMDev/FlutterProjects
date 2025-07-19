@@ -3,5 +3,11 @@ import '../../models/product.dart';
 
 abstract class IStockService {
   Stream<List<Product>> getProducts();
-  Future<Product?> save({required StockFormData product});
+  Future<Product?> saveProduct({required StockFormData product});
+  Future<void> deleteProductById({required Product product});
+  Future<void> updateProductById({
+    required Product product,
+    required StockFormData data,
+  });
+  Future<void> clearByCategory({required String category});
 }

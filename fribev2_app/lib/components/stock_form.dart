@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../models/form_data/stock_form_data.dart';
+import '../models/product.dart';
 
 const List<String> _categories = [
   '',
@@ -13,9 +14,10 @@ const List<String> _categories = [
 const List<String> _measures = ['', 'KG', 'PC', 'UN'];
 
 class StockForm extends StatefulWidget {
-  const StockForm({super.key, required this.onSubmit});
+  const StockForm({super.key, this.onSubmit, this.product});
 
-  final void Function(StockFormData) onSubmit;
+  final Future<void> Function(StockFormData)? onSubmit;
+  final Product? product;
 
   @override
   State<StockForm> createState() => _StockFormState();
@@ -30,6 +32,27 @@ class _StockFormState extends State<StockForm> {
   final _nameController = TextEditingController();
   final _amountController = TextEditingController();
   final _priceController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.product != null) {
+      final product = widget.product!;
+
+      _formData.name = product.name;
+      _formData.category = product.category;
+      _formData.measure = product.measure;
+      _formData.amount = product.amount;
+      _formData.price = product.price;
+
+      _nameController.text = product.name;
+      _amountController.text = product.amount;
+      _priceController.text = product.price;
+
+      _selectedCategory = product.category;
+      _selectedMeasure = product.measure;
+    }
+  }
 
   @override
   void dispose() {
@@ -58,12 +81,19 @@ class _StockFormState extends State<StockForm> {
     );
   }
 
-  void _submitForm() {
+  Future<void> _submitForm() async {
     try {
       FocusScope.of(context).unfocus();
       final bool isValid = _formKey.currentState?.validate() ?? false;
       if (!isValid) throw Exception('Existem erros a serem corrigidos!');
-      widget.onSubmit(_formData);
+      _formData.name = _nameController.text.trim().toUpperCase();
+      _formData.amount = _amountController.text.trim().replaceAll(',', '.');
+      _formData.price = _priceController.text.trim().replaceAll(',', '.');
+      _formData.category = _selectedCategory.trim().toUpperCase();
+      _formData.measure = _selectedMeasure.trim().toUpperCase();
+      if (widget.onSubmit != null) {
+        await widget.onSubmit!(_formData);
+      }
       _formKey.currentState?.reset();
       _clearFFields();
       _showSnackbar('Produto salvo com sucesso!');
@@ -214,7 +244,10 @@ class _StockFormState extends State<StockForm> {
                   },
                 ),
                 Spacer(),
-                ElevatedButton(onPressed: _submitForm, child: Text('SALVAR')),
+                ElevatedButton(
+                  onPressed: _submitForm,
+                  child: Text(widget.product == null ? 'SALVAR' : 'ATUALIZAR'),
+                ),
               ],
             ),
           ),

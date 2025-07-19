@@ -2,6 +2,7 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import '../components/login_home.dart';
+import '../models/product.dart';
 import '../pages/stock/stock_category_page.dart';
 import '../pages/stock/stock_home_page.dart';
 import '../pages/stock_form_page.dart';
@@ -12,7 +13,7 @@ final GoRouter router = GoRouter(
   routes: [
     GoRoute(path: '/', builder: (context, state) => const LoginOrHome()),
     GoRoute(
-      path: '/stock-form',
+      path: '/stock-form/add',
       builder: (context, state) => const StockFormPage(),
       redirect: (context, state) {
         final authStore = Provider.of<AuthStore>(context, listen: false);
@@ -39,6 +40,14 @@ final GoRouter router = GoRouter(
         final title = state.pathParameters['title']!;
         final category = state.pathParameters['category']!;
         return StockCategoryPage(title: title, category: category);
+      },
+    ),
+    GoRoute(
+      path: '/stock-form/edit',
+      name: 'stock-edit-form',
+      builder: (context, state) {
+        final product = state.extra as Product?;
+        return StockFormPage(product: product);
       },
     ),
   ],

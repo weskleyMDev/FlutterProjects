@@ -60,7 +60,35 @@ abstract class StockStoreBase with Store {
 
   @action
   Future<Product?> addToStock({required StockFormData product}) async =>
-      await stockService.save(product: product);
+      await stockService.saveProduct(product: product);
+
+  @action
+  Future<void> removeProductById({required Product product}) async {
+    await stockService.deleteProductById(product: product);
+    _productList.removeWhere((p) => p.id == product.id);
+    allProducts.removeWhere((p) => p.id == product.id);
+  }
+
+  @action
+  Future<void> updateProduct({
+    required Product product,
+    required StockFormData data,
+  }) async {
+    await stockService.updateProductById(product: product, data: data);
+    final updatedProduct = Product.fromMap(data.toMap(), product.id);
+
+    final index = allProducts.indexWhere((p) => p.id == product.id);
+    if (index != -1) allProducts[index] = updatedProduct;
+
+    await loadProductByCategory();
+  }
+
+  @action
+  Future<void> removeAllByCategory({required String category}) async {
+    await stockService.clearByCategory(category: category);
+    allProducts.removeWhere((p) => p.category == category);
+    _productList.removeWhere((p) => p.category == category);
+  }
 
   @action
   void setCategory(String category) {

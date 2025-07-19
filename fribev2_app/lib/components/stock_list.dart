@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import '../stores/stock.store.dart';
@@ -75,14 +76,21 @@ class _StockListState extends State<StockList> {
                             motion: BehindMotion(),
                             children: [
                               SlidableAction(
-                                onPressed: null,
+                                onPressed: (context) {
+                                  context.pushNamed(
+                                    'stock-edit-form',
+                                    extra: product,
+                                  );
+                                },
                                 icon: Icons.edit_outlined,
                                 backgroundColor: Colors.blue,
                                 padding: EdgeInsets.zero,
                                 label: 'Atualizar',
                               ),
                               SlidableAction(
-                                onPressed: null,
+                                onPressed: (_) => stockStore.removeProductById(
+                                  product: product,
+                                ),
                                 icon: Icons.delete_outline,
                                 backgroundColor: Colors.red,
                                 padding: EdgeInsets.zero,

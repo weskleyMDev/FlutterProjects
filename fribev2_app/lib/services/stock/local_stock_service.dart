@@ -41,7 +41,7 @@ class LocalStockService implements IStockService {
   Stream<List<Product>> getProducts() => _productStream;
 
   @override
-  Future<Product> save({required StockFormData product}) async {
+  Future<Product> saveProduct({required StockFormData product}) async {
     final Product newProduct = Product(
       name: product.name,
       category: product.category,
@@ -52,5 +52,23 @@ class LocalStockService implements IStockService {
     _products.add(newProduct);
     _controller?.add(_products);
     return newProduct;
+  }
+
+  @override
+  Future<void> clearByCategory({required String category}) {
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<void> deleteProductById({required Product product}) {
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<void> updateProductById({
+    required Product product,
+    required StockFormData data,
+  }) {
+    throw UnimplementedError();
   }
 }

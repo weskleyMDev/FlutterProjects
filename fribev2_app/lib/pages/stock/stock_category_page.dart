@@ -22,7 +22,7 @@ class StockCategoryPage extends StatelessWidget {
           Container(
             margin: const EdgeInsets.only(right: 12.0),
             child: IconButton(
-              onPressed: () => context.push('/stock-form'),
+              onPressed: () => context.push('/stock-form/add'),
               icon: const Icon(Icons.add_outlined),
               iconSize: 30.0,
               padding: EdgeInsets.zero,

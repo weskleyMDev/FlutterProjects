@@ -24,6 +24,17 @@ class StockFormData {
     imageUrl = '';
   }
 
+  Map<String, dynamic> toMap() {
+    return <String, dynamic>{
+      'name': name,
+      'category': category,
+      'measure': measure,
+      'amount': amount,
+      'price': price,
+      'imageUrl': imageUrl ?? '',
+    };
+  }
+
   @override
   String toString() =>
       'StockFormData(name: $name, category: $category, measure: $measure, amount: $amount, price: $price, imageUrl: $imageUrl)';
