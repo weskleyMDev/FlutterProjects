@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../components/stock_form.dart';
 import '../models/form_data/stock_form_data.dart';
+import '../stores/stock.store.dart';
 
 class StockFormPage extends StatefulWidget {
   const StockFormPage({super.key});
@@ -13,9 +15,10 @@ class StockFormPage extends StatefulWidget {
 class _StockFormPageState extends State<StockFormPage> {
   bool _isLoading = false;
   void _handleStockData(StockFormData formData) {
-    //final authStore = Provider.of<AuthStore>(context, listen: false);
+    final stockStore = Provider.of<StockStore>(context, listen: false);
     try {
       setState(() => _isLoading = true);
+      stockStore.addToStock(product: formData);
     } catch (e) {
       ScaffoldMessenger.of(context).clearSnackBars();
       ScaffoldMessenger.of(
@@ -29,6 +32,10 @@ class _StockFormPageState extends State<StockFormPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: const Text('Adicionar ao estoque'),
+        centerTitle: true,
+      ),
       body: LayoutBuilder(
         builder: (context, constraints) {
           return Stack(
@@ -36,10 +43,7 @@ class _StockFormPageState extends State<StockFormPage> {
               SingleChildScrollView(
                 child: ConstrainedBox(
                   constraints: BoxConstraints(minHeight: constraints.maxHeight),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [StockForm(onSubmit: _handleStockData)],
-                  ),
+                  child: StockForm(onSubmit: _handleStockData),
                 ),
               ),
               if (_isLoading)

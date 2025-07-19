@@ -37,7 +37,7 @@ class LoginOrHome extends StatelessWidget {
                     return const Center(child: CircularProgressIndicator());
                   default:
                     if (snapshot.hasData && snapshot.data != null) {
-                      return snapshot.data?.role == 'admin'
+                      return snapshot.data?.role == 'user'
                           ? UserHomePage()
                           : AdminHomePage();
                     } else {

@@ -30,7 +30,7 @@ class DrawerAdmin extends StatelessWidget {
                     ListTile(
                       leading: const Icon(Icons.storage_sharp),
                       title: const Text('Estoque'),
-                      onTap: () => context.go('/stock-form'),
+                      onTap: () => context.push('/stock-form'),
                     ),
                     ListTile(
                       leading: const Icon(Icons.point_of_sale_sharp),

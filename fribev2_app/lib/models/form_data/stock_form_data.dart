@@ -1,11 +1,3 @@
-enum StockCategory {
-  bovine,
-  swine,
-  sheep,
-  chiken,
-  others
-}
-
 class StockFormData {
   String name;
   String category;
@@ -23,24 +15,16 @@ class StockFormData {
     this.imageUrl = '',
   });
 
-  void toggleCategory(StockCategory newCategory) {
-    switch (newCategory) {
-      case StockCategory.bovine:
-        category = 'BOVINO';
-        break;
-      case StockCategory.swine:
-        category = 'SUÍNO';
-        break;
-      case StockCategory.sheep:
-        category = 'OVINO';
-        break;
-      case StockCategory.chiken:
-        category = 'AVES';
-        break;
-      case StockCategory.others:
-        category = 'OUTROS';
-        break;
-    }
+  void clear() {
+    name = '';
+    category = '';
+    measure = '';
+    amount = '';
+    price = '';
+    imageUrl = '';
   }
 
+  @override
+  String toString() =>
+      'StockFormData(name: $name, category: $category, measure: $measure, amount: $amount, price: $price, imageUrl: $imageUrl)';
 }

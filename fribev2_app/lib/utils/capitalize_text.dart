@@ -1,7 +1,10 @@
 extension StringExtensions on String {
   String capitalize() {
     const lowerCaseWords = {'de', 'da', 'do', 'das', 'dos', 'e'};
-    return split(' ')
+    return trim()
+        .split(' ')
+        .where((word) => word.isNotEmpty)
+        .toList()
         .asMap()
         .entries
         .map((e) {
