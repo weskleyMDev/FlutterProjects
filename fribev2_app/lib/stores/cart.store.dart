@@ -66,5 +66,8 @@ abstract class CartStoreBase with Store {
   void removeItem({required String productId}) => _cart.remove(productId);
 
   @action
-  void clear() => _cart.clear();
+  void clear() {
+    if (_cart.isEmpty) return;
+    _cart.clear();
+  }
 }

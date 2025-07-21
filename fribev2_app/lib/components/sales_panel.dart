@@ -15,18 +15,22 @@ class SalesPanel extends StatelessWidget {
   Widget build(BuildContext context) {
     final stockStore = Provider.of<StockStore>(context);
     final cartStore = Provider.of<CartStore>(context);
-    return Card(
-      margin: const EdgeInsets.only(left: 12.0, bottom: 12.0),
-      child: Observer(
-        builder: (context) {
-          final future = stockStore.productsFuture;
-          final products = stockStore.filteredProducts;
-          return Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Flexible(
+    return Observer(
+      builder: (context) {
+        final future = stockStore.productsFuture;
+        final products = stockStore.filteredProducts;
+        return Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Flexible(
+                child: Container(
+                  margin: const EdgeInsets.only(
+                    left: 4.0,
+                    right: 4.0,
+                    bottom: 8.0,
+                  ),
                   child: TextField(
                     decoration: InputDecoration(
                       border: OutlineInputBorder(),
@@ -36,19 +40,20 @@ class SalesPanel extends StatelessWidget {
                     onChanged: (value) => stockStore.searchQuery = value,
                   ),
                 ),
-                const SizedBox(height: 12.0),
-                Flexible(
-                  flex: 2,
-                  child:
-                      (future == null || future.status == FutureStatus.pending)
-                      ? const Center(child: CircularProgressIndicator())
-                      : (products.isEmpty)
-                      ? const Center(child: Text('Nenhum produto encontrado!'))
-                      : ListView.builder(
-                          itemCount: products.length,
-                          itemBuilder: (context, index) {
-                            final product = products[index];
-                            return ListTile(
+              ),
+              Expanded(
+                flex: 2,
+                child: (future == null || future.status == FutureStatus.pending)
+                    ? const Center(child: CircularProgressIndicator())
+                    : (products.isEmpty)
+                    ? const Center(child: Text('Nenhum produto encontrado!'))
+                    : ListView.builder(
+                        itemCount: products.length,
+                        itemBuilder: (context, index) {
+                          final product = products[index];
+                          return Card(
+                            shape: RoundedRectangleBorder(),
+                            child: ListTile(
                               title: Text(
                                 product.name,
                                 maxLines: 1,
@@ -63,15 +68,15 @@ class SalesPanel extends StatelessWidget {
                                 },
                                 label: Icon(Icons.add_outlined),
                               ),
-                            );
-                          },
-                        ),
-                ),
-              ],
-            ),
-          );
-        },
-      ),
+                            ),
+                          );
+                        },
+                      ),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }
