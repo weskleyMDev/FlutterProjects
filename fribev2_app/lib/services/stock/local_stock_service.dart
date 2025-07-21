@@ -2,7 +2,7 @@ import 'dart:async';
 
 import '../../models/form_data/stock_form_data.dart';
 import '../../models/product.dart';
-import 'stock_service.dart';
+import 'istock_service.dart';
 
 class LocalStockService implements IStockService {
   static final List<Product> _products = [

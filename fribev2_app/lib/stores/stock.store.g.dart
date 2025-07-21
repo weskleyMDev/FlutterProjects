@@ -9,13 +9,21 @@ part of 'stock.store.dart';
 // ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic, no_leading_underscores_for_local_identifiers
 
 mixin _$StockStore on StockStoreBase, Store {
-  Computed<List<Product>>? _$productListComputed;
+  Computed<List<Product>>? _$allProductsComputed;
 
   @override
-  List<Product> get productList =>
-      (_$productListComputed ??= Computed<List<Product>>(
-        () => super.productList,
-        name: 'StockStoreBase.productList',
+  List<Product> get allProducts =>
+      (_$allProductsComputed ??= Computed<List<Product>>(
+        () => super.allProducts,
+        name: 'StockStoreBase.allProducts',
+      )).value;
+  Computed<List<Product>>? _$filteredProductsComputed;
+
+  @override
+  List<Product> get filteredProducts =>
+      (_$filteredProductsComputed ??= Computed<List<Product>>(
+        () => super.filteredProducts,
+        name: 'StockStoreBase.filteredProducts',
       )).value;
 
   late final _$searchQueryAtom = Atom(
@@ -54,39 +62,21 @@ mixin _$StockStore on StockStoreBase, Store {
     });
   }
 
-  late final _$_productListAtom = Atom(
-    name: 'StockStoreBase._productList',
+  late final _$productsFutureAtom = Atom(
+    name: 'StockStoreBase.productsFuture',
     context: context,
   );
 
   @override
-  ObservableList<Product> get _productList {
-    _$_productListAtom.reportRead();
-    return super._productList;
+  ObservableFuture<List<Product>>? get productsFuture {
+    _$productsFutureAtom.reportRead();
+    return super.productsFuture;
   }
 
   @override
-  set _productList(ObservableList<Product> value) {
-    _$_productListAtom.reportWrite(value, super._productList, () {
-      super._productList = value;
-    });
-  }
-
-  late final _$allProductsAtom = Atom(
-    name: 'StockStoreBase.allProducts',
-    context: context,
-  );
-
-  @override
-  List<Product> get allProducts {
-    _$allProductsAtom.reportRead();
-    return super.allProducts;
-  }
-
-  @override
-  set allProducts(List<Product> value) {
-    _$allProductsAtom.reportWrite(value, super.allProducts, () {
-      super.allProducts = value;
+  set productsFuture(ObservableFuture<List<Product>>? value) {
+    _$productsFutureAtom.reportWrite(value, super.productsFuture, () {
+      super.productsFuture = value;
     });
   }
 
@@ -100,18 +90,6 @@ mixin _$StockStore on StockStoreBase, Store {
     return _$preloadProductsAsyncAction.run(() => super.preloadProducts());
   }
 
-  late final _$loadProductByCategoryAsyncAction = AsyncAction(
-    'StockStoreBase.loadProductByCategory',
-    context: context,
-  );
-
-  @override
-  Future<void> loadProductByCategory() {
-    return _$loadProductByCategoryAsyncAction.run(
-      () => super.loadProductByCategory(),
-    );
-  }
-
   late final _$addToStockAsyncAction = AsyncAction(
     'StockStoreBase.addToStock',
     context: context,
@@ -121,6 +99,45 @@ mixin _$StockStore on StockStoreBase, Store {
   Future<Product?> addToStock({required StockFormData product}) {
     return _$addToStockAsyncAction.run(
       () => super.addToStock(product: product),
+    );
+  }
+
+  late final _$removeProductByIdAsyncAction = AsyncAction(
+    'StockStoreBase.removeProductById',
+    context: context,
+  );
+
+  @override
+  Future<void> removeProductById({required Product product}) {
+    return _$removeProductByIdAsyncAction.run(
+      () => super.removeProductById(product: product),
+    );
+  }
+
+  late final _$updateProductAsyncAction = AsyncAction(
+    'StockStoreBase.updateProduct',
+    context: context,
+  );
+
+  @override
+  Future<void> updateProduct({
+    required Product product,
+    required StockFormData data,
+  }) {
+    return _$updateProductAsyncAction.run(
+      () => super.updateProduct(product: product, data: data),
+    );
+  }
+
+  late final _$removeAllByCategoryAsyncAction = AsyncAction(
+    'StockStoreBase.removeAllByCategory',
+    context: context,
+  );
+
+  @override
+  Future<void> removeAllByCategory({required String category}) {
+    return _$removeAllByCategoryAsyncAction.run(
+      () => super.removeAllByCategory(category: category),
     );
   }
 
@@ -154,12 +171,25 @@ mixin _$StockStore on StockStoreBase, Store {
   }
 
   @override
+  void _invalidateComputed() {
+    final _$actionInfo = _$StockStoreBaseActionController.startAction(
+      name: 'StockStoreBase._invalidateComputed',
+    );
+    try {
+      return super._invalidateComputed();
+    } finally {
+      _$StockStoreBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   String toString() {
     return '''
 searchQuery: ${searchQuery},
 currentCategory: ${currentCategory},
+productsFuture: ${productsFuture},
 allProducts: ${allProducts},
-productList: ${productList}
+filteredProducts: ${filteredProducts}
     ''';
   }
 }

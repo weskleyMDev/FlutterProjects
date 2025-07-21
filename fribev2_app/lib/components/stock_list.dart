@@ -54,7 +54,7 @@ class _StockListState extends State<StockList> {
         children: [
           StockSearch(onChange: (value) => stockStore.searchQuery = value),
           const SizedBox(height: 12),
-          stockStore.productList.isEmpty
+          stockStore.filteredProducts.isEmpty
               ? Expanded(
                   child: const Center(
                     child: Text('Nenhum produto encontrado.'),
@@ -62,9 +62,9 @@ class _StockListState extends State<StockList> {
                 )
               : Expanded(
                   child: ListView.builder(
-                    itemCount: stockStore.productList.length,
+                    itemCount: stockStore.filteredProducts.length,
                     itemBuilder: (context, index) {
-                      final product = stockStore.productList[index];
+                      final product = stockStore.filteredProducts[index];
                       return Container(
                         margin: const EdgeInsets.symmetric(
                           vertical: 5.0,

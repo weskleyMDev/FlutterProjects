@@ -40,8 +40,7 @@ class DrawerAdmin extends StatelessWidget {
                     ListTile(
                       leading: const Icon(Icons.point_of_sale_sharp),
                       title: const Text('Vendas'),
-                      onTap: () {
-                      },
+                      onTap: () => context.goNamed('sales-home'),
                     ),
                     Spacer(),
                     ListTile(

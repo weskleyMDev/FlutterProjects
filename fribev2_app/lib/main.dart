@@ -4,8 +4,11 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 
 import 'services/auth/firebase_auth_service.dart';
+import 'services/sales/firebase_sales_service.dart';
 import 'services/stock/firebase_stock_service.dart';
 import 'stores/auth.store.dart';
+import 'stores/cart.store.dart';
+import 'stores/sales.store.dart';
 import 'stores/stock.store.dart';
 import 'utils/app_routes.dart';
 import 'utils/theme.dart';
@@ -28,6 +31,10 @@ class MyApp extends StatelessWidget {
         Provider(
           create: (_) => StockStore(stockService: FirebaseStockService()),
         ),
+        Provider(
+          create: (_) => SalesStore(salesService: FirebaseSalesService()),
+        ),
+        Provider(create: (_) => CartStore()),
       ],
       child: MaterialApp.router(
         title: 'Fribe Cortes Especiais',

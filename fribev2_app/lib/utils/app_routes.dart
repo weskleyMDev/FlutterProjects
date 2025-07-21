@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../components/login_home.dart';
 import '../models/product.dart';
+import '../pages/sales/sales_home_page.dart';
 import '../pages/stock/stock_category_page.dart';
 import '../pages/stock/stock_home_page.dart';
 import '../pages/stock_form_page.dart';
@@ -48,6 +49,21 @@ final GoRouter router = GoRouter(
       builder: (context, state) {
         final product = state.extra as Product?;
         return StockFormPage(product: product);
+      },
+    ),
+    GoRoute(
+      path: '/sales-home',
+      name: 'sales-home',
+      builder: (context, state) => SalesHomePage(),
+      redirect: (context, state) {
+        final authStore = Provider.of<AuthStore>(context, listen: false);
+        final userId = authStore.currentUser?.id;
+        final userRole = authStore.currentUser?.role;
+        if (userId == null || userRole != 'admin') {
+          return '/';
+        } else {
+          return null;
+        }
       },
     ),
   ],

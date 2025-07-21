@@ -2,7 +2,7 @@ import 'package:mobx/mobx.dart';
 
 import '../models/form_data/stock_form_data.dart';
 import '../models/product.dart';
-import '../services/stock/stock_service.dart';
+import '../services/stock/istock_service.dart';
 
 part 'stock.store.g.dart';
 
@@ -12,15 +12,16 @@ abstract class StockStoreBase with Store {
   StockStoreBase({required this.stockService}) {
     _searchReaction = reaction<String>(
       (_) => searchQuery,
-      (_) => loadProductByCategory(),
+      (_) => _invalidateComputed(),
       delay: 300,
     );
+
     preloadProducts();
   }
 
-  IStockService stockService;
+  final IStockService stockService;
 
-  late ReactionDisposer _searchReaction;
+  late final ReactionDisposer _searchReaction;
 
   @observable
   String searchQuery = '';
@@ -29,33 +30,31 @@ abstract class StockStoreBase with Store {
   String currentCategory = '';
 
   @observable
-  ObservableList<Product> _productList = ObservableList<Product>();
-
-  @observable
-  List<Product> allProducts = [];
+  ObservableFuture<List<Product>>? productsFuture;
 
   @computed
-  List<Product> get productList => List.unmodifiable(_productList);
+  List<Product> get allProducts => productsFuture?.value ?? [];
 
-  @action
-  Future<void> preloadProducts() async {
-    allProducts = await stockService.getProducts().first;
-    loadProductByCategory();
+  @computed
+  List<Product> get filteredProducts =>
+      getFilteredProducts(category: currentCategory, query: searchQuery);
+
+  List<Product> getFilteredProducts({String? category, String? query}) {
+    final q = query?.toLowerCase() ?? '';
+    return allProducts.where((p) {
+      final matchName = p.name.toLowerCase().contains(q);
+      final matchCategory = category == null || category.isEmpty
+          ? true
+          : p.category.toUpperCase() == category.toUpperCase();
+      return matchName && matchCategory;
+    }).toList();
   }
 
   @action
-  Future<void> loadProductByCategory() async {
-    final query = searchQuery.toLowerCase();
-    final filtered = allProducts.where((p) {
-      final matchesName = p.name.toLowerCase().contains(query);
-      final matchesCategory =
-          p.category.toUpperCase() == currentCategory.toUpperCase();
-      return matchesName && matchesCategory;
-    }).toList();
-
-    _productList
-      ..clear()
-      ..addAll(filtered);
+  Future<void> preloadProducts() async {
+    final future = stockService.getProducts().first;
+    productsFuture = ObservableFuture(future);
+    //_invalidateComputed();
   }
 
   @action
@@ -68,8 +67,8 @@ abstract class StockStoreBase with Store {
   @action
   Future<void> removeProductById({required Product product}) async {
     await stockService.deleteProductById(product: product);
-    _productList.removeWhere((p) => p.id == product.id);
     allProducts.removeWhere((p) => p.id == product.id);
+    _invalidateComputed();
   }
 
   @action
@@ -83,27 +82,31 @@ abstract class StockStoreBase with Store {
     final index = allProducts.indexWhere((p) => p.id == product.id);
     if (index != -1) allProducts[index] = updatedProduct;
 
-    await loadProductByCategory();
+    _invalidateComputed();
   }
 
   @action
   Future<void> removeAllByCategory({required String category}) async {
     await stockService.clearByCategory(category: category);
     allProducts.removeWhere((p) => p.category == category);
-    _productList.removeWhere((p) => p.category == category);
+    _invalidateComputed();
   }
 
   @action
   void setCategory(String category) {
     currentCategory = category;
-    loadProductByCategory();
   }
 
   @action
   void reset() {
     searchQuery = '';
     currentCategory = '';
-    _productList.clear();
+  }
+
+  @action
+  void _invalidateComputed() {
+    searchQuery = searchQuery;
+    currentCategory = currentCategory;
   }
 
   void dispose() {

@@ -4,7 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../../models/form_data/stock_form_data.dart';
 import '../../models/product.dart';
-import 'stock_service.dart';
+import 'istock_service.dart';
 
 class FirebaseStockService implements IStockService {
   static final _firestore = FirebaseFirestore.instance;
