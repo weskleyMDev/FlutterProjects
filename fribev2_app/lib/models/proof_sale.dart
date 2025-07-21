@@ -3,14 +3,14 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 
-import 'product.dart';
+import 'cart_item.dart';
 
 class ProofSale {
   final String id;
   final String amount;
-  final double subtotal;
-  final double total;
-  final List<Product> cart;
+  final String subtotal;
+  final String total;
+  final List<CartItem> cart;
   final DateTime createAt;
 
   ProofSale({
@@ -25,9 +25,9 @@ class ProofSale {
   ProofSale copyWith({
     String? id,
     String? amount,
-    double? subtotal,
-    double? total,
-    List<Product>? cart,
+    String? subtotal,
+    String? total,
+    List<CartItem>? cart,
     DateTime? createAt,
   }) {
     return ProofSale(
@@ -50,15 +50,15 @@ class ProofSale {
     };
   }
 
-  factory ProofSale.fromMap(Map<String, dynamic> map, String sid) {
+  factory ProofSale.fromMap(Map<String, dynamic> map, String pid) {
     return ProofSale(
-      id: sid,
+      id: pid,
       amount: map['amount'] as String,
-      subtotal: map['subtotal'] as double,
-      total: map['total'] as double,
-      cart: List<Product>.from(
-        (map['cart'] as List).map<Product>(
-          (x) => Product.fromMap(x as Map<String, dynamic>, x['id'] as String),
+      subtotal: map['subtotal'] as String,
+      total: map['total'] as String,
+      cart: List<CartItem>.from(
+        (map['cart'] as List<int>).map<CartItem>(
+          (x) => CartItem.fromMap(x as Map<String, dynamic>),
         ),
       ),
       createAt: DateTime.parse(map['createAt'] as String),
@@ -67,8 +67,8 @@ class ProofSale {
 
   String toJson() => json.encode(toMap());
 
-  factory ProofSale.fromJson(String source, String sid) =>
-      ProofSale.fromMap(json.decode(source) as Map<String, dynamic>, sid);
+  factory ProofSale.fromJson(String source, String pid) =>
+      ProofSale.fromMap(json.decode(source) as Map<String, dynamic>, pid);
 
   @override
   String toString() {

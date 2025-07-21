@@ -8,9 +8,14 @@ import '../stores/stock.store.dart';
 
 const List<String> list = ['teste 1', 'teste 2', 'teste 3'];
 
-class SalesPanel extends StatelessWidget {
+class SalesPanel extends StatefulWidget {
   const SalesPanel({super.key});
 
+  @override
+  State<SalesPanel> createState() => _SalesPanelState();
+}
+
+class _SalesPanelState extends State<SalesPanel> {
   @override
   Widget build(BuildContext context) {
     final stockStore = Provider.of<StockStore>(context);
@@ -60,11 +65,36 @@ class SalesPanel extends StatelessWidget {
                                 overflow: TextOverflow.ellipsis,
                               ),
                               subtitle: Text(
-                                'R\$ ${double.parse(product.price).toStringAsFixed(2).replaceAll('.', ',')} (${product.measure})',
+                                'Preço: R\$ ${double.parse(product.price).toStringAsFixed(2).replaceAll('.', ',')} | Estoque: ${double.parse(product.amount).toStringAsFixed(3).replaceAll('.', ',')} (${product.measure})',
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
                               ),
                               trailing: ElevatedButton.icon(
-                                onPressed: () {
-                                  cartStore.addItem(product: product);
+                                onPressed: () async {
+                                  try {
+                                    final isConfirmed = await cartStore
+                                        .showDialogQuantity(context: context);
+                                    if (isConfirmed == true) {
+                                      cartStore.addItem(product: product);
+                                    } else {
+                                      return;
+                                    }
+                                  } catch (e) {
+                                    if (!context.mounted) return;
+                                    ScaffoldMessenger.of(
+                                      context,
+                                    ).clearSnackBars();
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: Text(
+                                          e.toString().replaceAll(
+                                            'Exception: ',
+                                            '',
+                                          ),
+                                        ),
+                                      ),
+                                    );
+                                  }
                                 },
                                 label: Icon(Icons.add_outlined),
                               ),

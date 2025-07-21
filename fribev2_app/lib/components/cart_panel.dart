@@ -20,10 +20,24 @@ class CartPanel extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Flexible(
-                child: Chip(
-                  label: Text(
-                    'TOTAL: R\$ ${cartStore.totalAmount.toStringAsFixed(2).replaceAll('.', ',')}',
-                    textAlign: TextAlign.center,
+                child: Container(
+                  margin: const EdgeInsets.only(bottom: 10.0),
+                  child: Chip(
+                    label: Text.rich(
+                      TextSpan(
+                        text: 'TOTAL: ',
+                        children: [
+                          TextSpan(
+                            text:
+                                'R\$ ${cartStore.totalAmount.replaceAll('.', ',')}',
+                            style: TextStyle(
+                              fontWeight: FontWeight.w700,
+                              fontSize: 22.0,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
                 ),
               ),
@@ -58,13 +72,13 @@ class CartPanel extends StatelessWidget {
                           child: ListTile(
                             title: Text(product.name),
                             subtitle: Text(
-                              'x${product.quantity.toStringAsFixed(3).replaceAll('.', ',')}',
+                              'x${product.quantity.replaceAll('.', ',')}',
                             ),
                             trailing: Column(
                               mainAxisAlignment: MainAxisAlignment.end,
                               children: [
                                 Text(
-                                  'R\$ ${cartStore.subtotals[productId]?.toStringAsFixed(2).replaceAll('.', ',') ?? 'R\$ 0.00'}',
+                                  'R\$ ${cartStore.subtotals[productId]?.replaceAll('.', ',') ?? 'R\$ 0.00'}',
                                   style: TextStyle(
                                     fontSize: 14.0,
                                     fontWeight: FontWeight.bold,

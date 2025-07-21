@@ -5,8 +5,8 @@ class CartItem {
   final String id;
   final String productId;
   final String name;
-  final double quantity;
-  final double price;
+  final String quantity;
+  final String price;
 
   CartItem({
     required this.id,
@@ -20,8 +20,8 @@ class CartItem {
     String? id,
     String? productId,
     String? name,
-    double? quantity,
-    double? price,
+    String? quantity,
+    String? price,
   }) {
     return CartItem(
       id: id ?? this.id,
@@ -47,8 +47,8 @@ class CartItem {
       id: map['id'] as String,
       productId: map['productId'] as String,
       name: map['name'] as String,
-      quantity: map['quantity'] as double,
-      price: map['price'] as double,
+      quantity: map['quantity'] as String,
+      price: map['price'] as String,
     );
   }
 

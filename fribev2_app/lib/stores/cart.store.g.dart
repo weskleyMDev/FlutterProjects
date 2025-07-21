@@ -24,18 +24,18 @@ mixin _$CartStore on CartStoreBase, Store {
     () => super.itemsCount,
     name: 'CartStoreBase.itemsCount',
   )).value;
-  Computed<double>? _$totalAmountComputed;
+  Computed<String>? _$totalAmountComputed;
 
   @override
-  double get totalAmount => (_$totalAmountComputed ??= Computed<double>(
+  String get totalAmount => (_$totalAmountComputed ??= Computed<String>(
     () => super.totalAmount,
     name: 'CartStoreBase.totalAmount',
   )).value;
-  Computed<Map<String, double>>? _$subtotalsComputed;
+  Computed<Map<String, String>>? _$subtotalsComputed;
 
   @override
-  Map<String, double> get subtotals =>
-      (_$subtotalsComputed ??= Computed<Map<String, double>>(
+  Map<String, String> get subtotals =>
+      (_$subtotalsComputed ??= Computed<Map<String, String>>(
         () => super.subtotals,
         name: 'CartStoreBase.subtotals',
       )).value;
@@ -55,22 +55,50 @@ mixin _$CartStore on CartStoreBase, Store {
     });
   }
 
-  late final _$CartStoreBaseActionController = ActionController(
-    name: 'CartStoreBase',
+  late final _$quantityAtom = Atom(
+    name: 'CartStoreBase.quantity',
     context: context,
   );
 
   @override
-  void addItem({required Product product}) {
-    final _$actionInfo = _$CartStoreBaseActionController.startAction(
-      name: 'CartStoreBase.addItem',
-    );
-    try {
-      return super.addItem(product: product);
-    } finally {
-      _$CartStoreBaseActionController.endAction(_$actionInfo);
-    }
+  String get quantity {
+    _$quantityAtom.reportRead();
+    return super.quantity;
   }
+
+  @override
+  set quantity(String value) {
+    _$quantityAtom.reportWrite(value, super.quantity, () {
+      super.quantity = value;
+    });
+  }
+
+  late final _$addItemAsyncAction = AsyncAction(
+    'CartStoreBase.addItem',
+    context: context,
+  );
+
+  @override
+  Future<void> addItem({required Product product}) {
+    return _$addItemAsyncAction.run(() => super.addItem(product: product));
+  }
+
+  late final _$showDialogQuantityAsyncAction = AsyncAction(
+    'CartStoreBase.showDialogQuantity',
+    context: context,
+  );
+
+  @override
+  Future<bool?> showDialogQuantity({required BuildContext context}) {
+    return _$showDialogQuantityAsyncAction.run(
+      () => super.showDialogQuantity(context: context),
+    );
+  }
+
+  late final _$CartStoreBaseActionController = ActionController(
+    name: 'CartStoreBase',
+    context: context,
+  );
 
   @override
   void removeItem({required String productId}) {
@@ -99,6 +127,7 @@ mixin _$CartStore on CartStoreBase, Store {
   @override
   String toString() {
     return '''
+quantity: ${quantity},
 cartList: ${cartList},
 itemsCount: ${itemsCount},
 totalAmount: ${totalAmount},
