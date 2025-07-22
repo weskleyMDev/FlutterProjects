@@ -9,21 +9,21 @@ part of 'stock.store.dart';
 // ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic, no_leading_underscores_for_local_identifiers
 
 mixin _$StockStore on StockStoreBase, Store {
-  Computed<List<Product>>? _$allProductsComputed;
+  Computed<Stream<List<Product>>>? _$productsListComputed;
 
   @override
-  List<Product> get allProducts =>
-      (_$allProductsComputed ??= Computed<List<Product>>(
-        () => super.allProducts,
-        name: 'StockStoreBase.allProducts',
+  Stream<List<Product>> get productsList =>
+      (_$productsListComputed ??= Computed<Stream<List<Product>>>(
+        () => super.productsList,
+        name: 'StockStoreBase.productsList',
       )).value;
-  Computed<List<Product>>? _$filteredProductsComputed;
+  Computed<Future<void>>? _$filterListComputed;
 
   @override
-  List<Product> get filteredProducts =>
-      (_$filteredProductsComputed ??= Computed<List<Product>>(
-        () => super.filteredProducts,
-        name: 'StockStoreBase.filteredProducts',
+  Future<void> get filterList =>
+      (_$filterListComputed ??= Computed<Future<void>>(
+        () => super.filterList,
+        name: 'StockStoreBase.filterList',
       )).value;
 
   late final _$searchQueryAtom = Atom(
@@ -62,32 +62,34 @@ mixin _$StockStore on StockStoreBase, Store {
     });
   }
 
-  late final _$productsFutureAtom = Atom(
-    name: 'StockStoreBase.productsFuture',
+  late final _$_productsAtom = Atom(
+    name: 'StockStoreBase._products',
     context: context,
   );
 
   @override
-  ObservableFuture<List<Product>>? get productsFuture {
-    _$productsFutureAtom.reportRead();
-    return super.productsFuture;
+  ObservableStream<List<Product>> get _products {
+    _$_productsAtom.reportRead();
+    return super._products;
   }
 
   @override
-  set productsFuture(ObservableFuture<List<Product>>? value) {
-    _$productsFutureAtom.reportWrite(value, super.productsFuture, () {
-      super.productsFuture = value;
+  set _products(ObservableStream<List<Product>> value) {
+    _$_productsAtom.reportWrite(value, super._products, () {
+      super._products = value;
     });
   }
 
-  late final _$preloadProductsAsyncAction = AsyncAction(
-    'StockStoreBase.preloadProducts',
+  late final _$fetchDataAsyncAction = AsyncAction(
+    'StockStoreBase.fetchData',
     context: context,
   );
 
   @override
-  Future<void> preloadProducts() {
-    return _$preloadProductsAsyncAction.run(() => super.preloadProducts());
+  Future<void> fetchData({String? category, String? query}) {
+    return _$fetchDataAsyncAction.run(
+      () => super.fetchData(category: category, query: query),
+    );
   }
 
   late final _$addToStockAsyncAction = AsyncAction(
@@ -171,25 +173,12 @@ mixin _$StockStore on StockStoreBase, Store {
   }
 
   @override
-  void _invalidateComputed() {
-    final _$actionInfo = _$StockStoreBaseActionController.startAction(
-      name: 'StockStoreBase._invalidateComputed',
-    );
-    try {
-      return super._invalidateComputed();
-    } finally {
-      _$StockStoreBaseActionController.endAction(_$actionInfo);
-    }
-  }
-
-  @override
   String toString() {
     return '''
 searchQuery: ${searchQuery},
 currentCategory: ${currentCategory},
-productsFuture: ${productsFuture},
-allProducts: ${allProducts},
-filteredProducts: ${filteredProducts}
+productsList: ${productsList},
+filterList: ${filterList}
     ''';
   }
 }

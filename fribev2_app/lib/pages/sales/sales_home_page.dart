@@ -46,7 +46,7 @@ class _SalesHomePageState extends State<SalesHomePage> {
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
-          //salesStore.createReceipt(cart: cartStore);
+          salesStore.createReceipt(cart: cartStore);
           cartStore.clear();
         },
         label: Text('FINALIZAR VENDA'),

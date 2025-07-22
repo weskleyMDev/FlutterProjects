@@ -26,7 +26,7 @@ class FirebaseSalesService implements ISalesService {
 
   @override
   Future<SalesReceipt?> createReceipt({required CartStore cart}) async {
-    final SalesReceipt newProduct = SalesReceipt(
+    final SalesReceipt newReceipt = SalesReceipt(
       id: '',
       total: cart.totalAmount,
       cart: cart.cartList.values.toList(),
@@ -36,7 +36,7 @@ class FirebaseSalesService implements ISalesService {
     final docRef = await _firestore
         .collection('sales')
         .withConverter(fromFirestore: _fromFirestore, toFirestore: _toFirestore)
-        .add(newProduct);
+        .add(newReceipt);
     final doc = await docRef.get();
 
     return doc.data();
