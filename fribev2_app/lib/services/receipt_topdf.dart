@@ -90,17 +90,26 @@ class ReciboGenerator {
                   ),
                   pw.Text('-' * 80),
                   pw.SizedBox(height: 20),
-                  pw.Row(
-                    children: [
-                      pw.Column(
-                        crossAxisAlignment: pw.CrossAxisAlignment.start,
-                        children: [
-                          pw.Text('Dinheiro: R\$ 12,50'),
-                          pw.Text('Debito: R\$ 35,50'),
-                        ],
-                      ),
-                    ],
-                  ),
+                  // pw.ListView.builder(
+                  //   itemCount: receipt?.payments.length ?? 0,
+                  //   itemBuilder: (context, index) {
+                  //     final payment = receipt?.payments[index];
+                  //     final String type = payment?['type'] ?? 'Unknown';
+                  //     final String value = payment?['value'] ?? '0';
+                  //     return pw.Row(
+                  //       children: [
+                  //         pw.Text(
+                  //           '$type: ',
+                  //           style: pw.TextStyle(fontSize: 12.0),
+                  //         ),
+                  //         pw.Text(
+                  //           'R\$ ${value.replaceAll('.', ',')}',
+                  //           style: pw.TextStyle(fontSize: 12.0),
+                  //         ),
+                  //       ],
+                  //     );
+                  //   },
+                  // ),
                 ],
               ),
             ),

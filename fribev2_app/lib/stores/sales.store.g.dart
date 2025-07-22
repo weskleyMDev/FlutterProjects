@@ -52,9 +52,12 @@ mixin _$SalesStore on SalesStoreBase, Store {
   );
 
   @override
-  Future<SalesReceipt?> createReceipt({required CartStore cart}) {
+  Future<SalesReceipt?> createReceipt({
+    required CartStore cart,
+    required List<Payment> payments,
+  }) {
     return _$createReceiptAsyncAction.run(
-      () => super.createReceipt(cart: cart),
+      () => super.createReceipt(cart: cart, payments: payments),
     );
   }
 

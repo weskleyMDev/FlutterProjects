@@ -8,6 +8,7 @@ import 'services/sales/firebase_sales_service.dart';
 import 'services/stock/firebase_stock_service.dart';
 import 'stores/auth.store.dart';
 import 'stores/cart.store.dart';
+import 'stores/payment.store.dart';
 import 'stores/sales.store.dart';
 import 'stores/sales_filter.store.dart';
 import 'stores/stock.store.dart';
@@ -39,6 +40,7 @@ class MyApp extends StatelessWidget {
         ),
         Provider(create: (_) => CartStore()),
         Provider(create: (_) => SalesFilterStore()),
+        Provider(create: (_) => PaymentStore()),
       ],
       child: MaterialApp.router(
         title: 'Fribe Cortes Especiais',

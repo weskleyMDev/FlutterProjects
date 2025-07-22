@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import '../../models/payment.dart';
 import '../../models/sales_receipt.dart';
 import '../../stores/cart.store.dart';
 import 'isales_service.dart';
@@ -25,13 +26,16 @@ class FirebaseSalesService implements ISalesService {
   }
 
   @override
-  Future<SalesReceipt?> createReceipt({required CartStore cart}) async {
+  Future<SalesReceipt?> createReceipt({
+    required CartStore cart,
+    required List<Payment> payments,
+  }) async {
     final SalesReceipt newReceipt = SalesReceipt(
       id: '',
       total: cart.totalAmount,
       cart: cart.cartList.values.toList(),
       createAt: DateTime.now(),
-      payments: {'CARD': '12.50', 'CASH': '7.50'},
+      payments: payments,
     );
 
     final docRef = await _firestore

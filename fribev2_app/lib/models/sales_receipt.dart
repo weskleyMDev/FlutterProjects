@@ -1,16 +1,16 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 
 import 'cart_item.dart';
+import 'payment.dart';
 
 class SalesReceipt {
   final String id;
   final String total;
   final List<CartItem> cart;
   final DateTime createAt;
-  final Map<String, String> payments;
+  final List<Payment> payments;
 
   SalesReceipt({
     required this.id,
@@ -25,7 +25,7 @@ class SalesReceipt {
     String? total,
     List<CartItem>? cart,
     DateTime? createAt,
-    Map<String, String>? payments,
+    List<Payment>? payments,
   }) {
     return SalesReceipt(
       id: id ?? this.id,
@@ -55,8 +55,10 @@ class SalesReceipt {
             .map<CartItem>((x) => CartItem.fromMap(x)),
       ),
       createAt: DateTime.parse(map['createAt'] as String),
-      payments: Map<String, String>.from(
-        (map['payments'] as Map<String, String>),
+      payments: List<Payment>.from(
+        (map['cart'] as List<dynamic>)
+            .whereType<Map<String, dynamic>>()
+            .map<Payment>((x) => Payment.fromMap(x)),
       ),
     );
   }
@@ -79,7 +81,7 @@ class SalesReceipt {
         other.total == total &&
         listEquals(other.cart, cart) &&
         other.createAt == createAt &&
-        mapEquals(other.payments, payments);
+        listEquals(other.payments, payments);
   }
 
   @override

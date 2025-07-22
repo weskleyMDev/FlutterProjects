@@ -1,4 +1,6 @@
 import 'package:mobx/mobx.dart';
+
+import '../models/payment.dart';
 import '../models/sales_receipt.dart';
 import '../services/sales/isales_service.dart';
 import 'cart.store.dart';
@@ -25,8 +27,14 @@ abstract class SalesStoreBase with Store {
   }
 
   @action
-  Future<SalesReceipt?> createReceipt({required CartStore cart}) async {
-    final newReceipt = await salesService.createReceipt(cart: cart);
+  Future<SalesReceipt?> createReceipt({
+    required CartStore cart,
+    required List<Payment> payments,
+  }) async {
+    final newReceipt = await salesService.createReceipt(
+      cart: cart,
+      payments: payments,
+    );
     return newReceipt;
   }
 

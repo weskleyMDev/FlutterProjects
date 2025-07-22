@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -8,7 +10,10 @@ import '../../components/drawer_admin.dart';
 import '../../components/sales_panel.dart';
 import '../../services/receipt_topdf.dart';
 import '../../stores/cart.store.dart';
+import '../../stores/payment.store.dart';
 import '../../stores/sales.store.dart';
+
+const paymentType = ['Dinheiro', 'Debito', 'Credito', 'Pix'];
 
 class SalesHomePage extends StatefulWidget {
   const SalesHomePage({super.key});
@@ -18,6 +23,7 @@ class SalesHomePage extends StatefulWidget {
 }
 
 class _SalesHomePageState extends State<SalesHomePage> {
+  final formKey = GlobalKey<FormState>();
   final ReciboGenerator _generate = ReciboGenerator();
   String _phoneNumber = '';
 
@@ -50,14 +56,155 @@ class _SalesHomePageState extends State<SalesHomePage> {
           ),
           actions: [
             TextButton(
-              onPressed: () => Navigator.of(context).pop(false),
+              onPressed: () => context.pop(false),
               child: const Text('Cancelar'),
             ),
             TextButton(
-              onPressed: () {
-                Navigator.of(context).pop(true);
-              },
+              onPressed: () => context.pop(true),
               child: const Text('Confirmar'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<bool?> _showPaymentDialog(BuildContext context) {
+    final payStore = Provider.of<PaymentStore>(context, listen: false);
+    final cartStore = Provider.of<CartStore>(context, listen: false);
+    return showDialog<bool>(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          scrollable: true,
+          title: Text(
+            'À pagar: R\$ ${cartStore.totalAmount.replaceAll('.', ',')}',
+          ),
+          content: Form(
+            key: formKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  margin: const EdgeInsets.only(bottom: 8.0),
+                  child: DropdownButtonFormField(
+                    key: const ValueKey('paymentType'),
+                    decoration: InputDecoration(
+                      labelText: 'Forma de Pagamento',
+                      border: OutlineInputBorder(),
+                    ),
+                    value: payStore.paymentType.isEmpty
+                        ? null
+                        : payStore.paymentType,
+                    items: paymentType.map((type) {
+                      return DropdownMenuItem(value: type, child: Text(type));
+                    }).toList(),
+                    onChanged: (value) => payStore.setPaymentType(value ?? ''),
+                    validator: (value) {
+                      final payType = value?.trim() ?? '';
+                      if (payType.isEmpty) {
+                        return 'Campo obrigatório!';
+                      }
+                      return null;
+                    },
+                  ),
+                ),
+                Container(
+                  margin: const EdgeInsets.only(bottom: 14.0),
+                  child: TextFormField(
+                    key: const ValueKey('paymentValue'),
+                    decoration: InputDecoration(
+                      labelText: 'Valor',
+                      border: OutlineInputBorder(),
+                    ),
+                    keyboardType: TextInputType.numberWithOptions(
+                      decimal: true,
+                    ),
+                    onChanged: (value) => payStore.setPaymentValue(
+                      value.trim().replaceAll(',', '.'),
+                    ),
+                    validator: (value) {
+                      final payValue = value?.trim() ?? '';
+                      if (payValue.isEmpty) {
+                        return 'Campo obrigatório!';
+                      }
+                      final valid = RegExp(
+                        r'^\d+([.,]\d{0,2})?$',
+                      ).hasMatch(payValue);
+                      if (!valid) {
+                        return 'Digite apenas números (ex: 12.89)';
+                      }
+                      return null;
+                    },
+                  ),
+                ),
+                ElevatedButton(
+                  onPressed: () async {
+                    final isValid = formKey.currentState?.validate() ?? false;
+                    if (!isValid) return;
+                    await payStore.pay();
+                    formKey.currentState?.reset();
+                  },
+                  child: const Text('ADICIONAR'),
+                ),
+                const Divider(thickness: 2.0),
+                Observer(
+                  builder: (_) {
+                    return Column(
+                      children: [
+                        Container(
+                          margin: const EdgeInsets.only(top: 8.0),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: payStore.payments.map((payment) {
+                              return Card(
+                                margin: const EdgeInsets.only(bottom: 5.0),
+                                child: ListTile(
+                                  title: Text(
+                                    '${payment.type}: R\$ ${double.parse(payment.value).toStringAsFixed(2).replaceAll('.', ',')}',
+                                  ),
+                                  trailing: IconButton(
+                                    icon: Icon(Icons.delete),
+                                    onPressed: () =>
+                                        payStore.removePayment(payment),
+                                  ),
+                                ),
+                              );
+                            }).toList(),
+                          ),
+                        ),
+                        const Divider(thickness: 2.0),
+                        Chip(
+                          label: Text(
+                            'Pago: R\$ ${payStore.totalPayments.replaceAll('.', ',')}',
+                            style: TextStyle(fontSize: 16.0),
+                          ),
+                        ),
+                      ],
+                    );
+                  },
+                ),
+              ],
+            ),
+          ),
+
+          actions: [
+            TextButton(
+              onPressed: () => context.pop(false),
+              child: const Text('Cancelar'),
+            ),
+            Observer(
+              builder: (context) {
+                return TextButton(
+                  onPressed:
+                      (double.parse(cartStore.totalAmount) ==
+                          double.parse(payStore.totalPayments))
+                      ? () => context.pop(false)
+                      : null,
+                  child: const Text('Pagar'),
+                );
+              },
             ),
           ],
         );
@@ -110,10 +257,11 @@ class _SalesHomePageState extends State<SalesHomePage> {
         ],
       ),
       floatingActionButton: FloatingActionButton.extended(
-        onPressed: () async {
-          final receipt = await salesStore.createReceipt(cart: cartStore);
-          cartStore.clear();
-          _generate.generateReceipt(receipt: receipt);
+        onPressed: () {
+          _showPaymentDialog(context);
+          // final receipt = await salesStore.createReceipt(cart: cartStore);
+          // cartStore.clear();
+          // _generate.generateReceipt(receipt: receipt);
         },
         label: Text('FINALIZAR VENDA'),
         extendedPadding: EdgeInsets.symmetric(horizontal: 12.0),
