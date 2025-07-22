@@ -15,7 +15,6 @@ abstract class StockStoreBase with Store {
       (_) => _invalidateComputed(),
       delay: 300,
     );
-
     preloadProducts();
   }
 
@@ -54,7 +53,6 @@ abstract class StockStoreBase with Store {
   Future<void> preloadProducts() async {
     final future = stockService.getProducts().first;
     productsFuture = ObservableFuture(future);
-    //_invalidateComputed();
   }
 
   @action

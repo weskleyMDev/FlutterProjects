@@ -1,8 +1,9 @@
-import '../../models/proof_sale.dart';
+import '../../models/sales_receipt.dart';
+import '../../stores/cart.store.dart';
 
 abstract class ISalesService {
-  Stream<List<ProofSale?>> getSales();
-  Future<ProofSale?> saveProof({required ProofSale proof});
-  Future<void> deleteProofById({required ProofSale proof});
-  Future<void> updateProof({required ProofSale proof});
+  Stream<List<SalesReceipt>> getReceipts();
+  Future<SalesReceipt?> createReceipt({required CartStore cart});
+  Future<void> deleteReceiptById({required SalesReceipt receipt});
+  Future<void> updateReceipt({required SalesReceipt receipt});
 }

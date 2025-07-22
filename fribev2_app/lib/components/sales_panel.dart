@@ -1,5 +1,7 @@
+import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:go_router/go_router.dart';
 import 'package:mobx/mobx.dart';
 import 'package:provider/provider.dart';
 
@@ -16,10 +18,66 @@ class SalesPanel extends StatefulWidget {
 }
 
 class _SalesPanelState extends State<SalesPanel> {
+  Future<bool?> _showDialogQuantity({
+    required BuildContext context,
+    required CartStore store,
+  }) async {
+    final formKey = GlobalKey<FormState>();
+    store.setQuantity('');
+    return showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: Text('Digite a quantidade desejada'),
+        content: Form(
+          key: formKey,
+          child: TextFormField(
+            key: ValueKey('quantity'),
+            decoration: InputDecoration(
+              border: OutlineInputBorder(),
+              label: Text('Quantidade'),
+            ),
+            onChanged: (value) => store.setQuantity(value),
+            validator: (value) {
+              final qtt = value?.trim().replaceAll(',', '.') ?? '0';
+              if (qtt.isEmpty) return 'Campo obrigatório!';
+              final parsedValue = Decimal.tryParse(qtt);
+              final validParsedValue =
+                  parsedValue == null || parsedValue <= Decimal.zero;
+              final numberPattern = RegExp(
+                r'^\d+([.,]\d{0,3})?$',
+              ).hasMatch(qtt);
+              if (!numberPattern || validParsedValue) {
+                return 'Digite apenas números positivos (ex: 2.345)';
+              }
+              return null;
+            },
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              store.setQuantity('');
+              context.pop(false);
+            },
+            child: Text('Cancelar'),
+          ),
+          TextButton(
+            onPressed: () {
+              final isValid = formKey.currentState?.validate() ?? false;
+              if (!isValid) return;
+              context.pop(true);
+            },
+            child: Text('Confirmar'),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final stockStore = Provider.of<StockStore>(context);
-    final cartStore = Provider.of<CartStore>(context);
+    final cartStore = Provider.of<CartStore>(context, listen: false);
     return Observer(
       builder: (context) {
         final future = stockStore.productsFuture;
@@ -72,8 +130,11 @@ class _SalesPanelState extends State<SalesPanel> {
                               trailing: ElevatedButton.icon(
                                 onPressed: () async {
                                   try {
-                                    final isConfirmed = await cartStore
-                                        .showDialogQuantity(context: context);
+                                    final isConfirmed =
+                                        await _showDialogQuantity(
+                                          context: context,
+                                          store: cartStore,
+                                        );
                                     if (isConfirmed == true) {
                                       cartStore.addItem(product: product);
                                     } else {

@@ -69,22 +69,25 @@ class CartPanel extends StatelessWidget {
                         child: Card(
                           margin: EdgeInsets.zero,
                           shape: RoundedRectangleBorder(),
-                          child: ListTile(
-                            title: Text(product.name),
-                            subtitle: Text(
-                              'x${product.quantity.replaceAll('.', ',')}',
-                            ),
-                            trailing: Column(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: [
-                                Text(
-                                  'R\$ ${cartStore.subtotals[productId]?.replaceAll('.', ',') ?? 'R\$ 0.00'}',
-                                  style: TextStyle(
-                                    fontSize: 14.0,
-                                    fontWeight: FontWeight.bold,
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 1.0),
+                            child: ListTile(
+                              title: Text(product.name),
+                              subtitle: Text(
+                                'x${product.quantity.replaceAll('.', ',')}',
+                              ),
+                              trailing: Column(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  Text(
+                                    'R\$ ${cartStore.subtotals[productId]?.replaceAll('.', ',') ?? 'R\$ 0.00'}',
+                                    style: TextStyle(
+                                      fontSize: 14.0,
+                                      fontWeight: FontWeight.bold,
+                                    ),
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
                           ),
                         ),

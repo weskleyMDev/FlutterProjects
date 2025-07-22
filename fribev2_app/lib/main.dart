@@ -30,6 +30,7 @@ class MyApp extends StatelessWidget {
         Provider(create: (_) => AuthStore(authService: FirebaseAuthService())),
         Provider(
           create: (_) => StockStore(stockService: FirebaseStockService()),
+          dispose: (context, stock) => stock.dispose(),
         ),
         Provider(
           create: (_) => SalesStore(salesService: FirebaseSalesService()),

@@ -1,13 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-import '../../models/proof_sale.dart';
+import '../../models/sales_receipt.dart';
+import '../../stores/cart.store.dart';
 import 'isales_service.dart';
 
 class FirebaseSalesService implements ISalesService {
   static final _firestore = FirebaseFirestore.instance;
 
   @override
-  Stream<List<ProofSale?>> getSales() {
+  Stream<List<SalesReceipt>> getReceipts() {
     final snapshots = _firestore
         .collection('sales')
         .withConverter(fromFirestore: _fromFirestore, toFirestore: _toFirestore)
@@ -19,19 +20,17 @@ class FirebaseSalesService implements ISalesService {
   }
 
   @override
-  Future<void> deleteProofById({required ProofSale proof}) async {
-    await _firestore.collection('stock').doc(proof.id).delete();
+  Future<void> deleteReceiptById({required SalesReceipt receipt}) async {
+    await _firestore.collection('sales').doc(receipt.id).delete();
   }
 
   @override
-  Future<ProofSale?> saveProof({required ProofSale proof}) async {
-    final ProofSale newProduct = ProofSale(
+  Future<SalesReceipt?> createReceipt({required CartStore cart}) async {
+    final SalesReceipt newProduct = SalesReceipt(
       id: '',
-      amount: proof.amount,
-      subtotal: proof.subtotal,
-      total: proof.total,
-      cart: proof.cart,
-      createAt: proof.createAt,
+      total: cart.totalAmount,
+      cart: cart.cartList.values.toList(),
+      createAt: DateTime.now(),
     );
 
     final docRef = await _firestore
@@ -43,16 +42,21 @@ class FirebaseSalesService implements ISalesService {
     return doc.data();
   }
 
-  Map<String, dynamic> _toFirestore(ProofSale product, SetOptions? options) =>
-      product.toMap();
+  Map<String, dynamic> _toFirestore(
+    SalesReceipt receipt,
+    SetOptions? options,
+  ) => receipt.toMap();
 
-  ProofSale _fromFirestore(
+  SalesReceipt _fromFirestore(
     DocumentSnapshot<Map<String, dynamic>> snapshot,
     SnapshotOptions? options,
-  ) => ProofSale.fromMap(snapshot.data()!, snapshot.id);
+  ) => SalesReceipt.fromMap(snapshot.data()!, snapshot.id);
 
   @override
-  Future<void> updateProof({required ProofSale proof}) async {
-    await _firestore.collection('sales').doc(proof.id).update(proof.toMap());
+  Future<void> updateReceipt({required SalesReceipt receipt}) async {
+    await _firestore
+        .collection('sales')
+        .doc(receipt.id)
+        .update(receipt.toMap());
   }
 }

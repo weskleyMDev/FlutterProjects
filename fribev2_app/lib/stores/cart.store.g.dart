@@ -55,21 +55,21 @@ mixin _$CartStore on CartStoreBase, Store {
     });
   }
 
-  late final _$quantityAtom = Atom(
-    name: 'CartStoreBase.quantity',
+  late final _$_quantityAtom = Atom(
+    name: 'CartStoreBase._quantity',
     context: context,
   );
 
   @override
-  String get quantity {
-    _$quantityAtom.reportRead();
-    return super.quantity;
+  String get _quantity {
+    _$_quantityAtom.reportRead();
+    return super._quantity;
   }
 
   @override
-  set quantity(String value) {
-    _$quantityAtom.reportWrite(value, super.quantity, () {
-      super.quantity = value;
+  set _quantity(String value) {
+    _$_quantityAtom.reportWrite(value, super._quantity, () {
+      super._quantity = value;
     });
   }
 
@@ -83,22 +83,22 @@ mixin _$CartStore on CartStoreBase, Store {
     return _$addItemAsyncAction.run(() => super.addItem(product: product));
   }
 
-  late final _$showDialogQuantityAsyncAction = AsyncAction(
-    'CartStoreBase.showDialogQuantity',
-    context: context,
-  );
-
-  @override
-  Future<bool?> showDialogQuantity({required BuildContext context}) {
-    return _$showDialogQuantityAsyncAction.run(
-      () => super.showDialogQuantity(context: context),
-    );
-  }
-
   late final _$CartStoreBaseActionController = ActionController(
     name: 'CartStoreBase',
     context: context,
   );
+
+  @override
+  void setQuantity(String value) {
+    final _$actionInfo = _$CartStoreBaseActionController.startAction(
+      name: 'CartStoreBase.setQuantity',
+    );
+    try {
+      return super.setQuantity(value);
+    } finally {
+      _$CartStoreBaseActionController.endAction(_$actionInfo);
+    }
+  }
 
   @override
   void removeItem({required String productId}) {
@@ -127,7 +127,6 @@ mixin _$CartStore on CartStoreBase, Store {
   @override
   String toString() {
     return '''
-quantity: ${quantity},
 cartList: ${cartList},
 itemsCount: ${itemsCount},
 totalAmount: ${totalAmount},
