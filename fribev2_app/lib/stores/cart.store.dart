@@ -16,6 +16,9 @@ abstract class CartStoreBase with Store {
   @observable
   String _quantity = '';
 
+  @observable
+  String _subtotal = '';
+
   @computed
   Map<String, CartItem> get cartList => Map.unmodifiable(_cart);
 
@@ -44,10 +47,18 @@ abstract class CartStoreBase with Store {
   @action
   Future<void> addItem({required Product product}) async {
     final qtt = Decimal.parse(_quantity);
+    _subtotal = (Decimal.parse(product.price) * qtt).toStringAsFixed(2);
     if (_cart.containsKey(product.id)) {
       _cart.update(product.id, (existItem) {
         final newQuantity = Decimal.parse(existItem.quantity);
-        return existItem.copyWith(quantity: (newQuantity + qtt).toString());
+        final newSubtotal = Decimal.parse(existItem.subtotal);
+        _quantity = (newQuantity + qtt).toString();
+        _subtotal = (newSubtotal + (Decimal.parse(product.price) * qtt))
+            .toStringAsFixed(2);
+        return existItem.copyWith(
+          quantity: _quantity,
+          subtotal: _subtotal,
+        );
       });
     } else {
       _cart.putIfAbsent(
@@ -58,6 +69,7 @@ abstract class CartStoreBase with Store {
           name: product.name,
           quantity: _quantity,
           price: product.price,
+          subtotal: _subtotal,
         ),
       );
     }

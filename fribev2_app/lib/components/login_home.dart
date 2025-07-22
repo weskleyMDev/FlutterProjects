@@ -8,9 +8,14 @@ import '../pages/login_page.dart';
 import '../pages/user_home_page.dart';
 import '../stores/auth.store.dart';
 
-class LoginOrHome extends StatelessWidget {
+class LoginOrHome extends StatefulWidget {
   const LoginOrHome({super.key});
 
+  @override
+  State<LoginOrHome> createState() => _LoginOrHomeState();
+}
+
+class _LoginOrHomeState extends State<LoginOrHome> {
   Future<void> init(BuildContext context) async {
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,

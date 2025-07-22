@@ -9,7 +9,6 @@ class SalesStore = SalesStoreBase with _$SalesStore;
 
 abstract class SalesStoreBase with Store {
   SalesStoreBase({required this.salesService});
-
   final ISalesService salesService;
 
   @observable
@@ -17,13 +16,13 @@ abstract class SalesStoreBase with Store {
     Stream<List<SalesReceipt>>.empty(),
   );
 
+  @computed
+  Stream<List<SalesReceipt>> get allReceipts => _receipts;
+
   @action
   Future<void> fetchReceipts() async {
     _receipts = ObservableStream(salesService.getReceipts());
   }
-
-  @computed
-  Stream<List<SalesReceipt>> get allReceipts => _receipts;
 
   @action
   Future<SalesReceipt?> createReceipt({required CartStore cart}) async {

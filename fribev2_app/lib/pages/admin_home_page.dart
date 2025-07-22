@@ -1,45 +1,26 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:fribev2_app/utils/capitalize_text.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 import '../components/drawer_admin.dart';
 import '../stores/auth.store.dart';
 import '../stores/sales.store.dart';
+import '../stores/sales_filter.store.dart';
 
 class AdminHomePage extends StatelessWidget {
   const AdminHomePage({super.key});
-
-  // Future<void> _selectDate(BuildContext context, SalesStore store) async {
-  //   final DateTime initialDate = store.selectedDate ?? DateTime.now();
-  //   final DateTime firstDate = DateTime(2020);
-  //   final DateTime lastDate = DateTime(2101);
-
-  //   final picked = await showDatePicker(
-  //     context: context,
-  //     initialDate: initialDate,
-  //     firstDate: firstDate,
-  //     lastDate: lastDate,
-  //   );
-
-  //   if (picked != null && picked != store.selectedDate) {
-  //     store.selectedDate = picked;
-  //   }
-  // }
 
   @override
   Widget build(BuildContext context) {
     final authStore = Provider.of<AuthStore>(context, listen: false);
     final salesStore = Provider.of<SalesStore>(context, listen: false);
+    final salesFilterStore = Provider.of<SalesFilterStore>(
+      context,
+      listen: false,
+    );
     final name = authStore.currentUser?.email.split('@')[0] ?? 'Usuário';
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Bem vindo, ${name.capitalize()}!'),
-        actions: [
-          IconButton(onPressed: () {}, icon: Icon(Icons.search_outlined)),
-        ],
-      ),
+      appBar: AppBar(title: Text('Bem vindo, ${name.capitalize()}!')),
       drawer: const DrawerAdmin(),
       body: FutureBuilder(
         future: salesStore.fetchReceipts(),
@@ -61,22 +42,34 @@ class AdminHomePage extends StatelessWidget {
                         child: Text('Nenhum recibo encontrado.'),
                       );
                     }
+                    salesFilterStore.setGroupedSales(receipts);
                     return ListView.builder(
-                      itemCount: receipts.length,
+                      itemCount: salesFilterStore.sortedKeys.length,
                       itemBuilder: (context, index) {
-                        final receipt = receipts[index];
-                        final date = DateFormat(
-                          'dd/MM/y - HH:mm',
-                        ).format(receipt.createAt);
-                        return ListTile(
-                          title: Text('Recibo: #${receipt.id}'),
-                          subtitle: Text('Data/Hora: $date'),
-                          trailing: IconButton(
-                            icon: const Icon(Icons.delete),
-                            onPressed: () {
-                              salesStore.deleteReceiptById(receipt: receipt);
-                            },
+                        final dateKey = salesFilterStore.sortedKeys[index];
+                        final salesDay =
+                            salesFilterStore.groupedSales[dateKey] ?? [];
+                        salesFilterStore.setTotalOfDay(salesDay);
+                        final totalDay = salesFilterStore.totalOfDay;
+                        return ExpansionTile(
+                          title: Text(
+                            '$dateKey - R\$ ${totalDay.replaceAll('.', ',')}',
                           ),
+                          children: [
+                            ListView.builder(
+                              shrinkWrap: true,
+                              itemCount: salesDay.length,
+                              itemBuilder: (context, index) {
+                                final sales = salesDay[index];
+                                return ListTile(
+                                  title: SelectableText('Recibo: #${sales.id}'),
+                                  subtitle: Text(
+                                    'Total: R\$ ${sales.total.replaceAll('.', ',')}',
+                                  ),
+                                );
+                              },
+                            ),
+                          ],
                         );
                       },
                     );
@@ -84,7 +77,7 @@ class AdminHomePage extends StatelessWidget {
               }
             },
           );
-        }
+        },
       ),
     );
   }

@@ -73,6 +73,24 @@ mixin _$CartStore on CartStoreBase, Store {
     });
   }
 
+  late final _$_subtotalAtom = Atom(
+    name: 'CartStoreBase._subtotal',
+    context: context,
+  );
+
+  @override
+  String get _subtotal {
+    _$_subtotalAtom.reportRead();
+    return super._subtotal;
+  }
+
+  @override
+  set _subtotal(String value) {
+    _$_subtotalAtom.reportWrite(value, super._subtotal, () {
+      super._subtotal = value;
+    });
+  }
+
   late final _$addItemAsyncAction = AsyncAction(
     'CartStoreBase.addItem',
     context: context,

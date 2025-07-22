@@ -7,6 +7,7 @@ class CartItem {
   final String name;
   final String quantity;
   final String price;
+  final String subtotal;
 
   CartItem({
     required this.id,
@@ -14,6 +15,7 @@ class CartItem {
     required this.name,
     required this.quantity,
     required this.price,
+    required this.subtotal,
   });
 
   CartItem copyWith({
@@ -22,6 +24,7 @@ class CartItem {
     String? name,
     String? quantity,
     String? price,
+    String? subtotal,
   }) {
     return CartItem(
       id: id ?? this.id,
@@ -29,6 +32,7 @@ class CartItem {
       name: name ?? this.name,
       quantity: quantity ?? this.quantity,
       price: price ?? this.price,
+      subtotal: subtotal ?? this.subtotal,
     );
   }
 
@@ -39,6 +43,7 @@ class CartItem {
       'name': name,
       'quantity': quantity,
       'price': price,
+      'subtotal': subtotal,
     };
   }
 
@@ -49,36 +54,39 @@ class CartItem {
       name: map['name'] as String,
       quantity: map['quantity'] as String,
       price: map['price'] as String,
+      subtotal: map['subtotal'] as String,
     );
   }
 
   String toJson() => json.encode(toMap());
 
-  factory CartItem.fromJson(String source) => CartItem.fromMap(json.decode(source) as Map<String, dynamic>);
+  factory CartItem.fromJson(String source) =>
+      CartItem.fromMap(json.decode(source) as Map<String, dynamic>);
 
   @override
   String toString() {
-    return 'CartItem(id: $id, productId: $productId, name: $name, quantity: $quantity, price: $price)';
+    return 'CartItem(id: $id, productId: $productId, name: $name, quantity: $quantity, price: $price, subtotal: $subtotal)';
   }
 
   @override
   bool operator ==(covariant CartItem other) {
     if (identical(this, other)) return true;
-  
-    return 
-      other.id == id &&
-      other.productId == productId &&
-      other.name == name &&
-      other.quantity == quantity &&
-      other.price == price;
+
+    return other.id == id &&
+        other.productId == productId &&
+        other.name == name &&
+        other.quantity == quantity &&
+        other.price == price &&
+        other.subtotal == subtotal;
   }
 
   @override
   int get hashCode {
     return id.hashCode ^
-      productId.hashCode ^
-      name.hashCode ^
-      quantity.hashCode ^
-      price.hashCode;
+        productId.hashCode ^
+        name.hashCode ^
+        quantity.hashCode ^
+        price.hashCode ^
+        subtotal.hashCode;
   }
 }

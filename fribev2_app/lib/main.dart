@@ -9,11 +9,13 @@ import 'services/stock/firebase_stock_service.dart';
 import 'stores/auth.store.dart';
 import 'stores/cart.store.dart';
 import 'stores/sales.store.dart';
+import 'stores/sales_filter.store.dart';
 import 'stores/stock.store.dart';
 import 'utils/app_routes.dart';
 import 'utils/theme.dart';
 
 Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   await dotenv.load(fileName: '.env');
   runApp(const MyApp());
 }
@@ -30,12 +32,13 @@ class MyApp extends StatelessWidget {
         Provider(create: (_) => AuthStore(authService: FirebaseAuthService())),
         Provider(
           create: (_) => StockStore(stockService: FirebaseStockService()),
-          dispose: (context, stock) => stock.dispose(),
+          //dispose: (context, stock) => stock.dispose(),
         ),
         Provider(
           create: (_) => SalesStore(salesService: FirebaseSalesService()),
         ),
         Provider(create: (_) => CartStore()),
+        Provider(create: (_) => SalesFilterStore()),
       ],
       child: MaterialApp.router(
         title: 'Fribe Cortes Especiais',

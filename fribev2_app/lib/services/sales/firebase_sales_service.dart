@@ -31,6 +31,7 @@ class FirebaseSalesService implements ISalesService {
       total: cart.totalAmount,
       cart: cart.cartList.values.toList(),
       createAt: DateTime.now(),
+      payments: {'CARD': '12.50', 'CASH': '7.50'},
     );
 
     final docRef = await _firestore

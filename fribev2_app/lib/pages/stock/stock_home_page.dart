@@ -33,6 +33,7 @@ class _StockHomePageState extends State<StockHomePage> {
               ),
               child: const Text('Aves'),
             ),
+            Text('-' * 20)
           ],
         ),
       ),

@@ -49,7 +49,7 @@ class CartPanel extends StatelessWidget {
                     final productId = entry.key;
                     final product = entry.value;
                     return Container(
-                      margin: const EdgeInsets.all(5.0),
+                      margin: const EdgeInsets.all(4.0),
                       child: Slidable(
                         startActionPane: ActionPane(
                           extentRatio: 0.25,
@@ -69,25 +69,22 @@ class CartPanel extends StatelessWidget {
                         child: Card(
                           margin: EdgeInsets.zero,
                           shape: RoundedRectangleBorder(),
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 1.0),
-                            child: ListTile(
-                              title: Text(product.name),
-                              subtitle: Text(
-                                'x${product.quantity.replaceAll('.', ',')}',
-                              ),
-                              trailing: Column(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: [
-                                  Text(
-                                    'R\$ ${cartStore.subtotals[productId]?.replaceAll('.', ',') ?? 'R\$ 0.00'}',
-                                    style: TextStyle(
-                                      fontSize: 14.0,
-                                      fontWeight: FontWeight.bold,
-                                    ),
+                          child: ListTile(
+                            title: Text(product.name),
+                            subtitle: Text(
+                              'x${product.quantity.replaceAll('.', ',')}',
+                            ),
+                            trailing: Column(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                Text(
+                                  'R\$ ${product.subtotal.replaceAll('.', ',')}',
+                                  style: TextStyle(
+                                    fontSize: 14.0,
+                                    fontWeight: FontWeight.bold,
                                   ),
-                                ],
-                              ),
+                                ),
+                              ],
                             ),
                           ),
                         ),

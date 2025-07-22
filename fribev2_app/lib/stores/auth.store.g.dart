@@ -25,6 +25,24 @@ mixin _$AuthStore on AuthStoreBase, Store {
         name: 'AuthStoreBase.userChanges',
       )).value;
 
+  late final _$_currentUserAtom = Atom(
+    name: 'AuthStoreBase._currentUser',
+    context: context,
+  );
+
+  @override
+  ObservableStream<AppUser?> get _currentUser {
+    _$_currentUserAtom.reportRead();
+    return super._currentUser;
+  }
+
+  @override
+  set _currentUser(ObservableStream<AppUser?> value) {
+    _$_currentUserAtom.reportWrite(value, super._currentUser, () {
+      super._currentUser = value;
+    });
+  }
+
   late final _$loginAsyncAction = AsyncAction(
     'AuthStoreBase.login',
     context: context,
@@ -57,6 +75,23 @@ mixin _$AuthStore on AuthStoreBase, Store {
   @override
   Future<void> logout() {
     return _$logoutAsyncAction.run(() => super.logout());
+  }
+
+  late final _$AuthStoreBaseActionController = ActionController(
+    name: 'AuthStoreBase',
+    context: context,
+  );
+
+  @override
+  Stream<AppUser?> fetchCurrentUser() {
+    final _$actionInfo = _$AuthStoreBaseActionController.startAction(
+      name: 'AuthStoreBase.fetchCurrentUser',
+    );
+    try {
+      return super.fetchCurrentUser();
+    } finally {
+      _$AuthStoreBaseActionController.endAction(_$actionInfo);
+    }
   }
 
   @override

@@ -32,15 +32,6 @@ class _StockListState extends State<StockList> {
   }
 
   @override
-  void initState() {
-    super.initState();
-    Provider.of<StockStore>(
-      context,
-      listen: false,
-    ).setCategory(widget.category);
-  }
-
-  @override
   void dispose() {
     stockStore.reset();
     super.dispose();
@@ -49,79 +40,94 @@ class _StockListState extends State<StockList> {
   @override
   Widget build(BuildContext context) {
     final stockStore = Provider.of<StockStore>(context);
-    return Container();
-    // return Observer(
-    //   builder: (context) => Column(
-    //     children: [
-    //       StockSearch(onChange: (value) => stockStore.searchQuery = value),
-    //       const SizedBox(height: 12),
-    //       stockStore.filteredProducts.isEmpty
-    //           ? Expanded(
-    //               child: const Center(
-    //                 child: Text('Nenhum produto encontrado.'),
-    //               ),
-    //             )
-    //           : Expanded(
-    //               child: ListView.builder(
-    //                 itemCount: stockStore.filteredProducts.length,
-    //                 itemBuilder: (context, index) {
-    //                   final product = stockStore.filteredProducts[index];
-    //                   return Container(
-    //                     margin: const EdgeInsets.symmetric(
-    //                       vertical: 5.0,
-    //                       horizontal: 16.0,
-    //                     ),
-    //                     child: Slidable(
-    //                       endActionPane: ActionPane(
-    //                         extentRatio: 0.35,
-    //                         motion: BehindMotion(),
-    //                         children: [
-    //                           SlidableAction(
-    //                             onPressed: (context) {
-    //                               context.pushNamed(
-    //                                 'stock-edit-form',
-    //                                 extra: product,
-    //                               );
-    //                             },
-    //                             icon: Icons.edit_outlined,
-    //                             backgroundColor: Colors.blue,
-    //                             padding: EdgeInsets.zero,
-    //                             label: 'Atualizar',
-    //                           ),
-    //                           SlidableAction(
-    //                             onPressed: (_) => stockStore.removeProductById(
-    //                               product: product,
-    //                             ),
-    //                             icon: Icons.delete_outline,
-    //                             backgroundColor: Colors.red,
-    //                             padding: EdgeInsets.zero,
-    //                             label: 'Deletar',
-    //                           ),
-    //                         ],
-    //                       ),
-    //                       child: Card(
-    //                         shape: RoundedRectangleBorder(),
-    //                         margin: EdgeInsets.zero,
-    //                         child: ListTile(
-    //                           title: Text(
-    //                             product.name,
-    //                             style: TextStyle(
-    //                               overflow: TextOverflow.ellipsis,
-    //                             ),
-    //                             maxLines: 1,
-    //                           ),
-    //                           subtitle: Text(
-    //                             'Estoque: ${product.amount.replaceAll('.', ',')} (${product.measure}) | Preço: R\$ ${product.price.replaceAll('.', ',')}',
-    //                           ),
-    //                         ),
-    //                       ),
-    //                     ),
-    //                   );
-    //                 },
-    //               ),
-    //             ),
-    //     ],
-    //   ),
-    // );
+    return Observer(
+      builder: (context) => Column(
+        children: [
+          StockSearch(onChange: (value) => stockStore.searchQuery = value),
+          const SizedBox(height: 12),
+          Expanded(
+            child: FutureBuilder(
+              future: stockStore.filterList,
+              builder: (context, asyncSnapshot) {
+                return StreamBuilder(
+                  stream: stockStore.productsList,
+                  builder: (context, snapshot) {
+                    switch (snapshot.connectionState) {
+                      case ConnectionState.none:
+                      case ConnectionState.waiting:
+                        return const Center(child: CircularProgressIndicator());
+                      default:
+                        final products = snapshot.data ?? [];
+                        return products.isEmpty
+                            ? const Center(
+                                child: Text('Nenhum produto encontrado!'),
+                              )
+                            : ListView.builder(
+                                itemCount: products.length,
+                                itemBuilder: (context, index) {
+                                  final product = products[index];
+                                  return Container(
+                                    margin: const EdgeInsets.symmetric(
+                                      vertical: 5.0,
+                                      horizontal: 16.0,
+                                    ),
+                                    child: Slidable(
+                                      endActionPane: ActionPane(
+                                        extentRatio: 0.35,
+                                        motion: BehindMotion(),
+                                        children: [
+                                          SlidableAction(
+                                            onPressed: (context) {
+                                              context.pushNamed(
+                                                'stock-edit-form',
+                                                extra: product,
+                                              );
+                                            },
+                                            icon: Icons.edit_outlined,
+                                            backgroundColor: Colors.blue,
+                                            padding: EdgeInsets.zero,
+                                            label: 'Atualizar',
+                                          ),
+                                          SlidableAction(
+                                            onPressed: (_) =>
+                                                stockStore.removeProductById(
+                                                  product: product,
+                                                ),
+                                            icon: Icons.delete_outline,
+                                            backgroundColor: Colors.red,
+                                            padding: EdgeInsets.zero,
+                                            label: 'Deletar',
+                                          ),
+                                        ],
+                                      ),
+                                      child: Card(
+                                        shape: RoundedRectangleBorder(),
+                                        margin: EdgeInsets.zero,
+                                        child: ListTile(
+                                          title: Text(
+                                            product.name,
+                                            style: TextStyle(
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                            maxLines: 1,
+                                          ),
+                                          subtitle: Text(
+                                            'Estoque: ${product.amount.replaceAll('.', ',')} (${product.measure}) | Preço: R\$ ${product.price.replaceAll('.', ',')}',
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                },
+                              );
+                    }
+                  },
+                );
+              },
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
