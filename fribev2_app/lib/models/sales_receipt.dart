@@ -41,7 +41,7 @@ class SalesReceipt {
       'total': total,
       'cart': cart.map((x) => x.toMap()).toList(),
       'createAt': createAt.toIso8601String(),
-      'payments': payments,
+      'payments': payments.map((x) => x.toMap()).toList(),
     };
   }
 
@@ -56,7 +56,7 @@ class SalesReceipt {
       ),
       createAt: DateTime.parse(map['createAt'] as String),
       payments: List<Payment>.from(
-        (map['cart'] as List<dynamic>)
+        (map['payments'] as List<dynamic>)
             .whereType<Map<String, dynamic>>()
             .map<Payment>((x) => Payment.fromMap(x)),
       ),

@@ -29,12 +29,14 @@ abstract class PaymentStoreBase with Store {
   @action
   Future<void> pay() async {
     await addPayment(type: _paymentType, value: _paymentValue);
-    clearFields();
   }
 
   @action
   Future<void> addPayment({required String type, required String value}) async {
-    final payment = Payment(type: type, value: value);
+    final payment = Payment(
+      type: type,
+      value: double.parse(value).toStringAsFixed(2),
+    );
     _payments.add(payment);
   }
 

@@ -27,13 +27,13 @@ class Payment {
   @override
   String toString() => 'Payment(type: $type, value: $value)';
 
-  @override
-  bool operator ==(covariant Payment other) {
-    if (identical(this, other)) return true;
+  // @override
+  // bool operator ==(covariant Payment other) {
+  //   if (identical(this, other)) return true;
 
-    return other.type == type && other.value == value;
-  }
+  //   return other.type == type && other.value == value;
+  // }
 
-  @override
-  int get hashCode => type.hashCode ^ value.hashCode;
+  // @override
+  // int get hashCode => type.hashCode ^ value.hashCode;
 }

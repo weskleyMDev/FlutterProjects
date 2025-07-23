@@ -8,7 +8,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../components/cart_panel.dart';
 import '../../components/drawer_admin.dart';
 import '../../components/sales_panel.dart';
-import '../../services/receipt_topdf.dart';
+import '../../services/receipt_to_pdf.dart';
 import '../../stores/cart.store.dart';
 import '../../stores/payment.store.dart';
 import '../../stores/sales.store.dart';
@@ -24,7 +24,7 @@ class SalesHomePage extends StatefulWidget {
 
 class _SalesHomePageState extends State<SalesHomePage> {
   final formKey = GlobalKey<FormState>();
-  final ReciboGenerator _generate = ReciboGenerator();
+  final ReceiptGenerator _generate = ReceiptGenerator();
   String _phoneNumber = '';
 
   Future<void> _launchURL(String url, String path) async {
@@ -38,6 +38,7 @@ class _SalesHomePageState extends State<SalesHomePage> {
   Future<bool?> _showPhoneDialog(BuildContext context) {
     return showDialog<bool>(
       context: context,
+      barrierDismissible: false,
       builder: (context) {
         return AlertDialog(
           title: const Text('Número de Telefone'),
@@ -74,6 +75,7 @@ class _SalesHomePageState extends State<SalesHomePage> {
     final cartStore = Provider.of<CartStore>(context, listen: false);
     return showDialog<bool>(
       context: context,
+      barrierDismissible: false,
       builder: (context) {
         return AlertDialog(
           scrollable: true,
@@ -147,14 +149,14 @@ class _SalesHomePageState extends State<SalesHomePage> {
                     formKey.currentState?.reset();
                   },
                   child: const Text('ADICIONAR'),
-                ),
-                const Divider(thickness: 2.0),
+                ),                
                 Observer(
                   builder: (_) {
                     return Column(
                       children: [
+                        if (payStore.payments.isNotEmpty) const Divider(thickness: 2.0),
                         Container(
-                          margin: const EdgeInsets.only(top: 8.0),
+                          margin: const EdgeInsets.only(top: 3.0),
                           child: Column(
                             mainAxisSize: MainAxisSize.min,
                             children: payStore.payments.map((payment) {
@@ -174,12 +176,28 @@ class _SalesHomePageState extends State<SalesHomePage> {
                             }).toList(),
                           ),
                         ),
-                        const Divider(thickness: 2.0),
-                        Chip(
-                          label: Text(
-                            'Pago: R\$ ${payStore.totalPayments.replaceAll('.', ',')}',
-                            style: TextStyle(fontSize: 16.0),
-                          ),
+                        if (payStore.payments.isNotEmpty) const Divider(thickness: 2.0),
+                        Row(
+                          children: [
+                            Container(
+                              margin: const EdgeInsets.only(top: 8.0),
+                              child: Chip(
+                                label: Text(
+                                  'Pago: R\$ ${payStore.totalPayments.replaceAll('.', ',')}',
+                                  style: TextStyle(fontSize: 16.0),
+                                ),
+                              ),
+                            ),
+                            Container(
+                              margin: const EdgeInsets.only(top: 8.0),
+                              child: Chip(
+                                label: Text(
+                                  'Troco: R\$ ${payStore.totalPayments.replaceAll('.', ',')}',
+                                  style: TextStyle(fontSize: 16.0),
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                       ],
                     );
@@ -200,7 +218,7 @@ class _SalesHomePageState extends State<SalesHomePage> {
                   onPressed:
                       (double.parse(cartStore.totalAmount) ==
                           double.parse(payStore.totalPayments))
-                      ? () => context.pop(false)
+                      ? () => context.pop(true)
                       : null,
                   child: const Text('Pagar'),
                 );
@@ -216,6 +234,7 @@ class _SalesHomePageState extends State<SalesHomePage> {
   Widget build(BuildContext context) {
     final cartStore = Provider.of<CartStore>(context, listen: false);
     final salesStore = Provider.of<SalesStore>(context, listen: false);
+    final payStore = Provider.of<PaymentStore>(context, listen: false);
     return Scaffold(
       appBar: AppBar(
         title: const Text('VENDAS'),
@@ -256,16 +275,31 @@ class _SalesHomePageState extends State<SalesHomePage> {
           Expanded(child: CartPanel()),
         ],
       ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {
-          _showPaymentDialog(context);
-          // final receipt = await salesStore.createReceipt(cart: cartStore);
-          // cartStore.clear();
-          // _generate.generateReceipt(receipt: receipt);
-        },
-        label: Text('FINALIZAR VENDA'),
-        extendedPadding: EdgeInsets.symmetric(horizontal: 12.0),
-        icon: Icon(Icons.point_of_sale_outlined),
+      floatingActionButton: Observer(
+        builder: (_) => FloatingActionButton.extended(
+          onPressed: cartStore.cartList.isEmpty
+              ? null
+              : () async {
+                  final confirmPayment = await _showPaymentDialog(context);
+                  if (confirmPayment == true) {
+                    final receipt = await salesStore.createReceipt(
+                      cart: cartStore,
+                      payments: payStore.payments,
+                    );
+                    cartStore.clear();
+                    _generate.generateReceipt(receipt: receipt);
+                  }
+                },
+          label: Text('FINALIZAR VENDA'),
+          extendedPadding: EdgeInsets.symmetric(horizontal: 12.0),
+          icon: Icon(Icons.point_of_sale_outlined),
+          backgroundColor: (cartStore.cartList.isEmpty)
+              ? Colors.grey.withValues(alpha: 0.3)
+              : Theme.of(context).colorScheme.primaryContainer,
+          foregroundColor: (cartStore.cartList.isEmpty)
+              ? Colors.white.withValues(alpha: 0.3)
+              : Theme.of(context).colorScheme.onSurface,
+        ),
       ),
     );
   }

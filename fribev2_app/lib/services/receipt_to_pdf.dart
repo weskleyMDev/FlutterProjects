@@ -7,7 +7,7 @@ import 'package:uuid/uuid.dart';
 
 import '../models/sales_receipt.dart';
 
-class ReciboGenerator {
+class ReceiptGenerator {
   Future<void> generateReceipt({required SalesReceipt? receipt}) async {
     final receiveId = receipt?.id ?? Uuid().v4();
     final directory = await getApplicationDocumentsDirectory();
@@ -77,7 +77,7 @@ class ReciboGenerator {
                           mainAxisAlignment: pw.MainAxisAlignment.end,
                           children: [
                             pw.Text(
-                              'Total: R\$ ${receipt?.total}',
+                              'Total: R\$ ${receipt?.total.replaceAll('.', ',')}',
                               style: pw.TextStyle(
                                 fontSize: 14.0,
                                 fontWeight: pw.FontWeight.bold,
@@ -90,26 +90,26 @@ class ReciboGenerator {
                   ),
                   pw.Text('-' * 80),
                   pw.SizedBox(height: 20),
-                  // pw.ListView.builder(
-                  //   itemCount: receipt?.payments.length ?? 0,
-                  //   itemBuilder: (context, index) {
-                  //     final payment = receipt?.payments[index];
-                  //     final String type = payment?['type'] ?? 'Unknown';
-                  //     final String value = payment?['value'] ?? '0';
-                  //     return pw.Row(
-                  //       children: [
-                  //         pw.Text(
-                  //           '$type: ',
-                  //           style: pw.TextStyle(fontSize: 12.0),
-                  //         ),
-                  //         pw.Text(
-                  //           'R\$ ${value.replaceAll('.', ',')}',
-                  //           style: pw.TextStyle(fontSize: 12.0),
-                  //         ),
-                  //       ],
-                  //     );
-                  //   },
-                  // ),
+                  pw.ListView.builder(
+                    itemCount: receipt?.payments.length ?? 0,
+                    itemBuilder: (context, index) {
+                      final payment = receipt?.payments[index];
+                      final String type = payment?.type ?? 'Unknown';
+                      final String value = payment?.value ?? '0';
+                      return pw.Row(
+                        children: [
+                          pw.Text(
+                            '$type: ',
+                            style: pw.TextStyle(fontSize: 12.0),
+                          ),
+                          pw.Text(
+                            'R\$ ${double.parse(value).toStringAsFixed(2).replaceAll('.', ',')}',
+                            style: pw.TextStyle(fontSize: 12.0),
+                          ),
+                        ],
+                      );
+                    },
+                  ),
                 ],
               ),
             ),

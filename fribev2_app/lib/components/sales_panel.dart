@@ -23,12 +23,14 @@ class _SalesPanelState extends State<SalesPanel> {
     store.setQuantity('');
     return showDialog(
       context: context,
+      barrierDismissible: false,
       builder: (_) => AlertDialog(
         title: Text('Digite a quantidade desejada'),
         content: Form(
           key: formKey,
           child: TextFormField(
             key: ValueKey('quantity'),
+            autofocus: true,            
             decoration: InputDecoration(
               border: OutlineInputBorder(),
               label: Text('Quantidade'),
