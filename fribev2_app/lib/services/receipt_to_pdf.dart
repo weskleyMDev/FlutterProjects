@@ -110,6 +110,11 @@ class ReceiptGenerator {
                       );
                     },
                   ),
+                  pw.SizedBox(height: 50),
+                  pw.Text(
+                    'Obrigado pela preferência!',
+                    style: pw.TextStyle(fontSize: 16),
+                  ),
                 ],
               ),
             ),

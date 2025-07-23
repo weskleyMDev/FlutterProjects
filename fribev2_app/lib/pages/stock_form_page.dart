@@ -23,13 +23,26 @@ class _StockFormPageState extends State<StockFormPage> {
     try {
       setState(() => _isLoading = true);
       if (widget.product == null) {
-        await stockStore.addToStock(product: formData);
-      } else {
-        await stockStore.updateProduct(
-          product: widget.product!,
-          data: formData,
+        final newProduct = Product(
+          id: '',
+          name: formData.name,
+          category: formData.category,
+          price: formData.price,
+          measure: formData.measure,
+          amount: formData.amount,
         );
-        if(mounted) context.pop();
+        await stockStore.addToStock(product: newProduct);
+      } else {
+        final updatedProduct = Product(
+          id: widget.product!.id,
+          name: formData.name,
+          category: formData.category,
+          price: formData.price,
+          measure: formData.measure,
+          amount: formData.amount,
+        );
+        await stockStore.updateProduct(product: updatedProduct);
+        if (mounted) context.pop();
       }
     } catch (e) {
       if (!mounted) return;

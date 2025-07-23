@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-import '../../models/form_data/stock_form_data.dart';
 import '../../models/product.dart';
 import 'istock_service.dart';
 
@@ -22,19 +21,11 @@ class FirebaseStockService implements IStockService {
   }
 
   @override
-  Future<Product?> saveProduct({required StockFormData product}) async {
-    final Product newProduct = Product(
-      name: product.name,
-      category: product.category,
-      measure: product.measure,
-      amount: product.amount,
-      price: product.price,
-    );
-
+  Future<Product?> saveProduct({required Product product}) async {
     final docRef = await _firestore
         .collection('stock')
         .withConverter(fromFirestore: _fromFirestore, toFirestore: _toFirestore)
-        .add(newProduct);
+        .add(product);
     final doc = await docRef.get();
 
     return doc.data();
@@ -70,10 +61,18 @@ class FirebaseStockService implements IStockService {
   }
 
   @override
-  Future<void> updateProductById({
-    required Product product,
-    required StockFormData data,
+  Future<void> updateProductById({required Product product}) async {
+    await _firestore
+        .collection('stock')
+        .doc(product.id)
+        .update(product.toMap());
+  }
+
+  @override
+  Future<void> updateQuantityById({
+    required String id,
+    required String quantity,
   }) async {
-    await _firestore.collection('stock').doc(product.id).update(data.toMap());
+    await _firestore.collection('stock').doc(id).update({'amount': quantity});
   }
 }

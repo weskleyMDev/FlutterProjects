@@ -1,3 +1,4 @@
+import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -8,10 +9,12 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../components/cart_panel.dart';
 import '../../components/drawer_admin.dart';
 import '../../components/sales_panel.dart';
+import '../../models/product.dart';
 import '../../services/receipt_to_pdf.dart';
 import '../../stores/cart.store.dart';
 import '../../stores/payment.store.dart';
 import '../../stores/sales.store.dart';
+import '../../stores/stock.store.dart';
 
 const paymentType = ['Dinheiro', 'Debito', 'Credito', 'Pix'];
 
@@ -80,7 +83,7 @@ class _SalesHomePageState extends State<SalesHomePage> {
         return AlertDialog(
           scrollable: true,
           title: Text(
-            'À pagar: R\$ ${cartStore.totalAmount.replaceAll('.', ',')}',
+            'Recibo',
           ),
           content: Form(
             key: formKey,
@@ -149,12 +152,13 @@ class _SalesHomePageState extends State<SalesHomePage> {
                     formKey.currentState?.reset();
                   },
                   child: const Text('ADICIONAR'),
-                ),                
+                ),
                 Observer(
                   builder: (_) {
                     return Column(
                       children: [
-                        if (payStore.payments.isNotEmpty) const Divider(thickness: 2.0),
+                        if (payStore.payments.isNotEmpty)
+                          const Divider(thickness: 2.0),
                         Container(
                           margin: const EdgeInsets.only(top: 3.0),
                           child: Column(
@@ -176,26 +180,29 @@ class _SalesHomePageState extends State<SalesHomePage> {
                             }).toList(),
                           ),
                         ),
-                        if (payStore.payments.isNotEmpty) const Divider(thickness: 2.0),
+                        if (payStore.payments.isNotEmpty)
+                          const Divider(thickness: 2.0),
                         Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
                           children: [
-                            Container(
-                              margin: const EdgeInsets.only(top: 8.0),
-                              child: Chip(
-                                label: Text(
-                                  'Pago: R\$ ${payStore.totalPayments.replaceAll('.', ',')}',
-                                  style: TextStyle(fontSize: 16.0),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                Container(
+                                  margin: const EdgeInsets.only(top: 8.0),
+                                  child: Text(
+                                      'Pago: R\$ ${payStore.totalPayments.replaceAll('.', ',')}',
+                                      style: TextStyle(fontSize: 16.0),
+                                    ),
                                 ),
-                              ),
-                            ),
-                            Container(
-                              margin: const EdgeInsets.only(top: 8.0),
-                              child: Chip(
-                                label: Text(
-                                  'Troco: R\$ ${payStore.totalPayments.replaceAll('.', ',')}',
-                                  style: TextStyle(fontSize: 16.0),
+                                Container(
+                                  margin: const EdgeInsets.only(top: 8.0),
+                                  child: Text(
+                                    'Restante: R\$ ${(Decimal.parse(cartStore.totalAmount) - Decimal.parse(payStore.totalPayments)).toDouble().toStringAsFixed(2).replaceAll('.', ',')}',
+                                    style: TextStyle(fontSize: 16.0),
+                                  ),
                                 ),
-                              ),
+                              ],
                             ),
                           ],
                         ),
@@ -235,6 +242,7 @@ class _SalesHomePageState extends State<SalesHomePage> {
     final cartStore = Provider.of<CartStore>(context, listen: false);
     final salesStore = Provider.of<SalesStore>(context, listen: false);
     final payStore = Provider.of<PaymentStore>(context, listen: false);
+    final stock = Provider.of<StockStore>(context, listen: false);
     return Scaffold(
       appBar: AppBar(
         title: const Text('VENDAS'),
@@ -258,6 +266,7 @@ class _SalesHomePageState extends State<SalesHomePage> {
             child: IconButton(
               onPressed: () {
                 cartStore.clear();
+                payStore.reset();
               },
               icon: Icon(Icons.refresh_outlined),
               iconSize: 28.0,
@@ -267,39 +276,69 @@ class _SalesHomePageState extends State<SalesHomePage> {
         ],
       ),
       drawer: DrawerAdmin(),
-      body: Row(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Expanded(child: SalesPanel()),
-          const VerticalDivider(width: 1.0, thickness: 2.0),
-          Expanded(child: CartPanel()),
-        ],
+      body: FutureBuilder(
+        future: stock.filterList,
+        builder: (context, asyncSnapshot) {
+          return Row(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Expanded(child: SalesPanel()),
+              const VerticalDivider(width: 1.0, thickness: 2.0),
+              Expanded(child: CartPanel()),
+            ],
+          );
+        },
       ),
-      floatingActionButton: Observer(
-        builder: (_) => FloatingActionButton.extended(
-          onPressed: cartStore.cartList.isEmpty
-              ? null
-              : () async {
-                  final confirmPayment = await _showPaymentDialog(context);
-                  if (confirmPayment == true) {
-                    final receipt = await salesStore.createReceipt(
-                      cart: cartStore,
-                      payments: payStore.payments,
-                    );
-                    cartStore.clear();
-                    _generate.generateReceipt(receipt: receipt);
-                  }
-                },
-          label: Text('FINALIZAR VENDA'),
-          extendedPadding: EdgeInsets.symmetric(horizontal: 12.0),
-          icon: Icon(Icons.point_of_sale_outlined),
-          backgroundColor: (cartStore.cartList.isEmpty)
-              ? Colors.grey.withValues(alpha: 0.3)
-              : Theme.of(context).colorScheme.primaryContainer,
-          foregroundColor: (cartStore.cartList.isEmpty)
-              ? Colors.white.withValues(alpha: 0.3)
-              : Theme.of(context).colorScheme.onSurface,
-        ),
+      floatingActionButton: StreamBuilder(
+        stream: stock.productsList,
+        builder: (context, asyncSnapshot) {
+          return Observer(
+            builder: (context) {
+              return FloatingActionButton.extended(
+                onPressed: cartStore.cartList.isEmpty
+                    ? null
+                    : () async {
+                        final confirmPayment = await _showPaymentDialog(
+                          context,
+                        );
+                        if (confirmPayment == true) {
+                          final products = asyncSnapshot.data ?? [];
+                          for (var cart in cartStore.cartList.values) {
+                            final Product product = products.firstWhere(
+                              (p) => p.id == cart.productId,
+                            );
+                            final quantity = cart.quantity;
+                            final newQuantity =
+                                (Decimal.parse(product.amount) -
+                                        Decimal.parse(quantity))
+                                    .toString();
+                            stock.updateQuantityById(
+                              id: product.id,
+                              quantity: newQuantity,
+                            );
+                          }
+                          final receipt = await salesStore.createReceipt(
+                            cart: cartStore,
+                            payments: payStore.payments,
+                          );
+                          _generate.generateReceipt(receipt: receipt);
+                          cartStore.clear();
+                          payStore.reset();
+                        }
+                      },
+                label: Text('FINALIZAR VENDA'),
+                extendedPadding: EdgeInsets.symmetric(horizontal: 12.0),
+                icon: Icon(Icons.point_of_sale_outlined),
+                backgroundColor: (cartStore.cartList.isEmpty)
+                    ? Colors.grey.withValues(alpha: 0.2)
+                    : Theme.of(context).colorScheme.primaryContainer,
+                foregroundColor: (cartStore.cartList.isEmpty)
+                    ? Colors.white.withValues(alpha: 0.2)
+                    : Theme.of(context).colorScheme.onSurface,
+              );
+            },
+          );
+        },
       ),
     );
   }

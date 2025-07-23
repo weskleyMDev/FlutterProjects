@@ -98,7 +98,7 @@ mixin _$StockStore on StockStoreBase, Store {
   );
 
   @override
-  Future<Product?> addToStock({required StockFormData product}) {
+  Future<Product?> addToStock({required Product product}) {
     return _$addToStockAsyncAction.run(
       () => super.addToStock(product: product),
     );
@@ -122,12 +122,9 @@ mixin _$StockStore on StockStoreBase, Store {
   );
 
   @override
-  Future<void> updateProduct({
-    required Product product,
-    required StockFormData data,
-  }) {
+  Future<void> updateProduct({required Product product}) {
     return _$updateProductAsyncAction.run(
-      () => super.updateProduct(product: product, data: data),
+      () => super.updateProduct(product: product),
     );
   }
 

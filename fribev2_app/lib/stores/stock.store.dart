@@ -1,6 +1,5 @@
 import 'package:mobx/mobx.dart';
 
-import '../models/form_data/stock_form_data.dart';
 import '../models/product.dart';
 import '../services/stock/istock_service.dart';
 
@@ -46,7 +45,7 @@ abstract class StockStoreBase with Store {
   }
 
   @action
-  Future<Product?> addToStock({required StockFormData product}) async {
+  Future<Product?> addToStock({required Product product}) async {
     final newProduct = await stockService.saveProduct(product: product);
     return newProduct;
   }
@@ -57,11 +56,16 @@ abstract class StockStoreBase with Store {
   }
 
   @action
-  Future<void> updateProduct({
-    required Product product,
-    required StockFormData data,
+  Future<void> updateProduct({required Product product}) async {
+    await stockService.updateProductById(product: product);
+  }
+
+  @action
+  Future<void> updateQuantityById({
+    required String id,
+    required String quantity,
   }) async {
-    await stockService.updateProductById(product: product, data: data);
+    await stockService.updateQuantityById(id: id, quantity: quantity);
   }
 
   @action

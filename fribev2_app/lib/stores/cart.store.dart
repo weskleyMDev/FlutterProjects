@@ -80,7 +80,6 @@ abstract class CartStoreBase with Store {
 
   @action
   void clear() {
-    if (_cart.isEmpty) return;
     _cart.clear();
   }
 }

@@ -30,7 +30,7 @@ class _SalesPanelState extends State<SalesPanel> {
           key: formKey,
           child: TextFormField(
             key: ValueKey('quantity'),
-            autofocus: true,            
+            autofocus: true,
             decoration: InputDecoration(
               border: OutlineInputBorder(),
               label: Text('Quantidade'),
@@ -83,21 +83,19 @@ class _SalesPanelState extends State<SalesPanel> {
         builder: (context) {
           return Column(
             children: [
-              Flexible(
-                child: Container(
-                  margin: const EdgeInsets.only(
-                    left: 4.0,
-                    right: 4.0,
-                    bottom: 8.0,
+              Container(
+                margin: const EdgeInsets.only(
+                  left: 4.0,
+                  right: 4.0,
+                  bottom: 8.0,
+                ),
+                child: TextField(
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(),
+                    label: Text('Buscar'),
+                    prefixIcon: Icon(Icons.search),
                   ),
-                  child: TextField(
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(),
-                      label: Text('Buscar'),
-                      prefixIcon: Icon(Icons.search),
-                    ),
-                    onChanged: (value) => stockStore.searchQuery = value,
-                  ),
+                  onChanged: (value) => stockStore.searchQuery = value,
                 ),
               ),
               Expanded(
@@ -201,96 +199,5 @@ class _SalesPanelState extends State<SalesPanel> {
         },
       ),
     );
-    // return Observer(
-    //   builder: (context) {
-    //     final future = stockStore.productsFuture;
-    //     final products = stockStore.filteredProducts;
-    //     return Padding(
-    //       padding: const EdgeInsets.all(8.0),
-    //       child: Column(
-    //         crossAxisAlignment: CrossAxisAlignment.stretch,
-    //         children: [
-    //           Flexible(
-    //             child: Container(
-    //               margin: const EdgeInsets.only(
-    //                 left: 4.0,
-    //                 right: 4.0,
-    //                 bottom: 8.0,
-    //               ),
-    //               child: TextField(
-    //                 decoration: InputDecoration(
-    //                   border: OutlineInputBorder(),
-    //                   label: Text('Buscar'),
-    //                   prefixIcon: Icon(Icons.search),
-    //                 ),
-    //                 onChanged: (value) => stockStore.searchQuery = value,
-    //               ),
-    //             ),
-    //           ),
-    //           Expanded(
-    //             flex: 2,
-    //             child: (future == null || future.status == FutureStatus.pending)
-    //                 ? const Center(child: CircularProgressIndicator())
-    //                 : (products.isEmpty)
-    //                 ? const Center(child: Text('Nenhum produto encontrado!'))
-    //                 : ListView.builder(
-    //                     itemCount: products.length,
-    //                     itemBuilder: (context, index) {
-    //                       final product = products[index];
-    //                       return Card(
-    //                         shape: RoundedRectangleBorder(),
-    //                         child: ListTile(
-    //                           title: Text(
-    //                             product.name,
-    //                             maxLines: 1,
-    //                             overflow: TextOverflow.ellipsis,
-    //                           ),
-    //                           subtitle: Text(
-    //                             'Preço: R\$ ${double.parse(product.price).toStringAsFixed(2).replaceAll('.', ',')} | Estoque: ${double.parse(product.amount).toStringAsFixed(3).replaceAll('.', ',')} (${product.measure})',
-    //                             maxLines: 1,
-    //                             overflow: TextOverflow.ellipsis,
-    //                           ),
-    //                           trailing: ElevatedButton.icon(
-    //                             onPressed: () async {
-    //                               try {
-    //                                 final isConfirmed =
-    //                                     await _showDialogQuantity(
-    //                                       context: context,
-    //                                       store: cartStore,
-    //                                     );
-    //                                 if (isConfirmed == true) {
-    //                                   cartStore.addItem(product: product);
-    //                                 } else {
-    //                                   return;
-    //                                 }
-    //                               } catch (e) {
-    //                                 if (!context.mounted) return;
-    //                                 ScaffoldMessenger.of(
-    //                                   context,
-    //                                 ).clearSnackBars();
-    //                                 ScaffoldMessenger.of(context).showSnackBar(
-    //                                   SnackBar(
-    //                                     content: Text(
-    //                                       e.toString().replaceAll(
-    //                                         'Exception: ',
-    //                                         '',
-    //                                       ),
-    //                                     ),
-    //                                   ),
-    //                                 );
-    //                               }
-    //                             },
-    //                             label: Icon(Icons.add_outlined),
-    //                           ),
-    //                         ),
-    //                       );
-    //                     },
-    //                   ),
-    //           ),
-    //         ],
-    //       ),
-    //     );
-    //   },
-    // );
   }
 }
