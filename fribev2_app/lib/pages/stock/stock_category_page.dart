@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 import '../../components/stock_list.dart';
 import '../../stores/stock.store.dart';
@@ -48,18 +47,9 @@ class StockCategoryPage extends StatelessWidget {
     if (Platform.isWindows) {
       Process.start('calc.exe', []);
     } else if (Platform.isAndroid) {
-      _openAndroidCalculator();
+      return;
     } else {
       throw UnsupportedError('Calculadora não foi encontrada no sistema!');
-    }
-  }
-
-  Future<void> _openAndroidCalculator() async {
-    final calculatorIntent = Uri.parse('calculator://');
-    if (await canLaunchUrl(calculatorIntent)) {
-      await launchUrl(calculatorIntent);
-    } else {
-      throw 'Não foi possível abrir a calculadora!';
     }
   }
 
@@ -70,7 +60,7 @@ class StockCategoryPage extends StatelessWidget {
       appBar: AppBar(
         title: Text(title),
         actions: [
-          Container(
+          if (Platform.isWindows) Container(
             margin: const EdgeInsets.only(right: 4.0),
             child: IconButton(
               onPressed: _openSysCalculator,
