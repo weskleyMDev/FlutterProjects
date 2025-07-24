@@ -1,13 +1,10 @@
 import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 import '../../components/cart_panel.dart';
-import '../../components/drawer_admin.dart';
 import '../../components/sales_panel.dart';
 import '../../models/product.dart';
 import '../../services/receipt_to_pdf.dart';
@@ -28,50 +25,6 @@ class SalesHomePage extends StatefulWidget {
 class _SalesHomePageState extends State<SalesHomePage> {
   final formKey = GlobalKey<FormState>();
   final ReceiptGenerator _generate = ReceiptGenerator();
-  String _phoneNumber = '';
-
-  Future<void> _launchURL(String url, String path) async {
-    if (await canLaunchUrl(Uri.https(url, path))) {
-      await launchUrl(Uri.https(url, path));
-    } else {
-      throw 'Não foi possível abrir o link: $url';
-    }
-  }
-
-  Future<bool?> _showPhoneDialog(BuildContext context) {
-    return showDialog<bool>(
-      context: context,
-      barrierDismissible: false,
-      builder: (context) {
-        return AlertDialog(
-          title: const Text('Número de Telefone'),
-          content: TextField(
-            autofocus: true,
-            keyboardType: TextInputType.phone,
-            decoration: const InputDecoration(
-              label: Text('Número'),
-              border: OutlineInputBorder(),
-            ),
-            onChanged: (value) {
-              setState(() {
-                _phoneNumber = value;
-              });
-            },
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => context.pop(false),
-              child: const Text('Cancelar'),
-            ),
-            TextButton(
-              onPressed: () => context.pop(true),
-              child: const Text('Confirmar'),
-            ),
-          ],
-        );
-      },
-    );
-  }
 
   Future<bool?> _showPaymentDialog(BuildContext context) {
     final payStore = Provider.of<PaymentStore>(context, listen: false);
@@ -82,9 +35,7 @@ class _SalesHomePageState extends State<SalesHomePage> {
       builder: (context) {
         return AlertDialog(
           scrollable: true,
-          title: Text(
-            'Recibo',
-          ),
+          title: Text('Recibo'),
           content: Form(
             key: formKey,
             child: Column(
@@ -191,9 +142,9 @@ class _SalesHomePageState extends State<SalesHomePage> {
                                 Container(
                                   margin: const EdgeInsets.only(top: 8.0),
                                   child: Text(
-                                      'Pago: R\$ ${payStore.totalPayments.replaceAll('.', ',')}',
-                                      style: TextStyle(fontSize: 16.0),
-                                    ),
+                                    'Pago: R\$ ${payStore.totalPayments.replaceAll('.', ',')}',
+                                    style: TextStyle(fontSize: 16.0),
+                                  ),
                                 ),
                                 Container(
                                   margin: const EdgeInsets.only(top: 8.0),
@@ -245,22 +196,8 @@ class _SalesHomePageState extends State<SalesHomePage> {
     final stock = Provider.of<StockStore>(context, listen: false);
     return Scaffold(
       appBar: AppBar(
-        title: const Text('VENDAS'),
+        title: const Text('NOVA VENDA'),
         actions: [
-          Container(
-            margin: const EdgeInsets.only(right: 12.0),
-            child: IconButton(
-              onPressed: () async {
-                final confirm = await _showPhoneDialog(context);
-                if (confirm == true) {
-                  _launchURL('wa.me', '/55$_phoneNumber');
-                }
-              },
-              icon: Icon(FontAwesomeIcons.whatsapp),
-              iconSize: 24.0,
-              tooltip: 'Enviar Recibo!',
-            ),
-          ),
           Container(
             margin: const EdgeInsets.only(right: 12.0),
             child: IconButton(
@@ -275,7 +212,6 @@ class _SalesHomePageState extends State<SalesHomePage> {
           ),
         ],
       ),
-      drawer: DrawerAdmin(),
       body: FutureBuilder(
         future: stock.filterList,
         builder: (context, asyncSnapshot) {

@@ -5,8 +5,8 @@ import 'package:provider/provider.dart';
 
 import '../stores/auth.store.dart';
 
-class DrawerAdmin extends StatelessWidget {
-  const DrawerAdmin({super.key});
+class UserDrawer extends StatelessWidget {
+  const UserDrawer({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -33,19 +33,14 @@ class DrawerAdmin extends StatelessWidget {
                       onTap: () => context.go('/'),
                     ),
                     ListTile(
-                      leading: const Icon(Icons.storage_sharp),
-                      title: const Text('Estoque'),
-                      onTap: () => context.goNamed('stock-home'),
+                      leading: const Icon(Icons.receipt_long_outlined),
+                      title: const Text('Recibos'),
+                      onTap: () => context.pushNamed('receipts-home'),
                     ),
                     ListTile(
                       leading: const Icon(Icons.point_of_sale_sharp),
                       title: const Text('Venda'),
                       onTap: () => context.pushNamed('sales-home'),
-                    ),
-                    ListTile(
-                      leading: const Icon(Icons.receipt_long_outlined),
-                      title: const Text('Recibos'),
-                      onTap: () => context.pushNamed('receipts-home'),
                     ),
                     Spacer(),
                     ListTile(
