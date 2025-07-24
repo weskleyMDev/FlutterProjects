@@ -37,21 +37,46 @@ class _StockListState extends State<StockList> {
     super.dispose();
   }
 
+  Future<bool?> _showConfirmDialog(BuildContext context) {
+    return showDialog<bool>(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Confirmação'),
+          content: const Text(
+            'Você tem certeza que deseja remover este produto?',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(false),
+              child: const Text('Cancelar'),
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(true),
+              child: const Text('Confirmar'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final stockStore = Provider.of<StockStore>(context);
     return Observer(
-      builder: (context) => Column(
+      builder: (_) => Column(
         children: [
           StockSearch(onChange: (value) => stockStore.searchQuery = value),
           const SizedBox(height: 12),
           Expanded(
             child: FutureBuilder(
               future: stockStore.filterList,
-              builder: (context, asyncSnapshot) {
+              builder: (_, asyncSnapshot) {
                 return StreamBuilder(
                   stream: stockStore.productsList,
-                  builder: (context, snapshot) {
+                  builder: (_, snapshot) {
                     switch (snapshot.connectionState) {
                       case ConnectionState.none:
                       case ConnectionState.waiting:
@@ -64,7 +89,7 @@ class _StockListState extends State<StockList> {
                               )
                             : ListView.builder(
                                 itemCount: products.length,
-                                itemBuilder: (context, index) {
+                                itemBuilder: (_, index) {
                                   final product = products[index];
                                   return Container(
                                     margin: const EdgeInsets.symmetric(
@@ -73,11 +98,11 @@ class _StockListState extends State<StockList> {
                                     ),
                                     child: Slidable(
                                       endActionPane: ActionPane(
-                                        extentRatio: 0.35,
+                                        extentRatio: 0.3,
                                         motion: BehindMotion(),
                                         children: [
                                           SlidableAction(
-                                            onPressed: (context) {
+                                            onPressed: (_) {
                                               context.pushNamed(
                                                 'stock-edit-form',
                                                 extra: product,
@@ -89,10 +114,17 @@ class _StockListState extends State<StockList> {
                                             label: 'Atualizar',
                                           ),
                                           SlidableAction(
-                                            onPressed: (_) =>
+                                            onPressed: (_) async {
+                                              final confirm =
+                                                  await _showConfirmDialog(
+                                                    context,
+                                                  );
+                                              if (confirm == true) {
                                                 stockStore.removeProductById(
                                                   product: product,
-                                                ),
+                                                );
+                                              }
+                                            },
                                             icon: Icons.delete_outline,
                                             backgroundColor: Colors.red,
                                             padding: EdgeInsets.zero,

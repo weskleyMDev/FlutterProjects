@@ -38,11 +38,6 @@ class DrawerAdmin extends StatelessWidget {
                       onTap: () => context.goNamed('stock-home'),
                     ),
                     ListTile(
-                      leading: const Icon(Icons.point_of_sale_sharp),
-                      title: const Text('Venda'),
-                      onTap: () => context.pushNamed('sales-home'),
-                    ),
-                    ListTile(
                       leading: const Icon(Icons.receipt_long_outlined),
                       title: const Text('Recibos'),
                       onTap: () => context.pushNamed('receipts-home'),

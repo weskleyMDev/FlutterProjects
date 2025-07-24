@@ -27,7 +27,7 @@ class _LoginFormState extends State<LoginForm> {
   void _submitForm() {
     try {
       final bool isValid = _formKey.currentState?.validate() ?? false;
-      if (!isValid) throw Exception('Fill in all the fields of the form!');
+      if (!isValid) return;
       widget.onSubmit(_formData);
     } catch (e) {
       _showSnackbar(e.toString().replaceFirst('Exception: ', ''));
@@ -84,7 +84,7 @@ class _LoginFormState extends State<LoginForm> {
                   onChanged: (value) => _formData.password = value,
                   obscureText: !_isVisible,
                   decoration: InputDecoration(
-                    labelText: 'Password',
+                    labelText: 'Senha',
                     border: OutlineInputBorder(),
                     prefixIcon: Icon(Icons.lock_outline_sharp),
                     suffixIcon: IconButton(
@@ -113,19 +113,19 @@ class _LoginFormState extends State<LoginForm> {
               const SizedBox(height: 22.0),
               ElevatedButton(
                 onPressed: _submitForm,
-                child: Text(_formData.isLogin ? 'LOGIN' : 'REGISTER'),
+                child: Text(_formData.isLogin ? 'ENTRAR' : 'CADASTRAR'),
               ),
               const SizedBox(height: 50.0),
-              TextButton(
-                onPressed: () {
-                  setState(() {
-                    _formData.toggleMode();
-                  });
-                },
-                child: Text(
-                  _formData.isLogin ? 'Create an new account' : 'Go to login',
-                ),
-              ),
+              // TextButton(
+              //   onPressed: () {
+              //     setState(() {
+              //       _formData.toggleMode();
+              //     });
+              //   },
+              //   child: Text(
+              //     _formData.isLogin ? 'CRIAR NOVA CONTA' : 'ENTRAR',
+              //   ),
+              // ),
             ],
           ),
         ),

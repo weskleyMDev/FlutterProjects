@@ -86,7 +86,7 @@ class _StockFormState extends State<StockForm> {
     try {
       FocusScope.of(context).unfocus();
       final bool isValid = _formKey.currentState?.validate() ?? false;
-      if (!isValid) throw Exception('Existem erros a serem corrigidos!');
+      if (!isValid) return;
       _formData.name = _nameController.text.trim().toUpperCase();
       _formData.amount = _amountController.text.trim().replaceAll(',', '.');
       _formData.price = _priceController.text.trim().replaceAll(',', '.');
