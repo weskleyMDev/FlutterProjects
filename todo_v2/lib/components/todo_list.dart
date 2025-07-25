@@ -3,6 +3,7 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:get_it/get_it.dart';
 
 import '../stores/todo.store.dart';
+import 'todo_list_item.dart';
 
 class CustomTodoList extends StatefulWidget {
   const CustomTodoList({super.key});
@@ -36,33 +37,10 @@ class _CustomTodoListState extends State<CustomTodoList> {
             : ListView.builder(
                 itemCount: todoList.length,
                 itemBuilder: (context, index) {
-                  final todoItem = todoList[index];
-                  return CheckboxListTile(
-                    secondary: CircleAvatar(
-                      backgroundColor: todoItem['done']
-                          ? Theme.of(context).colorScheme.onPrimary
-                          : Theme.of(context).colorScheme.onError,
-                      child: FittedBox(
-                        fit: BoxFit.cover,
-                        child: Icon(
-                          todoItem['done'] ? Icons.check : Icons.close,
-                        ),
-                      ),
-                    ),
-                    title: Text(
-                      todoItem['title'],
-                      overflow: TextOverflow.ellipsis,
-                      maxLines: 1,
-                    ),
-                    subtitle: Text(
-                      todoItem['done'] ? 'Completed' : 'Pending',
-                      overflow: TextOverflow.ellipsis,
-                      maxLines: 1,
-                    ),
-                    value: todoItem['done'],
-                    onChanged: (value) {
-                      store.setDoneTodo(index, value);
-                    },
+                  return TodoListItem(
+                    store: store,
+                    todo: todoList,
+                    index: index,
                   );
                 },
               );

@@ -131,6 +131,30 @@ mixin _$TodoStore on TodoStoreBase, Store {
   }
 
   @override
+  void removeTodo(int index) {
+    final _$actionInfo = _$TodoStoreBaseActionController.startAction(
+      name: 'TodoStoreBase.removeTodo',
+    );
+    try {
+      return super.removeTodo(index);
+    } finally {
+      _$TodoStoreBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void rendo(int index, Map<String, dynamic> element) {
+    final _$actionInfo = _$TodoStoreBaseActionController.startAction(
+      name: 'TodoStoreBase.rendo',
+    );
+    try {
+      return super.rendo(index, element);
+    } finally {
+      _$TodoStoreBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   void setDoneTodo(int index, bool? value) {
     final _$actionInfo = _$TodoStoreBaseActionController.startAction(
       name: 'TodoStoreBase.setDoneTodo',

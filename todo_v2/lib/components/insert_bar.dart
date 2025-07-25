@@ -78,7 +78,6 @@ class CustomInsertBar extends StatelessWidget {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(message, style: TextStyle(fontWeight: FontWeight.bold)),
-        action: SnackBarAction(label: 'UNDO', onPressed: () {}),
       ),
     );
   }

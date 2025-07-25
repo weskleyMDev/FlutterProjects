@@ -39,17 +39,32 @@ abstract class TodoStoreBase with Store {
     _todoList.insert(0, newTodo);
     _saveData();
     _clearFields();
-    _todoController.add(_todoList);
+    _todoController.add(_todoList.toList());
     //_todoStream = ObservableStream(Stream.value(_todoList));
   }
 
   @action
-  void setDoneTodo(int index, bool? value) {
-    final updated = Map<String, dynamic>.from(_todoList[index]);
-    updated['done'] = value ?? false;
-    _todoList[index] = updated;
+  void removeTodo(int index) {
+    _todoList.removeAt(index);
     _saveData();
-    _todoController.add(_todoList);
+    _todoController.add(_todoList.toList());
+  }
+
+  @action
+  void rendo(int index, Map<String, dynamic> element) {
+    _todoList.insert(index, element);
+    _saveData();
+    _todoController.add(_todoList.toList());
+  }
+
+  @action
+  void setDoneTodo(int index, bool? value) {
+    _todoList[index]['done'] = value;
+    _saveData();
+    _todoController.add(_todoList.toList());
+    //final updated = Map<String, dynamic>.from(_todoList[index]);
+    //updated['done'] = value ?? false;
+    //_todoList[index] = updated;
     //_todoStream = ObservableStream(Stream.value(_todoList));
   }
 
@@ -69,7 +84,7 @@ abstract class TodoStoreBase with Store {
       _todoList = ObservableList.of(
         decodedList.map((item) => Map<String, dynamic>.from(item)),
       );
-      _todoController.add(_todoList);
+      _todoController.add(_todoList.toList());
       //_todoStream = ObservableStream(Stream.value(_todoList));
     }
   }
