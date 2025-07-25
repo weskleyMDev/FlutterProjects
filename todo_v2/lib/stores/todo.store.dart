@@ -3,13 +3,16 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:mobx/mobx.dart';
-import 'package:path_provider/path_provider.dart';
+
+import '../services/data/idata_service.dart';
 
 part 'todo.store.g.dart';
 
 class TodoStore = TodoStoreBase with _$TodoStore;
 
 abstract class TodoStoreBase with Store {
+  TodoStoreBase({required this.dataService});
+  final IDataService dataService;
   // @observable
   // ObservableStream<List<Map<String, dynamic>>> _todoStream = ObservableStream(
   //   Stream.empty(),
@@ -36,7 +39,8 @@ abstract class TodoStoreBase with Store {
     _todoList.insert(0, newTodo);
     _saveData();
     _clearFields();
-      _todoController.add(_todoList);
+    _todoController.add(_todoList);
+    //_todoStream = ObservableStream(Stream.value(_todoList));
   }
 
   @action
@@ -45,7 +49,7 @@ abstract class TodoStoreBase with Store {
     updated['done'] = value ?? false;
     _todoList[index] = updated;
     _saveData();
-      _todoController.add(_todoList);
+    _todoController.add(_todoList);
     //_todoStream = ObservableStream(Stream.value(_todoList));
   }
 
@@ -65,33 +69,24 @@ abstract class TodoStoreBase with Store {
       _todoList = ObservableList.of(
         decodedList.map((item) => Map<String, dynamic>.from(item)),
       );
-        _todoController.add(_todoList);
+      _todoController.add(_todoList);
       //_todoStream = ObservableStream(Stream.value(_todoList));
     }
   }
 
   @action
-  Future<File> _fetchData() async {
-    final directory = await getApplicationDocumentsDirectory();
-    return File('${directory.path}/data.json');
+  Future<File> _createData() async {
+    return dataService.createData();
   }
 
   @action
   Future<void> _saveData() async {
-    String data = json.encode(_todoList);
-    final file = await _fetchData();
-    await file.writeAsString(data);
+    await dataService.saveData(_todoList);
   }
 
   @action
   Future<String?> _readData() async {
-    try {
-      final file = await _fetchData();
-      String data = await file.readAsString();
-      return data;
-    } catch (e) {
-      return null;
-    }
+    return dataService.readData();
   }
 
   @action

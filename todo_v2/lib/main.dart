@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 
 import 'pages/home_page.dart';
+import 'services/data/local_service.dart';
 import 'stores/todo.store.dart';
 import 'utils/theme.dart';
 
@@ -9,7 +10,7 @@ final getIt = GetIt.instance;
 
 void setup() {
   getIt.registerLazySingleton<TodoStore>(
-    () => TodoStore(),
+    () => TodoStore(dataService: LocalDataService()),
     instanceName: 'todoStore',
     dispose: (todo) => todo.dispose(),
   );

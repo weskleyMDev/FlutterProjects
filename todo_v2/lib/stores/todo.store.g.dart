@@ -73,14 +73,14 @@ mixin _$TodoStore on TodoStoreBase, Store {
     return _$_readListAsyncAction.run(() => super._readList());
   }
 
-  late final _$_fetchDataAsyncAction = AsyncAction(
-    'TodoStoreBase._fetchData',
+  late final _$_createDataAsyncAction = AsyncAction(
+    'TodoStoreBase._createData',
     context: context,
   );
 
   @override
-  Future<File> _fetchData() {
-    return _$_fetchDataAsyncAction.run(() => super._fetchData());
+  Future<File> _createData() {
+    return _$_createDataAsyncAction.run(() => super._createData());
   }
 
   late final _$_saveDataAsyncAction = AsyncAction(
