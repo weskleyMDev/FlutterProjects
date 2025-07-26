@@ -19,18 +19,16 @@ class _HomePageState extends State<HomePage> {
         builder: (context, constraints) {
           return ConstrainedBox(
             constraints: BoxConstraints(minHeight: constraints.maxHeight),
-            child: IntrinsicHeight(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  SizedBox(
-                    height: constraints.maxHeight * 0.15,
-                    width: constraints.maxWidth * 0.9,
-                    child: const CustomInsertBar(),
-                  ),
-                  Expanded(child: CustomTodoList()),
-                ],
-              ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                SizedBox(
+                  height: constraints.maxHeight * 0.15,
+                  width: constraints.maxWidth * 0.9,
+                  child: const CustomInsertBar(),
+                ),
+                Expanded(child: CustomTodoList()),
+              ],
             ),
           );
         },

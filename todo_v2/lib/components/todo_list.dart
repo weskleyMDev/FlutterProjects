@@ -34,15 +34,18 @@ class _CustomTodoListState extends State<CustomTodoList> {
         final todoList = store.todoStream.value ?? [];
         return todoList.isEmpty
             ? const Center(child: Text('None task found!'))
-            : ListView.builder(
-                itemCount: todoList.length,
-                itemBuilder: (context, index) {
-                  return TodoListItem(
-                    store: store,
-                    todo: todoList,
-                    index: index,
-                  );
-                },
+            : RefreshIndicator(
+                onRefresh: store.sortList,
+                child: ListView.builder(
+                  itemCount: todoList.length,
+                  itemBuilder: (context, index) {
+                    return TodoListItem(
+                      store: store,
+                      todo: todoList,
+                      index: index,
+                    );
+                  },
+                ),
               );
       },
     );

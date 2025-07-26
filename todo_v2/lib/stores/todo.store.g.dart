@@ -63,6 +63,46 @@ mixin _$TodoStore on TodoStoreBase, Store {
     });
   }
 
+  late final _$sortListAsyncAction = AsyncAction(
+    'TodoStoreBase.sortList',
+    context: context,
+  );
+
+  @override
+  Future<void> sortList() {
+    return _$sortListAsyncAction.run(() => super.sortList());
+  }
+
+  late final _$removeTodoAsyncAction = AsyncAction(
+    'TodoStoreBase.removeTodo',
+    context: context,
+  );
+
+  @override
+  Future<void> removeTodo(int index) {
+    return _$removeTodoAsyncAction.run(() => super.removeTodo(index));
+  }
+
+  late final _$rendoAsyncAction = AsyncAction(
+    'TodoStoreBase.rendo',
+    context: context,
+  );
+
+  @override
+  Future<void> rendo(int index, Map<String, dynamic> element) {
+    return _$rendoAsyncAction.run(() => super.rendo(index, element));
+  }
+
+  late final _$setDoneTodoAsyncAction = AsyncAction(
+    'TodoStoreBase.setDoneTodo',
+    context: context,
+  );
+
+  @override
+  Future<void> setDoneTodo(int index, bool? value) {
+    return _$setDoneTodoAsyncAction.run(() => super.setDoneTodo(index, value));
+  }
+
   late final _$_readListAsyncAction = AsyncAction(
     'TodoStoreBase._readList',
     context: context,
@@ -125,42 +165,6 @@ mixin _$TodoStore on TodoStoreBase, Store {
     );
     try {
       return super.addTodo();
-    } finally {
-      _$TodoStoreBaseActionController.endAction(_$actionInfo);
-    }
-  }
-
-  @override
-  void removeTodo(int index) {
-    final _$actionInfo = _$TodoStoreBaseActionController.startAction(
-      name: 'TodoStoreBase.removeTodo',
-    );
-    try {
-      return super.removeTodo(index);
-    } finally {
-      _$TodoStoreBaseActionController.endAction(_$actionInfo);
-    }
-  }
-
-  @override
-  void rendo(int index, Map<String, dynamic> element) {
-    final _$actionInfo = _$TodoStoreBaseActionController.startAction(
-      name: 'TodoStoreBase.rendo',
-    );
-    try {
-      return super.rendo(index, element);
-    } finally {
-      _$TodoStoreBaseActionController.endAction(_$actionInfo);
-    }
-  }
-
-  @override
-  void setDoneTodo(int index, bool? value) {
-    final _$actionInfo = _$TodoStoreBaseActionController.startAction(
-      name: 'TodoStoreBase.setDoneTodo',
-    );
-    try {
-      return super.setDoneTodo(index, value);
     } finally {
       _$TodoStoreBaseActionController.endAction(_$actionInfo);
     }

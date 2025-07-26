@@ -22,7 +22,8 @@ abstract class TodoStoreBase with Store {
       StreamController<List<Map<String, dynamic>>>.broadcast();
 
   @observable
-  late ObservableList<Map<String, dynamic>> _todoList;
+  ObservableList<Map<String, dynamic>> _todoList =
+      ObservableList<Map<String, dynamic>>();
 
   @observable
   String _title = '';
@@ -44,23 +45,38 @@ abstract class TodoStoreBase with Store {
   }
 
   @action
-  void removeTodo(int index) {
+  Future<void> sortList() async {
+    _todoList.sort((a, b) {
+      if (a['done'] && !b['done']) {
+        return 1;
+      } else if (!a['done'] && b['done']) {
+        return -1;
+      } else {
+        return 0;
+      }
+    });
+    await _saveData();
+    _todoController.add(_todoList.toList());
+  }
+
+  @action
+  Future<void> removeTodo(int index) async {
     _todoList.removeAt(index);
-    _saveData();
+    await _saveData();
     _todoController.add(_todoList.toList());
   }
 
   @action
-  void rendo(int index, Map<String, dynamic> element) {
+  Future<void> rendo(int index, Map<String, dynamic> element) async {
     _todoList.insert(index, element);
-    _saveData();
+    await _saveData();
     _todoController.add(_todoList.toList());
   }
 
   @action
-  void setDoneTodo(int index, bool? value) {
+  Future<void> setDoneTodo(int index, bool? value) async {
     _todoList[index]['done'] = value;
-    _saveData();
+    await _saveData();
     _todoController.add(_todoList.toList());
     //final updated = Map<String, dynamic>.from(_todoList[index]);
     //updated['done'] = value ?? false;
