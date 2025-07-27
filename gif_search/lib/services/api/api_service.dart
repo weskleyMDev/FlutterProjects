@@ -16,16 +16,16 @@ class ApiService implements IApiService {
       final dataUri = (search == null)
           ? Uri.https(_url, '/v1/gifs/trending', {
               'api_key': _apiKey,
-              'limit': '10',
-              'offset': '10',
+              'limit': '12',
+              'offset': '12',
               'rating': 'g',
               'bundle': 'messaging_non_clips',
             })
           : Uri.https(_url, '/v1/gifs/search', {
               'api_key': _apiKey,
               'q': search,
-              'limit': '10',
-              'offset': '10',
+              'limit': '12',
+              'offset': '12',
               'rating': 'g',
               'lang': 'en',
               'bundle': 'messaging_non_clips',

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:get_it/get_it.dart';
+import 'package:go_router/go_router.dart';
 import 'package:mobx/mobx.dart';
 
 import '../stores/api/api.store.dart';
@@ -58,9 +59,13 @@ class _HomePageState extends State<HomePage> {
                     final data = dataList[index];
                     return ClipRRect(
                       borderRadius: BorderRadius.circular(8.0),
-                      child: Image.network(
-                        data['images']['fixed_height']['url'],
-                        fit: BoxFit.fill,
+                      child: InkWell(
+                        onTap: () =>
+                            context.pushNamed('gift-detail', extra: data),
+                        child: Image.network(
+                          data['images']['fixed_height']['url'],
+                          fit: BoxFit.fill,
+                        ),
                       ),
                     );
                   },
@@ -89,7 +94,10 @@ class _HomePageState extends State<HomePage> {
                   ),
                   keyboardType: TextInputType.text,
                   textInputAction: TextInputAction.done,
-                  onFieldSubmitted: (_) {},
+                  onFieldSubmitted: (text) {
+                    apiStore.setSearch(text);
+                    apiStore.getApiData();
+                  },
                 ),
               ],
             ),

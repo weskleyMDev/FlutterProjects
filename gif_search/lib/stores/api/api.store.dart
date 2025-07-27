@@ -8,6 +8,7 @@ class ApiStore = ApiStoreBase with _$ApiStore;
 
 abstract class ApiStoreBase with Store {
   ApiStoreBase({required this.apiService});
+
   final IApiService apiService;
 
   @observable
@@ -20,6 +21,9 @@ abstract class ApiStoreBase with Store {
   @observable
   String errorMessage = '';
 
+  @observable
+  String? _search;
+
   @computed
   List<Map<String, dynamic>> get apiData => List.unmodifiable(_apiData);
 
@@ -27,9 +31,14 @@ abstract class ApiStoreBase with Store {
   FutureStatus get status => _apiFutureData.status;
 
   @action
+  void setSearch(String search) {
+    _search = search;
+  }
+
+  @action
   Future<List<Map<String, dynamic>>> getApiData() async {
     try {
-      _apiFutureData = ObservableFuture(apiService.getData());
+      _apiFutureData = ObservableFuture(apiService.getData(query: _search));
       final Map<String, dynamic> data = await _apiFutureData;
       _apiData
         ..clear()

@@ -1,3 +1,3 @@
 abstract class IApiService {
-  Future<Map<String, dynamic>> getData();
+  Future<Map<String, dynamic>> getData({String? query});
 }
