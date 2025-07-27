@@ -12,8 +12,8 @@ final routes = GoRouter(
       builder: (context, state) => HomePage(),
     ),
     GoRoute(
-      path: '/gift-detail',
-      name: 'gift-detail',
+      path: '/gif-detail',
+      name: 'gif-detail',
       builder: (context, state) {
         final data = state.extra as Map<String, dynamic>;
         return GifDetailScreen(data: data);

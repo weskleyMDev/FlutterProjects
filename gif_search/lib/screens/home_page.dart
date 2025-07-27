@@ -3,6 +3,7 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mobx/mobx.dart';
+import 'package:transparent_image/transparent_image.dart';
 
 import '../stores/api/api.store.dart';
 
@@ -33,6 +34,7 @@ class _HomePageState extends State<HomePage> {
           height: 40.0,
         ),
         backgroundColor: Colors.black,
+        surfaceTintColor: Colors.black,
       ),
       body: Observer(
         builder: (_) {
@@ -61,10 +63,11 @@ class _HomePageState extends State<HomePage> {
                       borderRadius: BorderRadius.circular(8.0),
                       child: InkWell(
                         onTap: () =>
-                            context.pushNamed('gift-detail', extra: data),
-                        child: Image.network(
-                          data['images']['fixed_height']['url'],
-                          fit: BoxFit.fill,
+                            context.pushNamed('gif-detail', extra: data),
+                        child: FadeInImage.memoryNetwork(
+                          placeholder: kTransparentImage,
+                          image: data['images']['fixed_height']['url'],
+                          fit: BoxFit.cover,
                         ),
                       ),
                     );
