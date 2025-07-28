@@ -1,14 +1,13 @@
 import 'dart:io';
 
-import 'package:contacts_app/services/db/idb_service.dart';
+import 'package:contacts_app/services/db/local/ilocal_db_service.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
-import 'package:uuid/uuid.dart';
 
-import '../../models/contact.dart';
+import '../../../models/contact.dart';
 
-class LocalDbService implements IDbService {
+class LocalDbService implements ILocalDbService {
   Database? _db;
 
   @override
@@ -25,7 +24,7 @@ class LocalDbService implements IDbService {
   Future<Database?> initDb() async {
     final directory = await getApplicationDocumentsDirectory();
     final databaseDir = Directory('${directory.path}/Database');
-    if (! await databaseDir.exists()) {
+    if (!await databaseDir.exists()) {
       await databaseDir.create(recursive: true);
     }
     final path = join(databaseDir.path, 'contacts.db');
@@ -51,7 +50,7 @@ class LocalDbService implements IDbService {
       whereArgs: [id],
     );
     if (data != null && data.isNotEmpty) {
-      return Contact.fromMap(data.first);
+      return Contact.fromMap(data.first, id);
     } else {
       return null;
     }
@@ -60,10 +59,8 @@ class LocalDbService implements IDbService {
   @override
   Future<Contact> saveContact({required Contact contact}) async {
     final database = await db;
-    final id = Uuid().v4();
-    final updatedContact = contact.copyWith(id: id);
-    await database?.insert('contacts', updatedContact.toMap());
-    return updatedContact;
+    await database?.insert('contacts', contact.toLocalMap());
+    return contact;
   }
 
   @override
@@ -82,7 +79,7 @@ class LocalDbService implements IDbService {
     final database = await db;
     final changes = await database?.update(
       'contacts',
-      contact.toMap(),
+      contact.toLocalMap(),
       where: 'id = ?',
       whereArgs: [contact.id],
     );
@@ -95,7 +92,9 @@ class LocalDbService implements IDbService {
     final data = await database?.rawQuery('SELECT * FROM contacts');
     List<Contact> contacts = [];
     if (data != null) {
-      contacts = data.map((e) => Contact.fromMap(e)).toList();
+      contacts = data
+          .map((e) => Contact.fromMap(e, e['id'] as String))
+          .toList();
     }
     return contacts;
   }

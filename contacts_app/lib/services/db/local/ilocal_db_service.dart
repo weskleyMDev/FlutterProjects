@@ -1,8 +1,8 @@
 import 'package:sqflite/sqflite.dart';
 
-import '../../models/contact.dart';
+import '../../../models/contact.dart';
 
-abstract class IDbService {
+abstract class ILocalDbService {
   Future<Database?> get db;
 
   Future<void> initDb();

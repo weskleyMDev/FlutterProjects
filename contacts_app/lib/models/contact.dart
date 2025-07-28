@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 class Contact {
-  final String? id;
+  final String id;
   final String name;
   final String email;
   final String phone;
@@ -15,10 +15,10 @@ class Contact {
     required this.imagePath,
   });
 
-  String toJson() => json.encode(toMap());
+  String toJson() => json.encode(toLocalMap());
 
-  factory Contact.fromJson(String source) =>
-      Contact.fromMap(json.decode(source) as Map<String, dynamic>);
+  factory Contact.fromJson(String source, String cid) =>
+      Contact.fromMap(json.decode(source) as Map<String, dynamic>, cid);
 
   @override
   bool operator ==(Object other) =>
@@ -60,7 +60,7 @@ class Contact {
     );
   }
 
-  Map<String, dynamic> toMap() {
+  Map<String, dynamic> toLocalMap() {
     return {
       'id': id,
       'name': name,
@@ -70,13 +70,22 @@ class Contact {
     };
   }
 
-  factory Contact.fromMap(Map<String, dynamic> map) {
+  Map<String, dynamic> toCloudMap() {
+    return {
+      'name': name,
+      'email': email,
+      'phone': phone,
+      'imagePath': imagePath,
+    };
+  }
+
+  factory Contact.fromMap(Map<String, dynamic>? map, String cid) {
     return Contact(
-      id: map['id'] as String,
-      name: map['name'] as String,
-      email: map['email'] as String,
-      phone: map['phone'] as String,
-      imagePath: map['imagePath'] as String,
+      id: cid,
+      name: map?['name'] as String,
+      email: map?['email'] as String,
+      phone: map?['phone'] as String,
+      imagePath: map?['imagePath'] as String,
     );
   }
 }

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "849154194504",
+    "project_id": "contacts-list-b49bc",
+    "storage_bucket": "contacts-list-b49bc.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:849154194504:android:ee42131d86747ee6422c7d",
+        "android_client_info": {
+          "package_name": "br.com.weskley.contacts.contacts_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAksa52bTuS5nI3E5gtRqAu-59qcdNRHM8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

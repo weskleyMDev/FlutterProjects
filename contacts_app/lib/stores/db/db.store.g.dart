@@ -67,7 +67,7 @@ mixin _$DbStore on DbStoreBase, Store {
   );
 
   @override
-  Future<void> _fetchContacts() {
+  Future<List<Contact>> _fetchContacts() {
     return _$_fetchContactsAsyncAction.run(() => super._fetchContacts());
   }
 

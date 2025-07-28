@@ -1,7 +1,10 @@
 import 'dart:io';
 
-import 'package:contacts_app/services/db/local_db_service.dart';
+import 'package:contacts_app/firebase_options.dart';
+import 'package:contacts_app/services/db/cloud/cloud_db_service.dart';
+import 'package:contacts_app/services/db/local/local_db_service.dart';
 import 'package:contacts_app/stores/db/db.store.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:get_it/get_it.dart';
@@ -12,17 +15,21 @@ import 'models/contact.dart';
 
 final getIt = GetIt.instance;
 
-void setup() {
-  getIt.registerLazySingleton(() => DbStore(dbService: LocalDbService()));
+void _setup() {
+  getIt.registerLazySingleton(
+    () =>
+        DbStore(localService: LocalDbService(), cloudService: CloudDbService()),
+  );
 }
 
-void main() {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  if (Platform.isWindows || Platform.isLinux) {
+  if (Platform.isWindows) {
     sqfliteFfiInit();
     databaseFactory = databaseFactoryFfi;
   }
-  setup();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  _setup();
   runApp(const MyApp());
 }
 
@@ -57,7 +64,7 @@ class _MyHomePageState extends State<MyHomePage> {
     super.initState();
     store.init();
   }
-  
+
   @override
   void dispose() {
     store.dispose();
@@ -73,11 +80,11 @@ class _MyHomePageState extends State<MyHomePage> {
           IconButton(
             onPressed: () {
               final contact = Contact(
-                name: 'Teste2',
-                email: 'teste2@teste',
+                name: 'Teste3',
+                email: 'teste3@teste',
                 phone: '123456789',
                 imagePath: '',
-                id: null,
+                id: '',
               );
               store.addContact(contact);
             },
@@ -103,7 +110,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       itemBuilder: (context, index) {
                         final contact = contactList[index];
                         return ListTile(
-                          title: Text(contact.name),
+                          title: Text(contact.id),
                           subtitle: Text(contact.email),
                         );
                       },
