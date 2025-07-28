@@ -1,0 +1,23 @@
+import 'package:sqflite/sqflite.dart';
+
+import '../../models/contact.dart';
+
+abstract class IDbService {
+  Future<Database?> get db;
+
+  Future<void> initDb();
+
+  Future<Contact?> getContact({required String id});
+
+  Future<Contact> saveContact({required Contact contact});
+
+  Future<int?> deleteContact({required String id});
+
+  Future<int?> updateContact({required Contact contact});
+
+  Future<List<Contact>> getAllContacts();
+
+  Future<int?> getTotal();
+
+  Future<void> closeDb();
+}
