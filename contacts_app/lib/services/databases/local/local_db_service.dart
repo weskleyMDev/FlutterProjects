@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:contacts_app/services/db/local/ilocal_db_service.dart';
+import 'package:contacts_app/services/databases/local/ilocal_db_service.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
@@ -50,7 +50,7 @@ class LocalDbService implements ILocalDbService {
       whereArgs: [id],
     );
     if (data != null && data.isNotEmpty) {
-      return Contact.fromMap(data.first, id);
+      return Contact.fromMap(data.first);
     } else {
       return null;
     }
@@ -59,7 +59,7 @@ class LocalDbService implements ILocalDbService {
   @override
   Future<Contact> saveContact({required Contact contact}) async {
     final database = await db;
-    await database?.insert('contacts', contact.toLocalMap());
+    await database?.insert('contacts', contact.toMap());
     return contact;
   }
 
@@ -79,7 +79,7 @@ class LocalDbService implements ILocalDbService {
     final database = await db;
     final changes = await database?.update(
       'contacts',
-      contact.toLocalMap(),
+      contact.toMap(),
       where: 'id = ?',
       whereArgs: [contact.id],
     );
@@ -92,9 +92,7 @@ class LocalDbService implements ILocalDbService {
     final data = await database?.rawQuery('SELECT * FROM contacts');
     List<Contact> contacts = [];
     if (data != null) {
-      contacts = data
-          .map((e) => Contact.fromMap(e, e['id'] as String))
-          .toList();
+      contacts = data.map((e) => Contact.fromMap(e)).toList();
     }
     return contacts;
   }

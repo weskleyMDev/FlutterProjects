@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:contacts_app/models/contact.dart';
-import 'package:contacts_app/services/db/cloud/icloud_db_service.dart';
+import 'package:contacts_app/services/databases/cloud/icloud_db_service.dart';
 
 class CloudDbService implements ICloudDbService {
   static final _firestore = FirebaseFirestore.instance;
@@ -40,10 +40,10 @@ class CloudDbService implements ICloudDbService {
   }
 
   Map<String, dynamic> _toFirestore(Contact contact, SetOptions? options) =>
-      contact.toCloudMap();
+      contact.toMap();
 
   Contact _fromFirestore(
     DocumentSnapshot<Map<String, dynamic>?> snapshot,
     SnapshotOptions? otions,
-  ) => Contact.fromMap(snapshot.data(), snapshot.id);
+  ) => Contact.fromMap(snapshot.data()!);
 }

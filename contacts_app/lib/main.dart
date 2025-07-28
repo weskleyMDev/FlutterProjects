@@ -1,8 +1,8 @@
 import 'dart:io';
 
-import 'package:contacts_app/firebase_options.dart';
-import 'package:contacts_app/services/db/cloud/cloud_db_service.dart';
-import 'package:contacts_app/services/db/local/local_db_service.dart';
+import 'package:contacts_app/models/contact.dart';
+import 'package:contacts_app/services/backups/backup_service.dart';
+import 'package:contacts_app/services/databases/local/local_db_service.dart';
 import 'package:contacts_app/stores/db/db.store.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -11,14 +11,14 @@ import 'package:get_it/get_it.dart';
 import 'package:mobx/mobx.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
-import 'models/contact.dart';
+import 'firebase_options.dart';
 
 final getIt = GetIt.instance;
 
 void _setup() {
   getIt.registerLazySingleton(
     () =>
-        DbStore(localService: LocalDbService(), cloudService: CloudDbService()),
+        DbStore(localService: LocalDbService(), backupService: BackupService()),
   );
 }
 
@@ -59,6 +59,14 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   final store = GetIt.instance<DbStore>();
 
+  final contact = Contact(
+    id: '2',
+    name: 'Teste2',
+    email: 'Teste2@',
+    phone: '123456',
+    imagePath: 'Image 2',
+  );
+
   @override
   void initState() {
     super.initState();
@@ -78,15 +86,8 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Text('Home Page'),
         actions: [
           IconButton(
-            onPressed: () {
-              final contact = Contact(
-                name: 'Teste3',
-                email: 'teste3@teste',
-                phone: '123456789',
-                imagePath: '',
-                id: '',
-              );
-              store.addContact(contact);
+            onPressed: () async {
+              await store.addContact(contact);
             },
             icon: Icon(Icons.add),
           ),

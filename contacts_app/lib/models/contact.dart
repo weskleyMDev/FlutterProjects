@@ -15,11 +15,6 @@ class Contact {
     required this.imagePath,
   });
 
-  String toJson() => json.encode(toLocalMap());
-
-  factory Contact.fromJson(String source, String cid) =>
-      Contact.fromMap(json.decode(source) as Map<String, dynamic>, cid);
-
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -60,7 +55,7 @@ class Contact {
     );
   }
 
-  Map<String, dynamic> toLocalMap() {
+  Map<String, dynamic> toMap() {
     return {
       'id': id,
       'name': name,
@@ -70,22 +65,18 @@ class Contact {
     };
   }
 
-  Map<String, dynamic> toCloudMap() {
-    return {
-      'name': name,
-      'email': email,
-      'phone': phone,
-      'imagePath': imagePath,
-    };
-  }
-
-  factory Contact.fromMap(Map<String, dynamic>? map, String cid) {
+  factory Contact.fromMap(Map<String, dynamic> map) {
     return Contact(
-      id: cid,
-      name: map?['name'] as String,
-      email: map?['email'] as String,
-      phone: map?['phone'] as String,
-      imagePath: map?['imagePath'] as String,
+      id: map['id'] as String,
+      name: map['name'] as String,
+      email: map['email'] as String,
+      phone: map['phone'] as String,
+      imagePath: map['imagePath'] as String,
     );
   }
+
+  String toJson() => json.encode(toMap());
+
+  factory Contact.fromJson(String source) =>
+      Contact.fromMap(json.decode(source) as Map<String, dynamic>);
 }
