@@ -28,14 +28,13 @@ abstract class DbStoreBase with Store {
   @action
   Future<List<Contact>> _fetchContacts() async {
     // para ler do arquivo de backup
-    final map = await backupService.readData();
+    // final map = await backupService.readData();
     // List<Contact> list = [];
     // if (map != null && map['backup'] != null) {
     //   list = (map['backup'] as List)
     //     .map((e) => Contact.fromMap(e as Map<String, dynamic>))
     //     .toList();
     // }
-    print(map);
     _contactsFuture = ObservableFuture(localService.getAllContacts());
     final data = await _contactsFuture;
     _contacts

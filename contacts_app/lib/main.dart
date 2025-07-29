@@ -60,11 +60,11 @@ class _MyHomePageState extends State<MyHomePage> {
   final store = GetIt.instance<DbStore>();
 
   final contact = Contact(
-    id: '2',
-    name: 'Teste2',
-    email: 'Teste2@',
+    id: '3',
+    name: 'Teste3',
+    email: 'Teste3@',
     phone: '123456',
-    imagePath: 'Image 2',
+    imagePath: 'Image3',
   );
 
   @override
