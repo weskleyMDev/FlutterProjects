@@ -7,7 +7,7 @@ import 'package:path_provider/path_provider.dart';
 
 class BackupService implements IBackupService {
   @override
-  Future<File> createData() async {
+  Future<File> createBackup() async {
     final directory = await getApplicationDocumentsDirectory();
     final backupDir = Directory(join(directory.path, 'Backups'));
     if (!await backupDir.exists()) {
@@ -17,17 +17,17 @@ class BackupService implements IBackupService {
   }
 
   @override
-  Future<Map<String, dynamic>?> readData() async {
-    final file = await createData();
+  Future<Map<String, dynamic>?> readBackup() async {
+    final file = await createBackup();
     final data = await file.readAsString();
     final map = json.decode(data);
     return map as Map<String, dynamic>;
   }
 
   @override
-  Future<void> saveData(Map<String, dynamic> data) async {
+  Future<void> saveBackup(Map<String, dynamic> data) async {
     final map = json.encode(data);
-    final file = await createData();
+    final file = await createBackup();
     await file.writeAsString(map);
   }
 }

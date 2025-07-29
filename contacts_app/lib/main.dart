@@ -2,8 +2,9 @@ import 'dart:io';
 
 import 'package:contacts_app/models/contact.dart';
 import 'package:contacts_app/services/backups/backup_service.dart';
+import 'package:contacts_app/services/databases/cloud/cloud_db_service.dart';
 import 'package:contacts_app/services/databases/local/local_db_service.dart';
-import 'package:contacts_app/stores/db/db.store.dart';
+import 'package:contacts_app/stores/database/local/local_db.store.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -17,8 +18,11 @@ final getIt = GetIt.instance;
 
 void _setup() {
   getIt.registerLazySingleton(
-    () =>
-        DbStore(localService: LocalDbService(), backupService: BackupService()),
+    () => LocalDbStore(
+      localService: LocalDbService(),
+      backupService: BackupService(),
+      cloudService: CloudDbService(),
+    ),
   );
 }
 
@@ -57,14 +61,14 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  final store = GetIt.instance<DbStore>();
+  final store = GetIt.instance<LocalDbStore>();
 
   final contact = Contact(
-    id: '3',
-    name: 'Teste3',
-    email: 'Teste3@',
-    phone: '123456',
-    imagePath: 'Image3',
+    id: Uuid().v4(),
+    name: 'Teste',
+    email: 'teste@teste.com',
+    phone: '123456789',
+    imagePath: 'ImageTeste',
   );
 
   @override
