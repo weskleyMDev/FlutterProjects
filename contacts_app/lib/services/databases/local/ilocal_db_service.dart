@@ -5,8 +5,6 @@ import '../../../models/contact.dart';
 abstract class ILocalDbService {
   Future<Database?> get db;
 
-  Future<void> initDb();
-
   Future<Contact?> getContact({required String id});
 
   Future<Contact> saveContact({required Contact contact});

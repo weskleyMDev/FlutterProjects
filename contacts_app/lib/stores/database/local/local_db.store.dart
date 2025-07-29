@@ -2,6 +2,7 @@ import 'package:contacts_app/models/contact.dart';
 import 'package:contacts_app/services/backups/ibackup_service.dart';
 import 'package:contacts_app/services/databases/cloud/icloud_db_service.dart';
 import 'package:contacts_app/services/databases/local/ilocal_db_service.dart';
+import 'package:contacts_app/utils/binary_search.dart';
 import 'package:mobx/mobx.dart';
 
 part 'local_db.store.g.dart';
@@ -10,14 +11,14 @@ class LocalDbStore = LocalDbStoreBase with _$LocalDbStore;
 
 abstract class LocalDbStoreBase with Store {
   LocalDbStoreBase({
-    required this.localService,
+    required this.localDbService,
     required this.backupService,
-    required this.cloudService,
+    required this.cloudDbService,
   });
 
-  final ILocalDbService localService;
+  final ILocalDbService localDbService;
   final IBackupService backupService;
-  final ICloudDbService cloudService;
+  final ICloudDbService cloudDbService;
 
   @observable
   ObservableFuture<List<Contact>> _contactsFuture = ObservableFuture.value([]);
@@ -33,15 +34,7 @@ abstract class LocalDbStoreBase with Store {
 
   @action
   Future<List<Contact>> _fetchContacts() async {
-    // para ler do arquivo de backup
-    // final map = await backupService.readBackup();
-    // List<Contact> list = [];
-    // if (map != null && map['backup'] != null) {
-    //   list = (map['backup'] as List)
-    //     .map((e) => Contact.fromMap(e as Map<String, dynamic>))
-    //     .toList();
-    // }
-    _contactsFuture = ObservableFuture(localService.getAllContacts());
+    _contactsFuture = ObservableFuture(localDbService.getAllContacts());
     final data = await _contactsFuture;
     _contacts
       ..clear()
@@ -50,33 +43,47 @@ abstract class LocalDbStoreBase with Store {
   }
 
   @action
-  Future<void> addContact(Contact contact) async {
-    final backup = await backupService.readBackup();
-    if (backup!.containsKey('backup')) {
-      var existIndex = backup['backup']!.indexWhere((i) => i['id'] == contact.id);
-      if (existIndex != -1) {
-        backup['backup']![existIndex] = contact.toMap();
+  Future<void> _addContact(Contact contact) async {
+    final toJson = _contacts.map((e) => e.toMap()).toList();
+    await localDbService.saveContact(contact: contact);
+    await backupService.saveBackup(toJson);
+  }
+
+  @action
+  Future<void> _updateContact(Contact contact) async {
+    final toJson = _contacts.map((e) => e.toMap()).toList();
+    await localDbService.updateContact(contact: contact);
+    await backupService.saveBackup(toJson);
+  }
+
+  @action
+  Future<void> saveContact(Map<String, dynamic> data) async {
+    final Contact newContact = Contact.fromMap(data);
+    final sortedContacts = List<Contact>.from(_contacts);
+    sortedContacts.sort((a, b) => a.id.compareTo(b.id));
+      final index = myBinarySearch(
+        sortedContacts,
+        newContact,
+        (a, b) => a.id.compareTo(b.id),
+      );
+      if (index >= 0) {
+        _contacts[index] = newContact;
+        await _updateContact(newContact);
       } else {
-        backup['backup']!.add(contact.toMap());
-      }
-    } else {
-      backup.putIfAbsent('backup', () => [contact.toMap()]);
+        _contacts.add(newContact);
+        await _addContact(newContact);
     }
-    await backupService.saveBackup(backup);
-    await localService.saveContact(contact: contact);
-    await cloudService.saveContact(contact: contact);
-    await _fetchContacts();
   }
 
   @action
   Future<void> init() async {
-    await localService.db;
+    await localDbService.db;
     await _fetchContacts();
   }
 
   @action
   Future<void> dispose() async {
-    await localService.closeDb();
+    await localDbService.closeDb();
     _contacts.clear();
     _contactsFuture.value?.clear();
   }

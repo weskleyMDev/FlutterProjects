@@ -5,23 +5,20 @@ import 'package:contacts_app/services/backups/backup_service.dart';
 import 'package:contacts_app/services/databases/cloud/cloud_db_service.dart';
 import 'package:contacts_app/services/databases/local/local_db_service.dart';
 import 'package:contacts_app/stores/database/local/local_db.store.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:get_it/get_it.dart';
 import 'package:mobx/mobx.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
-import 'firebase_options.dart';
-
 final getIt = GetIt.instance;
 
 void _setup() {
   getIt.registerLazySingleton(
     () => LocalDbStore(
-      localService: LocalDbService(),
+      localDbService: LocalDbService(),
       backupService: BackupService(),
-      cloudService: CloudDbService(),
+      cloudDbService: CloudDbService(),
     ),
   );
 }
@@ -32,7 +29,7 @@ Future<void> main() async {
     sqfliteFfiInit();
     databaseFactory = databaseFactoryFfi;
   }
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  //await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   _setup();
   runApp(const MyApp());
 }
@@ -61,15 +58,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  final store = GetIt.instance<LocalDbStore>();
-
-  final contact = Contact(
-    id: Uuid().v4(),
-    name: 'Teste',
-    email: 'teste@teste.com',
-    phone: '123456789',
-    imagePath: 'ImageTeste',
-  );
+  final store = GetIt.instance<LocalDbStore>();  
 
   @override
   void initState() {
@@ -91,7 +80,13 @@ class _MyHomePageState extends State<MyHomePage> {
         actions: [
           IconButton(
             onPressed: () async {
-              await store.addContact(contact);
+              await store.saveContact(Contact(
+                id: '3',
+                name: 'Teste4',
+                email: 'teste4@teste.com',
+                phone: '123456789',
+                imagePath: 'ImageTeste4',
+              ).toMap());
             },
             icon: Icon(Icons.add),
           ),

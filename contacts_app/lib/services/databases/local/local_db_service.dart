@@ -15,15 +15,14 @@ class LocalDbService implements ILocalDbService {
     if (_db != null) {
       return _db;
     } else {
-      _db = await initDb();
+      _db = await _initDb();
       return _db;
     }
   }
 
-  @override
-  Future<Database?> initDb() async {
-    final directory = await getApplicationDocumentsDirectory();
-    final databaseDir = Directory('${directory.path}/Database');
+  Future<Database?> _initDb() async {
+    final directory = await getApplicationSupportDirectory();
+    final databaseDir = Directory(join(directory.path, 'Database'));
     if (!await databaseDir.exists()) {
       await databaseDir.create(recursive: true);
     }

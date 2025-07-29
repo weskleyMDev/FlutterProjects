@@ -2,32 +2,50 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:contacts_app/services/backups/ibackup_service.dart';
-import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 
 class BackupService implements IBackupService {
-  @override
-  Future<File> createBackup() async {
-    final directory = await getApplicationDocumentsDirectory();
-    final backupDir = Directory(join(directory.path, 'Backups'));
-    if (!await backupDir.exists()) {
-      await backupDir.create(recursive: true);
+  Future<File> _createBackup() async {
+    try {
+      final directory = await getApplicationSupportDirectory();
+
+      final backupDir = Directory('${directory.path}/Backups');
+
+      if (!await backupDir.exists()) {
+        await backupDir.create(recursive: true);
+      }
+
+      return File('${backupDir.path}/contacts.json');
+    } catch (e) {
+      throw Exception(
+        'Erro ao criar arquivo de backup: ${e.toString().replaceAll('Exception: ', '')}',
+      );
     }
-    return File(join(backupDir.path, 'contacts.json'));
   }
 
   @override
-  Future<Map<String, dynamic>?> readBackup() async {
-    final file = await createBackup();
-    final data = await file.readAsString();
-    final map = json.decode(data);
-    return map as Map<String, dynamic>;
+  Future<String?> readBackup() async {
+    try {
+      final file = await _createBackup();
+      String data = await file.readAsString();
+      return data;
+    } catch (e) {
+      throw Exception(
+        'Erro ao ler arquivo de backup: ${e.toString().replaceAll('Exception: ', '')}',
+      );
+    }
   }
 
   @override
-  Future<void> saveBackup(Map<String, dynamic> data) async {
-    final map = json.encode(data);
-    final file = await createBackup();
-    await file.writeAsString(map);
+  Future<void> saveBackup(List data) async {
+    try {
+      String jsonString = json.encode(data);
+      final file = await _createBackup();
+      await file.writeAsString(jsonString);
+    } catch (e) {
+      throw Exception(
+        'Erro ao salvar arquivo de backup: ${e.toString().replaceAll('Exception: ', '')}',
+      );
+    }
   }
 }

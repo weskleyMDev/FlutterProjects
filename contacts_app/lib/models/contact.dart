@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-class Contact {
+class Contact implements Comparable<Contact> {
   final String id;
   final String name;
   final String email;
@@ -79,4 +79,9 @@ class Contact {
 
   factory Contact.fromJson(String source) =>
       Contact.fromMap(json.decode(source) as Map<String, dynamic>);
+
+  @override
+  int compareTo(Contact other) {
+    return id.compareTo(other.id);
+  }
 }

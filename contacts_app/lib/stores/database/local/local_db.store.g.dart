@@ -71,14 +71,34 @@ mixin _$LocalDbStore on LocalDbStoreBase, Store {
     return _$_fetchContactsAsyncAction.run(() => super._fetchContacts());
   }
 
-  late final _$addContactAsyncAction = AsyncAction(
-    'LocalDbStoreBase.addContact',
+  late final _$_addContactAsyncAction = AsyncAction(
+    'LocalDbStoreBase._addContact',
     context: context,
   );
 
   @override
-  Future<void> addContact(Contact contact) {
-    return _$addContactAsyncAction.run(() => super.addContact(contact));
+  Future<void> _addContact(Contact contact) {
+    return _$_addContactAsyncAction.run(() => super._addContact(contact));
+  }
+
+  late final _$_updateContactAsyncAction = AsyncAction(
+    'LocalDbStoreBase._updateContact',
+    context: context,
+  );
+
+  @override
+  Future<void> _updateContact(Contact contact) {
+    return _$_updateContactAsyncAction.run(() => super._updateContact(contact));
+  }
+
+  late final _$saveContactAsyncAction = AsyncAction(
+    'LocalDbStoreBase.saveContact',
+    context: context,
+  );
+
+  @override
+  Future<void> saveContact(Map<String, dynamic> data) {
+    return _$saveContactAsyncAction.run(() => super.saveContact(data));
   }
 
   late final _$initAsyncAction = AsyncAction(

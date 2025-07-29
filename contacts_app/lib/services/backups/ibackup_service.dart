@@ -1,7 +1,5 @@
-import 'dart:io';
-
 abstract class IBackupService {
-  Future<File> createBackup();
-  Future<Map<String, dynamic>?> readBackup();
-  Future<void> saveBackup(Map<String, dynamic> data);
+  Future<String?> readBackup();
+  Future<void> saveBackup(List data);
+  //Future<void> upsertBackup(Map<String, dynamic> data);
 }
