@@ -1,6 +1,5 @@
 import 'package:contacts_app/models/contact.dart';
 import 'package:contacts_app/services/backups/ibackup_service.dart';
-import 'package:contacts_app/services/databases/cloud/icloud_db_service.dart';
 import 'package:contacts_app/services/databases/local/ilocal_db_service.dart';
 import 'package:contacts_app/utils/binary_search.dart';
 import 'package:mobx/mobx.dart';
@@ -13,12 +12,10 @@ abstract class LocalDbStoreBase with Store {
   LocalDbStoreBase({
     required this.localDbService,
     required this.backupService,
-    required this.cloudDbService,
   });
 
   final ILocalDbService localDbService;
   final IBackupService backupService;
-  final ICloudDbService cloudDbService;
 
   @observable
   ObservableFuture<List<Contact>> _contactsFuture = ObservableFuture.value([]);

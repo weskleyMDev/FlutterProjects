@@ -4,12 +4,16 @@ import 'package:contacts_app/models/contact.dart';
 import 'package:contacts_app/services/backups/backup_service.dart';
 import 'package:contacts_app/services/databases/cloud/cloud_db_service.dart';
 import 'package:contacts_app/services/databases/local/local_db_service.dart';
+import 'package:contacts_app/stores/database/cloud/cloud_db.store.dart';
 import 'package:contacts_app/stores/database/local/local_db.store.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:get_it/get_it.dart';
 import 'package:mobx/mobx.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
+
+import 'firebase_options.dart';
 
 final getIt = GetIt.instance;
 
@@ -18,9 +22,9 @@ void _setup() {
     () => LocalDbStore(
       localDbService: LocalDbService(),
       backupService: BackupService(),
-      cloudDbService: CloudDbService(),
     ),
   );
+  getIt.registerLazySingleton(() => CloudDbStore(cloudDbService: CloudDbService()));
 }
 
 Future<void> main() async {
@@ -29,8 +33,8 @@ Future<void> main() async {
     sqfliteFfiInit();
     databaseFactory = databaseFactoryFfi;
   }
-  //await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   _setup();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   runApp(const MyApp());
 }
 
@@ -58,7 +62,8 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  final store = GetIt.instance<LocalDbStore>();  
+  final store = GetIt.instance<LocalDbStore>();
+  final cloudStore = GetIt.instance<CloudDbStore>();
 
   @override
   void initState() {
@@ -81,11 +86,18 @@ class _MyHomePageState extends State<MyHomePage> {
           IconButton(
             onPressed: () async {
               await store.saveContact(Contact(
-                id: '3',
-                name: 'Teste4',
-                email: 'teste4@teste.com',
-                phone: '123456789',
-                imagePath: 'ImageTeste4',
+                id: '1',
+                name: 'Teste1',
+                email: 'teste1@teste.com',
+                phone: '987654321',
+                imagePath: 'ImageTeste1',
+              ).toMap());
+              await cloudStore.saveContact(Contact(
+                id: '1',
+                name: 'Teste1',
+                email: 'teste1@teste.com',
+                phone: '987654321',
+                imagePath: 'ImageTeste1',
               ).toMap());
             },
             icon: Icon(Icons.add),
@@ -111,7 +123,12 @@ class _MyHomePageState extends State<MyHomePage> {
                         final contact = contactList[index];
                         return ListTile(
                           title: Text(contact.id),
-                          subtitle: Text(contact.email),
+                          subtitle: Column(
+                            children: [
+                              Text(contact.email),
+                              Text(contact.phone),
+                            ],
+                          ),
                         );
                       },
                     );

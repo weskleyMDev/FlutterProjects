@@ -34,9 +34,19 @@ class CloudDbService implements ICloudDbService {
   }
 
   @override
-  Future<void> updateContact({required Contact contact}) {
-    // TODO: implement updateContact
-    throw UnimplementedError();
+  Future<void> updateContact({required Contact contact}) async {
+    final snapshot = await _firestore
+        .collection('contacts')
+        .where('id', isEqualTo: contact.id)
+        .get();
+    if (snapshot.docs.isNotEmpty) {
+      final docRef = snapshot.docs.first.id;
+
+      await _firestore
+          .collection('contacts')
+          .doc(docRef)
+          .update(contact.toMap());
+    }
   }
 
   Map<String, dynamic> _toFirestore(Contact contact, SetOptions? options) =>
@@ -46,4 +56,13 @@ class CloudDbService implements ICloudDbService {
     DocumentSnapshot<Map<String, dynamic>?> snapshot,
     SnapshotOptions? otions,
   ) => Contact.fromMap(snapshot.data()!);
+
+  Future<void> syncData(List<Contact> contacts) async {
+    for (var contact in contacts) {
+      final contactMap = contact.toMap();
+
+      final docRef = _firestore.collection('contacts').doc(contact.id);
+      await docRef.set(contactMap, SetOptions(merge: true));
+    }
+  }
 }
