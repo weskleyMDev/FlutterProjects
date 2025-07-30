@@ -13,12 +13,12 @@ class CloudDbService implements ICloudDbService {
 
   @override
   Stream<List<Contact>> getAllContacts() {
-    // TODO: implement getAllContacts
-    throw UnimplementedError();
+    final snapshots = _firestore.collection('contacts').withConverter(fromFirestore: _fromFirestore, toFirestore: _toFirestore).orderBy('name').snapshots();
+    return snapshots.map((snapshot) => snapshot.docs.map((doc) => doc.data()).toList());
   }
 
   @override
-  Stream<Contact> getContact({required String id}) {
+  Stream<Map<String, dynamic>> getContact({required String id}) {
     // TODO: implement getContact
     throw UnimplementedError();
   }

@@ -67,7 +67,7 @@ class Contact implements Comparable<Contact> {
 
   factory Contact.fromMap(Map<String, dynamic> map) {
     return Contact(
-      id: map['id'] as String,
+      id: map['id'] ?? '',
       name: map['name'] as String,
       email: map['email'] as String,
       phone: map['phone'] as String,
