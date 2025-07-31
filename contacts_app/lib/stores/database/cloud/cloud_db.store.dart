@@ -18,7 +18,7 @@ abstract class CloudDbStoreBase with Store {
   ObservableStream<List<Contact>> _contactsStream = ObservableStream(
     Stream<List<Contact>>.empty(),
   );
-  
+
   @observable
   ObservableFuture<List<Contact>> _contactsFuture = ObservableFuture.value([]);
 
@@ -26,9 +26,8 @@ abstract class CloudDbStoreBase with Store {
   ObservableList<Contact> _contacts = ObservableList<Contact>();
 
   @computed
-  List<Contact> get contactsFromFirestore =>
-      _contacts;
-  
+  List<Contact> get contactsList => _contacts;
+
   @computed
   FutureStatus get status => _contactsFuture.status;
 
@@ -37,7 +36,7 @@ abstract class CloudDbStoreBase with Store {
     final stream = cloudDbService.getAllContacts();
     _contactsFuture = ObservableFuture(stream.first);
     _contactsStream = ObservableStream(stream);
-    _contactsStream.listen((data){
+    _contactsStream.listen((data) {
       _contacts
         ..clear()
         ..addAll(data);
@@ -53,7 +52,7 @@ abstract class CloudDbStoreBase with Store {
   Future<void> _updateContact(Contact contact) async {
     await cloudDbService.updateContact(contact: contact);
   }
-  
+
   @action
   Future<void> deleteContact({required String id}) async {
     await cloudDbService.deleteContact(id: id);

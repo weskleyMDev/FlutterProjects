@@ -35,7 +35,7 @@ class _ContactFormState extends State<ContactForm> {
       _mailController.text = widget.contact!.email;
       _phoneController.text = widget.contact!.phone;
       if (widget.contact!.imagePath.isNotEmpty) {
-        _image = File(widget.contact!.imagePath);
+        _image = _loadImage(widget.contact!.imagePath);
       }
     }
   }
@@ -46,6 +46,19 @@ class _ContactFormState extends State<ContactForm> {
     _mailController.dispose();
     _phoneController.dispose();
     super.dispose();
+  }
+
+  File? _loadImage(String imagePath) {
+    try {
+      File file = File(imagePath);
+      if (file.existsSync()) {
+        return file;
+      } else {
+        throw Exception('Image file not found');
+      }
+    } catch (e) {
+      return null;
+    }
   }
 
   void _clearForm() {

@@ -9,13 +9,13 @@ part of 'cloud_db.store.dart';
 // ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic, no_leading_underscores_for_local_identifiers
 
 mixin _$CloudDbStore on CloudDbStoreBase, Store {
-  Computed<List<Contact>>? _$contactsFromFirestoreComputed;
+  Computed<List<Contact>>? _$contactsListComputed;
 
   @override
-  List<Contact> get contactsFromFirestore =>
-      (_$contactsFromFirestoreComputed ??= Computed<List<Contact>>(
-        () => super.contactsFromFirestore,
-        name: 'CloudDbStoreBase.contactsFromFirestore',
+  List<Contact> get contactsList =>
+      (_$contactsListComputed ??= Computed<List<Contact>>(
+        () => super.contactsList,
+        name: 'CloudDbStoreBase.contactsList',
       )).value;
   Computed<FutureStatus>? _$statusComputed;
 
@@ -142,7 +142,7 @@ mixin _$CloudDbStore on CloudDbStoreBase, Store {
   @override
   String toString() {
     return '''
-contactsFromFirestore: ${contactsFromFirestore},
+contactsList: ${contactsList},
 status: ${status}
     ''';
   }

@@ -1,12 +1,12 @@
 import 'dart:io';
 
-import 'package:contacts_app/stores/database/cloud/cloud_db.store.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:fluttericon/font_awesome5_icons.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../models/contact.dart';
+import '../../stores/database/local/local_db.store.dart';
 
 class ContactListItem extends StatelessWidget {
   const ContactListItem({
@@ -16,7 +16,7 @@ class ContactListItem extends StatelessWidget {
   });
 
   final Contact contact;
-  final CloudDbStore store;
+  final LocalDbStore store;
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +43,7 @@ class ContactListItem extends StatelessWidget {
             ),
             SlidableAction(
               onPressed: (_) async {
-                await store.deleteContact(id: contact.id);
+                //await store.deleteContact(id: contact.id);
               },
               backgroundColor: Colors.red,
               icon: FontAwesome5.user_times,
@@ -62,7 +62,7 @@ class ContactListItem extends StatelessWidget {
               borderRadius: BorderRadius.circular(14.0),
             ),
             leading: CircleAvatar(
-              backgroundImage: FileImage(File(contact.imagePath)),
+              backgroundImage: _loadImage(contact.imagePath),
               radius: 25.0,
             ),
             title: Text(
@@ -77,5 +77,18 @@ class ContactListItem extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  ImageProvider _loadImage(String imagePath) {
+    try {
+      File file = File(imagePath);
+      if (file.existsSync()) {
+        return FileImage(file);
+      } else {
+        throw Exception('Image file not found');
+      }
+    } catch (e) {
+      return AssetImage('assets/images/profile.png');
+    }
   }
 }

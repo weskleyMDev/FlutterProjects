@@ -1,4 +1,4 @@
-import 'package:contacts_app/stores/database/cloud/cloud_db.store.dart';
+import 'package:contacts_app/stores/database/local/local_db.store.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:fluttericon/font_awesome5_icons.dart';
@@ -16,7 +16,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final cloudStore = GetIt.instance<CloudDbStore>();
+  final cloudStore = GetIt.instance<LocalDbStore>();
 
   @override
   void initState() {
@@ -41,7 +41,7 @@ class _HomePageState extends State<HomePage> {
             case FutureStatus.rejected:
               return const Center(child: Text('Error loading data!'));
             default:
-              final contactList = cloudStore.contactsFromFirestore;
+              final contactList = cloudStore.contactsList;
               return contactList.isEmpty
                   ? const Center(child: SelectableText('None contacts found!'))
                   : Container(

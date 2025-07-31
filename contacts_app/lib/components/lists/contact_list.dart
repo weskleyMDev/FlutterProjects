@@ -1,7 +1,7 @@
+import 'package:contacts_app/stores/database/local/local_db.store.dart';
 import 'package:flutter/material.dart';
 
 import '../../models/contact.dart';
-import '../../stores/database/cloud/cloud_db.store.dart';
 import 'contact_list_item.dart';
 
 class ContactList extends StatelessWidget {
@@ -12,7 +12,7 @@ class ContactList extends StatelessWidget {
   });
 
   final List<Contact> contactList;
-  final CloudDbStore store;
+  final LocalDbStore store;
 
   @override
   Widget build(BuildContext context) {
