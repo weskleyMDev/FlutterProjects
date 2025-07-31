@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:fluttericon/font_awesome5_icons.dart';
+import 'package:get_it/get_it.dart';
+import 'package:uuid/uuid.dart';
 
 import '../components/forms/contact_form.dart';
 import '../models/contact.dart';
+import '../stores/database/cloud/cloud_db.store.dart';
 
 class ContactFormScreen extends StatefulWidget {
   const ContactFormScreen({super.key, this.contact});
@@ -14,6 +16,34 @@ class ContactFormScreen extends StatefulWidget {
 }
 
 class _ContactFormScreenState extends State<ContactFormScreen> {
+  final cloudStore = GetIt.instance<CloudDbStore>();
+
+  Future<void> _submitForm(Map<String, dynamic> formData) async {
+    try {
+      if (widget.contact == null) {
+        final contact = Contact(
+          id: Uuid().v4(),
+          name: formData['name'],
+          email: formData['mail'],
+          phone: formData['phone'],
+          imagePath: formData['image'],
+        );
+        await cloudStore.saveContact(contact.toMap());
+      } else {
+        final contact = Contact(
+          id: widget.contact!.id,
+          name: formData['name'],
+          email: formData['mail'],
+          phone: formData['phone'],
+          imagePath: formData['image'],
+        );
+        await cloudStore.saveContact(contact.toMap());
+      }
+    } catch (e) {
+      throw Exception('Error saving contact: $e');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -24,19 +54,12 @@ class _ContactFormScreenState extends State<ContactFormScreen> {
               : 'Edit ${widget.contact?.name}',
         ),
         actionsPadding: const EdgeInsets.only(right: 8.0),
-        actions: [
-          IconButton(
-            onPressed: () {},
-            icon: const Icon(FontAwesome5.user_check),
-            tooltip: 'Save',
-          ),
-        ],
       ),
       body: SingleChildScrollView(
         child: Center(
           child: SizedBox(
             width: MediaQuery.of(context).size.width * 0.85,
-            child: ContactForm(),
+            child: ContactForm(contact: widget.contact, onSubmit: _submitForm),
           ),
         ),
       ),

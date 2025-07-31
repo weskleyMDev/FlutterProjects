@@ -3,14 +3,16 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:fluttericon/entypo_icons.dart';
 import 'package:fluttericon/font_awesome5_icons.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../models/contact.dart';
 import 'image_formfield.dart';
 
 class ContactForm extends StatefulWidget {
-  const ContactForm({super.key, this.contact});
+  const ContactForm({super.key, this.contact, this.onSubmit});
 
   final Contact? contact;
+  final Future<void> Function(Map<String, dynamic>)? onSubmit;
 
   @override
   State<ContactForm> createState() => _ContactFormState();
@@ -25,6 +27,19 @@ class _ContactFormState extends State<ContactForm> {
   File? _image;
 
   @override
+  void initState() {
+    super.initState();
+    if (widget.contact != null) {
+      _nameController.text = widget.contact!.name;
+      _mailController.text = widget.contact!.email;
+      _phoneController.text = widget.contact!.phone;
+      if (widget.contact!.imagePath.isNotEmpty) {
+        _image = File(widget.contact!.imagePath);
+      }
+    }
+  }
+
+  @override
   void dispose() {
     _nameController.dispose();
     _mailController.dispose();
@@ -36,9 +51,11 @@ class _ContactFormState extends State<ContactForm> {
     _nameController.clear();
     _mailController.clear();
     _phoneController.clear();
-    _image = null;
-    _formKey.currentState?.reset();
-    _formData.clear();
+    setState(() {
+      _image = null;
+      _formKey.currentState?.reset();
+      _formData.clear();
+    });
   }
 
   void _selectImage(File image) => _image = image;
@@ -48,7 +65,10 @@ class _ContactFormState extends State<ContactForm> {
     if (!isValid) return;
     _formKey.currentState?.save();
     _formData['image'] = _image?.path ?? '';
-    print(_formData);
+    if (widget.onSubmit != null) {
+      await widget.onSubmit!(_formData);
+    }
+    _clearForm();
   }
 
   @override
@@ -62,7 +82,10 @@ class _ContactFormState extends State<ContactForm> {
             children: [
               Container(
                 margin: const EdgeInsets.only(top: 20.0),
-                child: ImageFormField(onImageSelected: _selectImage),
+                child: ImageFormField(
+                  onImageSelected: _selectImage,
+                  imagePath: _image,
+                ),
               ),
               Container(
                 margin: const EdgeInsets.only(top: 10.0),
@@ -81,7 +104,7 @@ class _ContactFormState extends State<ContactForm> {
                     }
                     return null;
                   },
-                  onSaved: (name) => _formData['name'] = name?.trim() ?? '',
+                  onSaved: (name) => _formData['name'] = name?.trim(),
                 ),
               ),
               Container(
@@ -101,7 +124,7 @@ class _ContactFormState extends State<ContactForm> {
                     }
                     return null;
                   },
-                  onSaved: (mail) => _formData['mail'] = mail?.trim() ?? '',
+                  onSaved: (mail) => _formData['mail'] = mail?.trim(),
                 ),
               ),
               Container(
@@ -121,7 +144,7 @@ class _ContactFormState extends State<ContactForm> {
                     }
                     return null;
                   },
-                  onSaved: (phone) => _formData['phone'] = phone?.trim() ?? '',
+                  onSaved: (phone) => _formData['phone'] = phone?.trim(),
                 ),
               ),
             ],
@@ -130,8 +153,8 @@ class _ContactFormState extends State<ContactForm> {
           ElevatedButton(
             onPressed: () async {
               await _submitForm();
-              _clearForm();
-              print(_formData);
+              if (!context.mounted) return;
+              context.go('/');
             },
             child: Text('SAVE', overflow: TextOverflow.ellipsis),
           ),

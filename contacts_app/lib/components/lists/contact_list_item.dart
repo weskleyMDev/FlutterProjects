@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:contacts_app/stores/database/cloud/cloud_db.store.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
@@ -36,7 +38,7 @@ class ContactListItem extends StatelessWidget {
               },
               backgroundColor: Colors.blue,
               icon: FontAwesome5.user_edit,
-              label: 'Editar',
+              label: 'Edit',
               padding: EdgeInsets.zero,
             ),
             SlidableAction(
@@ -45,7 +47,7 @@ class ContactListItem extends StatelessWidget {
               },
               backgroundColor: Colors.red,
               icon: FontAwesome5.user_times,
-              label: 'Deletar',
+              label: 'Delete',
               borderRadius: BorderRadius.horizontal(
                 right: Radius.circular(14.0),
               ),
@@ -59,7 +61,10 @@ class ContactListItem extends StatelessWidget {
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(14.0),
             ),
-            leading: CircleAvatar(child: Text(contact.id)),
+            leading: CircleAvatar(
+              backgroundImage: FileImage(File(contact.imagePath)),
+              radius: 25.0,
+            ),
             title: Text(
               contact.name.toUpperCase(),
               style: TextStyle(fontWeight: FontWeight.bold),

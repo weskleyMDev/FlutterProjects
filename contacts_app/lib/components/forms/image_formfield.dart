@@ -8,9 +8,14 @@ import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
 
 class ImageFormField extends StatefulWidget {
-  const ImageFormField({super.key, required this.onImageSelected});
+  const ImageFormField({
+    super.key,
+    required this.onImageSelected,
+    this.imagePath,
+  });
 
   final void Function(File) onImageSelected;
+  final File? imagePath;
 
   @override
   State<ImageFormField> createState() => _ImageFormFieldState();
@@ -18,6 +23,14 @@ class ImageFormField extends StatefulWidget {
 
 class _ImageFormFieldState extends State<ImageFormField> {
   File? _image;
+
+  @override
+  initState() {
+    super.initState();
+    if (widget.imagePath != null) {
+      _image = widget.imagePath;
+    }
+  }
 
   Future<void> _takePicture() async {
     if (Platform.isAndroid) {

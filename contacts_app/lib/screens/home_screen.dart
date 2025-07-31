@@ -32,20 +32,18 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Meus Contatos')),
+      appBar: AppBar(title: Text('My Contacts')),
       body: Observer(
         builder: (_) {
           switch (cloudStore.status) {
             case FutureStatus.pending:
               return const Center(child: CircularProgressIndicator());
             case FutureStatus.rejected:
-              return const Center(child: Text('Erro ao carregar contatos'));
+              return const Center(child: Text('Error loading data!'));
             default:
               final contactList = cloudStore.contactsFromFirestore;
               return contactList.isEmpty
-                  ? const Center(
-                      child: SelectableText('Nenhum contato encontrado!'),
-                    )
+                  ? const Center(child: SelectableText('None contacts found!'))
                   : Container(
                       margin: const EdgeInsets.symmetric(
                         vertical: 5.0,
@@ -63,7 +61,7 @@ class _HomePageState extends State<HomePage> {
         onPressed: () {
           context.pushNamed('new-contact');
         },
-        tooltip: 'Adicionar Contato',
+        tooltip: 'Add Contact',
         child: const Icon(FontAwesome5.user_plus),
       ),
     );
