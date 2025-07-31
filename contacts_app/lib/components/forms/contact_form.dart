@@ -25,6 +25,7 @@ class _ContactFormState extends State<ContactForm> {
   final _phoneController = TextEditingController();
   final Map<String, dynamic> _formData = {};
   File? _image;
+  bool _isEditing = false;
 
   @override
   void initState() {
@@ -60,6 +61,38 @@ class _ContactFormState extends State<ContactForm> {
 
   void _selectImage(File image) => _image = image;
 
+  Future<bool?> _showBackDialog() {
+    return showDialog<bool>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Are you sure?'),
+          content: const Text('Changes will not be saved.'),
+          actions: <Widget>[
+            TextButton(
+              style: TextButton.styleFrom(
+                textStyle: Theme.of(context).textTheme.labelLarge,
+              ),
+              child: const Text('Nevermind'),
+              onPressed: () {
+                context.pop(false);
+              },
+            ),
+            TextButton(
+              style: TextButton.styleFrom(
+                textStyle: Theme.of(context).textTheme.labelLarge,
+              ),
+              child: const Text('Leave'),
+              onPressed: () {
+                context.pop(true);
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   Future<void> _submitForm() async {
     final isValid = _formKey.currentState?.validate() ?? false;
     if (!isValid) return;
@@ -71,94 +104,138 @@ class _ContactFormState extends State<ContactForm> {
     _clearForm();
   }
 
+  bool get emptyFields =>
+      _nameController.text.isEmpty &&
+      _mailController.text.isEmpty &&
+      _phoneController.text.isEmpty;
+
   @override
   Widget build(BuildContext context) {
-    return Form(
-      key: _formKey,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Column(
-            children: [
-              Container(
-                margin: const EdgeInsets.only(top: 20.0),
-                child: ImageFormField(
-                  onImageSelected: _selectImage,
-                  imagePath: _image,
-                ),
-              ),
-              Container(
-                margin: const EdgeInsets.only(top: 10.0),
-                child: TextFormField(
-                  key: const ValueKey('name'),
-                  controller: _nameController,
-                  decoration: const InputDecoration(
-                    label: Text('Name', overflow: TextOverflow.ellipsis),
-                    border: OutlineInputBorder(),
-                    prefixIcon: Icon(FontAwesome5.user),
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, result) async {
+        if (didPop) {
+          return;
+        }
+        if (_isEditing) {
+          final shouldLeave = await _showBackDialog() ?? false;
+          if (context.mounted && shouldLeave) {
+            context.pop();
+          }
+        } else {
+          context.pop();
+        }
+      },
+      child: Form(
+        key: _formKey,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Column(
+              children: [
+                Container(
+                  margin: const EdgeInsets.only(top: 20.0),
+                  child: ImageFormField(
+                    onImageSelected: _selectImage,
+                    imagePath: _image,
                   ),
-                  keyboardType: TextInputType.name,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter a valid name';
-                    }
-                    return null;
-                  },
-                  onSaved: (name) => _formData['name'] = name?.trim(),
                 ),
-              ),
-              Container(
-                margin: const EdgeInsets.only(top: 10.0),
-                child: TextFormField(
-                  key: const ValueKey('mail'),
-                  controller: _mailController,
-                  decoration: const InputDecoration(
-                    label: Text('Mail', overflow: TextOverflow.ellipsis),
-                    border: OutlineInputBorder(),
-                    prefixIcon: Icon(FontAwesome5.envelope),
+                Container(
+                  margin: const EdgeInsets.only(top: 10.0),
+                  child: TextFormField(
+                    key: const ValueKey('name'),
+                    controller: _nameController,
+                    decoration: const InputDecoration(
+                      label: Text('Name', overflow: TextOverflow.ellipsis),
+                      border: OutlineInputBorder(),
+                      prefixIcon: Icon(FontAwesome5.user),
+                    ),
+                    keyboardType: TextInputType.name,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter a valid name';
+                      }
+                      return null;
+                    },
+                    onSaved: (name) => _formData['name'] = name?.trim(),
+                    onChanged: (name) {
+                      if (widget.contact?.name == name || emptyFields) {
+                        setState(() => _isEditing = false);
+                      } else {
+                        setState(() => _isEditing = true);
+                      }
+                    },
                   ),
-                  keyboardType: TextInputType.emailAddress,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter a valid email';
-                    }
-                    return null;
-                  },
-                  onSaved: (mail) => _formData['mail'] = mail?.trim(),
                 ),
-              ),
-              Container(
-                margin: const EdgeInsets.only(top: 10.0),
-                child: TextFormField(
-                  key: const ValueKey('phone'),
-                  controller: _phoneController,
-                  decoration: const InputDecoration(
-                    label: Text('Phone', overflow: TextOverflow.ellipsis),
-                    border: OutlineInputBorder(),
-                    prefixIcon: Icon(Entypo.mobile),
+                Container(
+                  margin: const EdgeInsets.only(top: 10.0),
+                  child: TextFormField(
+                    key: const ValueKey('mail'),
+                    controller: _mailController,
+                    decoration: const InputDecoration(
+                      label: Text('Mail', overflow: TextOverflow.ellipsis),
+                      border: OutlineInputBorder(),
+                      prefixIcon: Icon(FontAwesome5.envelope),
+                    ),
+                    keyboardType: TextInputType.emailAddress,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter a valid email';
+                      }
+                      return null;
+                    },
+                    onSaved: (mail) => _formData['mail'] = mail?.trim(),
+                    onChanged: (mail) {
+                      final newMail = mail.trim();
+                      if (newMail == widget.contact?.email || emptyFields) {
+                        setState(() => _isEditing = false);
+                      } else {
+                        setState(() => _isEditing = true);
+                      }
+                    },
                   ),
-                  keyboardType: TextInputType.phone,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter a valid phone number';
-                    }
-                    return null;
-                  },
-                  onSaved: (phone) => _formData['phone'] = phone?.trim(),
                 ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 40.0),
-          ElevatedButton(
-            onPressed: () async {
-              await _submitForm();
-              if (!context.mounted) return;
-              context.go('/');
-            },
-            child: Text('SAVE', overflow: TextOverflow.ellipsis),
-          ),
-        ],
+                Container(
+                  margin: const EdgeInsets.only(top: 10.0),
+                  child: TextFormField(
+                    key: const ValueKey('phone'),
+                    controller: _phoneController,
+                    decoration: const InputDecoration(
+                      label: Text('Phone', overflow: TextOverflow.ellipsis),
+                      border: OutlineInputBorder(),
+                      prefixIcon: Icon(Entypo.mobile),
+                    ),
+                    keyboardType: TextInputType.phone,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter a valid phone number';
+                      }
+                      return null;
+                    },
+                    onSaved: (phone) => _formData['phone'] = phone?.trim(),
+                    onChanged: (phone) {
+                      final newPhone = phone.trim();
+                      if (newPhone == widget.contact?.phone || emptyFields) {
+                        setState(() => _isEditing = false);
+                      } else {
+                        setState(() => _isEditing = true);
+                      }
+                    },
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 40.0),
+            ElevatedButton(
+              onPressed: () async {
+                await _submitForm();
+                if (!context.mounted) return;
+                context.go('/');
+              },
+              child: Text('SAVE', overflow: TextOverflow.ellipsis),
+            ),
+          ],
+        ),
       ),
     );
   }
