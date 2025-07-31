@@ -6,15 +6,27 @@ class CloudDbService implements ICloudDbService {
   static final _firestore = FirebaseFirestore.instance;
 
   @override
-  Future<void> deleteContact({required String id}) {
-    // TODO: implement deleteContact
-    throw UnimplementedError();
+  Future<void> deleteContact({required String id}) async {
+    final snapshot = await _firestore
+        .collection('contacts')
+        .where('id', isEqualTo: id)
+        .get();
+    if (snapshot.docs.isNotEmpty) {
+      final docRef = snapshot.docs.first.id;
+      await _firestore.collection('contacts').doc(docRef).delete();
+    }
   }
 
   @override
   Stream<List<Contact>> getAllContacts() {
-    final snapshots = _firestore.collection('contacts').withConverter(fromFirestore: _fromFirestore, toFirestore: _toFirestore).orderBy('name').snapshots();
-    return snapshots.map((snapshot) => snapshot.docs.map((doc) => doc.data()).toList());
+    final snapshots = _firestore
+        .collection('contacts')
+        .withConverter(fromFirestore: _fromFirestore, toFirestore: _toFirestore)
+        .orderBy('name')
+        .snapshots();
+    return snapshots.map(
+      (snapshot) => snapshot.docs.map((doc) => doc.data()).toList(),
+    );
   }
 
   @override

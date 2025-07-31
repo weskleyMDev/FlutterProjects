@@ -9,34 +9,21 @@ part of 'cloud_db.store.dart';
 // ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic, no_leading_underscores_for_local_identifiers
 
 mixin _$CloudDbStore on CloudDbStoreBase, Store {
-  Computed<ObservableStream<List<Contact>>>? _$contactsFromFirestoreComputed;
+  Computed<List<Contact>>? _$contactsFromFirestoreComputed;
 
   @override
-  ObservableStream<List<Contact>> get contactsFromFirestore =>
-      (_$contactsFromFirestoreComputed ??=
-              Computed<ObservableStream<List<Contact>>>(
-                () => super.contactsFromFirestore,
-                name: 'CloudDbStoreBase.contactsFromFirestore',
-              ))
-          .value;
-
-  late final _$_contactsFutureAtom = Atom(
-    name: 'CloudDbStoreBase._contactsFuture',
-    context: context,
-  );
+  List<Contact> get contactsFromFirestore =>
+      (_$contactsFromFirestoreComputed ??= Computed<List<Contact>>(
+        () => super.contactsFromFirestore,
+        name: 'CloudDbStoreBase.contactsFromFirestore',
+      )).value;
+  Computed<FutureStatus>? _$statusComputed;
 
   @override
-  ObservableFuture<List<Contact>> get _contactsFuture {
-    _$_contactsFutureAtom.reportRead();
-    return super._contactsFuture;
-  }
-
-  @override
-  set _contactsFuture(ObservableFuture<List<Contact>> value) {
-    _$_contactsFutureAtom.reportWrite(value, super._contactsFuture, () {
-      super._contactsFuture = value;
-    });
-  }
+  FutureStatus get status => (_$statusComputed ??= Computed<FutureStatus>(
+    () => super.status,
+    name: 'CloudDbStoreBase.status',
+  )).value;
 
   late final _$_contactsStreamAtom = Atom(
     name: 'CloudDbStoreBase._contactsStream',
@@ -53,6 +40,24 @@ mixin _$CloudDbStore on CloudDbStoreBase, Store {
   set _contactsStream(ObservableStream<List<Contact>> value) {
     _$_contactsStreamAtom.reportWrite(value, super._contactsStream, () {
       super._contactsStream = value;
+    });
+  }
+
+  late final _$_contactsFutureAtom = Atom(
+    name: 'CloudDbStoreBase._contactsFuture',
+    context: context,
+  );
+
+  @override
+  ObservableFuture<List<Contact>> get _contactsFuture {
+    _$_contactsFutureAtom.reportRead();
+    return super._contactsFuture;
+  }
+
+  @override
+  set _contactsFuture(ObservableFuture<List<Contact>> value) {
+    _$_contactsFutureAtom.reportWrite(value, super._contactsFuture, () {
+      super._contactsFuture = value;
     });
   }
 
@@ -104,6 +109,16 @@ mixin _$CloudDbStore on CloudDbStoreBase, Store {
     return _$_updateContactAsyncAction.run(() => super._updateContact(contact));
   }
 
+  late final _$deleteContactAsyncAction = AsyncAction(
+    'CloudDbStoreBase.deleteContact',
+    context: context,
+  );
+
+  @override
+  Future<void> deleteContact({required String id}) {
+    return _$deleteContactAsyncAction.run(() => super.deleteContact(id: id));
+  }
+
   late final _$saveContactAsyncAction = AsyncAction(
     'CloudDbStoreBase.saveContact',
     context: context,
@@ -127,7 +142,8 @@ mixin _$CloudDbStore on CloudDbStoreBase, Store {
   @override
   String toString() {
     return '''
-contactsFromFirestore: ${contactsFromFirestore}
+contactsFromFirestore: ${contactsFromFirestore},
+status: ${status}
     ''';
   }
 }

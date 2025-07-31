@@ -1,7 +1,12 @@
 import 'package:contacts_app/stores/database/cloud/cloud_db.store.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:fluttericon/font_awesome5_icons.dart';
 import 'package:get_it/get_it.dart';
+import 'package:go_router/go_router.dart';
+import 'package:mobx/mobx.dart';
+
+import '../components/lists/contact_list.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -27,39 +32,39 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Home Page'),
-      ),
+      appBar: AppBar(title: Text('Meus Contatos')),
       body: Observer(
         builder: (_) {
-          final contactList = cloudStore.contactsFromFirestore.value ?? [];
-          return contactList.isEmpty
-                  ? const Center(child: SelectableText('Nenhum contato encontrado!'))
-                  : ListView.builder(
-                itemCount: contactList.length,
-                itemBuilder: (context, index) {
-                  final contact = contactList[index];
-                  return ListTile(
-                    leading: CircleAvatar(
-                      child: Text(contact.id),
-                    ),
-                    title: Text(contact.name.toUpperCase(), style: TextStyle(fontWeight: FontWeight.bold),),
-                    subtitle: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(contact.email),
-                        Text(contact.phone),
-                      ],
-                    ),
-                  );
-                },
-              );
+          switch (cloudStore.status) {
+            case FutureStatus.pending:
+              return const Center(child: CircularProgressIndicator());
+            case FutureStatus.rejected:
+              return const Center(child: Text('Erro ao carregar contatos'));
+            default:
+              final contactList = cloudStore.contactsFromFirestore;
+              return contactList.isEmpty
+                  ? const Center(
+                      child: SelectableText('Nenhum contato encontrado!'),
+                    )
+                  : Container(
+                      margin: const EdgeInsets.symmetric(
+                        vertical: 5.0,
+                        horizontal: 10.0,
+                      ),
+                      child: ContactList(
+                        contactList: contactList,
+                        store: cloudStore,
+                      ),
+                    );
+          }
         },
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
+          context.pushNamed('new-contact');
         },
-        child: const Icon(Icons.add),
+        tooltip: 'Adicionar Contato',
+        child: const Icon(FontAwesome5.user_plus),
       ),
     );
   }
