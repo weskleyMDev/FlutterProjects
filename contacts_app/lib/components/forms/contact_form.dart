@@ -77,6 +77,7 @@ class _ContactFormState extends State<ContactForm> {
   Future<bool?> _showBackDialog() {
     return showDialog<bool>(
       context: context,
+      barrierDismissible: false,
       builder: (BuildContext context) {
         return AlertDialog(
           title: const Text('Are you sure?'),
@@ -115,6 +116,8 @@ class _ContactFormState extends State<ContactForm> {
       await widget.onSubmit!(_formData);
     }
     _clearForm();
+    if (!mounted) return;
+    context.go('/');
   }
 
   bool get emptyFields =>
@@ -172,7 +175,7 @@ class _ContactFormState extends State<ContactForm> {
                     },
                     onSaved: (name) => _formData['name'] = name?.trim(),
                     onChanged: (name) {
-                      if (widget.contact?.name == name || emptyFields) {
+                      if (widget.contact?.name == name) {
                         setState(() => _isEditing = false);
                       } else {
                         setState(() => _isEditing = true);
@@ -200,7 +203,7 @@ class _ContactFormState extends State<ContactForm> {
                     onSaved: (mail) => _formData['mail'] = mail?.trim(),
                     onChanged: (mail) {
                       final newMail = mail.trim();
-                      if (newMail == widget.contact?.email || emptyFields) {
+                      if (newMail == widget.contact?.email) {
                         setState(() => _isEditing = false);
                       } else {
                         setState(() => _isEditing = true);
@@ -228,7 +231,7 @@ class _ContactFormState extends State<ContactForm> {
                     onSaved: (phone) => _formData['phone'] = phone?.trim(),
                     onChanged: (phone) {
                       final newPhone = phone.trim();
-                      if (newPhone == widget.contact?.phone || emptyFields) {
+                      if (newPhone == widget.contact?.phone) {
                         setState(() => _isEditing = false);
                       } else {
                         setState(() => _isEditing = true);
@@ -242,8 +245,6 @@ class _ContactFormState extends State<ContactForm> {
             ElevatedButton(
               onPressed: () async {
                 await _submitForm();
-                if (!context.mounted) return;
-                context.go('/');
               },
               child: Text('SAVE', overflow: TextOverflow.ellipsis),
             ),

@@ -1,12 +1,13 @@
 import 'dart:io';
 
+import 'package:contacts_app/stores/database/cloud/cloud_db.store.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:fluttericon/font_awesome5_icons.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../models/contact.dart';
-import '../../stores/database/local/local_db.store.dart';
+import '../bottom_menu.dart';
 
 class ContactListItem extends StatelessWidget {
   const ContactListItem({
@@ -16,7 +17,7 @@ class ContactListItem extends StatelessWidget {
   });
 
   final Contact contact;
-  final LocalDbStore store;
+  final CloudDbStore store;
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +44,7 @@ class ContactListItem extends StatelessWidget {
             ),
             SlidableAction(
               onPressed: (_) async {
-                //await store.deleteContact(id: contact.id);
+                await store.deleteContact(id: contact.id);
               },
               backgroundColor: Colors.red,
               icon: FontAwesome5.user_times,
@@ -73,6 +74,14 @@ class ContactListItem extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [Text(contact.email), Text(contact.phone)],
             ),
+            onTap: () {
+              showModalBottomSheet(
+                context: context,
+                builder: (_) {
+                  return BottomMenu(contact: contact);
+                },
+              );
+            },
           ),
         ),
       ),

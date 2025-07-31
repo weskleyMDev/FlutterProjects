@@ -1,4 +1,4 @@
-import 'package:contacts_app/stores/database/local/local_db.store.dart';
+import 'package:contacts_app/stores/database/cloud/cloud_db.store.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:uuid/uuid.dart';
@@ -16,7 +16,7 @@ class ContactFormScreen extends StatefulWidget {
 }
 
 class _ContactFormScreenState extends State<ContactFormScreen> {
-  final cloudStore = GetIt.instance<LocalDbStore>();
+  final cloudStore = GetIt.instance<CloudDbStore>();
 
   Future<void> _submitForm(Map<String, dynamic> formData) async {
     try {

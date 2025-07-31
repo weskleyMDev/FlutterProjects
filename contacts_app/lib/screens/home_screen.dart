@@ -1,4 +1,3 @@
-import 'package:contacts_app/stores/database/local/local_db.store.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:fluttericon/font_awesome5_icons.dart';
@@ -7,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:mobx/mobx.dart';
 
 import '../components/lists/contact_list.dart';
+import '../stores/database/cloud/cloud_db.store.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -16,7 +16,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final cloudStore = GetIt.instance<LocalDbStore>();
+  final cloudStore = GetIt.instance<CloudDbStore>();
 
   @override
   void initState() {

@@ -9,10 +9,7 @@ part 'local_db.store.g.dart';
 class LocalDbStore = LocalDbStoreBase with _$LocalDbStore;
 
 abstract class LocalDbStoreBase with Store {
-  LocalDbStoreBase({
-    required this.localDbService,
-    required this.backupService,
-  });
+  LocalDbStoreBase({required this.localDbService, required this.backupService});
 
   final ILocalDbService localDbService;
   final IBackupService backupService;
@@ -30,13 +27,12 @@ abstract class LocalDbStoreBase with Store {
   FutureStatus get status => _contactsFuture.status;
 
   @action
-  Future<List<Contact>> _fetchContacts() async {
+  Future<void> _fetchContacts() async {
     _contactsFuture = ObservableFuture(localDbService.getAllContacts());
     final data = await _contactsFuture;
     _contacts
       ..clear()
       ..addAll(data);
-    return _contacts;
   }
 
   @action
@@ -58,17 +54,17 @@ abstract class LocalDbStoreBase with Store {
     final Contact newContact = Contact.fromMap(data);
     final sortedContacts = List<Contact>.from(_contacts);
     sortedContacts.sort((a, b) => a.id.compareTo(b.id));
-      final index = myBinarySearch(
-        sortedContacts,
-        newContact,
-        (a, b) => a.id.compareTo(b.id),
-      );
-      if (index >= 0) {
-        _contacts[index] = newContact;
-        await _updateContact(newContact);
-      } else {
-        _contacts.add(newContact);
-        await _addContact(newContact);
+    final index = myBinarySearch(
+      sortedContacts,
+      newContact,
+      (a, b) => a.id.compareTo(b.id),
+    );
+    if (index >= 0) {
+      _contacts[index] = newContact;
+      await _updateContact(newContact);
+    } else {
+      _contacts.add(newContact);
+      await _addContact(newContact);
     }
   }
 
