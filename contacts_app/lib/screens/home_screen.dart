@@ -1,3 +1,4 @@
+import 'package:contacts_app/stores/database/cloud/cloud_db.store.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:fluttericon/font_awesome5_icons.dart';
@@ -6,7 +7,6 @@ import 'package:go_router/go_router.dart';
 import 'package:mobx/mobx.dart';
 
 import '../components/lists/contact_list.dart';
-import '../stores/database/cloud/cloud_db.store.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -32,7 +32,24 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('My Contacts')),
+      appBar: AppBar(
+        title: Text('My Contacts'),
+        actionsPadding: const EdgeInsets.only(right: 8.0),
+        actions: [
+          Observer(
+            builder: (_) {
+              return IconButton(
+                onPressed: cloudStore.sortContacts,
+                icon: Icon(
+                  cloudStore.isSorted
+                      ? FontAwesome5.sort_alpha_down
+                      : FontAwesome5.sort_alpha_down_alt,
+                ),
+              );
+            },
+          ),
+        ],
+      ),
       body: Observer(
         builder: (_) {
           switch (cloudStore.status) {

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:contacts_app/models/contact.dart';
 import 'package:contacts_app/services/backups/ibackup_service.dart';
 import 'package:contacts_app/services/databases/local/ilocal_db_service.dart';
@@ -30,9 +32,7 @@ abstract class LocalDbStoreBase with Store {
   Future<void> _fetchContacts() async {
     _contactsFuture = ObservableFuture(localDbService.getAllContacts());
     final data = await _contactsFuture;
-    _contacts
-      ..clear()
-      ..addAll(data);
+    _contacts = ObservableList<Contact>.of(data);
   }
 
   @action
@@ -60,12 +60,13 @@ abstract class LocalDbStoreBase with Store {
       (a, b) => a.id.compareTo(b.id),
     );
     if (index >= 0) {
-      _contacts[index] = newContact;
+      _contacts.replaceRange(index, index + 1, [newContact]);
       await _updateContact(newContact);
     } else {
       _contacts.add(newContact);
       await _addContact(newContact);
     }
+    await _fetchContacts();
   }
 
   @action

@@ -25,6 +25,9 @@ abstract class CloudDbStoreBase with Store {
   @observable
   ObservableList<Contact> _contacts = ObservableList<Contact>();
 
+  @observable
+  bool isSorted = false;
+
   @computed
   List<Contact> get contactsList => _contacts;
 
@@ -37,25 +40,26 @@ abstract class CloudDbStoreBase with Store {
     _contactsFuture = ObservableFuture(stream.first);
     _contactsStream = ObservableStream(stream);
     _contactsStream.listen((data) {
-      _contacts
-        ..clear()
-        ..addAll(data);
+      _contacts = ObservableList<Contact>.of(data);
     });
   }
 
   @action
   Future<void> _addContact(Contact contact) async {
     await cloudDbService.saveContact(contact: contact);
+    isSorted = false;
   }
 
   @action
   Future<void> _updateContact(Contact contact) async {
     await cloudDbService.updateContact(contact: contact);
+    isSorted = false;
   }
 
   @action
   Future<void> deleteContact({required String id}) async {
     await cloudDbService.deleteContact(id: id);
+    isSorted = false;
   }
 
   @action
@@ -74,6 +78,17 @@ abstract class CloudDbStoreBase with Store {
     } else {
       _contacts.add(newContact);
       await _addContact(newContact);
+    }
+  }
+
+  @action
+  void sortContacts() {
+    if (isSorted) {
+      _contacts.sort((a, b) => a.name.toLowerCase().compareTo(b.name));
+      isSorted = false;
+    } else {
+      _contacts.sort((a, b) => b.name.toLowerCase().compareTo(a.name));
+      isSorted = true;
     }
   }
 

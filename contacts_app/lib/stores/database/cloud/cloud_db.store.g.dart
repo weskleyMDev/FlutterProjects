@@ -79,6 +79,24 @@ mixin _$CloudDbStore on CloudDbStoreBase, Store {
     });
   }
 
+  late final _$isSortedAtom = Atom(
+    name: 'CloudDbStoreBase.isSorted',
+    context: context,
+  );
+
+  @override
+  bool get isSorted {
+    _$isSortedAtom.reportRead();
+    return super.isSorted;
+  }
+
+  @override
+  set isSorted(bool value) {
+    _$isSortedAtom.reportWrite(value, super.isSorted, () {
+      super.isSorted = value;
+    });
+  }
+
   late final _$_fetchContactsAsyncAction = AsyncAction(
     'CloudDbStoreBase._fetchContacts',
     context: context,
@@ -139,9 +157,27 @@ mixin _$CloudDbStore on CloudDbStoreBase, Store {
     return _$initAsyncAction.run(() => super.init());
   }
 
+  late final _$CloudDbStoreBaseActionController = ActionController(
+    name: 'CloudDbStoreBase',
+    context: context,
+  );
+
+  @override
+  void sortContacts() {
+    final _$actionInfo = _$CloudDbStoreBaseActionController.startAction(
+      name: 'CloudDbStoreBase.sortContacts',
+    );
+    try {
+      return super.sortContacts();
+    } finally {
+      _$CloudDbStoreBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
   @override
   String toString() {
     return '''
+isSorted: ${isSorted},
 contactsList: ${contactsList},
 status: ${status}
     ''';
