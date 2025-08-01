@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "127079901950",
+    "firebase_url": "https://chat-v2-3115d-default-rtdb.firebaseio.com",
+    "project_id": "chat-v2-3115d",
+    "storage_bucket": "chat-v2-3115d.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:127079901950:android:7e47799ec01967cd2153af",
+        "android_client_info": {
+          "package_name": "br.com.weskleym.chatv2.chat_v2"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "127079901950-qt4vjp2dpeh51hdoajlelbk9ejetel19.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDZiJwx0SseDr3EwNLGIXVA_Nytlom0fs8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "127079901950-qt4vjp2dpeh51hdoajlelbk9ejetel19.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
