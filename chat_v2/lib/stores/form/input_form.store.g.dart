@@ -9,13 +9,14 @@ part of 'input_form.store.dart';
 // ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic, no_leading_underscores_for_local_identifiers
 
 mixin _$InputFormStore on InputFormStoreBase, Store {
-  Computed<String>? _$textComputed;
+  Computed<Map<String, dynamic>>? _$formDataComputed;
 
   @override
-  String get text => (_$textComputed ??= Computed<String>(
-    () => super.text,
-    name: 'InputFormStoreBase.text',
-  )).value;
+  Map<String, dynamic> get formData =>
+      (_$formDataComputed ??= Computed<Map<String, dynamic>>(
+        () => super.formData,
+        name: 'InputFormStoreBase.formData',
+      )).value;
   Computed<bool>? _$isWritingComputed;
 
   @override
@@ -23,20 +24,21 @@ mixin _$InputFormStore on InputFormStoreBase, Store {
     () => super.isWriting,
     name: 'InputFormStoreBase.isWriting',
   )).value;
-  Computed<FutureStatus>? _$statusComputed;
+  Computed<File?>? _$fileComputed;
 
   @override
-  FutureStatus get status => (_$statusComputed ??= Computed<FutureStatus>(
-    () => super.status,
-    name: 'InputFormStoreBase.status',
+  File? get file => (_$fileComputed ??= Computed<File?>(
+    () => super.file,
+    name: 'InputFormStoreBase.file',
   )).value;
-  Computed<List<Message>>? _$messagesComputed;
+  Computed<Stream<List<Message>>>? _$messagesComputed;
 
   @override
-  List<Message> get messages => (_$messagesComputed ??= Computed<List<Message>>(
-    () => super.messages,
-    name: 'InputFormStoreBase.messages',
-  )).value;
+  Stream<List<Message>> get messages =>
+      (_$messagesComputed ??= Computed<Stream<List<Message>>>(
+        () => super.messages,
+        name: 'InputFormStoreBase.messages',
+      )).value;
 
   late final _$_isWritingAtom = Atom(
     name: 'InputFormStoreBase._isWriting',
@@ -56,39 +58,39 @@ mixin _$InputFormStore on InputFormStoreBase, Store {
     });
   }
 
-  late final _$_textAtom = Atom(
-    name: 'InputFormStoreBase._text',
+  late final _$_formDataAtom = Atom(
+    name: 'InputFormStoreBase._formData',
     context: context,
   );
 
   @override
-  String get _text {
-    _$_textAtom.reportRead();
-    return super._text;
+  ObservableMap<String, dynamic> get _formData {
+    _$_formDataAtom.reportRead();
+    return super._formData;
   }
 
   @override
-  set _text(String value) {
-    _$_textAtom.reportWrite(value, super._text, () {
-      super._text = value;
+  set _formData(ObservableMap<String, dynamic> value) {
+    _$_formDataAtom.reportWrite(value, super._formData, () {
+      super._formData = value;
     });
   }
 
-  late final _$_futureMessagesAtom = Atom(
-    name: 'InputFormStoreBase._futureMessages',
+  late final _$_fileAtom = Atom(
+    name: 'InputFormStoreBase._file',
     context: context,
   );
 
   @override
-  ObservableFuture<List<Message>> get _futureMessages {
-    _$_futureMessagesAtom.reportRead();
-    return super._futureMessages;
+  File? get _file {
+    _$_fileAtom.reportRead();
+    return super._file;
   }
 
   @override
-  set _futureMessages(ObservableFuture<List<Message>> value) {
-    _$_futureMessagesAtom.reportWrite(value, super._futureMessages, () {
-      super._futureMessages = value;
+  set _file(File? value) {
+    _$_fileAtom.reportWrite(value, super._file, () {
+      super._file = value;
     });
   }
 
@@ -98,13 +100,13 @@ mixin _$InputFormStore on InputFormStoreBase, Store {
   );
 
   @override
-  ObservableList<Message> get _messages {
+  ObservableStream<List<Message>> get _messages {
     _$_messagesAtom.reportRead();
     return super._messages;
   }
 
   @override
-  set _messages(ObservableList<Message> value) {
+  set _messages(ObservableStream<List<Message>> value) {
     _$_messagesAtom.reportWrite(value, super._messages, () {
       super._messages = value;
     });
@@ -160,9 +162,9 @@ mixin _$InputFormStore on InputFormStoreBase, Store {
   @override
   String toString() {
     return '''
-text: ${text},
+formData: ${formData},
 isWriting: ${isWriting},
-status: ${status},
+file: ${file},
 messages: ${messages}
     ''';
   }

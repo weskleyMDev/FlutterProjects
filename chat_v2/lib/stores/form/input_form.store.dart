@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:chat_v2/models/message.dart';
 import 'package:chat_v2/services/database/idatabase_service.dart';
 import 'package:mobx/mobx.dart';
@@ -15,41 +17,43 @@ abstract class InputFormStoreBase with Store {
   bool _isWriting = false;
 
   @observable
-  String _text = '';
+  ObservableMap<String, dynamic> _formData = ObservableMap<String, dynamic>();
 
   @observable
-  ObservableFuture<List<Message>> _futureMessages = ObservableFuture.value([]);
+  File? _file;
 
   @observable
-  ObservableList<Message> _messages = ObservableList<Message>();
+  ObservableStream<List<Message>> _messages = ObservableStream<List<Message>>(
+    Stream.empty(),
+  );
 
   @computed
-  String get text => _text;
+  Map<String, dynamic> get formData => _formData;
 
   @computed
   bool get isWriting => _isWriting;
 
   @computed
-  FutureStatus get status => _futureMessages.status;
+  File? get file => _file;
 
   @computed
-  List<Message> get messages => _messages;
+  Stream<List<Message>> get messages => _messages;
 
   set isWriting(bool value) => _isWriting = value;
-  set text(String value) => _text = value;
+  set formData(Map<String, dynamic> value) => _formData = value.asObservable();
+  set file(File? value) => _file = value;
 
   @action
   Future<void> fetchMessages() async {
-    _futureMessages = ObservableFuture(databaseService.messages.first);
-    final stream = databaseService.messages;
-    stream.listen((data) => _messages = ObservableList.of(data));
+    _messages = ObservableStream(databaseService.messages);
   }
 
   @action
   Future<void> sendMessage() async {
     final message = Message(
       id: Uuid().v4(),
-      text: text,
+      text: formData['text'],
+      imageUrl: formData['imageUrl'],
       createAt: DateTime.now(),
     );
     await databaseService.sendMessage(message);
@@ -59,7 +63,7 @@ abstract class InputFormStoreBase with Store {
   @action
   void clearForm() {
     _isWriting = false;
-    _text = '';
+    _formData.clear();
   }
 
   @action

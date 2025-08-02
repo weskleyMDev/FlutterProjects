@@ -1,44 +1,72 @@
+import 'dart:convert';
+
 class Message {
   final String id;
   final String text;
+  final String? imageUrl;
   final DateTime createAt;
 
-  const Message({required this.id, required this.text, required this.createAt});
+  Message({
+    required this.id,
+    required this.text,
+    this.imageUrl,
+    required this.createAt,
+  });
 
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      (other is Message &&
-          runtimeType == other.runtimeType &&
-          id == other.id &&
-          text == other.text &&
-          createAt == other.createAt);
-
-  @override
-  int get hashCode => id.hashCode ^ text.hashCode ^ createAt.hashCode;
-
-  @override
-  String toString() {
-    return 'Message{id: $id, text: $text, createAt: $createAt}';
-  }
-
-  Message copyWith({String? id, String? text, DateTime? createAt}) {
+  Message copyWith({
+    String? id,
+    String? text,
+    String? imageUrl,
+    DateTime? createAt,
+  }) {
     return Message(
       id: id ?? this.id,
       text: text ?? this.text,
+      imageUrl: imageUrl ?? this.imageUrl,
       createAt: createAt ?? this.createAt,
     );
   }
 
   Map<String, dynamic> toMap() {
-    return {'id': id, 'text': text, 'createAt': createAt.toIso8601String()};
+    return <String, dynamic>{
+      'id': id,
+      'text': text,
+      'imageUrl': imageUrl,
+      'createAt': createAt.toIso8601String(),
+    };
   }
 
   factory Message.fromMap(Map<String, dynamic> map) {
     return Message(
       id: map['id'] as String,
       text: map['text'] as String,
+      imageUrl: map['imageUrl'] != null ? map['imageUrl'] as String : null,
       createAt: DateTime.parse(map['createAt'] as String),
     );
+  }
+
+  String toJson() => json.encode(toMap());
+
+  factory Message.fromJson(String source) =>
+      Message.fromMap(json.decode(source) as Map<String, dynamic>);
+
+  @override
+  String toString() {
+    return 'Message(id: $id, text: $text, imageUrl: $imageUrl, createAt: $createAt)';
+  }
+
+  @override
+  bool operator ==(covariant Message other) {
+    if (identical(this, other)) return true;
+
+    return other.id == id &&
+        other.text == text &&
+        other.imageUrl == imageUrl &&
+        other.createAt == createAt;
+  }
+
+  @override
+  int get hashCode {
+    return id.hashCode ^ text.hashCode ^ imageUrl.hashCode ^ createAt.hashCode;
   }
 }

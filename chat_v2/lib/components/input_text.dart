@@ -51,7 +51,7 @@ class _InputTextState extends State<InputText> {
               onChanged: (text) {
                 store.isWriting = text.isNotEmpty;
               },
-              onSaved: (text) => store.text = text?.trim() ?? '',
+              onSaved: (text) => store.formData['text'] = text?.trim() ?? '',
               validator: (text) {
                 final message = text?.trim() ?? '';
                 if (message.isEmpty) {
