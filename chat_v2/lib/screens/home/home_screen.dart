@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../components/input_text.dart';
+import 'chat_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -9,15 +10,12 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Home Page')),
-      body: Padding(
-        padding: const EdgeInsets.all(8.0),
+      body: Container(
+        margin: const EdgeInsets.all(12.0),
         child: Column(
           children: [
-            Expanded(
-              flex: 9,
-              child: Container(child: Center(child: Text('BODY'))),
-            ),
-            Expanded(child: Container(child: InputText())),
+            Expanded(flex: 9, child: ChatScreen()),
+            Expanded(child: InputText()),
           ],
         ),
       ),
