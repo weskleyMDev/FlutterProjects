@@ -1,13 +1,14 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:chat_v2/stores/form/input_form.store.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttericon/font_awesome5_icons.dart';
 import 'package:get_it/get_it.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
+
+import '../stores/form/message/message_form.store.dart';
 
 enum Menu { emojis, camera, audio, gallery }
 
@@ -16,7 +17,7 @@ class PopupmenuMessage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final store = GetIt.instance<InputFormStore>();
+    final store = GetIt.instance<MessageFormStore>();
 
     Future<void> uploadImage(File imageFile) async {
       try {
@@ -40,7 +41,7 @@ class PopupmenuMessage extends StatelessWidget {
         rethrow;
       }
     }
-    
+
     return PopupMenuButton<Menu>(
       popUpAnimationStyle: const AnimationStyle(
         curve: Easing.emphasizedDecelerate,
@@ -58,8 +59,8 @@ class PopupmenuMessage extends StatelessWidget {
                 source: ImageSource.camera,
               );
               if (imageFile == null) return;
-              store.file = File(imageFile.path);
-              uploadImage(store.file!);
+              final file = File(imageFile.path);
+              uploadImage(file);
             } else if (Platform.isWindows) {
               FilePickerResult? result = await FilePicker.platform.pickFiles(
                 type: FileType.image,
@@ -67,8 +68,8 @@ class PopupmenuMessage extends StatelessWidget {
               if (result == null) return;
               final filePath = result.files.first.path;
               if (filePath == null) return;
-              store.file = File(filePath);
-              await uploadImage(store.file!);
+              final file = File(filePath);
+              await uploadImage(file);
             }
             break;
           case Menu.emojis:

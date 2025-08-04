@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'input_form.store.dart';
+part of 'message_form.store.dart';
 
 // **************************************************************************
 // StoreGenerator
@@ -8,28 +8,21 @@ part of 'input_form.store.dart';
 
 // ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic, no_leading_underscores_for_local_identifiers
 
-mixin _$InputFormStore on InputFormStoreBase, Store {
+mixin _$MessageFormStore on MessageFormStoreBase, Store {
   Computed<Map<String, dynamic>>? _$formDataComputed;
 
   @override
   Map<String, dynamic> get formData =>
       (_$formDataComputed ??= Computed<Map<String, dynamic>>(
         () => super.formData,
-        name: 'InputFormStoreBase.formData',
+        name: 'MessageFormStoreBase.formData',
       )).value;
   Computed<bool>? _$isWritingComputed;
 
   @override
   bool get isWriting => (_$isWritingComputed ??= Computed<bool>(
     () => super.isWriting,
-    name: 'InputFormStoreBase.isWriting',
-  )).value;
-  Computed<File?>? _$fileComputed;
-
-  @override
-  File? get file => (_$fileComputed ??= Computed<File?>(
-    () => super.file,
-    name: 'InputFormStoreBase.file',
+    name: 'MessageFormStoreBase.isWriting',
   )).value;
   Computed<Stream<List<Message>>>? _$messagesComputed;
 
@@ -37,11 +30,11 @@ mixin _$InputFormStore on InputFormStoreBase, Store {
   Stream<List<Message>> get messages =>
       (_$messagesComputed ??= Computed<Stream<List<Message>>>(
         () => super.messages,
-        name: 'InputFormStoreBase.messages',
+        name: 'MessageFormStoreBase.messages',
       )).value;
 
   late final _$_isWritingAtom = Atom(
-    name: 'InputFormStoreBase._isWriting',
+    name: 'MessageFormStoreBase._isWriting',
     context: context,
   );
 
@@ -59,7 +52,7 @@ mixin _$InputFormStore on InputFormStoreBase, Store {
   }
 
   late final _$_formDataAtom = Atom(
-    name: 'InputFormStoreBase._formData',
+    name: 'MessageFormStoreBase._formData',
     context: context,
   );
 
@@ -76,26 +69,8 @@ mixin _$InputFormStore on InputFormStoreBase, Store {
     });
   }
 
-  late final _$_fileAtom = Atom(
-    name: 'InputFormStoreBase._file',
-    context: context,
-  );
-
-  @override
-  File? get _file {
-    _$_fileAtom.reportRead();
-    return super._file;
-  }
-
-  @override
-  set _file(File? value) {
-    _$_fileAtom.reportWrite(value, super._file, () {
-      super._file = value;
-    });
-  }
-
   late final _$_messagesAtom = Atom(
-    name: 'InputFormStoreBase._messages',
+    name: 'MessageFormStoreBase._messages',
     context: context,
   );
 
@@ -113,7 +88,7 @@ mixin _$InputFormStore on InputFormStoreBase, Store {
   }
 
   late final _$fetchMessagesAsyncAction = AsyncAction(
-    'InputFormStoreBase.fetchMessages',
+    'MessageFormStoreBase.fetchMessages',
     context: context,
   );
 
@@ -123,7 +98,7 @@ mixin _$InputFormStore on InputFormStoreBase, Store {
   }
 
   late final _$sendMessageAsyncAction = AsyncAction(
-    'InputFormStoreBase.sendMessage',
+    'MessageFormStoreBase.sendMessage',
     context: context,
   );
 
@@ -133,7 +108,7 @@ mixin _$InputFormStore on InputFormStoreBase, Store {
   }
 
   late final _$initAsyncAction = AsyncAction(
-    'InputFormStoreBase.init',
+    'MessageFormStoreBase.init',
     context: context,
   );
 
@@ -142,20 +117,20 @@ mixin _$InputFormStore on InputFormStoreBase, Store {
     return _$initAsyncAction.run(() => super.init());
   }
 
-  late final _$InputFormStoreBaseActionController = ActionController(
-    name: 'InputFormStoreBase',
+  late final _$MessageFormStoreBaseActionController = ActionController(
+    name: 'MessageFormStoreBase',
     context: context,
   );
 
   @override
   void clearForm() {
-    final _$actionInfo = _$InputFormStoreBaseActionController.startAction(
-      name: 'InputFormStoreBase.clearForm',
+    final _$actionInfo = _$MessageFormStoreBaseActionController.startAction(
+      name: 'MessageFormStoreBase.clearForm',
     );
     try {
       return super.clearForm();
     } finally {
-      _$InputFormStoreBaseActionController.endAction(_$actionInfo);
+      _$MessageFormStoreBaseActionController.endAction(_$actionInfo);
     }
   }
 
@@ -164,7 +139,6 @@ mixin _$InputFormStore on InputFormStoreBase, Store {
     return '''
 formData: ${formData},
 isWriting: ${isWriting},
-file: ${file},
 messages: ${messages}
     ''';
   }

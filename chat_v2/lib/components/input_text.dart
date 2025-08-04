@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:get_it/get_it.dart';
 
-import '../stores/form/input_form.store.dart';
+import '../stores/form/message/message_form.store.dart';
 
 class InputText extends StatefulWidget {
   const InputText({super.key});
@@ -13,7 +13,7 @@ class InputText extends StatefulWidget {
 }
 
 class _InputTextState extends State<InputText> {
-  final store = GetIt.instance<InputFormStore>();
+  final store = GetIt.instance<MessageFormStore>();
   final _formKey = GlobalKey<FormState>();
   final _textController = TextEditingController();
 

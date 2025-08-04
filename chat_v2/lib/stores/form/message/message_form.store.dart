@@ -1,16 +1,14 @@
-import 'dart:io';
-
 import 'package:chat_v2/models/message.dart';
 import 'package:chat_v2/services/database/idatabase_service.dart';
 import 'package:mobx/mobx.dart';
 import 'package:uuid/uuid.dart';
 
-part 'input_form.store.g.dart';
+part 'message_form.store.g.dart';
 
-class InputFormStore = InputFormStoreBase with _$InputFormStore;
+class MessageFormStore = MessageFormStoreBase with _$MessageFormStore;
 
-abstract class InputFormStoreBase with Store {
-  InputFormStoreBase({required this.databaseService});
+abstract class MessageFormStoreBase with Store {
+  MessageFormStoreBase({required this.databaseService});
   final IDatabaseService databaseService;
 
   @observable
@@ -18,9 +16,6 @@ abstract class InputFormStoreBase with Store {
 
   @observable
   ObservableMap<String, dynamic> _formData = ObservableMap<String, dynamic>();
-
-  @observable
-  File? _file;
 
   @observable
   ObservableStream<List<Message>> _messages = ObservableStream<List<Message>>(
@@ -34,14 +29,10 @@ abstract class InputFormStoreBase with Store {
   bool get isWriting => _isWriting;
 
   @computed
-  File? get file => _file;
-
-  @computed
   Stream<List<Message>> get messages => _messages;
 
   set isWriting(bool value) => _isWriting = value;
   set formData(Map<String, dynamic> value) => _formData = value.asObservable();
-  set file(File? value) => _file = value;
 
   @action
   Future<void> fetchMessages() async {

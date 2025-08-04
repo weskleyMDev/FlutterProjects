@@ -1,4 +1,7 @@
+import 'package:chat_v2/services/auth/firebase_auth_service.dart';
 import 'package:chat_v2/services/database/firestore_messages.dart';
+import 'package:chat_v2/stores/form/login/login_form.store.dart';
+import 'package:chat_v2/stores/form/message/message_form.store.dart';
 import 'package:chat_v2/utils/route/app_routes.dart';
 import 'package:chat_v2/utils/theme/app_theme.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -7,12 +10,14 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:get_it/get_it.dart';
 
 import 'firebase_options.dart';
-import 'stores/form/input_form.store.dart';
 
 final getIt = GetIt.instance;
 void _setup() {
   getIt.registerLazySingleton(
-    () => InputFormStore(databaseService: FirestoreMessages()),
+    () => MessageFormStore(databaseService: FirestoreMessages()),
+  );
+  getIt.registerLazySingleton(
+    () => LoginFormStore(authService: FirebaseAuthService()),
   );
 }
 

@@ -1,4 +1,4 @@
-import 'package:chat_v2/screens/home/home_screen.dart';
+import 'package:chat_v2/screens/login/login_screen.dart';
 import 'package:go_router/go_router.dart';
 
 final routes = GoRouter(
@@ -6,8 +6,8 @@ final routes = GoRouter(
   routes: [
     GoRoute(
       path: '/',
-      name: 'home-screen',
-      builder: (context, state) => HomeScreen(),
+      name: 'login-screen',
+      builder: (context, state) => LoginScreen(),
     ),
   ],
 );

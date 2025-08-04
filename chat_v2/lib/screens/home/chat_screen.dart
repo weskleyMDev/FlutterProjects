@@ -3,7 +3,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get_it/get_it.dart';
 import 'package:intl/intl.dart';
 
-import '../../stores/form/input_form.store.dart';
+import '../../stores/form/message/message_form.store.dart';
 
 class ChatScreen extends StatefulWidget {
   const ChatScreen({super.key});
@@ -13,7 +13,7 @@ class ChatScreen extends StatefulWidget {
 }
 
 class _ChatScreenState extends State<ChatScreen> {
-  final store = GetIt.instance<InputFormStore>();
+  final store = GetIt.instance<MessageFormStore>();
   @override
   void initState() {
     store.init();
