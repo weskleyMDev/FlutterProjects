@@ -58,6 +58,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               Positioned(
                                 bottom: 0,
                                 right: 0,
+                                left: 0,
                                 child: Container(
                                   decoration: BoxDecoration(
                                     shape: BoxShape.circle,

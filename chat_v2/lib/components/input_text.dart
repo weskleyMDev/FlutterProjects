@@ -17,12 +17,18 @@ class _InputTextState extends State<InputText> {
   final _formKey = GlobalKey<FormState>();
   final _textController = TextEditingController();
 
+  @override
+  void dispose() {
+    _textController.dispose();
+    super.dispose();
+  }
+
   Future<void> _submitForm() async {
     final isValid = _formKey.currentState?.validate() ?? false;
     if (!isValid) return;
     _formKey.currentState?.save();
-    _textController.clear();
     await store.sendMessage();
+    _textController.clear();
     _formKey.currentState?.reset();
   }
 

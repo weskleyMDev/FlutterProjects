@@ -25,6 +25,13 @@ mixin _$LoginFormStore on LoginFormStoreBase, Store {
         () => super.userChanges,
         name: 'LoginFormStoreBase.userChanges',
       )).value;
+  Computed<AppUser?>? _$currentUserComputed;
+
+  @override
+  AppUser? get currentUser => (_$currentUserComputed ??= Computed<AppUser?>(
+    () => super.currentUser,
+    name: 'LoginFormStoreBase.currentUser',
+  )).value;
   Computed<String?>? _$errorComputed;
 
   @override
@@ -137,6 +144,34 @@ mixin _$LoginFormStore on LoginFormStoreBase, Store {
     });
   }
 
+  late final _$_currentUserAtom = Atom(
+    name: 'LoginFormStoreBase._currentUser',
+    context: context,
+  );
+
+  @override
+  AppUser? get _currentUser {
+    _$_currentUserAtom.reportRead();
+    return super._currentUser;
+  }
+
+  @override
+  set _currentUser(AppUser? value) {
+    _$_currentUserAtom.reportWrite(value, super._currentUser, () {
+      super._currentUser = value;
+    });
+  }
+
+  late final _$setImageUrlAsyncAction = AsyncAction(
+    'LoginFormStoreBase.setImageUrl',
+    context: context,
+  );
+
+  @override
+  Future<void> setImageUrl() {
+    return _$setImageUrlAsyncAction.run(() => super.setImageUrl());
+  }
+
   late final _$signInAsyncAction = AsyncAction(
     'LoginFormStoreBase.signIn',
     context: context,
@@ -167,40 +202,54 @@ mixin _$LoginFormStore on LoginFormStoreBase, Store {
     return _$signOutAsyncAction.run(() => super.signOut());
   }
 
-  late final _$initAsyncAction = AsyncAction(
-    'LoginFormStoreBase.init',
-    context: context,
-  );
-
-  @override
-  Future<void> init() {
-    return _$initAsyncAction.run(() => super.init());
-  }
-
   late final _$LoginFormStoreBaseActionController = ActionController(
     name: 'LoginFormStoreBase',
     context: context,
   );
 
   @override
-  void toogleLogin() {
+  AppUser? _getCurrentUser() {
     final _$actionInfo = _$LoginFormStoreBaseActionController.startAction(
-      name: 'LoginFormStoreBase.toogleLogin',
+      name: 'LoginFormStoreBase._getCurrentUser',
     );
     try {
-      return super.toogleLogin();
+      return super._getCurrentUser();
     } finally {
       _$LoginFormStoreBaseActionController.endAction(_$actionInfo);
     }
   }
 
   @override
-  void toogleVisible() {
+  void toggleLogin() {
     final _$actionInfo = _$LoginFormStoreBaseActionController.startAction(
-      name: 'LoginFormStoreBase.toogleVisible',
+      name: 'LoginFormStoreBase.toggleLogin',
     );
     try {
-      return super.toogleVisible();
+      return super.toggleLogin();
+    } finally {
+      _$LoginFormStoreBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void toggleVisible() {
+    final _$actionInfo = _$LoginFormStoreBaseActionController.startAction(
+      name: 'LoginFormStoreBase.toggleVisible',
+    );
+    try {
+      return super.toggleVisible();
+    } finally {
+      _$LoginFormStoreBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  Stream<AppUser?> _fetchUserChanges() {
+    final _$actionInfo = _$LoginFormStoreBaseActionController.startAction(
+      name: 'LoginFormStoreBase._fetchUserChanges',
+    );
+    try {
+      return super._fetchUserChanges();
     } finally {
       _$LoginFormStoreBaseActionController.endAction(_$actionInfo);
     }
@@ -223,6 +272,7 @@ mixin _$LoginFormStore on LoginFormStoreBase, Store {
     return '''
 formData: ${formData},
 userChanges: ${userChanges},
+currentUser: ${currentUser},
 error: ${error},
 isLogin: ${isLogin},
 isVisible: ${isVisible}

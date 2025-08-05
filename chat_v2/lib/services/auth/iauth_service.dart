@@ -7,7 +7,7 @@ abstract class IAuthService {
   Future<void> signUp({
     required String name,
     required String email,
-    required String imageUrl,
+    required String? imageUrl,
     required String password,
   });
   Future<void> signOut();

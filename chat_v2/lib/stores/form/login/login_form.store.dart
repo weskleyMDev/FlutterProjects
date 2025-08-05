@@ -26,15 +26,21 @@ abstract class LoginFormStoreBase with Store {
   ObservableMap<String, dynamic> _formData = ObservableMap<String, dynamic>();
 
   @observable
-  ObservableStream<AppUser?> _userChanges = ObservableStream<AppUser>(
-    Stream.empty(),
+  ObservableStream<AppUser?> _userChanges = ObservableStream(
+    Stream<AppUser?>.empty(),
   );
+
+  @observable
+  AppUser? _currentUser;
 
   @computed
   Map<String, dynamic> get formData => _formData;
 
   @computed
-  Stream<AppUser?> get userChanges => _userChanges;
+  Stream<AppUser?> get userChanges => _fetchUserChanges();
+
+  @computed
+  AppUser? get currentUser => _getCurrentUser();
 
   @computed
   String? get error => _error;
@@ -63,6 +69,11 @@ abstract class LoginFormStoreBase with Store {
   }
 
   @action
+  AppUser? _getCurrentUser() {
+    return _currentUser = authService.currentUser;
+  }
+
+  @action
   Future<void> signIn() async {
     try {
       await authService.signIn(
@@ -77,11 +88,17 @@ abstract class LoginFormStoreBase with Store {
 
   @action
   Future<void> signUp() async {
+    final String? imageUrl;
+    if (_formData['imageUrl'] == null) {
+      imageUrl = null;
+    } else {
+      imageUrl = _formData['imageUrl'];
+    }
     try {
       await authService.signUp(
         name: _formData['name'],
         email: _formData['email'],
-        imageUrl: _formData['imageUrl'],
+        imageUrl: imageUrl,
         password: _formData['password'],
       );
       _clear();
@@ -101,23 +118,24 @@ abstract class LoginFormStoreBase with Store {
   }
 
   @action
-  void toogleLogin() {
+  void toggleLogin() {
     _isLogin = !_isLogin;
   }
 
   @action
-  void toogleVisible() {
+  void toggleVisible() {
     _isVisible = !_isVisible;
   }
 
   @action
-  Future<void> init() async {
-    _userChanges = ObservableStream<AppUser?>(authService.userChanges);
+  Stream<AppUser?> _fetchUserChanges() {
+    return _userChanges = ObservableStream<AppUser?>(authService.userChanges);
   }
 
   @action
   void _clear() {
-    _error = '';
     _formData.clear();
+    _isLogin = true;
+    _isVisible = false;
   }
 }

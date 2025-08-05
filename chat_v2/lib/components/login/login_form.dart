@@ -1,3 +1,4 @@
+import 'package:chat_v2/models/app_user.dart';
 import 'package:chat_v2/stores/form/login/login_form.store.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -5,14 +6,16 @@ import 'package:fluttericon/font_awesome5_icons.dart';
 import 'package:get_it/get_it.dart';
 
 class LoginForm extends StatefulWidget {
-  const LoginForm({super.key});
+  const LoginForm({super.key, this.user});
+
+  final AppUser? user;
 
   @override
   State<LoginForm> createState() => _LoginFormState();
 }
 
 class _LoginFormState extends State<LoginForm> {
-  final loginStore = GetIt.instance<LoginFormStore>();
+  final _loginStore = GetIt.instance<LoginFormStore>();
   final _nameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
@@ -26,11 +29,31 @@ class _LoginFormState extends State<LoginForm> {
     super.dispose();
   }
 
+  void _clearFields() {
+    _nameController.clear();
+    _emailController.clear();
+    _passwordController.clear();
+  }
+
   Future<void> _submitForm() async {
     final isValid = _formKey.currentState?.validate() ?? false;
     if (!isValid) return;
     _formKey.currentState?.save();
-    print(loginStore.formData);
+    try {
+      if (_loginStore.isLogin) {
+        await _loginStore.signIn();
+      } else {
+        await _loginStore.signUp();
+      }
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).clearSnackBars();
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(_loginStore.error ?? e.toString())),
+      );
+    } finally {
+      _clearFields();
+    }
   }
 
   @override
@@ -49,10 +72,10 @@ class _LoginFormState extends State<LoginForm> {
                       duration: Duration(seconds: 1),
                       curve: Curves.easeIn,
                       child: AnimatedOpacity(
-                        opacity: loginStore.isLogin ? 0.0 : 1.0,
-                        duration: Duration(milliseconds: 2500),
+                        opacity: _loginStore.isLogin ? 0.0 : 1.0,
+                        duration: Duration(seconds: 2),
                         curve: Curves.easeInOutBack,
-                        child: loginStore.isLogin
+                        child: _loginStore.isLogin
                             ? SizedBox.shrink()
                             : Container(
                                 margin: const EdgeInsets.only(bottom: 10.0),
@@ -69,8 +92,23 @@ class _LoginFormState extends State<LoginForm> {
                                   style: TextStyle(color: Colors.purple),
                                   cursorColor: Colors.purple,
                                   onSaved: (value) =>
-                                      loginStore.formData['name'] = value
+                                      _loginStore.formData['name'] = value
                                           ?.trim(),
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'Please enter your name';
+                                    }
+                                    if (value.length < 3) {
+                                      return 'Name must be at least 3 characters';
+                                    }
+                                    final valid = RegExp(
+                                      r'^[a-zA-Z]+$',
+                                    ).hasMatch(value);
+                                    if (!valid) {
+                                      return 'Name must contain only letters';
+                                    }
+                                    return null;
+                                  },
                                 ),
                               ),
                       ),
@@ -89,8 +127,20 @@ class _LoginFormState extends State<LoginForm> {
                         ),
                         style: TextStyle(color: Colors.purple),
                         cursorColor: Colors.purple,
-                        onSaved: (value) =>
-                            loginStore.formData['email'] = value?.trim(),
+                        onSaved: (value) => _loginStore.formData['email'] =
+                            value?.trim().toLowerCase(),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter your email';
+                          }
+                          final valid = RegExp(
+                            r'^[a-z0-9._-]+@[a-z0-9-]+\.(com|org|net|gov|edu)(\.[a-z]{2})?$',
+                          ).hasMatch(value);
+                          if (!valid) {
+                            return 'Please enter a valid email';
+                          }
+                          return null;
+                        },
                       ),
                     ),
                     Container(
@@ -106,11 +156,11 @@ class _LoginFormState extends State<LoginForm> {
                           prefixIcon: Icon(FontAwesome5.key, size: 22.0),
                           suffixIcon: IconButton(
                             onPressed: () {
-                              loginStore.toogleVisible();
+                              _loginStore.toggleVisible();
                             },
                             iconSize: 28.0,
                             icon: Icon(
-                              loginStore.isVisible
+                              _loginStore.isVisible
                                   ? Icons.visibility_off_outlined
                                   : Icons.visibility_outlined,
                             ),
@@ -118,24 +168,33 @@ class _LoginFormState extends State<LoginForm> {
                         ),
                         style: TextStyle(color: Colors.purple),
                         cursorColor: Colors.purple,
-                        obscureText: !loginStore.isVisible,
+                        obscureText: !_loginStore.isVisible,
                         onSaved: (value) =>
-                            loginStore.formData['password'] = value?.trim(),
+                            _loginStore.formData['password'] = value?.trim(),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter your password';
+                          }
+                          if (value.length < 6) {
+                            return 'Password must be at least 6 characters';
+                          }
+                          return null;
+                        },
                       ),
                     ),
                   ],
                 ),
                 ElevatedButton(
                   onPressed: () async => await _submitForm(),
-                  child: Text(loginStore.isLogin ? 'LOGIN' : 'SIGN UP'),
+                  child: Text(_loginStore.isLogin ? 'LOGIN' : 'SIGN UP'),
                 ),
                 const SizedBox(height: 20.0),
                 InkWell(
                   onTap: () {
-                    loginStore.toogleLogin();
+                    _loginStore.toggleLogin();
                   },
                   child: Text(
-                    loginStore.isLogin
+                    _loginStore.isLogin
                         ? "Don't have an account? Sign up"
                         : 'Already have an account? Sign in',
                     style: TextStyle(

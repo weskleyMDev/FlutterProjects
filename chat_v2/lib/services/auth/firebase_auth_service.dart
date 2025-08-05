@@ -2,7 +2,6 @@ import 'package:chat_v2/models/app_user.dart';
 import 'package:chat_v2/services/auth/iauth_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:uuid/uuid.dart';
 
 class FirebaseAuthService implements IAuthService {
   static final _firebaseAuth = FirebaseAuth.instance;
@@ -77,7 +76,7 @@ class FirebaseAuthService implements IAuthService {
   Future<void> signUp({
     required String name,
     required String email,
-    required String imageUrl,
+    required String? imageUrl,
     required String password,
   }) async {
     try {
@@ -88,7 +87,7 @@ class FirebaseAuthService implements IAuthService {
       final user = cred.user;
       if (user == null) return;
       final newUser = AppUser(
-        id: Uuid().v4(),
+        id: user.uid,
         name: name,
         email: email,
         imageUrl: imageUrl,

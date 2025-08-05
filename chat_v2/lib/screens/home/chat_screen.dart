@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:chat_v2/stores/form/login/login_form.store.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get_it/get_it.dart';
@@ -13,17 +16,19 @@ class ChatScreen extends StatefulWidget {
 }
 
 class _ChatScreenState extends State<ChatScreen> {
-  final store = GetIt.instance<MessageFormStore>();
+  final _store = GetIt.instance<MessageFormStore>();
+  final _loginStore = GetIt.instance<LoginFormStore>();
   @override
   void initState() {
-    store.init();
+    _store.init();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    final userImage = _loginStore.currentUser?.imageUrl;
     return StreamBuilder(
-      stream: store.messages,
+      stream: _store.messages,
       builder: (context, snapshot) {
         switch (snapshot.connectionState) {
           case ConnectionState.none:
@@ -47,7 +52,7 @@ class _ChatScreenState extends State<ChatScreen> {
                   ).format(message.createAt);
                   final time = DateFormat('HH:mm').format(message.createAt);
                   return ListTile(
-                    leading: message.imageUrl == null
+                    leading: userImage == null
                         ? CircleAvatar(
                             backgroundColor: Colors.grey,
                             child: SvgPicture.asset(
@@ -57,7 +62,9 @@ class _ChatScreenState extends State<ChatScreen> {
                             ),
                           )
                         : CircleAvatar(
-                            backgroundImage: NetworkImage(message.imageUrl!),
+                            backgroundImage: FileImage(
+                              File(userImage),
+                            ),
                           ),
                     title: Text('${message.text} - $time'),
                     subtitle: Text(

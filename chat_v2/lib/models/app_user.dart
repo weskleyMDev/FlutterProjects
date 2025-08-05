@@ -2,7 +2,7 @@ class AppUser {
   final String id;
   final String name;
   final String email;
-  final String imageUrl;
+  final String? imageUrl;
   final String role;
 
   const AppUser({
@@ -68,7 +68,7 @@ class AppUser {
       id: map['id'] as String,
       name: map['name'] as String,
       email: map['email'] as String,
-      imageUrl: map['imageUrl'] as String,
+      imageUrl: map['imageUrl'] as String?,
       role: map['role'] as String,
     );
   }
