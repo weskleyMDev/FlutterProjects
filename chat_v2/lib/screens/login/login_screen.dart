@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:chat_v2/components/login/login_form.dart';
 import 'package:chat_v2/stores/form/login/login_form.store.dart';
 import 'package:flutter/material.dart';
@@ -41,7 +43,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   height:
                                       MediaQuery.of(context).size.height * 0.30,
                                   width:
-                                      MediaQuery.of(context).size.width * 0.45,
+                                     (Platform.isAndroid) ? MediaQuery.of(context).size.width * 0.45 : MediaQuery.of(context).size.width * 0.30,
                                   decoration: BoxDecoration(
                                     shape: BoxShape.circle,
                                     color: Colors.white,
