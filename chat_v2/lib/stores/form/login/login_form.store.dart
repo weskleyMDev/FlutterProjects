@@ -1,5 +1,8 @@
+import 'dart:io';
+
 import 'package:chat_v2/models/app_user.dart';
 import 'package:chat_v2/services/auth/iauth_service.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:mobx/mobx.dart';
 
 part 'login_form.store.g.dart';
@@ -18,7 +21,6 @@ abstract class LoginFormStoreBase with Store {
 
   @observable
   bool _isVisible = false;
-
 
   @observable
   ObservableMap<String, dynamic> _formData = ObservableMap<String, dynamic>();
@@ -45,6 +47,20 @@ abstract class LoginFormStoreBase with Store {
 
   set formData(Map<String, dynamic> value) =>
       _formData = ObservableMap<String, dynamic>.of(value);
+
+  @action
+  Future<void> setImageUrl() async {
+    if (Platform.isWindows) {
+      final result = await FilePicker.platform.pickFiles(
+        type: FileType.image,
+        allowMultiple: false,
+      );
+      if (result == null) return;
+      final filePath = result.files.first.path;
+      if (filePath == null) return;
+      _formData['imageUrl'] = filePath;
+    }
+  }
 
   @action
   Future<void> signIn() async {
