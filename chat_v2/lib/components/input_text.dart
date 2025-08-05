@@ -14,7 +14,7 @@ class InputText extends StatefulWidget {
 
 class _InputTextState extends State<InputText> {
   final store = GetIt.instance<MessageFormStore>();
-  final _formKey = GlobalKey<FormState>();
+  final _chatFormKey = GlobalKey<FormState>();
   final _textController = TextEditingController();
 
   @override
@@ -24,29 +24,22 @@ class _InputTextState extends State<InputText> {
   }
 
   Future<void> _submitForm() async {
-    final isValid = _formKey.currentState?.validate() ?? false;
+    final isValid = _chatFormKey.currentState?.validate() ?? false;
     if (!isValid) return;
-    _formKey.currentState?.save();
+    _chatFormKey.currentState?.save();
     await store.sendMessage();
     _textController.clear();
-    _formKey.currentState?.reset();
+    _chatFormKey.currentState?.reset();
   }
 
   @override
   Widget build(BuildContext context) {
     return Form(
-      key: _formKey,
+      key: _chatFormKey,
       child: Row(
         children: [
+          PopupmenuMessage(),
           Expanded(
-            flex: 1,
-            child: Container(
-              margin: const EdgeInsets.only(right: 10.0),
-              child: PopupmenuMessage(),
-            ),
-          ),
-          Expanded(
-            flex: 10,
             child: TextFormField(
               key: const ValueKey('message'),
               controller: _textController,
@@ -67,19 +60,13 @@ class _InputTextState extends State<InputText> {
               },
             ),
           ),
-          Expanded(
-            flex: 1,
-            child: Observer(
-              builder: (_) => Container(
-                margin: const EdgeInsets.only(left: 10.0),
-                child: IconButton(
-                  onPressed: store.isWriting
-                      ? () async => await _submitForm()
-                      : null,
-                  icon: Icon(Icons.send_outlined),
-                  color: Colors.greenAccent,
-                ),
-              ),
+          Observer(
+            builder: (_) => IconButton(
+              onPressed: store.isWriting
+                  ? () async => await _submitForm()
+                  : null,
+              icon: Icon(Icons.send_outlined),
+              color: Colors.greenAccent,
             ),
           ),
         ],

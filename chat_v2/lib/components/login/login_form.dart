@@ -1,5 +1,6 @@
 import 'package:chat_v2/models/app_user.dart';
 import 'package:chat_v2/stores/form/login/login_form.store.dart';
+import 'package:chat_v2/utils/capitalize.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:fluttericon/font_awesome5_icons.dart';
@@ -19,7 +20,7 @@ class _LoginFormState extends State<LoginForm> {
   final _nameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
-  final _formKey = GlobalKey<FormState>();
+  final _loginFormKey = GlobalKey<FormState>();
 
   @override
   void dispose() {
@@ -36,9 +37,9 @@ class _LoginFormState extends State<LoginForm> {
   }
 
   Future<void> _submitForm() async {
-    final isValid = _formKey.currentState?.validate() ?? false;
+    final isValid = _loginFormKey.currentState?.validate() ?? false;
     if (!isValid) return;
-    _formKey.currentState?.save();
+    _loginFormKey.currentState?.save();
     try {
       if (_loginStore.isLogin) {
         await _loginStore.signIn();
@@ -50,9 +51,9 @@ class _LoginFormState extends State<LoginForm> {
     } catch (e) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).clearSnackBars();
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(_loginStore.error)),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(_loginStore.error)));
     }
   }
 
@@ -62,7 +63,7 @@ class _LoginFormState extends State<LoginForm> {
       builder: (context) {
         return SingleChildScrollView(
           child: Form(
-            key: _formKey,
+            key: _loginFormKey,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
@@ -93,7 +94,7 @@ class _LoginFormState extends State<LoginForm> {
                                   cursorColor: Colors.purple,
                                   onSaved: (value) =>
                                       _loginStore.formData['name'] = value
-                                          ?.trim(),
+                                          ?.capitalize(),
                                   validator: (value) {
                                     if (value == null || value.isEmpty) {
                                       return 'Please enter your name';

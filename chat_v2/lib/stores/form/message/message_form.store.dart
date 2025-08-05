@@ -1,5 +1,7 @@
 import 'package:chat_v2/models/message.dart';
 import 'package:chat_v2/services/database/idatabase_service.dart';
+import 'package:chat_v2/stores/form/login/login_form.store.dart';
+import 'package:get_it/get_it.dart';
 import 'package:mobx/mobx.dart';
 import 'package:uuid/uuid.dart';
 
@@ -41,11 +43,15 @@ abstract class MessageFormStoreBase with Store {
 
   @action
   Future<void> sendMessage() async {
+    final loginStore = GetIt.instance<LoginFormStore>();
     final message = Message(
       id: Uuid().v4(),
       text: formData['text'],
       imageUrl: formData['imageUrl'],
       createAt: DateTime.now(),
+      userId: loginStore.currentUser!.id,
+      userName: loginStore.currentUser!.name,
+      userImageUrl: loginStore.currentUser!.imageUrl,
     );
     await databaseService.sendMessage(message);
     clearForm();

@@ -20,7 +20,7 @@ class _HomeScreenState extends State<HomeScreen> {
     final userName = _loginStore.currentUser?.name;
     return Scaffold(
       appBar: AppBar(
-        title: Text('Hello, $userName'),
+        title: Text(userName == null ? 'Hello, user' : 'Hello, $userName'),
         actions: [
           IconButton(
             onPressed: () async {
@@ -30,14 +30,23 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ],
       ),
-      body: Container(
-        margin: const EdgeInsets.all(12.0),
-        child: Column(
-          children: [
-            Expanded(flex: 9, child: ChatScreen()),
-            Expanded(child: InputText()),
-          ],
-        ),
+      body: Column(
+        children: [
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: ChatScreen(),
+            ),
+          ),
+          Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10.0),
+              color: Colors.black87,
+            ),
+            padding: const EdgeInsets.all(12.0),
+            child: InputText(),
+          ),
+        ],
       ),
     );
   }

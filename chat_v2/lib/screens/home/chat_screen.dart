@@ -1,10 +1,6 @@
-import 'dart:io';
-
-import 'package:chat_v2/stores/form/login/login_form.store.dart';
+import 'package:chat_v2/components/chat/chat_message.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:get_it/get_it.dart';
-import 'package:intl/intl.dart';
 
 import '../../stores/form/message/message_form.store.dart';
 
@@ -16,19 +12,17 @@ class ChatScreen extends StatefulWidget {
 }
 
 class _ChatScreenState extends State<ChatScreen> {
-  final _store = GetIt.instance<MessageFormStore>();
-  final _loginStore = GetIt.instance<LoginFormStore>();
+  final _messageStore = GetIt.instance<MessageFormStore>();
   @override
   void initState() {
-    _store.init();
+    _messageStore.init();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    final userImage = _loginStore.currentUser?.imageUrl;
     return StreamBuilder(
-      stream: _store.messages,
+      stream: _messageStore.messages,
       builder: (context, snapshot) {
         switch (snapshot.connectionState) {
           case ConnectionState.none:
@@ -46,31 +40,7 @@ class _ChatScreenState extends State<ChatScreen> {
                 itemCount: messages.length,
                 itemBuilder: (context, index) {
                   final message = messages[index];
-                  final date = DateFormat(
-                    'EEEE, dd/MM/yyyy',
-                    'pt_BR',
-                  ).format(message.createAt);
-                  final time = DateFormat('HH:mm').format(message.createAt);
-                  return ListTile(
-                    leading: userImage == null
-                        ? CircleAvatar(
-                            backgroundColor: Colors.grey,
-                            child: SvgPicture.asset(
-                              'assets/images/svg/default-user.svg',
-                              fit: BoxFit.fill,
-                              height: 50.0,
-                            ),
-                          )
-                        : CircleAvatar(
-                            backgroundImage: FileImage(
-                              File(userImage),
-                            ),
-                          ),
-                    title: Text('${message.text} - $time'),
-                    subtitle: Text(
-                      '${date.toUpperCase()[0]}${date.toLowerCase().substring(1)}',
-                    ),
-                  );
+                  return ChatMessage(message: message);
                 },
               );
             }

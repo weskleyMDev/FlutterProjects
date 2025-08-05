@@ -22,6 +22,7 @@ class CustomTheme {
         bodyColor: Colors.purple,
         displayColor: Colors.purple,
       ),
+      appBarTheme: AppBarTheme().copyWith(backgroundColor: Colors.deepPurple),
       inputDecorationTheme: InputDecorationTheme().copyWith(
         labelStyle: TextStyle(color: Colors.purple),
         enabledBorder: OutlineInputBorder(

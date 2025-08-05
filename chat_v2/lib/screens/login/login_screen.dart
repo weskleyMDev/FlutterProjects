@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:chat_v2/components/login/login_form.dart';
 import 'package:chat_v2/stores/form/login/login_form.store.dart';
 import 'package:flutter/material.dart';
@@ -20,86 +18,96 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
-        children: [
-          Observer(
-            builder: (context) {
-              return Align(
-                alignment: Alignment.topCenter,
-                child: Padding(
-                  padding: const EdgeInsets.only(top: 16.0),
-                  child: AnimatedSwitcher(
-                    duration: Duration(milliseconds: 1500),
-                    child: loginStore.isLogin
-                        ? SvgPicture.asset(
-                            'assets/images/svg/chat-logo.svg',
-                            height: MediaQuery.of(context).size.height * 0.35,
-                          )
-                        : Stack(
-                            children: [
-                              Container(
-                                height:
-                                    MediaQuery.of(context).size.height * 0.35,
-                                width: MediaQuery.of(context).size.width * 0.35,
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: Colors.white,
-                                ),
-                                child: loginStore.formData['imageUrl'] == null
-                                    ? SvgPicture.asset(
-                                        'assets/images/svg/default-user.svg',
-                                      )
-                                    : CircleAvatar(
-                                        backgroundImage: FileImage(
-                                          File(loginStore.formData['imageUrl']),
+      resizeToAvoidBottomInset: false,
+      body: SafeArea(
+        child: Stack(
+          children: [
+            Observer(
+              builder: (context) {
+                return Align(
+                  alignment: Alignment.topCenter,
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 16.0),
+                    child: AnimatedSwitcher(
+                      duration: Duration(milliseconds: 1500),
+                      child: loginStore.isLogin
+                          ? SvgPicture.asset(
+                              'assets/images/svg/chat-logo.svg',
+                              height: MediaQuery.of(context).size.height * 0.30,
+                            )
+                          : Stack(
+                              children: [
+                                Container(
+                                  height:
+                                      MediaQuery.of(context).size.height * 0.30,
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.45,
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: Colors.white,
+                                  ),
+                                  child: loginStore.formData['imageUrl'] == null
+                                      ? SvgPicture.asset(
+                                          'assets/images/svg/default-user.svg',
+                                        )
+                                      : CircleAvatar(
+                                          backgroundImage: NetworkImage(
+                                            loginStore.formData['imageUrl'],
+                                          ),
                                         ),
-                                      ),
-                              ),
-                              Positioned(
-                                bottom: 0,
-                                right: 0,
-                                left: 0,
-                                child: FilledButton.icon(
-                                  onPressed: () async =>
-                                      await loginStore.setImageUrl(),
-                                  style: FilledButton.styleFrom(
-                                    backgroundColor: Colors.white,
-                                    foregroundColor: Colors.purple,
-                                    overlayColor: Colors.transparent,
-                                  ),
-                                  icon: Icon(
-                                    FontAwesome.camera_alt,
-                                    size: 26.0,
-                                  ),
-                                  label: Text('Select Image'),
                                 ),
-                              ),
-                            ],
-                          ),
+                                Positioned(
+                                  bottom: 0,
+                                  right: 0,
+                                  left: 0,
+                                  child: FilledButton.icon(
+                                    onPressed: () async =>
+                                        await loginStore.setImageUrl(),
+                                    style: FilledButton.styleFrom(
+                                      backgroundColor: Colors.white,
+                                      foregroundColor: Colors.purple,
+                                      overlayColor: Colors.transparent,
+                                    ),
+                                    icon: Icon(
+                                      FontAwesome.camera_alt,
+                                      size: 26.0,
+                                    ),
+                                    label: Text(
+                                      'Select Image',
+                                      softWrap: false,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                    ),
+                  ),
+                );
+              },
+            ),
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: Container(
+                height: MediaQuery.of(context).size.height * 0.6,
+                width: MediaQuery.of(context).size.width,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(20),
+                    topRight: Radius.circular(20),
                   ),
                 ),
-              );
-            },
-          ),
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: Container(
-              height: MediaQuery.of(context).size.height * 0.6,
-              width: MediaQuery.of(context).size.width,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(20),
-                  topRight: Radius.circular(20),
+                child: Padding(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 30.0,
+                    vertical: 18.0,
+                  ),
+                  child: LoginForm(),
                 ),
               ),
-              child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 30.0, vertical: 18.0),
-                child: LoginForm(),
-              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

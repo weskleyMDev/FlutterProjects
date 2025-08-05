@@ -60,7 +60,8 @@ class PopupmenuMessage extends StatelessWidget {
               );
               if (imageFile == null) return;
               final file = File(imageFile.path);
-              uploadImage(file);
+              await uploadImage(file);
+              await store.sendMessage();
             } else if (Platform.isWindows) {
               FilePickerResult? result = await FilePicker.platform.pickFiles(
                 type: FileType.image,
@@ -70,6 +71,7 @@ class PopupmenuMessage extends StatelessWidget {
               if (filePath == null) return;
               final file = File(filePath);
               await uploadImage(file);
+              await store.sendMessage();
             }
             break;
           case Menu.emojis:

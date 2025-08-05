@@ -1,8 +1,10 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:chat_v2/models/app_user.dart';
 import 'package:chat_v2/services/auth/iauth_service.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:http/http.dart' as http;
 import 'package:mobx/mobx.dart';
 
 part 'login_form.store.g.dart';
@@ -60,6 +62,30 @@ abstract class LoginFormStoreBase with Store {
   // ACTIONS
 
   @action
+  Future<void> _uploadImage(String imagePath) async {
+    _error = '';
+    try {
+      final uri = Uri.https('api.cloudinary.com', '/v1_1/dcfabcpnx/upload');
+      final uploadRequest = http.MultipartRequest('POST', uri)
+        ..fields['upload_preset'] = 'dcfabcpnx'
+        ..files.add(await http.MultipartFile.fromPath('file', imagePath));
+
+      final response = await uploadRequest.send();
+      if (response.statusCode >= 400) {
+        _error = 'Error ${response.statusCode} uploading image';
+      } else {
+        final responseBody = await response.stream.bytesToString();
+        final jsonMap = json.decode(responseBody);
+        final imageUrl = jsonMap['secure_url'];
+        _formData['imageUrl'] = imageUrl;
+      }
+    } catch (e) {
+      _error = 'Error uploading image: $e';
+      rethrow;
+    }
+  }
+
+  @action
   Future<void> setImageUrl() async {
     try {
       if (Platform.isWindows) {
@@ -70,7 +96,7 @@ abstract class LoginFormStoreBase with Store {
         if (result == null) return;
         final filePath = result.files.first.path;
         if (filePath == null) return;
-        _formData['imageUrl'] = filePath;
+        await _uploadImage(filePath);
       }
     } catch (e) {
       _error = 'Error picking image: $e';
@@ -112,6 +138,7 @@ abstract class LoginFormStoreBase with Store {
 
   @action
   Future<void> signOut() async {
+    _error = '';
     try {
       await authService.signOut();
       _clear();
