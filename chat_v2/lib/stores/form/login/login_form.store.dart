@@ -10,8 +10,12 @@ part 'login_form.store.g.dart';
 class LoginFormStore = LoginFormStoreBase with _$LoginFormStore;
 
 abstract class LoginFormStoreBase with Store {
-  LoginFormStoreBase({required this.authService});
+  LoginFormStoreBase({required this.authService}) {
+    _userChanges = ObservableStream(authService.userChanges);
+  }
   final IAuthService authService;
+
+  // OBSERVABLES
 
   @observable
   String _error = '';
@@ -26,24 +30,21 @@ abstract class LoginFormStoreBase with Store {
   ObservableMap<String, dynamic> _formData = ObservableMap<String, dynamic>();
 
   @observable
-  ObservableStream<AppUser?> _userChanges = ObservableStream(
-    Stream<AppUser?>.empty(),
-  );
+  late ObservableStream<AppUser?> _userChanges;
 
-  @observable
-  AppUser? _currentUser;
+  // COMPUTED
 
   @computed
   Map<String, dynamic> get formData => _formData;
 
   @computed
-  Stream<AppUser?> get userChanges => _fetchUserChanges();
+  Stream<AppUser?> get userChanges => _userChanges;
 
   @computed
-  AppUser? get currentUser => _getCurrentUser();
+  AppUser? get currentUser => _userChanges.value;
 
   @computed
-  String? get error => _error;
+  String get error => _error;
 
   @computed
   bool get isLogin => _isLogin;
@@ -51,30 +52,35 @@ abstract class LoginFormStoreBase with Store {
   @computed
   bool get isVisible => _isVisible;
 
+  // SETTERS
+
   set formData(Map<String, dynamic> value) =>
       _formData = ObservableMap<String, dynamic>.of(value);
 
+  // ACTIONS
+
   @action
   Future<void> setImageUrl() async {
-    if (Platform.isWindows) {
-      final result = await FilePicker.platform.pickFiles(
-        type: FileType.image,
-        allowMultiple: false,
-      );
-      if (result == null) return;
-      final filePath = result.files.first.path;
-      if (filePath == null) return;
-      _formData['imageUrl'] = filePath;
+    try {
+      if (Platform.isWindows) {
+        final result = await FilePicker.platform.pickFiles(
+          type: FileType.image,
+          allowMultiple: false,
+        );
+        if (result == null) return;
+        final filePath = result.files.first.path;
+        if (filePath == null) return;
+        _formData['imageUrl'] = filePath;
+      }
+    } catch (e) {
+      _error = 'Error picking image: $e';
+      rethrow;
     }
   }
 
   @action
-  AppUser? _getCurrentUser() {
-    return _currentUser = authService.currentUser;
-  }
-
-  @action
   Future<void> signIn() async {
+    _error = '';
     try {
       await authService.signIn(
         mail: _formData['email'],
@@ -82,28 +88,25 @@ abstract class LoginFormStoreBase with Store {
       );
       _clear();
     } catch (e) {
-      _error = e.toString();
+      _error = 'Email or password incorrect!';
+      rethrow;
     }
   }
 
   @action
   Future<void> signUp() async {
-    final String? imageUrl;
-    if (_formData['imageUrl'] == null) {
-      imageUrl = null;
-    } else {
-      imageUrl = _formData['imageUrl'];
-    }
+    _error = '';
     try {
       await authService.signUp(
         name: _formData['name'],
         email: _formData['email'],
-        imageUrl: imageUrl,
+        imageUrl: _formData['imageUrl'],
         password: _formData['password'],
       );
       _clear();
     } catch (e) {
-      _error = e.toString();
+      _error = 'Error registering user! Check all fields!';
+      rethrow;
     }
   }
 
@@ -113,7 +116,8 @@ abstract class LoginFormStoreBase with Store {
       await authService.signOut();
       _clear();
     } catch (e) {
-      _error = e.toString();
+      _error = 'Error signing out!';
+      rethrow;
     }
   }
 
@@ -125,11 +129,6 @@ abstract class LoginFormStoreBase with Store {
   @action
   void toggleVisible() {
     _isVisible = !_isVisible;
-  }
-
-  @action
-  Stream<AppUser?> _fetchUserChanges() {
-    return _userChanges = ObservableStream<AppUser?>(authService.userChanges);
   }
 
   @action

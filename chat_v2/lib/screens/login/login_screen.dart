@@ -59,23 +59,19 @@ class _LoginScreenState extends State<LoginScreen> {
                                 bottom: 0,
                                 right: 0,
                                 left: 0,
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color: Colors.white,
+                                child: FilledButton.icon(
+                                  onPressed: () async =>
+                                      await loginStore.setImageUrl(),
+                                  style: FilledButton.styleFrom(
+                                    backgroundColor: Colors.white,
+                                    foregroundColor: Colors.purple,
+                                    overlayColor: Colors.transparent,
                                   ),
-                                  child: IconButton(
-                                    onPressed: () async =>
-                                        await loginStore.setImageUrl(),
-                                    style: TextButton.styleFrom(
-                                      overlayColor: Colors.transparent,
-                                    ),
-                                    iconSize: 30.0,
-                                    icon: Icon(
-                                      FontAwesome.camera_alt,
-                                      color: Colors.purple,
-                                    ),
+                                  icon: Icon(
+                                    FontAwesome.camera_alt,
+                                    size: 26.0,
                                   ),
+                                  label: Text('Select Image'),
                                 ),
                               ),
                             ],

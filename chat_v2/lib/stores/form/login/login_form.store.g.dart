@@ -32,10 +32,10 @@ mixin _$LoginFormStore on LoginFormStoreBase, Store {
     () => super.currentUser,
     name: 'LoginFormStoreBase.currentUser',
   )).value;
-  Computed<String?>? _$errorComputed;
+  Computed<String>? _$errorComputed;
 
   @override
-  String? get error => (_$errorComputed ??= Computed<String?>(
+  String get error => (_$errorComputed ??= Computed<String>(
     () => super.error,
     name: 'LoginFormStoreBase.error',
   )).value;
@@ -137,29 +137,18 @@ mixin _$LoginFormStore on LoginFormStoreBase, Store {
     return super._userChanges;
   }
 
+  bool __userChangesIsInitialized = false;
+
   @override
   set _userChanges(ObservableStream<AppUser?> value) {
-    _$_userChangesAtom.reportWrite(value, super._userChanges, () {
-      super._userChanges = value;
-    });
-  }
-
-  late final _$_currentUserAtom = Atom(
-    name: 'LoginFormStoreBase._currentUser',
-    context: context,
-  );
-
-  @override
-  AppUser? get _currentUser {
-    _$_currentUserAtom.reportRead();
-    return super._currentUser;
-  }
-
-  @override
-  set _currentUser(AppUser? value) {
-    _$_currentUserAtom.reportWrite(value, super._currentUser, () {
-      super._currentUser = value;
-    });
+    _$_userChangesAtom.reportWrite(
+      value,
+      __userChangesIsInitialized ? super._userChanges : null,
+      () {
+        super._userChanges = value;
+        __userChangesIsInitialized = true;
+      },
+    );
   }
 
   late final _$setImageUrlAsyncAction = AsyncAction(
@@ -208,18 +197,6 @@ mixin _$LoginFormStore on LoginFormStoreBase, Store {
   );
 
   @override
-  AppUser? _getCurrentUser() {
-    final _$actionInfo = _$LoginFormStoreBaseActionController.startAction(
-      name: 'LoginFormStoreBase._getCurrentUser',
-    );
-    try {
-      return super._getCurrentUser();
-    } finally {
-      _$LoginFormStoreBaseActionController.endAction(_$actionInfo);
-    }
-  }
-
-  @override
   void toggleLogin() {
     final _$actionInfo = _$LoginFormStoreBaseActionController.startAction(
       name: 'LoginFormStoreBase.toggleLogin',
@@ -238,18 +215,6 @@ mixin _$LoginFormStore on LoginFormStoreBase, Store {
     );
     try {
       return super.toggleVisible();
-    } finally {
-      _$LoginFormStoreBaseActionController.endAction(_$actionInfo);
-    }
-  }
-
-  @override
-  Stream<AppUser?> _fetchUserChanges() {
-    final _$actionInfo = _$LoginFormStoreBaseActionController.startAction(
-      name: 'LoginFormStoreBase._fetchUserChanges',
-    );
-    try {
-      return super._fetchUserChanges();
     } finally {
       _$LoginFormStoreBaseActionController.endAction(_$actionInfo);
     }

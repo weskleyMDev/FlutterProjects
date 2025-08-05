@@ -42,17 +42,17 @@ class _LoginFormState extends State<LoginForm> {
     try {
       if (_loginStore.isLogin) {
         await _loginStore.signIn();
+        _clearFields();
       } else {
         await _loginStore.signUp();
+        _clearFields();
       }
     } catch (e) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).clearSnackBars();
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(_loginStore.error ?? e.toString())),
+        SnackBar(content: Text(_loginStore.error)),
       );
-    } finally {
-      _clearFields();
     }
   }
 
@@ -184,26 +184,31 @@ class _LoginFormState extends State<LoginForm> {
                     ),
                   ],
                 ),
-                ElevatedButton(
-                  onPressed: () async => await _submitForm(),
-                  child: Text(_loginStore.isLogin ? 'LOGIN' : 'SIGN UP'),
+                Container(
+                  margin: const EdgeInsets.only(top: 30.0),
+                  child: ElevatedButton(
+                    onPressed: () async => await _submitForm(),
+                    child: Text(_loginStore.isLogin ? 'LOGIN' : 'SIGN UP'),
+                  ),
                 ),
-                const SizedBox(height: 20.0),
-                InkWell(
-                  onTap: () {
-                    _loginStore.toggleLogin();
-                  },
-                  child: Text(
-                    _loginStore.isLogin
-                        ? "Don't have an account? Sign up"
-                        : 'Already have an account? Sign in',
-                    style: TextStyle(
-                      color: Colors.purple,
-                      fontSize: 14,
-                      fontWeight: FontWeight.bold,
+                Container(
+                  margin: const EdgeInsets.only(top: 30.0),
+                  child: InkWell(
+                    onTap: () {
+                      _loginStore.toggleLogin();
+                    },
+                    child: Text(
+                      _loginStore.isLogin
+                          ? "Don't have an account? Sign up"
+                          : 'Already have an account? Sign in',
+                      style: TextStyle(
+                        color: Colors.purple,
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      textAlign: TextAlign.center,
+                      overflow: TextOverflow.ellipsis,
                     ),
-                    textAlign: TextAlign.center,
-                    overflow: TextOverflow.ellipsis,
                   ),
                 ),
               ],
