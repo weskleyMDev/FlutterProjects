@@ -1,6 +1,8 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:get_it/get_it.dart';
+import 'package:shop_v2/firebase_options.dart';
 import 'package:shop_v2/services/login/firebase_service.dart';
 import 'package:shop_v2/stores/login/login.store.dart';
 import 'package:shop_v2/utils/routes/app_routes.dart';
@@ -13,9 +15,12 @@ void _setup() {
   );
 }
 
-void main() {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   _setup();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+);
   runApp(const MyApp());
 }
 
