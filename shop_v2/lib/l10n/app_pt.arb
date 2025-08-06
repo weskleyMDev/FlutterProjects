@@ -1,0 +1,50 @@
+{
+    "@@locale": "pt",
+    "hello": "Olá",
+    "@hello": {
+        "description": "Greeting message"
+    },
+    "already_have_an_account": "Já possui uma conta",
+    "@already_have_an_account": {
+        "description": "Asking if user already has an account"
+    },
+    "shop_clothings_v2": "Loja de Roupas V2",
+    "@shop_clothings_v2": {
+        "description": "App Name"
+    },
+    "sign_in": "Entrar",
+    "@sign_in": {
+        "description": "Label for sign in button"
+    },
+    "sign_up": "Registrar",
+    "@sign_up": {
+        "description": "Label for sign up button"
+    },
+    "sign_out": "Sair",
+    "@sign_out": {
+        "description": "Label for sign out button"
+    },
+    "news": "Novidades",
+    "@news": {
+        "description": "Label for news screen"
+    },
+    "home": "Início",
+    "@home": {
+        "description": "Label for home screen"
+    },
+    "product": "{count, plural, =1{Produto} other{Produtos}}",
+    "@product": {
+        "description": "Label for products screen",
+        "placeholders": {
+            "count": {}
+        }
+    },
+    "orders": "Pedidos",
+    "@orders": {
+        "description": "Label for orders screen"
+    },
+    "profile": "Perfil",
+    "@profile": {
+        "description": "Label for profile screen"
+    }
+}

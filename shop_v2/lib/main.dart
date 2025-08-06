@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:get_it/get_it.dart';
 import 'package:shop_v2/firebase_options.dart';
+import 'package:shop_v2/l10n/app_localizations.dart';
 import 'package:shop_v2/services/login/firebase_service.dart';
 import 'package:shop_v2/services/stock/stock_service.dart';
 import 'package:shop_v2/stores/login/login.store.dart';
@@ -35,9 +36,9 @@ class MyApp extends StatelessWidget {
     return MaterialApp.router(
       debugShowCheckedModeBanner: false,
       title: 'Shop V2',
-      locale: const Locale('pt', 'BR'),
-      supportedLocales: const [Locale('pt', 'BR'), Locale('en', 'US')],
+      supportedLocales: AppLocalizations.supportedLocales,
       localizationsDelegates: [
+        AppLocalizations.delegate,
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,

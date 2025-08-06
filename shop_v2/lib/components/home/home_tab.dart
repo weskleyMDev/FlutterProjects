@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:get_it/get_it.dart';
+import 'package:shop_v2/l10n/app_localizations.dart';
 import 'package:shop_v2/stores/stock/home.store.dart';
+import 'package:shop_v2/utils/theme/gradient.dart';
+import 'package:transparent_image/transparent_image.dart';
 
 class HomeTab extends StatelessWidget {
   const HomeTab({super.key});
@@ -9,19 +13,14 @@ class HomeTab extends StatelessWidget {
   Widget build(BuildContext context) {
     final homeStore = GetIt.instance<HomeStore>();
 
-    Widget buildBodyBack() => Container(
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [Colors.pink.shade700, Colors.pinkAccent.shade100],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-      ),
-    );
-
     return Stack(
       children: [
-        buildBodyBack(),
+        buildBodyBack(
+          colorX: Colors.pink.shade700,
+          colorY: Colors.pinkAccent.shade100,
+          x: Alignment.topLeft,
+          y: Alignment.bottomRight,
+        ),
         CustomScrollView(
           slivers: [
             SliverAppBar(
@@ -30,7 +29,7 @@ class HomeTab extends StatelessWidget {
               backgroundColor: Colors.transparent,
               elevation: 0.0,
               flexibleSpace: FlexibleSpaceBar(
-                title: const Text('News'),
+                title: Text(AppLocalizations.of(context)!.news),
                 centerTitle: true,
               ),
             ),
@@ -38,12 +37,30 @@ class HomeTab extends StatelessWidget {
               stream: homeStore.productsList,
               builder: (context, snapshot) {
                 if (!snapshot.hasData) {
-                  return const SliverToBoxAdapter(
-                    child: Center(child: CircularProgressIndicator()),
+                  return SliverToBoxAdapter(
+                    child: const Center(child: CircularProgressIndicator()),
                   );
                 } else {
-                  print(snapshot.data);
-                  return SliverToBoxAdapter(child: Center(child: Container()));
+                  return SliverToBoxAdapter(
+                    child: StaggeredGrid.count(
+                      crossAxisCount: 2,
+                      mainAxisSpacing: 0.5,
+                      crossAxisSpacing: 0.5,
+                      children: snapshot.data!
+                          .map(
+                            (doc) => StaggeredGridTile.count(
+                              crossAxisCellCount: doc.x,
+                              mainAxisCellCount: doc.y,
+                              child: FadeInImage.memoryNetwork(
+                                placeholder: kTransparentImage,
+                                image: doc.imageUrl,
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                          )
+                          .toList(),
+                    ),
+                  );
                 }
               },
             ),
