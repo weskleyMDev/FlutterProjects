@@ -160,6 +160,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Profile'**
   String get profile;
+
+  /// Label for tshirts screen
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{Tshirt} other{Tshirts}}'**
+  String tshirt(num count);
+
+  /// Label for jackets screen
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{Jacket} other{Jackets}}'**
+  String jacket(num count);
+
+  /// Label for pants screen
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{Pants} other{Pants}}'**
+  String pants(num count);
+
+  /// Label for shorts screen
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{Shorts} other{Shorts}}'**
+  String shorts(num count);
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

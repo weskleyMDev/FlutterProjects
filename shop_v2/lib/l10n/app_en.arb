@@ -46,5 +46,33 @@
     "profile": "Profile",
     "@profile": {
         "description": "Label for profile screen"
+    },
+    "tshirt": "{count, plural, =1{Tshirt} other{Tshirts}}",
+    "@tshirt": {
+        "description": "Label for tshirts screen",
+        "placeholders": {
+            "count": {}
+        }
+    },
+    "jacket": "{count, plural, =1{Jacket} other{Jackets}}",
+    "@jacket": {
+        "description": "Label for jackets screen",
+        "placeholders": {
+            "count": {}
+        }
+    },
+    "pants": "{count, plural, =1{Pants} other{Pants}}",
+    "@pants": {
+        "description": "Label for pants screen",
+        "placeholders": {
+            "count": {}
+        }
+    },
+    "shorts": "{count, plural, =1{Shorts} other{Shorts}}",
+    "@shorts": {
+        "description": "Label for shorts screen",
+        "placeholders": {
+            "count": {}
+        }
     }
 }

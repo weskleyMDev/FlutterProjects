@@ -48,4 +48,48 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get profile => 'Profile';
+
+  @override
+  String tshirt(num count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Tshirts',
+      one: 'Tshirt',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String jacket(num count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Jackets',
+      one: 'Jacket',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String pants(num count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Pants',
+      one: 'Pants',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String shorts(num count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Shorts',
+      one: 'Shorts',
+    );
+    return '$_temp0';
+  }
 }

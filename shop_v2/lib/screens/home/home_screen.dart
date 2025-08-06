@@ -7,11 +7,6 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final pageController = PageController();
-    return PageView(
-      controller: pageController,
-      physics: NeverScrollableScrollPhysics(),
-      children: [Scaffold(drawer: HomeDrawer(), body: HomeTab())],
-    );
+    return Scaffold(drawer: HomeDrawer(), body: HomeTab());
   }
 }

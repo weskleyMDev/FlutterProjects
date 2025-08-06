@@ -1,10 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:fluttericon/font_awesome5_icons.dart';
+import 'package:go_router/go_router.dart';
 import 'package:shop_v2/l10n/app_localizations.dart';
 import 'package:shop_v2/utils/theme/gradient.dart';
 
 class HomeDrawer extends StatelessWidget {
   const HomeDrawer({super.key});
+
+  Widget _drawerTile(
+    BuildContext context,
+    IconData icon,
+    String title,
+    String path,
+  ) => ListTile(
+    leading: Icon(icon),
+    title: Text(title),
+    titleTextStyle: TextStyle(fontWeight: FontWeight.bold),
+    iconColor: Colors.deepPurple.shade700,
+    textColor: Colors.deepPurple.shade700,
+    onTap: () => context.goNamed(path),
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -60,37 +75,29 @@ class HomeDrawer extends StatelessWidget {
                   ),
                 ),
               ),
-              ListTile(
-                leading: Icon(FontAwesome5.home),
-                title: Text(AppLocalizations.of(context)!.home),
-                titleTextStyle: TextStyle(fontWeight: FontWeight.bold),
-                iconColor: Colors.deepPurple.shade700,
-                textColor: Colors.deepPurple.shade700,
-                onTap: () {},
+              _drawerTile(
+                context,
+                FontAwesome5.home,
+                AppLocalizations.of(context)!.home,
+                'home-screen',
               ),
-              ListTile(
-                leading: Icon(FontAwesome5.id_card),
-                title: Text(AppLocalizations.of(context)!.profile),
-                titleTextStyle: TextStyle(fontWeight: FontWeight.bold),
-                iconColor: Colors.deepPurple.shade700,
-                textColor: Colors.deepPurple.shade700,
-                onTap: () {},
+              _drawerTile(
+                context,
+                FontAwesome5.id_card,
+                AppLocalizations.of(context)!.profile,
+                'profile-screen',
               ),
-              ListTile(
-                leading: Icon(FontAwesome5.tshirt),
-                title: Text(AppLocalizations.of(context)!.product(2)),
-                titleTextStyle: TextStyle(fontWeight: FontWeight.bold),
-                iconColor: Colors.deepPurple.shade700,
-                textColor: Colors.deepPurple.shade700,
-                onTap: () {},
+              _drawerTile(
+                context,
+                FontAwesome5.tshirt,
+                AppLocalizations.of(context)!.product(2),
+                'products-categories',
               ),
-              ListTile(
-                leading: Icon(FontAwesome5.truck),
-                title: Text(AppLocalizations.of(context)!.orders),
-                titleTextStyle: TextStyle(fontWeight: FontWeight.bold),
-                iconColor: Colors.deepPurple.shade700,
-                textColor: Colors.deepPurple.shade700,
-                onTap: () {},
+              _drawerTile(
+                context,
+                FontAwesome5.truck,
+                AppLocalizations.of(context)!.orders,
+                'orders-screen',
               ),
               Spacer(),
               ListTile(

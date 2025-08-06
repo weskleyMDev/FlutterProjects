@@ -12,14 +12,13 @@ class HomeTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final homeStore = GetIt.instance<HomeStore>();
-
     return Stack(
       children: [
         buildBodyBack(
           colorX: Colors.pink.shade700,
           colorY: Colors.pinkAccent.shade100,
-          x: Alignment.topLeft,
-          y: Alignment.bottomRight,
+          x: Alignment.topCenter,
+          y: Alignment.bottomCenter,
         ),
         CustomScrollView(
           slivers: [
