@@ -78,5 +78,9 @@
     "no_data_found": "No data found!",
     "@no_data_found": {
         "description": "Label for no data found"
+    },
+    "size": "Size",
+    "@size": {
+        "description": "Label for size"
     }
 }

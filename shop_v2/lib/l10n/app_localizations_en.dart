@@ -95,4 +95,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get no_data_found => 'No data found!';
+
+  @override
+  String get size => 'Size';
 }

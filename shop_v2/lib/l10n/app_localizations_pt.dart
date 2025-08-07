@@ -95,4 +95,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get no_data_found => 'Nenhum dado encontrado!';
+
+  @override
+  String get size => 'Tamanho';
 }

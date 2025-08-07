@@ -1,5 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:get_it/get_it.dart';
 import 'package:shop_v2/firebase_options.dart';
@@ -32,6 +33,11 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   _setup();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  await SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation
+        .portraitDown, 
+  ]);
   runApp(const MyApp());
 }
 
