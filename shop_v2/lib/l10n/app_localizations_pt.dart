@@ -92,4 +92,7 @@ class AppLocalizationsPt extends AppLocalizations {
     );
     return '$_temp0';
   }
+
+  @override
+  String get no_data_found => 'Nenhum dado encontrado!';
 }

@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:fluttericon/font_awesome5_icons.dart';
+import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shop_v2/l10n/app_localizations.dart';
+import 'package:shop_v2/stores/components/drawer.store.dart';
 import 'package:shop_v2/utils/theme/gradient.dart';
+
+final drawerStore = GetIt.instance<DrawerStore>();
 
 class HomeDrawer extends StatelessWidget {
   const HomeDrawer({super.key});
@@ -12,13 +16,21 @@ class HomeDrawer extends StatelessWidget {
     IconData icon,
     String title,
     String path,
+    bool isSelected,
+    DrawerOptions option,
   ) => ListTile(
     leading: Icon(icon),
     title: Text(title),
-    titleTextStyle: TextStyle(fontWeight: FontWeight.bold),
-    iconColor: Colors.deepPurple.shade700,
-    textColor: Colors.deepPurple.shade700,
-    onTap: () => context.goNamed(path),
+    titleTextStyle: TextStyle(
+      fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+      fontSize: isSelected ? 18.0 : 16.0,
+    ),
+    iconColor: isSelected ? Colors.deepPurple.shade700 : Colors.grey.shade700,
+    textColor: isSelected ? Colors.deepPurple.shade700 : Colors.grey.shade700,
+    onTap: () {
+      drawerStore.toggleOption(option);
+      context.goNamed(path);
+    },
   );
 
   @override
@@ -80,24 +92,32 @@ class HomeDrawer extends StatelessWidget {
                 FontAwesome5.home,
                 AppLocalizations.of(context)!.home,
                 'home-screen',
+                drawerStore.isHome,
+                DrawerOptions.home,
               ),
               _drawerTile(
                 context,
                 FontAwesome5.id_card,
                 AppLocalizations.of(context)!.profile,
                 'profile-screen',
+                drawerStore.isProfile,
+                DrawerOptions.profile,
               ),
               _drawerTile(
                 context,
                 FontAwesome5.tshirt,
                 AppLocalizations.of(context)!.product(2),
-                'products-categories',
+                'categories-screen',
+                drawerStore.isProducts,
+                DrawerOptions.products,
               ),
               _drawerTile(
                 context,
                 FontAwesome5.truck,
                 AppLocalizations.of(context)!.orders,
                 'orders-screen',
+                drawerStore.isOrders,
+                DrawerOptions.orders,
               ),
               Spacer(),
               ListTile(

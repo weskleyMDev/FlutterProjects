@@ -184,6 +184,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{count, plural, =1{Shorts} other{Shorts}}'**
   String shorts(num count);
+
+  /// Label for no data found
+  ///
+  /// In en, this message translates to:
+  /// **'No data found!'**
+  String get no_data_found;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

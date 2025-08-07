@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:get_it/get_it.dart';
 import 'package:shop_v2/l10n/app_localizations.dart';
-import 'package:shop_v2/stores/stock/home.store.dart';
+import 'package:shop_v2/stores/showcase/showcase.store.dart';
 import 'package:shop_v2/utils/theme/gradient.dart';
 import 'package:transparent_image/transparent_image.dart';
 
@@ -11,7 +11,7 @@ class HomeTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final homeStore = GetIt.instance<HomeStore>();
+    final homeStore = GetIt.instance<ShowcaseStore>();
     return Stack(
       children: [
         buildBodyBack(

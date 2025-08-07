@@ -1,11 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:shop_v2/models/product/product.dart';
-import 'package:shop_v2/services/stock/istock_service.dart';
+import 'package:shop_v2/models/products/products_off.dart';
+import 'package:shop_v2/services/showcase/ishowcase_service.dart';
 
-class StockService implements IStockService {
+class ShowcaseService implements IShowcaseService {
   static final _firestore = FirebaseFirestore.instance;
 
-  Stream<List<Product>> _fetchProducts() {
+  Stream<List<ProductOff>> _fetchProducts() {
     return _firestore
         .collection('home')
         .withConverter(fromFirestore: _fromFirestore, toFirestore: _toFirestore)
@@ -14,14 +14,14 @@ class StockService implements IStockService {
         .map((snapshot) => snapshot.docs.map((doc) => doc.data()).toList());
   }
 
-  Map<String, dynamic> _toFirestore(Product product, SetOptions? options) =>
+  Map<String, dynamic> _toFirestore(ProductOff product, SetOptions? options) =>
       product.toMap();
 
-  Product _fromFirestore(
+  ProductOff _fromFirestore(
     DocumentSnapshot<Map<String, dynamic>> snapshot,
     SnapshotOptions? options,
-  ) => Product.fromMap(snapshot.data()!);
+  ) => ProductOff.fromMap(snapshot.data()!);
 
   @override
-  Stream<List<Product>> get products => _fetchProducts();
+  Stream<List<ProductOff>> get products => _fetchProducts();
 }

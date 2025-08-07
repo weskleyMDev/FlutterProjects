@@ -4,10 +4,13 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:get_it/get_it.dart';
 import 'package:shop_v2/firebase_options.dart';
 import 'package:shop_v2/l10n/app_localizations.dart';
+import 'package:shop_v2/repositories/products/products_repository.dart';
 import 'package:shop_v2/services/login/firebase_service.dart';
-import 'package:shop_v2/services/stock/stock_service.dart';
+import 'package:shop_v2/services/showcase/showcase_service.dart';
+import 'package:shop_v2/stores/components/drawer.store.dart';
 import 'package:shop_v2/stores/login/login.store.dart';
-import 'package:shop_v2/stores/stock/home.store.dart';
+import 'package:shop_v2/stores/products/products.store.dart';
+import 'package:shop_v2/stores/showcase/showcase.store.dart';
 import 'package:shop_v2/utils/routes/app_routes.dart';
 import 'package:shop_v2/utils/theme/theme.dart';
 
@@ -16,7 +19,13 @@ void _setup() {
   getIt.registerLazySingleton(
     () => LoginStore(loginService: FirebaseService()),
   );
-  getIt.registerLazySingleton(() => HomeStore(stockService: StockService()));
+  getIt.registerLazySingleton(
+    () => ShowcaseStore(showcaseService: ShowcaseService()),
+  );
+  getIt.registerLazySingleton(() => DrawerStore());
+  getIt.registerLazySingleton(
+    () => ProductsStore(productsRepository: ProductsRepository()),
+  );
 }
 
 Future<void> main() async {

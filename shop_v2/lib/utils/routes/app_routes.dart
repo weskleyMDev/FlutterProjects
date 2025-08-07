@@ -1,5 +1,6 @@
 import 'package:go_router/go_router.dart';
 import 'package:shop_v2/screens/home/home_screen.dart';
+import 'package:shop_v2/screens/products/categories_screen.dart';
 import 'package:shop_v2/screens/products/products_screen.dart';
 
 final routes = GoRouter(
@@ -11,9 +12,16 @@ final routes = GoRouter(
       builder: (context, state) => HomeScreen(),
     ),
     GoRoute(
-      path: '/products',
-      name: 'products-categories',
-      builder: (context, state) => ProductsScreen(),
+      path: '/categories',
+      name: 'categories-screen',
+      builder: (context, state) => CategoriesScreen(),
+      routes: [
+        GoRoute(
+          path: '/categories/products',
+          name: 'products-screen',
+          builder: (context, state) => ProductsScreen(),
+        ),
+      ],
     ),
   ],
 );
