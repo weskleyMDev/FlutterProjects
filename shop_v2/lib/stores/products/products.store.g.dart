@@ -17,47 +17,54 @@ mixin _$ProductsStore on ProductsStoreBase, Store {
         () => super.productsList,
         name: 'ProductsStoreBase.productsList',
       )).value;
-  Computed<int?>? _$selectedIndexComputed;
+  Computed<String?>? _$categoryLabelComputed;
 
   @override
-  int? get selectedIndex => (_$selectedIndexComputed ??= Computed<int?>(
-    () => super.selectedIndex,
-    name: 'ProductsStoreBase.selectedIndex',
+  String? get categoryLabel => (_$categoryLabelComputed ??= Computed<String?>(
+    () => super.categoryLabel,
+    name: 'ProductsStoreBase.categoryLabel',
+  )).value;
+  Computed<int?>? _$selectedSizeComputed;
+
+  @override
+  int? get selectedSize => (_$selectedSizeComputed ??= Computed<int?>(
+    () => super.selectedSize,
+    name: 'ProductsStoreBase.selectedSize',
   )).value;
 
-  late final _$categoryLabelAtom = Atom(
-    name: 'ProductsStoreBase.categoryLabel',
+  late final _$_categoryLabelAtom = Atom(
+    name: 'ProductsStoreBase._categoryLabel',
     context: context,
   );
 
   @override
-  String? get categoryLabel {
-    _$categoryLabelAtom.reportRead();
-    return super.categoryLabel;
+  String? get _categoryLabel {
+    _$_categoryLabelAtom.reportRead();
+    return super._categoryLabel;
   }
 
   @override
-  set categoryLabel(String? value) {
-    _$categoryLabelAtom.reportWrite(value, super.categoryLabel, () {
-      super.categoryLabel = value;
+  set _categoryLabel(String? value) {
+    _$_categoryLabelAtom.reportWrite(value, super._categoryLabel, () {
+      super._categoryLabel = value;
     });
   }
 
-  late final _$_selectedIndexAtom = Atom(
-    name: 'ProductsStoreBase._selectedIndex',
+  late final _$_selectedSizeAtom = Atom(
+    name: 'ProductsStoreBase._selectedSize',
     context: context,
   );
 
   @override
-  int? get _selectedIndex {
-    _$_selectedIndexAtom.reportRead();
-    return super._selectedIndex;
+  int? get _selectedSize {
+    _$_selectedSizeAtom.reportRead();
+    return super._selectedSize;
   }
 
   @override
-  set _selectedIndex(int? value) {
-    _$_selectedIndexAtom.reportWrite(value, super._selectedIndex, () {
-      super._selectedIndex = value;
+  set _selectedSize(int? value) {
+    _$_selectedSizeAtom.reportWrite(value, super._selectedSize, () {
+      super._selectedSize = value;
     });
   }
 
@@ -91,12 +98,22 @@ mixin _$ProductsStore on ProductsStoreBase, Store {
     );
   }
 
+  late final _$disposeAsyncAction = AsyncAction(
+    'ProductsStoreBase.dispose',
+    context: context,
+  );
+
+  @override
+  Future<void> dispose() {
+    return _$disposeAsyncAction.run(() => super.dispose());
+  }
+
   @override
   String toString() {
     return '''
-categoryLabel: ${categoryLabel},
 productsList: ${productsList},
-selectedIndex: ${selectedIndex}
+categoryLabel: ${categoryLabel},
+selectedSize: ${selectedSize}
     ''';
   }
 }

@@ -54,8 +54,8 @@ class AppLocalizationsEn extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'Tshirts',
-      one: 'Tshirt',
+      other: 'TShirts',
+      one: 'TShirt',
     );
     return '$_temp0';
   }
@@ -98,4 +98,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get size => 'Size';
+
+  @override
+  String get add_to_cart => 'Add to cart';
 }

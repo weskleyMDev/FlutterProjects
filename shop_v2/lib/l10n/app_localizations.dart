@@ -161,10 +161,10 @@ abstract class AppLocalizations {
   /// **'Profile'**
   String get profile;
 
-  /// Label for tshirts screen
+  /// Label for TShirts screen
   ///
   /// In en, this message translates to:
-  /// **'{count, plural, =1{Tshirt} other{Tshirts}}'**
+  /// **'{count, plural, =1{TShirt} other{TShirts}}'**
   String tshirt(num count);
 
   /// Label for jackets screen
@@ -196,6 +196,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Size'**
   String get size;
+
+  /// Label for add to cart button
+  ///
+  /// In en, this message translates to:
+  /// **'Add to cart'**
+  String get add_to_cart;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

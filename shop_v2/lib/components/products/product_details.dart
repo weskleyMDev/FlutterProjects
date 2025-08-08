@@ -34,7 +34,7 @@ class ProductDetails extends StatelessWidget {
               );
             },
             options: CarouselOptions(
-              height: maxHeigh * 0.4,
+              height: maxHeigh * 0.5,
               viewportFraction: 0.9,
               enableInfiniteScroll: true,
               enlargeCenterPage: false,
@@ -61,14 +61,14 @@ class ProductDetails extends StatelessWidget {
                 return Observer(
                   builder: (_) {
                     final size = product.sizes[index];
-                    final isSelected = productsStore.selectedIndex == index;
+                    final isSelected = productsStore.selectedSize == index;
                     return Container(
                       margin: const EdgeInsets.only(right: 5.0),
                       child: ChoiceChip(
                         label: Text(size),
                         selected: isSelected,
                         onSelected: (_) {
-                          productsStore.selectedIndex = index;
+                          productsStore.selectedSize = index;
                         },
                         selectedColor: Theme.of(
                           context,
@@ -81,6 +81,10 @@ class ProductDetails extends StatelessWidget {
               },
             ),
           ),
+          Observer(builder: (_) {return ElevatedButton(
+            onPressed: productsStore.selectedSize == null ? null : () {},
+            child: Text(AppLocalizations.of(context)!.add_to_cart),
+          );}),
         ],
       ),
     );

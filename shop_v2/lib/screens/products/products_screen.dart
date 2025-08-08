@@ -7,8 +7,20 @@ import 'package:shop_v2/l10n/app_localizations.dart';
 import 'package:shop_v2/models/products/product_model.dart';
 import 'package:shop_v2/stores/products/products.store.dart';
 
-class ProductsScreen extends StatelessWidget {
+class ProductsScreen extends StatefulWidget {
   const ProductsScreen({super.key});
+
+  @override
+  State<ProductsScreen> createState() => _ProductsScreenState();
+}
+
+class _ProductsScreenState extends State<ProductsScreen> {
+
+  @override
+  void dispose() {
+    GetIt.instance<ProductsStore>().dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {

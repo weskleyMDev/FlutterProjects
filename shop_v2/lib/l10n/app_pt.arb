@@ -82,5 +82,9 @@
     "size": "Tamanho",
     "@size": {
         "description": "Label for size"
+    },
+    "add_to_cart": "Adicionar ao carrinho",
+    "@add_to_cart": {
+        "description": "Label for add to cart button"
     }
 }

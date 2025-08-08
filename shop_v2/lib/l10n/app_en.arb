@@ -47,9 +47,9 @@
     "@profile": {
         "description": "Label for profile screen"
     },
-    "tshirt": "{count, plural, =1{Tshirt} other{Tshirts}}",
+    "tshirt": "{count, plural, =1{TShirt} other{TShirts}}",
     "@tshirt": {
-        "description": "Label for tshirts screen",
+        "description": "Label for TShirts screen",
         "placeholders": {
             "count": {}
         }
@@ -82,5 +82,9 @@
     "size": "Size",
     "@size": {
         "description": "Label for size"
+    },
+    "add_to_cart": "Add to cart",
+    "@add_to_cart": {
+        "description": "Label for add to cart button"
     }
 }

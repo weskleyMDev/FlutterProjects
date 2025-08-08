@@ -15,23 +15,26 @@ abstract class ProductsStoreBase with Store {
   final IProductsRepository productsRepository;
 
   @observable
-  String? categoryLabel;
+  String? _categoryLabel;
 
   @observable
-  int? _selectedIndex;
+  int? _selectedSize;
 
   @observable
   ObservableStream<List<ProductModel>> _productsStream = ObservableStream(
-    Stream.empty(),
+    Stream.empty(broadcast: true),
   );
 
   @computed
   Stream<List<ProductModel>> get productsList => _productsStream;
 
   @computed
-  int? get selectedIndex => _selectedIndex;
+  String? get categoryLabel => _categoryLabel;
 
-  set selectedIndex(int? value) => _selectedIndex = value;
+  @computed
+  int? get selectedSize => _selectedSize;
+
+  set selectedSize(int? value) => _selectedSize = value;
 
   @action
   Future<void> toggleCategory(
@@ -40,29 +43,35 @@ abstract class ProductsStoreBase with Store {
   ) async {
     switch (options) {
       case CategoriesList.tshirts:
-        categoryLabel = AppLocalizations.of(context)!.tshirt(2);
+        _categoryLabel = AppLocalizations.of(context)!.tshirt(2);
         _productsStream = ObservableStream(
           productsRepository.getProductsByCategory(category: 'tshirts'),
         );
         break;
       case CategoriesList.jackets:
-        categoryLabel = AppLocalizations.of(context)!.jacket(2);
+        _categoryLabel = AppLocalizations.of(context)!.jacket(2);
         _productsStream = ObservableStream(
           productsRepository.getProductsByCategory(category: 'jackets'),
         );
         break;
       case CategoriesList.shorts:
-        categoryLabel = AppLocalizations.of(context)!.shorts(2);
+        _categoryLabel = AppLocalizations.of(context)!.shorts(2);
         _productsStream = ObservableStream(
           productsRepository.getProductsByCategory(category: 'shorts'),
         );
         break;
       case CategoriesList.pants:
-        categoryLabel = AppLocalizations.of(context)!.pants(2);
+        _categoryLabel = AppLocalizations.of(context)!.pants(2);
         _productsStream = ObservableStream(
           productsRepository.getProductsByCategory(category: 'pants'),
         );
         break;
     }
+  }
+
+  @action
+  Future<void> dispose() async {
+    _selectedSize = null;
+    _categoryLabel = null;
   }
 }

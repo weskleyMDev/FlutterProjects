@@ -12,7 +12,7 @@ class ProductsRepository implements IProductsRepository {
         .collection('products')
         .withConverter(fromFirestore: _fromFirestore, toFirestore: _toFirestore)
         .snapshots()
-        .map((snapshot) => snapshot.docs.map((doc) => doc.data()).toList());
+        .map((snapshot) => snapshot.docs.map((doc) => doc.data()).toList()).asBroadcastStream();
   }
 
   Map<String, dynamic> _toFirestore(

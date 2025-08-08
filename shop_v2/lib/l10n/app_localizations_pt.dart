@@ -98,4 +98,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get size => 'Tamanho';
+
+  @override
+  String get add_to_cart => 'Adicionar ao carrinho';
 }
