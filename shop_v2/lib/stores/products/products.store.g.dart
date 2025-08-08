@@ -17,6 +17,13 @@ mixin _$ProductsStore on ProductsStoreBase, Store {
         () => super.productsList,
         name: 'ProductsStoreBase.productsList',
       )).value;
+  Computed<int?>? _$selectedIndexComputed;
+
+  @override
+  int? get selectedIndex => (_$selectedIndexComputed ??= Computed<int?>(
+    () => super.selectedIndex,
+    name: 'ProductsStoreBase.selectedIndex',
+  )).value;
 
   late final _$categoryLabelAtom = Atom(
     name: 'ProductsStoreBase.categoryLabel',
@@ -33,6 +40,24 @@ mixin _$ProductsStore on ProductsStoreBase, Store {
   set categoryLabel(String? value) {
     _$categoryLabelAtom.reportWrite(value, super.categoryLabel, () {
       super.categoryLabel = value;
+    });
+  }
+
+  late final _$_selectedIndexAtom = Atom(
+    name: 'ProductsStoreBase._selectedIndex',
+    context: context,
+  );
+
+  @override
+  int? get _selectedIndex {
+    _$_selectedIndexAtom.reportRead();
+    return super._selectedIndex;
+  }
+
+  @override
+  set _selectedIndex(int? value) {
+    _$_selectedIndexAtom.reportWrite(value, super._selectedIndex, () {
+      super._selectedIndex = value;
     });
   }
 
@@ -70,7 +95,8 @@ mixin _$ProductsStore on ProductsStoreBase, Store {
   String toString() {
     return '''
 categoryLabel: ${categoryLabel},
-productsList: ${productsList}
+productsList: ${productsList},
+selectedIndex: ${selectedIndex}
     ''';
   }
 }

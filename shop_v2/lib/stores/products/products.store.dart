@@ -18,12 +18,20 @@ abstract class ProductsStoreBase with Store {
   String? categoryLabel;
 
   @observable
+  int? _selectedIndex;
+
+  @observable
   ObservableStream<List<ProductModel>> _productsStream = ObservableStream(
     Stream.empty(),
   );
 
   @computed
   Stream<List<ProductModel>> get productsList => _productsStream;
+
+  @computed
+  int? get selectedIndex => _selectedIndex;
+
+  set selectedIndex(int? value) => _selectedIndex = value;
 
   @action
   Future<void> toggleCategory(

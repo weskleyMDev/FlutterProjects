@@ -1,7 +1,10 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:get_it/get_it.dart';
 import 'package:shop_v2/l10n/app_localizations.dart';
 import 'package:shop_v2/models/products/product_model.dart';
+import 'package:shop_v2/stores/products/products.store.dart';
 import 'package:transparent_image/transparent_image.dart';
 
 class ProductDetails extends StatelessWidget {
@@ -11,6 +14,7 @@ class ProductDetails extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final productsStore = GetIt.instance<ProductsStore>();
     final locale = Localizations.localeOf(context).languageCode;
     final maxHeigh = MediaQuery.of(context).size.height;
     final maxWidth = MediaQuery.of(context).size.width;
@@ -54,7 +58,26 @@ class ProductDetails extends StatelessWidget {
               itemCount: product.sizes.length,
               scrollDirection: Axis.horizontal,
               itemBuilder: (context, index) {
-                return Chip(label: Text(product.sizes[index]));
+                return Observer(
+                  builder: (_) {
+                    final size = product.sizes[index];
+                    final isSelected = productsStore.selectedIndex == index;
+                    return Container(
+                      margin: const EdgeInsets.only(right: 5.0),
+                      child: ChoiceChip(
+                        label: Text(size),
+                        selected: isSelected,
+                        onSelected: (_) {
+                          productsStore.selectedIndex = index;
+                        },
+                        selectedColor: Theme.of(
+                          context,
+                        ).colorScheme.inversePrimary,
+                        showCheckmark: false,
+                      ),
+                    );
+                  },
+                );
               },
             ),
           ),
