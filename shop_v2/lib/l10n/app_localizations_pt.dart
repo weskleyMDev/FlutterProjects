@@ -101,4 +101,25 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get add_to_cart => 'Adicionar ao carrinho';
+
+  @override
+  String get email => 'Email';
+
+  @override
+  String get password => 'Senha';
+
+  @override
+  String get add_new_account => 'Adicionar nova conta';
+
+  @override
+  String get forgot_password => 'Esqueceu sua senha?';
+
+  @override
+  String get new_account => 'Nova Conta';
+
+  @override
+  String get user_name => 'Nome';
+
+  @override
+  String get select_image => 'Selecionar Imagem';
 }

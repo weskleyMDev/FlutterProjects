@@ -202,6 +202,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Add to cart'**
   String get add_to_cart;
+
+  /// Label for email input
+  ///
+  /// In en, this message translates to:
+  /// **'Email'**
+  String get email;
+
+  /// Label for password input
+  ///
+  /// In en, this message translates to:
+  /// **'Password'**
+  String get password;
+
+  /// Label for add new account tooltip
+  ///
+  /// In en, this message translates to:
+  /// **'Add New Account'**
+  String get add_new_account;
+
+  /// Label for forgot password button
+  ///
+  /// In en, this message translates to:
+  /// **'Forgot your password?'**
+  String get forgot_password;
+
+  /// Label for new account title
+  ///
+  /// In en, this message translates to:
+  /// **'New Account'**
+  String get new_account;
+
+  /// Label for user name input
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get user_name;
+
+  /// Label for select image button
+  ///
+  /// In en, this message translates to:
+  /// **'Select Image'**
+  String get select_image;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

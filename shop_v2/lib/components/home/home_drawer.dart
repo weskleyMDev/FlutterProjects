@@ -62,7 +62,10 @@ class HomeDrawer extends StatelessWidget {
                           children: [
                             Text('${AppLocalizations.of(context)!.hello},'),
                             InkWell(
-                              onTap: () {},
+                              onTap: () {
+                                context.pop();
+                                context.pushNamed('login-screen');
+                              },
                               child: Text.rich(
                                 TextSpan(
                                   text:

@@ -23,5 +23,8 @@ class CustomTheme {
       bodyColor: colorScheme.onSurface,
       displayColor: colorScheme.onSurface,
     ),
+    inputDecorationTheme: InputDecorationTheme().copyWith(
+      border: OutlineInputBorder(),
+    ),
   );
 }

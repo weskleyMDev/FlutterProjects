@@ -2,6 +2,8 @@ import 'package:go_router/go_router.dart';
 import 'package:shop_v2/components/products/product_details.dart';
 import 'package:shop_v2/models/products/product_model.dart';
 import 'package:shop_v2/screens/home/home_screen.dart';
+import 'package:shop_v2/screens/login/login_screen.dart';
+import 'package:shop_v2/screens/login/new_acc_screen.dart';
 import 'package:shop_v2/screens/products/categories_screen.dart';
 import 'package:shop_v2/screens/products/products_screen.dart';
 
@@ -32,6 +34,18 @@ final routes = GoRouter(
               },
             ),
           ],
+        ),
+      ],
+    ),
+    GoRoute(
+      path: '/login',
+      name: 'login-screen',
+      builder: (context, state) => LoginScreen(),
+      routes: [
+        GoRoute(
+          path: '/login/new-account',
+          name: 'new-acc-screen',
+          builder: (context, state) => const NewAccScreen(),
         ),
       ],
     ),

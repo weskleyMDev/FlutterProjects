@@ -101,4 +101,25 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get add_to_cart => 'Add to cart';
+
+  @override
+  String get email => 'Email';
+
+  @override
+  String get password => 'Password';
+
+  @override
+  String get add_new_account => 'Add New Account';
+
+  @override
+  String get forgot_password => 'Forgot your password?';
+
+  @override
+  String get new_account => 'New Account';
+
+  @override
+  String get user_name => 'Name';
+
+  @override
+  String get select_image => 'Select Image';
 }

@@ -86,5 +86,33 @@
     "add_to_cart": "Adicionar ao carrinho",
     "@add_to_cart": {
         "description": "Label for add to cart button"
+    },
+    "email": "Email",
+    "@email": {
+        "description": "Label for email input"
+    },
+    "password": "Senha",
+    "@password": {
+        "description": "Label for password input"
+    },
+    "add_new_account": "Adicionar nova conta",
+    "@add_new_account": {
+        "description": "Label for add new account tooltip"
+    },
+    "forgot_password": "Esqueceu sua senha?",
+    "@forgot_password": {
+        "description": "Label for forgot password button"
+    },
+    "new_account": "Nova Conta",
+    "@new_account": {
+        "description": "Label for new account title"
+    },
+    "user_name": "Nome",
+    "@user_name": {
+        "description": "Label for user name input"
+    },
+    "select_image": "Selecionar Imagem",
+    "@select_image": {
+        "description": "Label for select image button"
     }
 }
