@@ -46,7 +46,7 @@ class _LoginFormState extends State<LoginForm> {
               ),
             ),
           ),
-          OutlinedButton(
+          FilledButton(
             onPressed: () {},
             child: Text(AppLocalizations.of(context)!.sign_in.toUpperCase()),
           ),

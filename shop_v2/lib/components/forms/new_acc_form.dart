@@ -24,7 +24,7 @@ class _NewAccFormState extends State<NewAccForm> {
             children: [
               Container(
                 margin: const EdgeInsets.only(bottom: 10.0),
-                height: MediaQuery.of(context).size.height * 0.25,
+                height: 200.0,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   border: Border.all(
@@ -65,7 +65,7 @@ class _NewAccFormState extends State<NewAccForm> {
               obscureText: true,
             ),
           ),
-          OutlinedButton(
+          FilledButton(
             onPressed: () {},
             child: Text(AppLocalizations.of(context)!.sign_up.toUpperCase()),
           ),

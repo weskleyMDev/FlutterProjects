@@ -6,10 +6,10 @@ import 'package:get_it/get_it.dart';
 import 'package:shop_v2/firebase_options.dart';
 import 'package:shop_v2/l10n/app_localizations.dart';
 import 'package:shop_v2/repositories/products/products_repository.dart';
-import 'package:shop_v2/services/login/firebase_service.dart';
+import 'package:shop_v2/services/auth/firebase_service.dart';
 import 'package:shop_v2/services/showcase/showcase_service.dart';
+import 'package:shop_v2/stores/auth/auth.store.dart';
 import 'package:shop_v2/stores/components/drawer.store.dart';
-import 'package:shop_v2/stores/login/login.store.dart';
 import 'package:shop_v2/stores/products/products.store.dart';
 import 'package:shop_v2/stores/showcase/showcase.store.dart';
 import 'package:shop_v2/utils/routes/app_routes.dart';
@@ -17,9 +17,7 @@ import 'package:shop_v2/utils/theme/theme.dart';
 
 final getIt = GetIt.instance;
 void _setup() {
-  getIt.registerLazySingleton(
-    () => LoginStore(loginService: FirebaseService()),
-  );
+  getIt.registerLazySingleton(() => AuthStore(authService: FirebaseService()));
   getIt.registerLazySingleton(
     () => ShowcaseStore(showcaseService: ShowcaseService()),
   );
@@ -35,8 +33,7 @@ Future<void> main() async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
-    DeviceOrientation
-        .portraitDown, 
+    DeviceOrientation.portraitDown,
   ]);
   runApp(const MyApp());
 }
