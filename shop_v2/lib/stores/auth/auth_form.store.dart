@@ -16,11 +16,17 @@ abstract class AuthFormStoreBase with Store {
   @observable
   bool _isLoading = false;
 
+  @observable
+  bool _isVisible = false;
+
   @computed
   ObservableMap<String, dynamic> get authFormData => _authFormData;
 
   @computed
   bool get isLoading => _isLoading;
+
+  @computed
+  bool get isVisible => _isVisible;  
 
   set authFormData(ObservableMap<String, dynamic> value) {
     _authFormData = value;
@@ -29,6 +35,11 @@ abstract class AuthFormStoreBase with Store {
   @action
   void toggleLoading() {
     _isLoading = !_isLoading;
+  }
+
+  @action
+  void toggleVisibility() {
+    _isVisible = !_isVisible;
   }
 
   @action

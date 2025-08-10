@@ -24,6 +24,13 @@ mixin _$AuthFormStore on AuthFormStoreBase, Store {
     () => super.isLoading,
     name: 'AuthFormStoreBase.isLoading',
   )).value;
+  Computed<bool>? _$isVisibleComputed;
+
+  @override
+  bool get isVisible => (_$isVisibleComputed ??= Computed<bool>(
+    () => super.isVisible,
+    name: 'AuthFormStoreBase.isVisible',
+  )).value;
 
   late final _$_authFormDataAtom = Atom(
     name: 'AuthFormStoreBase._authFormData',
@@ -58,6 +65,24 @@ mixin _$AuthFormStore on AuthFormStoreBase, Store {
   set _isLoading(bool value) {
     _$_isLoadingAtom.reportWrite(value, super._isLoading, () {
       super._isLoading = value;
+    });
+  }
+
+  late final _$_isVisibleAtom = Atom(
+    name: 'AuthFormStoreBase._isVisible',
+    context: context,
+  );
+
+  @override
+  bool get _isVisible {
+    _$_isVisibleAtom.reportRead();
+    return super._isVisible;
+  }
+
+  @override
+  set _isVisible(bool value) {
+    _$_isVisibleAtom.reportWrite(value, super._isVisible, () {
+      super._isVisible = value;
     });
   }
 
@@ -99,6 +124,18 @@ mixin _$AuthFormStore on AuthFormStoreBase, Store {
   }
 
   @override
+  void toggleVisibility() {
+    final _$actionInfo = _$AuthFormStoreBaseActionController.startAction(
+      name: 'AuthFormStoreBase.toggleVisibility',
+    );
+    try {
+      return super.toggleVisibility();
+    } finally {
+      _$AuthFormStoreBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   void dispose() {
     final _$actionInfo = _$AuthFormStoreBaseActionController.startAction(
       name: 'AuthFormStoreBase.dispose',
@@ -114,7 +151,8 @@ mixin _$AuthFormStore on AuthFormStoreBase, Store {
   String toString() {
     return '''
 authFormData: ${authFormData},
-isLoading: ${isLoading}
+isLoading: ${isLoading},
+isVisible: ${isVisible}
     ''';
   }
 }

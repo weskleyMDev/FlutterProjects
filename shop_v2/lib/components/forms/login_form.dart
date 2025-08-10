@@ -1,5 +1,7 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:fluttericon/font_awesome5_icons.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shop_v2/l10n/app_localizations.dart';
@@ -32,6 +34,13 @@ class _LoginFormState extends State<LoginForm> {
     super.dispose();
   }
 
+  void _showSnackBar(String? message) {
+    ScaffoldMessenger.of(context).clearSnackBars();
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(message ?? 'Unknown error')));
+  }
+
   Future<void> _submitData() async {
     if (!_loginFormKey.currentState!.validate()) {
       return;
@@ -44,8 +53,10 @@ class _LoginFormState extends State<LoginForm> {
         _loginFormData.dispose();
         if (!mounted) return;
         context.goNamed('home-screen');
+      } on FirebaseAuthException catch (e) {
+        _showSnackBar(e.message);
       } catch (e) {
-        rethrow;
+        _showSnackBar(null);
       } finally {
         _loginFormData.toggleLoading();
       }
@@ -68,6 +79,7 @@ class _LoginFormState extends State<LoginForm> {
                   controller: _emailController,
                   decoration: InputDecoration(
                     label: Text(AppLocalizations.of(context)!.email),
+                    prefixIcon: Icon(FontAwesome5.at, size: 22.0),
                   ),
                   keyboardType: TextInputType.emailAddress,
                   onSaved: (newValue) =>
@@ -88,24 +100,38 @@ class _LoginFormState extends State<LoginForm> {
               ),
               Container(
                 margin: const EdgeInsets.only(bottom: 10.0),
-                child: TextFormField(
-                  key: const ValueKey('password'),
-                  controller: _passwordController,
-                  decoration: InputDecoration(
-                    label: Text(AppLocalizations.of(context)!.password),
-                  ),
-                  obscureText: true,
-                  onSaved: (newValue) =>
-                      _loginFormData.authFormData['password'] = newValue
-                          ?.trim(),
-                  validator: (value) {
-                    if (value == null || value.trim().isEmpty) {
-                      return AppLocalizations.of(context)!.enter_password;
-                    }
-                    if (value.trim().length < 6) {
-                      return AppLocalizations.of(context)!.password_length;
-                    }
-                    return null;
+                child: Observer(
+                  builder: (_) {
+                    return TextFormField(
+                      key: const ValueKey('password'),
+                      controller: _passwordController,
+                      decoration: InputDecoration(
+                        label: Text(AppLocalizations.of(context)!.password),
+                        prefixIcon: Icon(FontAwesome5.expeditedssl, size: 22.0),
+                        suffixIcon: (_loginFormData.isVisible)
+                            ? IconButton(
+                                onPressed: _loginFormData.toggleVisibility,
+                                icon: const Icon(Icons.visibility_off),
+                              )
+                            : IconButton(
+                                onPressed: _loginFormData.toggleVisibility,
+                                icon: const Icon(Icons.visibility),
+                              ),
+                      ),
+                      obscureText: !_loginFormData.isVisible,
+                      onSaved: (newValue) =>
+                          _loginFormData.authFormData['password'] = newValue
+                              ?.trim(),
+                      validator: (value) {
+                        if (value == null || value.trim().isEmpty) {
+                          return AppLocalizations.of(context)!.enter_password;
+                        }
+                        if (value.trim().length < 6) {
+                          return AppLocalizations.of(context)!.password_length;
+                        }
+                        return null;
+                      },
+                    );
                   },
                 ),
               ),
