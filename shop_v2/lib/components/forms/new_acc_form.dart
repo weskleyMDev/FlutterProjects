@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:fluttericon/font_awesome5_icons.dart';
 import 'package:get_it/get_it.dart';
+import 'package:go_router/go_router.dart';
 import 'package:shop_v2/l10n/app_localizations.dart';
-import 'package:shop_v2/stores/auth/auth.store.dart';
 import 'package:shop_v2/stores/auth/auth_form.store.dart';
+import 'package:shop_v2/utils/capitalize.dart';
 
 class NewAccForm extends StatefulWidget {
   const NewAccForm({super.key});
@@ -13,8 +14,7 @@ class NewAccForm extends StatefulWidget {
 }
 
 class _NewAccFormState extends State<NewAccForm> {
-  final _formData = GetIt.instance.get<AuthFormStore>();
-  final _authStore = GetIt.instance.get<AuthStore>();
+  final _registerFormData = GetIt.instance.get<AuthFormStore>();
   final _registerFormKey = GlobalKey<FormState>();
   late final TextEditingController _nameController;
   late final TextEditingController _emailController;
@@ -36,22 +36,16 @@ class _NewAccFormState extends State<NewAccForm> {
     super.dispose();
   }
 
-  void _resetData() {
-    _nameController.clear();
-    _emailController.clear();
-    _passwordController.clear();
-    _registerFormKey.currentState!.reset();
-    _formData.dispose();
-  }
-
   Future<void> _submitData() async {
     if (!_registerFormKey.currentState!.validate()) {
       return;
     } else {
       _registerFormKey.currentState!.save();
-      await _formData.registerUser();
-      _resetData();
-      print(_authStore.currentUser);
+      await _registerFormData.registerUser();
+      _registerFormKey.currentState!.reset();
+      _registerFormData.dispose();
+      if (!mounted) return;
+      context.goNamed('home-screen');
     }
   }
 
@@ -90,8 +84,17 @@ class _NewAccFormState extends State<NewAccForm> {
               decoration: InputDecoration(
                 label: Text(AppLocalizations.of(context)!.user_name),
               ),
-              onSaved: (newValue) =>
-                  _formData.authFormData['name'] = newValue?.trim(),
+              onSaved: (newValue) => _registerFormData.authFormData['name'] =
+                  newValue?.trim().capitalize(),
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return AppLocalizations.of(context)!.enter_name;
+                }
+                if (value.trim().length < 3) {
+                  return AppLocalizations.of(context)!.name_length;
+                }
+                return null;
+              },
             ),
           ),
           Container(
@@ -104,7 +107,19 @@ class _NewAccFormState extends State<NewAccForm> {
               ),
               keyboardType: TextInputType.emailAddress,
               onSaved: (newValue) =>
-                  _formData.authFormData['email'] = newValue?.trim(),
+                  _registerFormData.authFormData['email'] = newValue?.trim(),
+              validator: (value) {
+                if (value == null || value.trim().isEmpty) {
+                  return AppLocalizations.of(context)!.enter_email;
+                }
+                final validate = RegExp(
+                  r'^[a-z0-9._-]+@[a-z0-9-]+\.(com|org|net|gov|edu)(\.[a-z]{2})?$',
+                ).hasMatch(value.trim());
+                if (!validate) {
+                  return AppLocalizations.of(context)!.enter_valid_email;
+                }
+                return null;
+              },
             ),
           ),
           Container(
@@ -117,7 +132,16 @@ class _NewAccFormState extends State<NewAccForm> {
               ),
               obscureText: true,
               onSaved: (newValue) =>
-                  _formData.authFormData['password'] = newValue?.trim(),
+                  _registerFormData.authFormData['password'] = newValue?.trim(),
+              validator: (value) {
+                if (value == null || value.trim().isEmpty) {
+                  return AppLocalizations.of(context)!.enter_password;
+                }
+                if (value.trim().length < 6) {
+                  return AppLocalizations.of(context)!.password_length;
+                }
+                return null;
+              },
             ),
           ),
           FilledButton(

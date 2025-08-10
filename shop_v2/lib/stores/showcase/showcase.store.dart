@@ -7,11 +7,12 @@ part 'showcase.store.g.dart';
 class ShowcaseStore = ShowcaseStoreBase with _$ShowcaseStore;
 
 abstract class ShowcaseStoreBase with Store {
-  ShowcaseStoreBase({required this.showcaseService}) {
-    _productStream = ObservableStream(showcaseService.products);
+  ShowcaseStoreBase({required IShowcaseService showcaseService})
+    : _showcaseService = showcaseService {
+    _productStream = ObservableStream(_showcaseService.products);
   }
 
-  final IShowcaseService showcaseService;
+  final IShowcaseService _showcaseService;
 
   @observable
   ObservableStream<List<ProductOff>> _productStream = ObservableStream(

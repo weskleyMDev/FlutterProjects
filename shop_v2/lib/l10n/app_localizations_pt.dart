@@ -109,9 +109,6 @@ class AppLocalizationsPt extends AppLocalizations {
   String get password => 'Senha';
 
   @override
-  String get add_new_account => 'Adicionar nova conta';
-
-  @override
   String get forgot_password => 'Esqueceu sua senha?';
 
   @override
@@ -134,4 +131,10 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get password_length => 'A senha deve ter pelo menos 6 caracteres';
+
+  @override
+  String get enter_name => 'Por favor insira seu nome';
+
+  @override
+  String get name_length => 'O nome deve ter pelo menos 3 caracteres';
 }

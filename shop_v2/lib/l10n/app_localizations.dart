@@ -215,12 +215,6 @@ abstract class AppLocalizations {
   /// **'Password'**
   String get password;
 
-  /// Label for add new account tooltip
-  ///
-  /// In en, this message translates to:
-  /// **'Add New Account'**
-  String get add_new_account;
-
   /// Label for forgot password button
   ///
   /// In en, this message translates to:
@@ -268,6 +262,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Password must be at least 6 characters'**
   String get password_length;
+
+  /// Label for enter name tooltip
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter your name'**
+  String get enter_name;
+
+  /// Label for name length tooltip
+  ///
+  /// In en, this message translates to:
+  /// **'Name must be at least 3 characters'**
+  String get name_length;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

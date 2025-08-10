@@ -17,6 +17,13 @@ mixin _$AuthFormStore on AuthFormStoreBase, Store {
         () => super.authFormData,
         name: 'AuthFormStoreBase.authFormData',
       )).value;
+  Computed<bool>? _$isLoadingComputed;
+
+  @override
+  bool get isLoading => (_$isLoadingComputed ??= Computed<bool>(
+    () => super.isLoading,
+    name: 'AuthFormStoreBase.isLoading',
+  )).value;
 
   late final _$_authFormDataAtom = Atom(
     name: 'AuthFormStoreBase._authFormData',
@@ -33,6 +40,24 @@ mixin _$AuthFormStore on AuthFormStoreBase, Store {
   set _authFormData(ObservableMap<String, dynamic> value) {
     _$_authFormDataAtom.reportWrite(value, super._authFormData, () {
       super._authFormData = value;
+    });
+  }
+
+  late final _$_isLoadingAtom = Atom(
+    name: 'AuthFormStoreBase._isLoading',
+    context: context,
+  );
+
+  @override
+  bool get _isLoading {
+    _$_isLoadingAtom.reportRead();
+    return super._isLoading;
+  }
+
+  @override
+  set _isLoading(bool value) {
+    _$_isLoadingAtom.reportWrite(value, super._isLoading, () {
+      super._isLoading = value;
     });
   }
 
@@ -62,6 +87,18 @@ mixin _$AuthFormStore on AuthFormStoreBase, Store {
   );
 
   @override
+  void toggleLoading() {
+    final _$actionInfo = _$AuthFormStoreBaseActionController.startAction(
+      name: 'AuthFormStoreBase.toggleLoading',
+    );
+    try {
+      return super.toggleLoading();
+    } finally {
+      _$AuthFormStoreBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   void dispose() {
     final _$actionInfo = _$AuthFormStoreBaseActionController.startAction(
       name: 'AuthFormStoreBase.dispose',
@@ -76,7 +113,8 @@ mixin _$AuthFormStore on AuthFormStoreBase, Store {
   @override
   String toString() {
     return '''
-authFormData: ${authFormData}
+authFormData: ${authFormData},
+isLoading: ${isLoading}
     ''';
   }
 }

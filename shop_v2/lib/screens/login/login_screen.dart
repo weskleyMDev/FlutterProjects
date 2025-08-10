@@ -18,7 +18,7 @@ class LoginScreen extends StatelessWidget {
           IconButton(
             onPressed: () => context.pushNamed('new-acc-screen'),
             icon: const Icon(FontAwesome5.user_plus),
-            tooltip: AppLocalizations.of(context)!.add_new_account,
+            tooltip: AppLocalizations.of(context)!.new_account,
           ),
         ],
         actionsPadding: const EdgeInsets.only(right: 8.0),

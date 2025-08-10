@@ -11,8 +11,9 @@ class ProductsStore = ProductsStoreBase with _$ProductsStore;
 enum CategoriesList { tshirts, jackets, shorts, pants }
 
 abstract class ProductsStoreBase with Store {
-  ProductsStoreBase({required this.productsRepository});
-  final IProductsRepository productsRepository;
+  ProductsStoreBase({required IProductsRepository productsRepository})
+    : _productsRepository = productsRepository;
+  final IProductsRepository _productsRepository;
 
   @observable
   String? _categoryLabel;
@@ -45,25 +46,25 @@ abstract class ProductsStoreBase with Store {
       case CategoriesList.tshirts:
         _categoryLabel = AppLocalizations.of(context)!.tshirt(2);
         _productsStream = ObservableStream(
-          productsRepository.getProductsByCategory(category: 'tshirts'),
+          _productsRepository.getProductsByCategory(category: 'tshirts'),
         );
         break;
       case CategoriesList.jackets:
         _categoryLabel = AppLocalizations.of(context)!.jacket(2);
         _productsStream = ObservableStream(
-          productsRepository.getProductsByCategory(category: 'jackets'),
+          _productsRepository.getProductsByCategory(category: 'jackets'),
         );
         break;
       case CategoriesList.shorts:
         _categoryLabel = AppLocalizations.of(context)!.shorts(2);
         _productsStream = ObservableStream(
-          productsRepository.getProductsByCategory(category: 'shorts'),
+          _productsRepository.getProductsByCategory(category: 'shorts'),
         );
         break;
       case CategoriesList.pants:
         _categoryLabel = AppLocalizations.of(context)!.pants(2);
         _productsStream = ObservableStream(
-          productsRepository.getProductsByCategory(category: 'pants'),
+          _productsRepository.getProductsByCategory(category: 'pants'),
         );
         break;
     }

@@ -95,10 +95,6 @@
     "@password": {
         "description": "Label for password input"
     },
-    "add_new_account": "Adicionar nova conta",
-    "@add_new_account": {
-        "description": "Label for add new account tooltip"
-    },
     "forgot_password": "Esqueceu sua senha?",
     "@forgot_password": {
         "description": "Label for forgot password button"
@@ -130,5 +126,13 @@
     "password_length": "A senha deve ter pelo menos 6 caracteres",
     "@password_length": {
         "description": "Label for password length tooltip"
+    },
+    "enter_name": "Por favor insira seu nome",
+    "@enter_name": {
+        "description": "Label for enter name tooltip"
+    },
+    "name_length": "O nome deve ter pelo menos 3 caracteres",
+    "@name_length": {
+        "description": "Label for name length tooltip"
     }
 }

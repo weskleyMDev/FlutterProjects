@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shop_v2/l10n/app_localizations.dart';
@@ -35,83 +36,115 @@ class _LoginFormState extends State<LoginForm> {
     if (!_loginFormKey.currentState!.validate()) {
       return;
     } else {
-      _loginFormKey.currentState!.save();
-      await _loginFormData.loginUser();
-      if (!mounted) return;
-      context.goNamed('home-screen');
+      try {
+        _loginFormKey.currentState!.save();
+        _loginFormData.toggleLoading();
+        await _loginFormData.loginUser();
+        _loginFormKey.currentState!.reset();
+        _loginFormData.dispose();
+        if (!mounted) return;
+        context.goNamed('home-screen');
+      } catch (e) {
+        rethrow;
+      } finally {
+        _loginFormData.toggleLoading();
+      }
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Form(
-      key: _loginFormKey,
-      child: ListView(
-        padding: const EdgeInsets.all(10.0),
-        children: [
-          Container(
-            margin: const EdgeInsets.only(bottom: 10.0),
-            child: TextFormField(
-              key: const ValueKey('email'),
-              controller: _emailController,
-              decoration: InputDecoration(
-                label: Text(AppLocalizations.of(context)!.email),
+    return Stack(
+      children: [
+        Form(
+          key: _loginFormKey,
+          child: ListView(
+            padding: const EdgeInsets.all(10.0),
+            children: [
+              Container(
+                margin: const EdgeInsets.only(bottom: 10.0),
+                child: TextFormField(
+                  key: const ValueKey('email'),
+                  controller: _emailController,
+                  decoration: InputDecoration(
+                    label: Text(AppLocalizations.of(context)!.email),
+                  ),
+                  keyboardType: TextInputType.emailAddress,
+                  onSaved: (newValue) =>
+                      _loginFormData.authFormData['email'] = newValue?.trim(),
+                  validator: (value) {
+                    if (value == null || value.trim().isEmpty) {
+                      return AppLocalizations.of(context)!.enter_email;
+                    }
+                    final validate = RegExp(
+                      r'^[a-z0-9._-]+@[a-z0-9-]+\.(com|org|net|gov|edu)(\.[a-z]{2})?$',
+                    ).hasMatch(value.trim());
+                    if (!validate) {
+                      return AppLocalizations.of(context)!.enter_valid_email;
+                    }
+                    return null;
+                  },
+                ),
               ),
-              keyboardType: TextInputType.emailAddress,
-              onSaved: (newValue) =>
-                  _loginFormData.authFormData['email'] = newValue?.trim(),
-              validator: (value) {
-                if (value == null || value.trim().isEmpty) {
-                  return AppLocalizations.of(context)!.enter_email;
-                }
-                final validate = RegExp(
-                  r'^[a-z0-9._-]+@[a-z0-9-]+\.(com|org|net|gov|edu)(\.[a-z]{2})?$',
-                ).hasMatch(value.trim());
-                if (!validate) {
-                  return AppLocalizations.of(context)!.enter_valid_email;
-                }
-                return null;
-              },
-            ),
-          ),
-          Container(
-            margin: const EdgeInsets.only(bottom: 10.0),
-            child: TextFormField(
-              key: const ValueKey('password'),
-              controller: _passwordController,
-              decoration: InputDecoration(
-                label: Text(AppLocalizations.of(context)!.password),
+              Container(
+                margin: const EdgeInsets.only(bottom: 10.0),
+                child: TextFormField(
+                  key: const ValueKey('password'),
+                  controller: _passwordController,
+                  decoration: InputDecoration(
+                    label: Text(AppLocalizations.of(context)!.password),
+                  ),
+                  obscureText: true,
+                  onSaved: (newValue) =>
+                      _loginFormData.authFormData['password'] = newValue
+                          ?.trim(),
+                  validator: (value) {
+                    if (value == null || value.trim().isEmpty) {
+                      return AppLocalizations.of(context)!.enter_password;
+                    }
+                    if (value.trim().length < 6) {
+                      return AppLocalizations.of(context)!.password_length;
+                    }
+                    return null;
+                  },
+                ),
               ),
-              obscureText: true,
-              onSaved: (newValue) =>
-                  _loginFormData.authFormData['password'] = newValue?.trim(),
-              validator: (value) {
-                if (value == null || value.trim().isEmpty) {
-                  return AppLocalizations.of(context)!.enter_password;
-                }
-                if (value.trim().length < 6) {
-                  return AppLocalizations.of(context)!.password_length;
-                }
-                return null;
-              },
-            ),
-          ),
-          Container(
-            margin: const EdgeInsets.only(bottom: 10.0),
-            child: Align(
-              alignment: Alignment.centerLeft,
-              child: TextButton(
-                onPressed: () {},
-                child: Text(AppLocalizations.of(context)!.forgot_password),
+              Container(
+                margin: const EdgeInsets.only(bottom: 10.0),
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: TextButton(
+                    onPressed: () {},
+                    child: Text(AppLocalizations.of(context)!.forgot_password),
+                  ),
+                ),
               ),
-            ),
+              Observer(
+                builder: (_) {
+                  return FilledButton(
+                    onPressed: (_loginFormData.isLoading) ? null : _submitData,
+                    child: Text(
+                      AppLocalizations.of(context)!.sign_in.toUpperCase(),
+                    ),
+                  );
+                },
+              ),
+            ],
           ),
-          FilledButton(
-            onPressed: _submitData,
-            child: Text(AppLocalizations.of(context)!.sign_in.toUpperCase()),
-          ),
-        ],
-      ),
+        ),
+        Observer(
+          builder: (_) {
+            return (_loginFormData.isLoading)
+                ? Container(
+                    height: double.infinity,
+                    width: double.infinity,
+                    color: Colors.black87,
+                    child: Center(child: CircularProgressIndicator()),
+                  )
+                : SizedBox.shrink();
+          },
+        ),
+      ],
     );
   }
 }
