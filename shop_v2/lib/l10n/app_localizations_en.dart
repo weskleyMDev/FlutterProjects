@@ -122,4 +122,16 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get select_image => 'Select Image';
+
+  @override
+  String get enter_email => 'Please enter your email';
+
+  @override
+  String get enter_password => 'Please enter your password';
+
+  @override
+  String get enter_valid_email => 'Please enter a valid email';
+
+  @override
+  String get password_length => 'Password must be at least 6 characters';
 }

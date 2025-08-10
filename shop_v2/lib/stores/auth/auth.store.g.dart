@@ -61,6 +61,26 @@ mixin _$AuthStore on AuthStoreBase, Store {
     });
   }
 
+  late final _$signOutUserAsyncAction = AsyncAction(
+    'AuthStoreBase.signOutUser',
+    context: context,
+  );
+
+  @override
+  Future<void> signOutUser() {
+    return _$signOutUserAsyncAction.run(() => super.signOutUser());
+  }
+
+  late final _$initAsyncAction = AsyncAction(
+    'AuthStoreBase.init',
+    context: context,
+  );
+
+  @override
+  Future<void> init() {
+    return _$initAsyncAction.run(() => super.init());
+  }
+
   @override
   String toString() {
     return '''

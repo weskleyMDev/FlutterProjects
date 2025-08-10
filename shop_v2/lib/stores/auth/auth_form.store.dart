@@ -10,19 +10,28 @@ abstract class AuthFormStoreBase with Store {
   final IAuthService authService;
 
   @observable
-  ObservableMap<String, dynamic> _authFormdata = ObservableMap();
+  ObservableMap<String, dynamic> _authFormData = ObservableMap();
 
   @computed
-  ObservableMap<String, dynamic> get authFormdata => _authFormdata;
+  ObservableMap<String, dynamic> get authFormData => _authFormData;
 
-  set authFormdata(ObservableMap<String, dynamic> value) {
-    _authFormdata = value;
+  set authFormData(ObservableMap<String, dynamic> value) {
+    _authFormData = value;
   }
 
   @action
   Future<void> registerUser() async {
     try {
-      await authService.signUp(data: _authFormdata);
+      await authService.signUp(data: _authFormData);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  @action
+  Future<void> loginUser() async {
+    try {
+      await authService.signIn(data: _authFormData);
     } catch (e) {
       rethrow;
     }
@@ -30,6 +39,6 @@ abstract class AuthFormStoreBase with Store {
 
   @action
   void dispose() {
-    _authFormdata.clear();
+    _authFormData.clear();
   }
 }

@@ -91,7 +91,7 @@ class _NewAccFormState extends State<NewAccForm> {
                 label: Text(AppLocalizations.of(context)!.user_name),
               ),
               onSaved: (newValue) =>
-                  _formData.authFormdata['name'] = newValue?.trim(),
+                  _formData.authFormData['name'] = newValue?.trim(),
             ),
           ),
           Container(
@@ -104,7 +104,7 @@ class _NewAccFormState extends State<NewAccForm> {
               ),
               keyboardType: TextInputType.emailAddress,
               onSaved: (newValue) =>
-                  _formData.authFormdata['email'] = newValue?.trim(),
+                  _formData.authFormData['email'] = newValue?.trim(),
             ),
           ),
           Container(
@@ -117,7 +117,7 @@ class _NewAccFormState extends State<NewAccForm> {
               ),
               obscureText: true,
               onSaved: (newValue) =>
-                  _formData.authFormdata['password'] = newValue?.trim(),
+                  _formData.authFormData['password'] = newValue?.trim(),
             ),
           ),
           FilledButton(

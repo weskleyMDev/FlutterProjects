@@ -122,4 +122,16 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get select_image => 'Selecionar Imagem';
+
+  @override
+  String get enter_email => 'Por favor insira seu e-mail';
+
+  @override
+  String get enter_password => 'Por favor digite sua senha';
+
+  @override
+  String get enter_valid_email => 'Por favor insira um e-mail válido';
+
+  @override
+  String get password_length => 'A senha deve ter pelo menos 6 caracteres';
 }

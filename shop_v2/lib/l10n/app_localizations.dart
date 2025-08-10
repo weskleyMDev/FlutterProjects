@@ -244,6 +244,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Select Image'**
   String get select_image;
+
+  /// Label for enter email tooltip
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter your email'**
+  String get enter_email;
+
+  /// Label for enter password tooltip
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter your password'**
+  String get enter_password;
+
+  /// Label for enter valid email tooltip
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a valid email'**
+  String get enter_valid_email;
+
+  /// Label for password length tooltip
+  ///
+  /// In en, this message translates to:
+  /// **'Password must be at least 6 characters'**
+  String get password_length;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

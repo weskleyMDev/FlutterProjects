@@ -9,30 +9,30 @@ part of 'auth_form.store.dart';
 // ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic, no_leading_underscores_for_local_identifiers
 
 mixin _$AuthFormStore on AuthFormStoreBase, Store {
-  Computed<ObservableMap<String, dynamic>>? _$authFormdataComputed;
+  Computed<ObservableMap<String, dynamic>>? _$authFormDataComputed;
 
   @override
-  ObservableMap<String, dynamic> get authFormdata =>
-      (_$authFormdataComputed ??= Computed<ObservableMap<String, dynamic>>(
-        () => super.authFormdata,
-        name: 'AuthFormStoreBase.authFormdata',
+  ObservableMap<String, dynamic> get authFormData =>
+      (_$authFormDataComputed ??= Computed<ObservableMap<String, dynamic>>(
+        () => super.authFormData,
+        name: 'AuthFormStoreBase.authFormData',
       )).value;
 
-  late final _$_authFormdataAtom = Atom(
-    name: 'AuthFormStoreBase._authFormdata',
+  late final _$_authFormDataAtom = Atom(
+    name: 'AuthFormStoreBase._authFormData',
     context: context,
   );
 
   @override
-  ObservableMap<String, dynamic> get _authFormdata {
-    _$_authFormdataAtom.reportRead();
-    return super._authFormdata;
+  ObservableMap<String, dynamic> get _authFormData {
+    _$_authFormDataAtom.reportRead();
+    return super._authFormData;
   }
 
   @override
-  set _authFormdata(ObservableMap<String, dynamic> value) {
-    _$_authFormdataAtom.reportWrite(value, super._authFormdata, () {
-      super._authFormdata = value;
+  set _authFormData(ObservableMap<String, dynamic> value) {
+    _$_authFormDataAtom.reportWrite(value, super._authFormData, () {
+      super._authFormData = value;
     });
   }
 
@@ -44,6 +44,16 @@ mixin _$AuthFormStore on AuthFormStoreBase, Store {
   @override
   Future<void> registerUser() {
     return _$registerUserAsyncAction.run(() => super.registerUser());
+  }
+
+  late final _$loginUserAsyncAction = AsyncAction(
+    'AuthFormStoreBase.loginUser',
+    context: context,
+  );
+
+  @override
+  Future<void> loginUser() {
+    return _$loginUserAsyncAction.run(() => super.loginUser());
   }
 
   late final _$AuthFormStoreBaseActionController = ActionController(
@@ -66,7 +76,7 @@ mixin _$AuthFormStore on AuthFormStoreBase, Store {
   @override
   String toString() {
     return '''
-authFormdata: ${authFormdata}
+authFormData: ${authFormData}
     ''';
   }
 }

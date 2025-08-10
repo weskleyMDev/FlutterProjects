@@ -3,10 +3,12 @@ import 'package:fluttericon/font_awesome5_icons.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shop_v2/l10n/app_localizations.dart';
+import 'package:shop_v2/stores/auth/auth.store.dart';
 import 'package:shop_v2/stores/components/drawer.store.dart';
 import 'package:shop_v2/utils/theme/gradient.dart';
 
 final drawerStore = GetIt.instance<DrawerStore>();
+final authStore = GetIt.instance<AuthStore>();
 
 class HomeDrawer extends StatelessWidget {
   const HomeDrawer({super.key});
@@ -50,6 +52,7 @@ class HomeDrawer extends StatelessWidget {
                 child: SizedBox(
                   width: double.infinity,
                   child: Stack(
+                    alignment: AlignmentDirectional.centerStart,
                     children: [
                       Text(
                         AppLocalizations.of(context)!.shop_clothings_v2,
@@ -60,29 +63,32 @@ class HomeDrawer extends StatelessWidget {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text('${AppLocalizations.of(context)!.hello},'),
-                            InkWell(
-                              onTap: () {
-                                context.pop();
-                                context.pushNamed('login-screen');
-                              },
-                              child: Text.rich(
-                                TextSpan(
-                                  text:
-                                      '${AppLocalizations.of(context)!.already_have_an_account}? ',
-                                  children: [
-                                    TextSpan(
-                                      text:
-                                          '${AppLocalizations.of(context)!.sign_in}.',
-                                      style: TextStyle(
-                                        color: Colors.deepPurple.shade700,
-                                        fontWeight: FontWeight.bold,
+                            (authStore.currentUser != null)
+                                ? Text(
+                                    '${AppLocalizations.of(context)!.hello}, ${authStore.currentUser!.name}!',
+                                  )
+                                : InkWell(
+                                    onTap: () {
+                                      context.pop();
+                                      context.pushNamed('login-screen');
+                                    },
+                                    child: Text.rich(
+                                      TextSpan(
+                                        text:
+                                            '${AppLocalizations.of(context)!.already_have_an_account}? ',
+                                        children: [
+                                          TextSpan(
+                                            text:
+                                                '${AppLocalizations.of(context)!.sign_in}.',
+                                            style: TextStyle(
+                                              color: Colors.deepPurple.shade700,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        ],
                                       ),
                                     ),
-                                  ],
-                                ),
-                              ),
-                            ),
+                                  ),
                           ],
                         ),
                       ),
@@ -123,14 +129,19 @@ class HomeDrawer extends StatelessWidget {
                 DrawerOptions.orders,
               ),
               Spacer(),
-              ListTile(
-                leading: Icon(FontAwesome5.sign_out_alt),
-                title: Text(AppLocalizations.of(context)!.sign_out),
-                titleTextStyle: TextStyle(fontWeight: FontWeight.bold),
-                iconColor: Colors.red.shade700,
-                textColor: Colors.red.shade700,
-                onTap: () {},
-              ),
+              if (authStore.currentUser != null)
+                ListTile(
+                  leading: Icon(FontAwesome5.sign_out_alt),
+                  title: Text(AppLocalizations.of(context)!.sign_out),
+                  titleTextStyle: TextStyle(fontWeight: FontWeight.bold),
+                  iconColor: Colors.red.shade700,
+                  textColor: Colors.red.shade700,
+                  onTap: () async {
+                    await authStore.signOutUser();
+                    if (!context.mounted) return;
+                    context.pop();
+                  },
+                ),
             ],
           ),
         ],

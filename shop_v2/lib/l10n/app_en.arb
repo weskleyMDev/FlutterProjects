@@ -114,5 +114,21 @@
     "select_image": "Select Image",
     "@select_image": {
         "description": "Label for select image button"
+    },
+    "enter_email": "Please enter your email",
+    "@enter_email": {
+        "description": "Label for enter email tooltip"
+    },
+    "enter_password": "Please enter your password",
+    "@enter_password": {
+        "description": "Label for enter password tooltip"
+    },
+    "enter_valid_email": "Please enter a valid email",
+    "@enter_valid_email": {
+        "description": "Label for enter valid email tooltip"
+    },
+    "password_length": "Password must be at least 6 characters",
+    "@password_length": {
+        "description": "Label for password length tooltip"
     }
 }

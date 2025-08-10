@@ -21,32 +21,16 @@ abstract class AuthStoreBase with Store {
 
   @computed
   ObservableStream<AppUser?> get userChanges => _userChanges;
-  // UTILIZAR NO OBSERVER O userChanges.status
 
   @computed
   AppUser? get currentUser => _currentUser;
-}
 
-// Observer(
-// builder: (_) {
-// final status = authStore.userChanges.status;
-// final user = authStore.userChanges.value;
-//
-// switch (status) {
-// case ObservableStreamStatus.waiting:
-// return const CircularProgressIndicator();
-//
-// case ObservableStreamStatus.active:
-// if (user == null) {
-// return const Text('Usuário não está logado');
-// } else {
-// return Text('Olá, ${user.name}');
-// }
-//
-// case ObservableStreamStatus.none:
-// case ObservableStreamStatus.done:
-// default:
-// return const Text('Sem dados ou stream finalizada');
-// }
-// },
-// )
+  @action
+  Future<void> signOutUser() async => authService.signOut();
+
+  @action
+  Future<void> init() async {
+    final user = await authService.userChanges.first;
+    _currentUser = user;
+  }
+}

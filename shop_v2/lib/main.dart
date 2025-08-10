@@ -33,12 +33,16 @@ void _setup() {
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
   _setup();
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  await SystemChrome.setPreferredOrientations([
-    DeviceOrientation.portraitUp,
-    DeviceOrientation.portraitDown,
+  await Future.wait([
+    Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform),
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]),
   ]);
+
   runApp(const MyApp());
 }
 
