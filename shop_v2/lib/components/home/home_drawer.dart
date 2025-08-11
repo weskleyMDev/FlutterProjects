@@ -66,6 +66,7 @@ class HomeDrawer extends StatelessWidget {
                             (authStore.currentUser != null)
                                 ? Text(
                                     '${AppLocalizations.of(context)!.hello}, ${authStore.currentUser!.name}!',
+                                    overflow: TextOverflow.ellipsis,
                                   )
                                 : InkWell(
                                     onTap: () {

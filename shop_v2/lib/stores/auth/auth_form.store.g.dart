@@ -31,6 +31,13 @@ mixin _$AuthFormStore on AuthFormStoreBase, Store {
     () => super.isVisible,
     name: 'AuthFormStoreBase.isVisible',
   )).value;
+  Computed<bool>? _$imageSelectedComputed;
+
+  @override
+  bool get imageSelected => (_$imageSelectedComputed ??= Computed<bool>(
+    () => super.imageSelected,
+    name: 'AuthFormStoreBase.imageSelected',
+  )).value;
 
   late final _$_authFormDataAtom = Atom(
     name: 'AuthFormStoreBase._authFormData',
@@ -84,6 +91,34 @@ mixin _$AuthFormStore on AuthFormStoreBase, Store {
     _$_isVisibleAtom.reportWrite(value, super._isVisible, () {
       super._isVisible = value;
     });
+  }
+
+  late final _$_imageSelectedAtom = Atom(
+    name: 'AuthFormStoreBase._imageSelected',
+    context: context,
+  );
+
+  @override
+  bool get _imageSelected {
+    _$_imageSelectedAtom.reportRead();
+    return super._imageSelected;
+  }
+
+  @override
+  set _imageSelected(bool value) {
+    _$_imageSelectedAtom.reportWrite(value, super._imageSelected, () {
+      super._imageSelected = value;
+    });
+  }
+
+  late final _$selectImageAsyncAction = AsyncAction(
+    'AuthFormStoreBase.selectImage',
+    context: context,
+  );
+
+  @override
+  Future<void> selectImage() {
+    return _$selectImageAsyncAction.run(() => super.selectImage());
   }
 
   late final _$registerUserAsyncAction = AsyncAction(
@@ -152,7 +187,8 @@ mixin _$AuthFormStore on AuthFormStoreBase, Store {
     return '''
 authFormData: ${authFormData},
 isLoading: ${isLoading},
-isVisible: ${isVisible}
+isVisible: ${isVisible},
+imageSelected: ${imageSelected}
     ''';
   }
 }

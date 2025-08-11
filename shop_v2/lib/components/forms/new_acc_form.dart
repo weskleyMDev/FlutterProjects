@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -76,23 +78,39 @@ class _NewAccFormState extends State<NewAccForm> {
           child: ListView(
             padding: const EdgeInsets.all(10.0),
             children: [
-              Stack(
-                alignment: AlignmentDirectional.center,
+              Column(
                 children: [
+                  Observer(
+                    builder: (_) {
+                      return (_registerFormData.imageSelected)
+                          ? ClipOval(
+                              child: Image.file(
+                                File(
+                                  _registerFormData.authFormData['imageUrl'],
+                                ),
+                                fit: BoxFit.cover,
+                                height: 200.0,
+                                width: 200.0,
+                              ),
+                            )
+                          : Container(
+                              height: 200.0,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                border: Border.all(
+                                  color: Theme.of(context).colorScheme.outline,
+                                ),
+                              ),
+                            );
+                    },
+                  ),
                   Container(
                     margin: const EdgeInsets.only(bottom: 10.0),
-                    height: 200.0,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      border: Border.all(
-                        color: Theme.of(context).colorScheme.outline,
-                      ),
+                    child: TextButton.icon(
+                      onPressed: _registerFormData.selectImage,
+                      label: Text(AppLocalizations.of(context)!.select_image),
+                      icon: Icon(FontAwesome5.camera_retro),
                     ),
-                  ),
-                  TextButton.icon(
-                    onPressed: () {},
-                    label: Text(AppLocalizations.of(context)!.select_image),
-                    icon: Icon(FontAwesome5.camera_retro),
                   ),
                 ],
               ),
