@@ -8,7 +8,7 @@ class AuthStore = AuthStoreBase with _$AuthStore;
 
 abstract class AuthStoreBase with Store {
   AuthStoreBase({required IAuthService authService})
-      : _authService = authService {
+    : _authService = authService {
     _userChanges = ObservableStream(_authService.userChanges);
     _userChanges.listen((user) => _currentUser = user);
   }
@@ -28,7 +28,9 @@ abstract class AuthStoreBase with Store {
   AppUser? get currentUser => _currentUser;
 
   @action
-  Future<void> signOutUser() async => _authService.signOut();
+  Future<void> signOutUser() async {
+    await _authService.signOut();
+  }
 
   @action
   Future<void> init() async {

@@ -140,4 +140,46 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get enter_to_buy => 'Please enter to buy';
+
+  @override
+  String item(num count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count items',
+      one: 'item',
+      zero: 'no items',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get my_cart => 'My Cart';
+
+  @override
+  String get confirm_order => 'Confirm Order';
+
+  @override
+  String get remove_from_cart => 'Remove from cart';
+
+  @override
+  String get order_summary => 'Order Summary';
+
+  @override
+  String get discount => 'Discount';
+
+  @override
+  String get total => 'Total';
+
+  @override
+  String get subtotal => 'Subtotal';
+
+  @override
+  String get shipping => 'Shipping fee';
+
+  @override
+  String get shipping_calculator => 'Shipping Calculator';
+
+  @override
+  String get promo_code => 'Promo Code';
 }

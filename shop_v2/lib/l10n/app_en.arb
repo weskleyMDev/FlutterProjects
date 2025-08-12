@@ -138,5 +138,52 @@
     "enter_to_buy": "Please enter to buy",
     "@enter_to_buy": {
         "description": "Label for enter to buy tooltip"
+    },
+    "item": "{count, plural, =0{no items} =1{item} other{{count} items}}",
+    "@item": {
+        "description": "Label for item screen",
+        "placeholders": {
+            "count": {}
+        }
+    },
+    "my_cart": "My Cart",
+    "@my_cart": {
+        "description": "Label for my cart screen"
+    },
+    "confirm_order": "Confirm Order",
+    "@confirm_order": {
+        "description": "Label for confirm purchase button"
+    },
+    "remove_from_cart": "Remove from cart",
+    "@remove_from_cart": {
+        "description": "Label for remove from cart button"
+    },
+    "order_summary": "Order Summary",
+    "@order_summary": {
+        "description": "Label for order summary"
+    },
+    "discount": "Discount",
+    "@discount": {
+        "description": "Label for discount"
+    },
+    "total": "Total",
+    "@total": {
+        "description": "Label for total"
+    },
+    "subtotal": "Subtotal",
+    "@subtotal": {
+        "description": "Label for subtotal"
+    },
+    "shipping": "Shipping fee",
+    "@shipping": {
+        "description": "Label for shipping"
+    },
+    "shipping_calculator": "Shipping Calculator",
+    "@shipping_calculator": {
+        "description": "Label for shipping calculator"
+    },
+    "promo_code": "Promo Code",
+    "@promo_code": {
+        "description": "Label for promo code"
     }
 }

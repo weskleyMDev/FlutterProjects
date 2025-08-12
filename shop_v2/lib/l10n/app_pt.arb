@@ -138,5 +138,52 @@
     "enter_to_buy": "Entre para comprar",
     "@enter_to_buy": {
         "description": "Label for enter to buy tooltip"
+    },
+    "item": "{count, plural, =0{sem itens} =1{1 item} other{{count} itens}}",
+    "@item": {
+        "description": "Label for item screen",
+        "placeholders": {
+            "count": {}
+        }
+    },
+    "my_cart": "Meu Carrinho",
+    "@my_cart": {
+        "description": "Label for my cart screen"
+    },
+    "confirm_order": "Confirmar Pedido",
+    "@confirm_order": {
+        "description": "Label for confirm purchase button"
+    },
+    "remove_from_cart": "Remover do carrinho",
+    "@remove_from_cart": {
+        "description": "Label for remove from cart button"
+    },
+    "order_summary": "Resumo do pedido",
+    "@order_summary": {
+        "description": "Label for order summary"
+    },
+    "discount": "Desconto",
+    "@discount": {
+        "description": "Label for discount"
+    },
+    "total": "Total",
+    "@total": {
+        "description": "Label for total"
+    },
+    "subtotal": "Subtotal",
+    "@subtotal": {
+        "description": "Label for subtotal"
+    },
+    "shipping": "Frete",
+    "@shipping": {
+        "description": "Label for shipping"
+    },
+    "shipping_calculator": "Calcular frete",
+    "@shipping_calculator": {
+        "description": "Label for shipping calculator"
+    },
+    "promo_code": "Cupom de desconto",
+    "@promo_code": {
+        "description": "Label for promo code"
     }
 }

@@ -280,6 +280,72 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Please enter to buy'**
   String get enter_to_buy;
+
+  /// Label for item screen
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{no items} =1{item} other{{count} items}}'**
+  String item(num count);
+
+  /// Label for my cart screen
+  ///
+  /// In en, this message translates to:
+  /// **'My Cart'**
+  String get my_cart;
+
+  /// Label for confirm purchase button
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm Order'**
+  String get confirm_order;
+
+  /// Label for remove from cart button
+  ///
+  /// In en, this message translates to:
+  /// **'Remove from cart'**
+  String get remove_from_cart;
+
+  /// Label for order summary
+  ///
+  /// In en, this message translates to:
+  /// **'Order Summary'**
+  String get order_summary;
+
+  /// Label for discount
+  ///
+  /// In en, this message translates to:
+  /// **'Discount'**
+  String get discount;
+
+  /// Label for total
+  ///
+  /// In en, this message translates to:
+  /// **'Total'**
+  String get total;
+
+  /// Label for subtotal
+  ///
+  /// In en, this message translates to:
+  /// **'Subtotal'**
+  String get subtotal;
+
+  /// Label for shipping
+  ///
+  /// In en, this message translates to:
+  /// **'Shipping fee'**
+  String get shipping;
+
+  /// Label for shipping calculator
+  ///
+  /// In en, this message translates to:
+  /// **'Shipping Calculator'**
+  String get shipping_calculator;
+
+  /// Label for promo code
+  ///
+  /// In en, this message translates to:
+  /// **'Promo Code'**
+  String get promo_code;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

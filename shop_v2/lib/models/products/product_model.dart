@@ -17,6 +17,14 @@ class ProductModel {
     required this.sizes,
   });
 
+  ProductModel.fromCart({
+    required this.id,
+    required this.price,
+    required this.title,
+    this.images = const [],
+    this.sizes = const [],
+  });
+
   ProductModel copyWith({
     String? id,
     String? price,
@@ -38,6 +46,14 @@ class ProductModel {
     'title': title,
     'price': price,
   };
+
+  factory ProductModel.fromCartMap(Map map) {
+    return ProductModel.fromCart(
+      id: map['id'] as String,
+      price: map['price'] as String,
+      title: Map<String, String>.from((map['title'] as Map)),
+    );
+  }
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{

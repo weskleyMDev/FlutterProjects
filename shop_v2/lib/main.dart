@@ -5,11 +5,13 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:get_it/get_it.dart';
 import 'package:shop_v2/firebase_options.dart';
 import 'package:shop_v2/l10n/app_localizations.dart';
+import 'package:shop_v2/repositories/cart/cart_repository.dart';
 import 'package:shop_v2/repositories/products/products_repository.dart';
 import 'package:shop_v2/services/auth/firebase_service.dart';
 import 'package:shop_v2/services/showcase/showcase_service.dart';
 import 'package:shop_v2/stores/auth/auth.store.dart';
 import 'package:shop_v2/stores/auth/auth_form.store.dart';
+import 'package:shop_v2/stores/cart/cart.store.dart';
 import 'package:shop_v2/stores/components/drawer.store.dart';
 import 'package:shop_v2/stores/products/products.store.dart';
 import 'package:shop_v2/stores/showcase/showcase.store.dart';
@@ -28,6 +30,9 @@ void _setup() {
   );
   getIt.registerLazySingleton(
     () => AuthFormStore(authService: FirebaseService()),
+  );
+  getIt.registerLazySingleton(
+    () => CartStore(cartRepository: CartRepository()),
   );
 }
 

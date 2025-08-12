@@ -121,23 +121,26 @@ class _ProductDetailsState extends State<ProductDetails> {
                         if (authStore.currentUser != null) {
                           final data = CartItem(
                             id: '',
-                            category: productsStore.categoryLabel,
+                            category: productsStore.categoryLabel!,
                             quantity: 1,
                             size: widget
                                 .product
                                 .sizes[productsStore.selectedSize!],
                             product: widget.product,
+                            userId: authStore.currentUser!.id!,
                           );
 
                           final docRef = await FirebaseFirestore.instance
                               .collection('users')
-                              .doc('LhAEA9YfPkOb7ae9RUecw6RBLrW2')
+                              .doc(authStore.currentUser?.id)
                               .collection('cart')
                               .add(data.toMap());
 
                           await docRef.set(
                             data.copyWith(id: docRef.id).toMap(),
                           );
+                          if (!context.mounted) return;
+                          context.pushNamed('cart-screen');
                         } else {
                           context.goNamed('login-screen');
                         }
