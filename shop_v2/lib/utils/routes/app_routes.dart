@@ -4,6 +4,7 @@ import 'package:shop_v2/models/products/product_model.dart';
 import 'package:shop_v2/screens/home/home_screen.dart';
 import 'package:shop_v2/screens/login/login_screen.dart';
 import 'package:shop_v2/screens/login/new_acc_screen.dart';
+import 'package:shop_v2/screens/orders/orders_screen.dart';
 import 'package:shop_v2/screens/products/categories_screen.dart';
 import 'package:shop_v2/screens/products/products_screen.dart';
 
@@ -48,6 +49,11 @@ final routes = GoRouter(
           builder: (context, state) => const NewAccScreen(),
         ),
       ],
+    ),
+    GoRoute(
+      path: '/orders',
+      name: 'orders-screen',
+      builder: (context, state) => OrdersScreen(),
     ),
   ],
 );

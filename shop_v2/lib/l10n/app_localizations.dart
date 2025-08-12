@@ -274,6 +274,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Name must be at least 3 characters'**
   String get name_length;
+
+  /// Label for enter to buy tooltip
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter to buy'**
+  String get enter_to_buy;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

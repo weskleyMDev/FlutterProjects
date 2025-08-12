@@ -134,5 +134,9 @@
     "name_length": "Name must be at least 3 characters",
     "@name_length": {
         "description": "Label for name length tooltip"
+    },
+    "enter_to_buy": "Please enter to buy",
+    "@enter_to_buy": {
+        "description": "Label for enter to buy tooltip"
     }
 }

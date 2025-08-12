@@ -23,7 +23,7 @@ abstract class ProductsStoreBase with Store {
 
   @observable
   ObservableStream<List<ProductModel>> _productsStream = ObservableStream(
-    Stream.empty(broadcast: true),
+    Stream.empty(),
   );
 
   @computed
@@ -71,8 +71,7 @@ abstract class ProductsStoreBase with Store {
   }
 
   @action
-  Future<void> dispose() async {
+  void dispose() {
     _selectedSize = null;
-    _categoryLabel = null;
   }
 }

@@ -52,7 +52,7 @@ class _LoginFormState extends State<LoginForm> {
         _loginFormKey.currentState!.reset();
         _loginFormData.dispose();
         if (!mounted) return;
-        context.goNamed('home-screen');
+        context.pop();
       } on FirebaseAuthException catch (e) {
         _showSnackBar(e.message);
       } catch (e) {

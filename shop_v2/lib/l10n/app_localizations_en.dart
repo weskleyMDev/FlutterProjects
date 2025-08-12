@@ -137,4 +137,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get name_length => 'Name must be at least 3 characters';
+
+  @override
+  String get enter_to_buy => 'Please enter to buy';
 }

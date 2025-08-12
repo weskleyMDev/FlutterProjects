@@ -58,7 +58,7 @@ class _NewAccFormState extends State<NewAccForm> {
         _registerFormKey.currentState!.reset();
         _registerFormData.dispose();
         if (!mounted) return;
-        context.goNamed('home-screen');
+        context.pop();
       } on FirebaseAuthException catch (e) {
         _showSnackBar(e.message);
       } catch (e) {

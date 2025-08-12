@@ -33,6 +33,12 @@ class ProductModel {
     );
   }
 
+  Map<String, dynamic> toCartMap() => <String, dynamic>{
+    'id': id,
+    'title': title,
+    'price': price,
+  };
+
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
       'id': id,

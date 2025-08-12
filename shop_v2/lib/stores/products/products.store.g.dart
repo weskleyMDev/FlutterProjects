@@ -98,14 +98,21 @@ mixin _$ProductsStore on ProductsStoreBase, Store {
     );
   }
 
-  late final _$disposeAsyncAction = AsyncAction(
-    'ProductsStoreBase.dispose',
+  late final _$ProductsStoreBaseActionController = ActionController(
+    name: 'ProductsStoreBase',
     context: context,
   );
 
   @override
-  Future<void> dispose() {
-    return _$disposeAsyncAction.run(() => super.dispose());
+  void dispose() {
+    final _$actionInfo = _$ProductsStoreBaseActionController.startAction(
+      name: 'ProductsStoreBase.dispose',
+    );
+    try {
+      return super.dispose();
+    } finally {
+      _$ProductsStoreBaseActionController.endAction(_$actionInfo);
+    }
   }
 
   @override
