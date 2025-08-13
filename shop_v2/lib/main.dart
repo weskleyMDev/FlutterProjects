@@ -8,6 +8,7 @@ import 'package:shop_v2/l10n/app_localizations.dart';
 import 'package:shop_v2/repositories/cart/cart_repository.dart';
 import 'package:shop_v2/repositories/products/products_repository.dart';
 import 'package:shop_v2/services/auth/firebase_service.dart';
+import 'package:shop_v2/services/cart/cart_service.dart';
 import 'package:shop_v2/services/showcase/showcase_service.dart';
 import 'package:shop_v2/stores/auth/auth.store.dart';
 import 'package:shop_v2/stores/auth/auth_form.store.dart';
@@ -32,7 +33,8 @@ void _setup() {
     () => AuthFormStore(authService: FirebaseService()),
   );
   getIt.registerLazySingleton(
-    () => CartStore(cartRepository: CartRepository()),
+    () =>
+        CartStore(cartRepository: CartRepository(), cartService: CartService()),
   );
 }
 

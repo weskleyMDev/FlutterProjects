@@ -93,30 +93,57 @@ mixin _$CartStore on CartStoreBase, Store {
     });
   }
 
+  late final _$addToCartAsyncAction = AsyncAction(
+    'CartStoreBase.addToCart',
+    context: context,
+  );
+
+  @override
+  Future<void> addToCart(
+    ProductModel product,
+    String category,
+    String uid,
+    int index,
+  ) {
+    return _$addToCartAsyncAction.run(
+      () => super.addToCart(product, category, uid, index),
+    );
+  }
+
+  late final _$removeByIdAsyncAction = AsyncAction(
+    'CartStoreBase.removeById',
+    context: context,
+  );
+
+  @override
+  Future<void> removeById(String id, String uid) {
+    return _$removeByIdAsyncAction.run(() => super.removeById(id, uid));
+  }
+
   late final _$CartStoreBaseActionController = ActionController(
     name: 'CartStoreBase',
     context: context,
   );
 
   @override
-  void incrementQuantity() {
+  void incrementQuantity(CartItem cartItem) {
     final _$actionInfo = _$CartStoreBaseActionController.startAction(
       name: 'CartStoreBase.incrementQuantity',
     );
     try {
-      return super.incrementQuantity();
+      return super.incrementQuantity(cartItem);
     } finally {
       _$CartStoreBaseActionController.endAction(_$actionInfo);
     }
   }
 
   @override
-  void decrementQuantity() {
+  void decrementQuantity(CartItem cartItem) {
     final _$actionInfo = _$CartStoreBaseActionController.startAction(
       name: 'CartStoreBase.decrementQuantity',
     );
     try {
-      return super.decrementQuantity();
+      return super.decrementQuantity(cartItem);
     } finally {
       _$CartStoreBaseActionController.endAction(_$actionInfo);
     }

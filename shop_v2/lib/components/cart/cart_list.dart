@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:fluttericon/font_awesome_icons.dart';
@@ -65,16 +64,9 @@ class CartList extends StatelessWidget {
                                             : () {
                                                 cartStore.quantity =
                                                     cartItem.quantity;
-                                                cartStore.decrementQuantity();
-                                                FirebaseFirestore.instance
-                                                    .collection('users')
-                                                    .doc(cartItem.userId)
-                                                    .collection('cart')
-                                                    .doc(cartItem.id)
-                                                    .update({
-                                                      'quantity':
-                                                          cartStore.quantity,
-                                                    });
+                                                cartStore.decrementQuantity(
+                                                  cartItem,
+                                                );
                                               },
                                         padding: EdgeInsets.zero,
                                         iconSize: 18.0,
@@ -91,15 +83,7 @@ class CartList extends StatelessWidget {
                                   child: IconButton(
                                     onPressed: () {
                                       cartStore.quantity = cartItem.quantity;
-                                      cartStore.incrementQuantity();
-                                      FirebaseFirestore.instance
-                                          .collection('users')
-                                          .doc(cartItem.userId)
-                                          .collection('cart')
-                                          .doc(cartItem.id)
-                                          .update({
-                                            'quantity': cartStore.quantity,
-                                          });
+                                      cartStore.incrementQuantity(cartItem);
                                     },
                                     padding: EdgeInsets.zero,
                                     iconSize: 18.0,
@@ -118,7 +102,10 @@ class CartList extends StatelessWidget {
                           height: 24.0,
                           width: 24.0,
                           child: IconButton(
-                            onPressed: () {},
+                            onPressed: () => cartStore.removeById(
+                              cartItem.id,
+                              cartItem.userId,
+                            ),
                             iconSize: 20.0,
                             icon: Icon(
                               FontAwesome.trash_empty,

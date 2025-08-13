@@ -1,13 +1,12 @@
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shop_v2/l10n/app_localizations.dart';
-import 'package:shop_v2/models/cart/cart_item.dart';
 import 'package:shop_v2/models/products/product_model.dart';
 import 'package:shop_v2/stores/auth/auth.store.dart';
+import 'package:shop_v2/stores/cart/cart.store.dart';
 import 'package:shop_v2/stores/products/products.store.dart';
 import 'package:transparent_image/transparent_image.dart';
 
@@ -23,6 +22,7 @@ class ProductDetails extends StatefulWidget {
 class _ProductDetailsState extends State<ProductDetails> {
   final productsStore = GetIt.instance<ProductsStore>();
   final authStore = GetIt.instance<AuthStore>();
+  final cartStore = GetIt.instance<CartStore>();
 
   @override
   void dispose() {
@@ -119,25 +119,11 @@ class _ProductDetailsState extends State<ProductDetails> {
                     ? null
                     : () async {
                         if (authStore.currentUser != null) {
-                          final data = CartItem(
-                            id: '',
-                            category: productsStore.categoryLabel!,
-                            quantity: 1,
-                            size: widget
-                                .product
-                                .sizes[productsStore.selectedSize!],
-                            product: widget.product,
-                            userId: authStore.currentUser!.id!,
-                          );
-
-                          final docRef = await FirebaseFirestore.instance
-                              .collection('users')
-                              .doc(authStore.currentUser?.id)
-                              .collection('cart')
-                              .add(data.toMap());
-
-                          await docRef.set(
-                            data.copyWith(id: docRef.id).toMap(),
+                          cartStore.addToCart(
+                            widget.product,
+                            productsStore.categoryLabel!,
+                            authStore.currentUser!.id!,
+                            productsStore.selectedSize!,
                           );
                           if (!context.mounted) return;
                           context.pushNamed('cart-screen');
