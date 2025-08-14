@@ -1,6 +1,6 @@
 # 📝 Shop V2 App Flutter
 
-An online store app for Android and Windows platforms with Firebase Firestore integration. It uses clean architecture and mobx for state management. Fully responsive and supports light/dark themes.
+An online store app for Android and Windows platforms with Firebase Firestore and Authentication integration. It uses clean architecture and mobx for state management. It's fully responsive, supports light and dark themes, and supports the device's default language.
 
 ---
 
@@ -28,10 +28,9 @@ An online store app for Android and Windows platforms with Firebase Firestore in
 
 ## 📸 Screenshots
 
-<!-- | Main Screen | Delete Task |
-|----------------|------------------|
-| <img src="https://drive.google.com/uc?export=view&id=1-Fwuifxacs_CiWsDPgZTxKHnDdULMD84" height="400" /> | <img src="https://drive.google.com/uc?export=view&id=1-AnXmzBTOn33aini0jwoUT4bPEmfXeQe" height="400" /> | -->
-    COMING SOON...
+| Main Screen | Multilingual | Login Screen | Products Screen | Product Details |
+|----------------|------------------|----------------|------------------|------------------|
+| <img src="https://github.com/user-attachments/assets/3e217455-0020-4fa5-86f6-742040cc3906" height="400" /> | <img src="https://github.com/user-attachments/assets/1ab77884-4901-4533-a3b8-0676f17ef161" height="400" /> <img src="https://github.com/user-attachments/assets/48420800-0c98-4537-8b4f-10988d3111bd" height="400" /> | <img src="https://github.com/user-attachments/assets/3cf6a8a5-89df-4e65-8cb1-2b23162e6f3c" height="400" /> | <img src="https://github.com/user-attachments/assets/7f154a69-e25f-4161-8d1d-eac9f0acd66e" height="400" /> | <img src="https://github.com/user-attachments/assets/08ee9653-9131-4f87-8b27-ffaacf17a14f" height="400" /> |
 
 ---
 
