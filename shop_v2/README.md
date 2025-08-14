@@ -30,7 +30,8 @@ An online store app for Android and Windows platforms with Firebase Firestore an
 
 | Main Screen | Multilingual | Login Screen | Products Screen | Product Details |
 |----------------|------------------|----------------|------------------|------------------|
-| <img src="https://github.com/user-attachments/assets/3e217455-0020-4fa5-86f6-742040cc3906" height="400" /> | <p float="left"> <img src="https://github.com/user-attachments/assets/1ab77884-4901-4533-a3b8-0676f17ef161" height="200" /> <img src="https://github.com/user-attachments/assets/48420800-0c98-4537-8b4f-10988d3111bd" height="200" /> </p> | <img src="https://github.com/user-attachments/assets/3cf6a8a5-89df-4e65-8cb1-2b23162e6f3c" height="400" /> | <img src="https://github.com/user-attachments/assets/7f154a69-e25f-4161-8d1d-eac9f0acd66e" height="400" /> | <img src="https://github.com/user-attachments/assets/08ee9653-9131-4f87-8b27-ffaacf17a14f" height="400" /> |
+| <img src="https://github.com/user-attachments/assets/3e217455-0020-4fa5-86f6-742040cc3906" height="400" /> | <img src="https://github.com/user-attachments/assets/1ab77884-4901-4533-a3b8-0676f17ef161" height="200" style="display: inline-block; margin-right: 10px;" /> <img src="https://github.com/user-attachments/assets/48420800-0c98-4537-8b4f-10988d3111bd" height="200" style="display: inline-block;" /> | <img src="https://github.com/user-attachments/assets/3cf6a8a5-89df-4e65-8cb1-2b23162e6f3c" height="400" /> | <img src="https://github.com/user-attachments/assets/7f154a69-e25f-4161-8d1d-eac9f0acd66e" height="400" /> | <img src="https://github.com/user-attachments/assets/08ee9653-9131-4f87-8b27-ffaacf17a14f" height="400" /> |
+
 
 ---
 
