@@ -1,6 +1,5 @@
 import 'package:go_router/go_router.dart';
 import 'package:shop_v2/components/products/product_details.dart';
-import 'package:shop_v2/models/products/product_model.dart';
 import 'package:shop_v2/screens/cart/cart_screen.dart';
 import 'package:shop_v2/screens/home/home_screen.dart';
 import 'package:shop_v2/screens/login/login_screen.dart';
@@ -31,8 +30,8 @@ final routes = GoRouter(
               path: '/categories/products/product',
               name: 'product-details',
               builder: (context, state) {
-                final product = state.extra as ProductModel;
-                return ProductDetails(product: product);
+                final pid = state.extra as String;
+                return ProductDetails(pid: pid);
               },
             ),
           ],

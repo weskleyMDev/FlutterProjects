@@ -4,7 +4,7 @@ import 'package:flutter/foundation.dart';
 
 class ProductModel {
   final String id;
-  final String price;
+  final double price;
   final Map<String, String> title;
   final List<String> images;
   final List<String> sizes;
@@ -20,7 +20,7 @@ class ProductModel {
   factory ProductModel.empty() {
     return ProductModel(
       id: '',
-      price: '0.0',
+      price: 0.0,
       title: {},
       images: [],
       sizes: [],
@@ -29,7 +29,7 @@ class ProductModel {
 
   ProductModel copyWith({
     String? id,
-    String? price,
+    double? price,
     Map<String, String>? title,
     List<String>? images,
     List<String>? sizes,
@@ -56,7 +56,7 @@ class ProductModel {
   factory ProductModel.fromMap(Map<String, dynamic> map) {
     return ProductModel(
       id: map['id'] as String,
-      price: map['price'] as String,
+      price: map['price'] as double,
       title: Map<String, String>.from((map['title'] as Map)),
       images: List<String>.from((map['images'] as List)),
       sizes: List<String>.from((map['sizes'] as List)),

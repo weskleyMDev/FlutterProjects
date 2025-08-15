@@ -11,8 +11,10 @@ class ProductsRepository implements IProductsRepository {
         .doc(category)
         .collection('products')
         .withConverter(fromFirestore: _fromFirestore, toFirestore: _toFirestore)
+        .orderBy('price')
         .snapshots()
-        .map((snapshot) => snapshot.docs.map((doc) => doc.data()).toList()).asBroadcastStream();
+        .map((snapshot) => snapshot.docs.map((doc) => doc.data()).toList())
+        .asBroadcastStream();
   }
 
   Map<String, dynamic> _toFirestore(

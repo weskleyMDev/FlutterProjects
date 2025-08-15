@@ -26,7 +26,7 @@ class OrdersScreen extends StatelessWidget {
                   (element) => element.id == cartItem.productId,
                 );
 
-                return ListTile(title: Text(product.price));
+                return ListTile(title: Text(product.price.toString()));
               },
             ),
           );

@@ -29,7 +29,7 @@ abstract class CartStoreBase with Store {
           if (products.isEmpty) return;
           products.sort((a, b) => a.id.compareTo(b.id));
           _cartItems.clear();
-          for (CartItem item in data ?? []) {
+          for (CartItem item in data) {
             final index = customBinarySearch<ProductModel, CartItem>(
               products,
               item,
@@ -41,6 +41,7 @@ abstract class CartStoreBase with Store {
             final product = products[index];
             _cartItems.add(item.copyWith(product: product));
           }
+          calcCartValues();
         });
       } else {
         _cartItems.clear();
@@ -55,7 +56,7 @@ abstract class CartStoreBase with Store {
         if (products.isEmpty) return;
         products.sort((a, b) => a.id.compareTo(b.id));
         _cartItems.clear();
-        for (CartItem item in data ?? []) {
+        for (CartItem item in data) {
           final index = customBinarySearch<ProductModel, CartItem>(
             products,
             item,
@@ -67,6 +68,7 @@ abstract class CartStoreBase with Store {
           final product = products[index];
           _cartItems.add(item.copyWith(product: product));
         }
+        calcCartValues();
       });
     }
   }
@@ -75,7 +77,7 @@ abstract class CartStoreBase with Store {
   final ICartService _cartService;
 
   @observable
-  ObservableStream<List<CartItem>?> _cartStream = ObservableStream(
+  ObservableStream<List<CartItem>> _cartStream = ObservableStream(
     Stream.empty(),
   );
 
@@ -86,7 +88,16 @@ abstract class CartStoreBase with Store {
   int _quantity = 0;
 
   @observable
-  ObservableMap<String, double> _values = ObservableMap<String, double>();
+  double _subtotal = 0.0;
+
+  @observable
+  double _total = 0.0;
+
+  @observable
+  double _discount = 0.0;
+
+  @observable
+  double _shipping = 0.0;
 
   @computed
   ObservableList<CartItem> get cartItems => _cartItems;
@@ -98,10 +109,22 @@ abstract class CartStoreBase with Store {
   int get quantity => _quantity;
 
   @computed
-  StreamStatus get status => _cartStream.status;
+  double get subtotal => _subtotal;
 
   @computed
-  ObservableMap<String, double> get values => _values;
+  double get total => _total;
+
+  @computed
+  double get discount => _discount;
+
+  @computed
+  double get shipping => _shipping;
+
+  @computed
+  ObservableStream<List<CartItem>> get cartStream => _cartStream;
+
+  @computed
+  StreamStatus get status => _cartStream.status;
 
   @action
   Future<void> addToCart(ProductModel product, String uid, int index) async {
@@ -120,20 +143,18 @@ abstract class CartStoreBase with Store {
 
   @action
   void calcCartValues() {
-    final List<Decimal> subtotal = [];
+    final List<Decimal> subtotals = [];
     for (var item in _cartItems) {
       final res =
           item.quantity.toDecimal() *
-          Decimal.parse(item.product?.price ?? '0.0');
-      subtotal.add(res);
+          Decimal.parse(item.product?.price.toString() ?? '0.0');
+      subtotals.add(res);
     }
-    _values['subtotal'] = subtotal.isEmpty
+    _subtotal = subtotals.isEmpty
         ? 0.0
-        : subtotal.reduce((a, b) => a + b).toDouble();
+        : subtotals.reduce((a, b) => a + b).toDouble();
 
-    _values['total'] =
-        ((_values['subtotal'] ?? 0.0) - (_values['discount'] ?? 0.0)) +
-        (_values['shipping'] ?? 0.0);
+    _total = subtotals.isEmpty ? 0.0 : (_subtotal - _discount) + _shipping;
   }
 
   @action
@@ -148,5 +169,14 @@ abstract class CartStoreBase with Store {
     _quantity = cartItem.quantity - 1;
     await _cartService.setQuantity(cartItem, _quantity);
     calcCartValues();
+  }
+
+  @action
+  void dispose() {
+    _quantity = 0;
+    _subtotal = 0.0;
+    _total = 0.0;
+    _discount = 0.0;
+    _shipping = 0.0;
   }
 }

@@ -43,8 +43,9 @@ class _CartResumeState extends State<CartResume> {
                 ),
                 Observer(
                   builder: (_) {
-                    final subtotal = widget.cartStore.values['subtotal']
-                        ?.toStringAsFixed(2);
+                    final subtotal = widget.cartStore.subtotal
+                        .toStringAsFixed(2)
+                        .replaceAll('.', ',');
                     return Text(
                       'R\$ $subtotal',
                       overflow: TextOverflow.ellipsis,
@@ -61,7 +62,17 @@ class _CartResumeState extends State<CartResume> {
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
-                Text('R\$ 0.00', overflow: TextOverflow.ellipsis),
+                Observer(
+                  builder: (_) {
+                    final discount = widget.cartStore.discount
+                        .toStringAsFixed(2)
+                        .replaceAll('.', ',');
+                    return Text(
+                      'R\$ $discount',
+                      overflow: TextOverflow.ellipsis,
+                    );
+                  },
+                ),
               ],
             ),
             Row(
@@ -72,7 +83,17 @@ class _CartResumeState extends State<CartResume> {
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
-                Text('R\$ 0.00', overflow: TextOverflow.ellipsis),
+                Observer(
+                  builder: (_) {
+                    final shipping = widget.cartStore.shipping
+                        .toStringAsFixed(2)
+                        .replaceAll('.', ',');
+                    return Text(
+                      'R\$ $shipping',
+                      overflow: TextOverflow.ellipsis,
+                    );
+                  },
+                ),
               ],
             ),
             Container(
@@ -88,8 +109,9 @@ class _CartResumeState extends State<CartResume> {
                   ),
                   Observer(
                     builder: (_) {
-                      final total = widget.cartStore.values['total']
-                          ?.toStringAsFixed(2);
+                      final total = widget.cartStore.total
+                          .toStringAsFixed(2)
+                          .replaceAll('.', ',');
                       return Text(
                         'R\$ $total',
                         overflow: TextOverflow.ellipsis,

@@ -18,6 +18,18 @@ class _CartScreenState extends State<CartScreen> {
   final cartStore = GetIt.instance<CartStore>();
 
   @override
+  void initState() {
+    cartStore.calcCartValues();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    cartStore.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final locale = Localizations.localeOf(context).languageCode;
     return Scaffold(

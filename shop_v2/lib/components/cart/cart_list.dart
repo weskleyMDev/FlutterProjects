@@ -67,7 +67,7 @@ class CartList extends StatelessWidget {
                                 overflow: TextOverflow.ellipsis,
                               ),
                               Text(
-                                'R\$ ${cartItem.product?.price}',
+                                'R\$ ${cartItem.product?.price.toStringAsFixed(2).replaceAll('.', ',')}',
                                 overflow: TextOverflow.ellipsis,
                               ),
                               Row(

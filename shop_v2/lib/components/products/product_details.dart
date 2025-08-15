@@ -11,9 +11,9 @@ import 'package:shop_v2/stores/products/products.store.dart';
 import 'package:transparent_image/transparent_image.dart';
 
 class ProductDetails extends StatefulWidget {
-  const ProductDetails({super.key, required this.product});
+  const ProductDetails({super.key, required this.pid});
 
-  final ProductModel product;
+  final String pid;
 
   @override
   State<ProductDetails> createState() => _ProductDetailsState();
@@ -36,91 +36,105 @@ class _ProductDetailsState extends State<ProductDetails> {
     final maxHeigh = MediaQuery.of(context).size.height;
     final maxWidth = MediaQuery.of(context).size.width;
     return Scaffold(
-      appBar: AppBar(title: Text(widget.product.title[locale] ?? 'Error')),
-      body: ListView(
-        padding: const EdgeInsets.all(10.0),
-        children: [
-          Container(
-            margin: const EdgeInsets.only(bottom: 12.0),
-            child: CarouselSlider.builder(
-              itemCount: widget.product.images.length,
-              itemBuilder: (context, index, _) {
-                return FadeInImage.memoryNetwork(
-                  placeholder: kTransparentImage,
-                  image: widget.product.images[index],
-                  fit: BoxFit.cover,
-                  width: maxWidth,
-                  height: maxHeigh * 0.4,
-                );
-              },
-              options: CarouselOptions(
-                height: maxHeigh * 0.5,
-                viewportFraction: 0.9,
-                enableInfiniteScroll: true,
-                enlargeCenterPage: false,
-                autoPlay: true,
-                autoPlayInterval: Duration(seconds: 5),
-              ),
-            ),
-          ),
-          Container(
-            margin: const EdgeInsets.only(bottom: 12.0),
-            child: Text(widget.product.title[locale] ?? 'Error'),
-          ),
-          Container(
-            margin: const EdgeInsets.only(bottom: 12.0),
-            child: Text(
-              'R\$ ${widget.product.price}',
-              style: TextStyle(
-                color: Theme.of(context).colorScheme.primary,
-                fontWeight: FontWeight.bold,
-                fontSize: 16.0,
-              ),
-            ),
-          ),
-          Container(
-            margin: const EdgeInsets.only(bottom: 12.0),
-            child: Text(AppLocalizations.of(context)!.size),
-          ),
-          Container(
-            margin: const EdgeInsets.only(bottom: 12.0),
-            height: maxHeigh * 0.05,
-            child: ListView.builder(
-              itemCount: widget.product.sizes.length,
-              scrollDirection: Axis.horizontal,
-              itemBuilder: (context, index) {
-                return Observer(
-                  builder: (_) {
-                    final size = widget.product.sizes[index];
-                    final isSelected = productsStore.selectedSize == index;
-                    return Container(
-                      margin: const EdgeInsets.only(right: 5.0),
-                      child: ChoiceChip(
-                        label: Text(size),
-                        selected: isSelected,
-                        onSelected: (_) {
-                          productsStore.selectedSize = index;
-                        },
-                        selectedColor: Theme.of(
-                          context,
-                        ).colorScheme.inversePrimary,
-                        showCheckmark: false,
-                      ),
+      appBar: AppBar(
+        title: Observer(
+          builder: (_) {
+            final product = productsStore.productsList.firstWhere(
+              (element) => element.id == widget.pid,
+              orElse: () => ProductModel.empty(),
+            );
+            return Text(product.title[locale] ?? 'Error');
+          },
+        ),
+      ),
+      body: Observer(
+        builder: (context) {
+          final product = productsStore.productsList.firstWhere(
+            (element) => element.id == widget.pid,
+            orElse: () => ProductModel.empty(),
+          );
+          return ListView(
+            padding: const EdgeInsets.all(10.0),
+            children: [
+              Container(
+                margin: const EdgeInsets.only(bottom: 12.0),
+                child: CarouselSlider.builder(
+                  itemCount: product.images.length,
+                  itemBuilder: (context, index, _) {
+                    return FadeInImage.memoryNetwork(
+                      placeholder: kTransparentImage,
+                      image: product.images[index],
+                      fit: BoxFit.cover,
+                      width: maxWidth,
+                      height: maxHeigh * 0.4,
                     );
                   },
-                );
-              },
-            ),
-          ),
-          Observer(
-            builder: (_) {
-              return ElevatedButton(
+                  options: CarouselOptions(
+                    height: maxHeigh * 0.5,
+                    viewportFraction: 0.9,
+                    enableInfiniteScroll: true,
+                    enlargeCenterPage: false,
+                    autoPlay: true,
+                    autoPlayInterval: Duration(seconds: 5),
+                  ),
+                ),
+              ),
+              Container(
+                margin: const EdgeInsets.only(bottom: 12.0),
+                child: Text(product.title[locale] ?? 'Error'),
+              ),
+              Container(
+                margin: const EdgeInsets.only(bottom: 12.0),
+                child: Text(
+                  'R\$ ${product.price}',
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.primary,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16.0,
+                  ),
+                ),
+              ),
+              Container(
+                margin: const EdgeInsets.only(bottom: 12.0),
+                child: Text(AppLocalizations.of(context)!.size),
+              ),
+              Container(
+                margin: const EdgeInsets.only(bottom: 12.0),
+                height: maxHeigh * 0.05,
+                child: ListView.builder(
+                  itemCount: product.sizes.length,
+                  scrollDirection: Axis.horizontal,
+                  itemBuilder: (context, index) {
+                    return Observer(
+                      builder: (_) {
+                        final size = product.sizes[index];
+                        final isSelected = productsStore.selectedSize == index;
+                        return Container(
+                          margin: const EdgeInsets.only(right: 5.0),
+                          child: ChoiceChip(
+                            label: Text(size),
+                            selected: isSelected,
+                            onSelected: (_) {
+                              productsStore.selectedSize = index;
+                            },
+                            selectedColor: Theme.of(
+                              context,
+                            ).colorScheme.inversePrimary,
+                            showCheckmark: false,
+                          ),
+                        );
+                      },
+                    );
+                  },
+                ),
+              ),
+              ElevatedButton(
                 onPressed: productsStore.selectedSize == null
                     ? null
                     : () async {
                         if (authStore.currentUser != null) {
-                          cartStore.addToCart(
-                            widget.product,
+                          await cartStore.addToCart(
+                            product,
                             authStore.currentUser!.id!,
                             productsStore.selectedSize!,
                           );
@@ -135,10 +149,10 @@ class _ProductDetailsState extends State<ProductDetails> {
                       ? AppLocalizations.of(context)!.enter_to_buy
                       : AppLocalizations.of(context)!.add_to_cart,
                 ),
-              );
-            },
-          ),
-        ],
+              ),
+            ],
+          );
+        },
       ),
     );
   }

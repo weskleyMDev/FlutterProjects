@@ -21,7 +21,7 @@ class ProductsGrid extends StatelessWidget {
         final product = products[index];
         final locale = Localizations.localeOf(context).languageCode;
         return InkWell(
-          onTap: () => context.goNamed('product-details', extra: product),
+          onTap: () => context.goNamed('product-details', extra: product.id),
           child: Card(
             child: Padding(
               padding: const EdgeInsets.all(8.0),
@@ -45,7 +45,7 @@ class ProductsGrid extends StatelessWidget {
                     overflow: TextOverflow.ellipsis,
                   ),
                   Text(
-                    'R\$ ${product.price}',
+                    'R\$ ${product.price.toStringAsFixed(2).replaceAll('.', ',')}',
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       color: Theme.of(context).colorScheme.primary,

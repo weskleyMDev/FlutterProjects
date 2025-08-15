@@ -31,6 +31,42 @@ mixin _$CartStore on CartStoreBase, Store {
     () => super.quantity,
     name: 'CartStoreBase.quantity',
   )).value;
+  Computed<double>? _$subtotalComputed;
+
+  @override
+  double get subtotal => (_$subtotalComputed ??= Computed<double>(
+    () => super.subtotal,
+    name: 'CartStoreBase.subtotal',
+  )).value;
+  Computed<double>? _$totalComputed;
+
+  @override
+  double get total => (_$totalComputed ??= Computed<double>(
+    () => super.total,
+    name: 'CartStoreBase.total',
+  )).value;
+  Computed<double>? _$discountComputed;
+
+  @override
+  double get discount => (_$discountComputed ??= Computed<double>(
+    () => super.discount,
+    name: 'CartStoreBase.discount',
+  )).value;
+  Computed<double>? _$shippingComputed;
+
+  @override
+  double get shipping => (_$shippingComputed ??= Computed<double>(
+    () => super.shipping,
+    name: 'CartStoreBase.shipping',
+  )).value;
+  Computed<ObservableStream<List<CartItem>>>? _$cartStreamComputed;
+
+  @override
+  ObservableStream<List<CartItem>> get cartStream =>
+      (_$cartStreamComputed ??= Computed<ObservableStream<List<CartItem>>>(
+        () => super.cartStream,
+        name: 'CartStoreBase.cartStream',
+      )).value;
   Computed<StreamStatus>? _$statusComputed;
 
   @override
@@ -38,14 +74,6 @@ mixin _$CartStore on CartStoreBase, Store {
     () => super.status,
     name: 'CartStoreBase.status',
   )).value;
-  Computed<ObservableMap<String, double>>? _$valuesComputed;
-
-  @override
-  ObservableMap<String, double> get values =>
-      (_$valuesComputed ??= Computed<ObservableMap<String, double>>(
-        () => super.values,
-        name: 'CartStoreBase.values',
-      )).value;
 
   late final _$_cartStreamAtom = Atom(
     name: 'CartStoreBase._cartStream',
@@ -53,13 +81,13 @@ mixin _$CartStore on CartStoreBase, Store {
   );
 
   @override
-  ObservableStream<List<CartItem>?> get _cartStream {
+  ObservableStream<List<CartItem>> get _cartStream {
     _$_cartStreamAtom.reportRead();
     return super._cartStream;
   }
 
   @override
-  set _cartStream(ObservableStream<List<CartItem>?> value) {
+  set _cartStream(ObservableStream<List<CartItem>> value) {
     _$_cartStreamAtom.reportWrite(value, super._cartStream, () {
       super._cartStream = value;
     });
@@ -101,21 +129,75 @@ mixin _$CartStore on CartStoreBase, Store {
     });
   }
 
-  late final _$_valuesAtom = Atom(
-    name: 'CartStoreBase._values',
+  late final _$_subtotalAtom = Atom(
+    name: 'CartStoreBase._subtotal',
     context: context,
   );
 
   @override
-  ObservableMap<String, double> get _values {
-    _$_valuesAtom.reportRead();
-    return super._values;
+  double get _subtotal {
+    _$_subtotalAtom.reportRead();
+    return super._subtotal;
   }
 
   @override
-  set _values(ObservableMap<String, double> value) {
-    _$_valuesAtom.reportWrite(value, super._values, () {
-      super._values = value;
+  set _subtotal(double value) {
+    _$_subtotalAtom.reportWrite(value, super._subtotal, () {
+      super._subtotal = value;
+    });
+  }
+
+  late final _$_totalAtom = Atom(
+    name: 'CartStoreBase._total',
+    context: context,
+  );
+
+  @override
+  double get _total {
+    _$_totalAtom.reportRead();
+    return super._total;
+  }
+
+  @override
+  set _total(double value) {
+    _$_totalAtom.reportWrite(value, super._total, () {
+      super._total = value;
+    });
+  }
+
+  late final _$_discountAtom = Atom(
+    name: 'CartStoreBase._discount',
+    context: context,
+  );
+
+  @override
+  double get _discount {
+    _$_discountAtom.reportRead();
+    return super._discount;
+  }
+
+  @override
+  set _discount(double value) {
+    _$_discountAtom.reportWrite(value, super._discount, () {
+      super._discount = value;
+    });
+  }
+
+  late final _$_shippingAtom = Atom(
+    name: 'CartStoreBase._shipping',
+    context: context,
+  );
+
+  @override
+  double get _shipping {
+    _$_shippingAtom.reportRead();
+    return super._shipping;
+  }
+
+  @override
+  set _shipping(double value) {
+    _$_shippingAtom.reportWrite(value, super._shipping, () {
+      super._shipping = value;
     });
   }
 
@@ -183,13 +265,29 @@ mixin _$CartStore on CartStoreBase, Store {
   }
 
   @override
+  void dispose() {
+    final _$actionInfo = _$CartStoreBaseActionController.startAction(
+      name: 'CartStoreBase.dispose',
+    );
+    try {
+      return super.dispose();
+    } finally {
+      _$CartStoreBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   String toString() {
     return '''
 cartItems: ${cartItems},
 length: ${length},
 quantity: ${quantity},
-status: ${status},
-values: ${values}
+subtotal: ${subtotal},
+total: ${total},
+discount: ${discount},
+shipping: ${shipping},
+cartStream: ${cartStream},
+status: ${status}
     ''';
   }
 }
