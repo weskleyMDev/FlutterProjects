@@ -53,103 +53,117 @@ class _ProductDetailsState extends State<ProductDetails> {
             (element) => element.id == widget.pid,
             orElse: () => ProductModel.empty(),
           );
-          return ListView(
-            padding: const EdgeInsets.all(10.0),
+          return Stack(
             children: [
-              Container(
-                margin: const EdgeInsets.only(bottom: 12.0),
-                child: CarouselSlider.builder(
-                  itemCount: product.images.length,
-                  itemBuilder: (context, index, _) {
-                    return FadeInImage.memoryNetwork(
-                      placeholder: kTransparentImage,
-                      image: product.images[index],
-                      fit: BoxFit.cover,
-                      width: maxWidth,
-                      height: maxHeigh * 0.4,
-                    );
-                  },
-                  options: CarouselOptions(
-                    height: maxHeigh * 0.5,
-                    viewportFraction: 0.9,
-                    enableInfiniteScroll: true,
-                    enlargeCenterPage: false,
-                    autoPlay: true,
-                    autoPlayInterval: Duration(seconds: 5),
-                  ),
-                ),
-              ),
-              Container(
-                margin: const EdgeInsets.only(bottom: 12.0),
-                child: Text(product.title[locale] ?? 'Error'),
-              ),
-              Container(
-                margin: const EdgeInsets.only(bottom: 12.0),
-                child: Text(
-                  'R\$ ${product.price}',
-                  style: TextStyle(
-                    color: Theme.of(context).colorScheme.primary,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16.0,
-                  ),
-                ),
-              ),
-              Container(
-                margin: const EdgeInsets.only(bottom: 12.0),
-                child: Text(AppLocalizations.of(context)!.size),
-              ),
-              Container(
-                margin: const EdgeInsets.only(bottom: 12.0),
-                height: maxHeigh * 0.05,
-                child: ListView.builder(
-                  itemCount: product.sizes.length,
-                  scrollDirection: Axis.horizontal,
-                  itemBuilder: (context, index) {
-                    return Observer(
-                      builder: (_) {
-                        final size = product.sizes[index];
-                        final isSelected = productsStore.selectedSize == index;
-                        return Container(
-                          margin: const EdgeInsets.only(right: 5.0),
-                          child: ChoiceChip(
-                            label: Text(size),
-                            selected: isSelected,
-                            onSelected: (_) {
-                              productsStore.selectedSize = index;
-                            },
-                            selectedColor: Theme.of(
-                              context,
-                            ).colorScheme.inversePrimary,
-                            showCheckmark: false,
-                          ),
+              ListView(
+                padding: const EdgeInsets.all(10.0),
+                children: [
+                  Container(
+                    margin: const EdgeInsets.only(bottom: 12.0),
+                    child: CarouselSlider.builder(
+                      itemCount: product.images.length,
+                      itemBuilder: (context, index, _) {
+                        return FadeInImage.memoryNetwork(
+                          placeholder: kTransparentImage,
+                          image: product.images[index],
+                          fit: BoxFit.cover,
+                          width: maxWidth,
+                          height: maxHeigh * 0.4,
                         );
                       },
-                    );
-                  },
-                ),
-              ),
-              ElevatedButton(
-                onPressed: productsStore.selectedSize == null
-                    ? null
-                    : () async {
-                        if (authStore.currentUser != null) {
-                          await cartStore.addToCart(
-                            product,
-                            authStore.currentUser!.id!,
-                            productsStore.selectedSize!,
-                          );
-                          if (!context.mounted) return;
-                          context.pushNamed('cart-screen');
-                        } else {
-                          context.goNamed('login-screen');
-                        }
+                      options: CarouselOptions(
+                        height: maxHeigh * 0.5,
+                        viewportFraction: 0.9,
+                        enableInfiniteScroll: true,
+                        enlargeCenterPage: false,
+                        autoPlay: true,
+                        autoPlayInterval: Duration(seconds: 5),
+                      ),
+                    ),
+                  ),
+                  Container(
+                    margin: const EdgeInsets.only(bottom: 12.0),
+                    child: Text(product.title[locale] ?? 'Error'),
+                  ),
+                  Container(
+                    margin: const EdgeInsets.only(bottom: 12.0),
+                    child: Text(
+                      'R\$ ${product.price}',
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.primary,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16.0,
+                      ),
+                    ),
+                  ),
+                  Container(
+                    margin: const EdgeInsets.only(bottom: 12.0),
+                    child: Text(AppLocalizations.of(context)!.size),
+                  ),
+                  Container(
+                    margin: const EdgeInsets.only(bottom: 12.0),
+                    height: maxHeigh * 0.05,
+                    child: ListView.builder(
+                      itemCount: product.sizes.length,
+                      scrollDirection: Axis.horizontal,
+                      itemBuilder: (context, index) {
+                        return Observer(
+                          builder: (_) {
+                            final size = product.sizes[index];
+                            final isSelected =
+                                productsStore.selectedSize == index;
+                            return Container(
+                              margin: const EdgeInsets.only(right: 5.0),
+                              child: ChoiceChip(
+                                label: Text(size),
+                                selected: isSelected,
+                                onSelected: (_) {
+                                  productsStore.selectedSize = index;
+                                },
+                                selectedColor: Theme.of(
+                                  context,
+                                ).colorScheme.inversePrimary,
+                                showCheckmark: false,
+                              ),
+                            );
+                          },
+                        );
                       },
-                child: Text(
-                  authStore.currentUser == null
-                      ? AppLocalizations.of(context)!.enter_to_buy
-                      : AppLocalizations.of(context)!.add_to_cart,
-                ),
+                    ),
+                  ),
+                  ElevatedButton(
+                    onPressed: productsStore.selectedSize == null
+                        ? null
+                        : () async {
+                            if (authStore.currentUser != null) {
+                              cartStore.isLoading = true;
+                              await cartStore.addToCart(
+                                product,
+                                authStore.currentUser!.id!,
+                                productsStore.selectedSize!,
+                              );
+                              cartStore.isLoading = false;
+                              if (!context.mounted) return;
+                              context.pushNamed('cart-screen');
+                            } else {
+                              context.goNamed('login-screen');
+                            }
+                          },
+                    child: Text(
+                      authStore.currentUser == null
+                          ? AppLocalizations.of(context)!.enter_to_buy
+                          : AppLocalizations.of(context)!.add_to_cart,
+                    ),
+                  ),
+                ],
               ),
+              if (cartStore.isLoading)
+                Container(
+                  height: double.infinity,
+                  width: double.infinity,
+                  color: Colors.black87,
+                  child: const Center(child: CircularProgressIndicator()),
+                ),
             ],
           );
         },

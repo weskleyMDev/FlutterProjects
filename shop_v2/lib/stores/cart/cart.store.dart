@@ -6,6 +6,7 @@ import 'package:mobx/mobx.dart';
 import 'package:shop_v2/models/cart/cart_item.dart';
 import 'package:shop_v2/models/products/product_model.dart';
 import 'package:shop_v2/repositories/cart/icart_repository.dart';
+import 'package:shop_v2/repositories/coupon/icoupon_repository.dart';
 import 'package:shop_v2/services/cart/icart_service.dart';
 import 'package:shop_v2/stores/auth/auth.store.dart';
 import 'package:shop_v2/stores/products/products.store.dart';
@@ -19,8 +20,10 @@ abstract class CartStoreBase with Store {
   CartStoreBase({
     required ICartRepository cartRepository,
     required ICartService cartService,
+    required ICouponRepository couponRepository,
   }) : _cartRepository = cartRepository,
-       _cartService = cartService {
+       _cartService = cartService,
+       _couponRepository = couponRepository {
     GetIt.instance<AuthStore>().userChanges.listen((user) {
       if (user != null) {
         _cartStream = ObservableStream(_cartRepository.cartStream(user));
@@ -75,6 +78,7 @@ abstract class CartStoreBase with Store {
 
   final ICartRepository _cartRepository;
   final ICartService _cartService;
+  final ICouponRepository _couponRepository;
 
   @observable
   ObservableStream<List<CartItem>> _cartStream = ObservableStream(
@@ -99,6 +103,14 @@ abstract class CartStoreBase with Store {
   @observable
   double _shipping = 0.0;
 
+  @observable
+  int _percent = 0;
+
+  @observable
+  bool isLoading = false;
+
+  /*==============================COMPUTED===================================*/
+
   @computed
   ObservableList<CartItem> get cartItems => _cartItems;
 
@@ -121,10 +133,21 @@ abstract class CartStoreBase with Store {
   double get shipping => _shipping;
 
   @computed
+  int get percent => _percent;
+
+  @computed
   ObservableStream<List<CartItem>> get cartStream => _cartStream;
 
   @computed
   StreamStatus get status => _cartStream.status;
+
+  /*==============================ACTION===================================*/
+
+  @action
+  Future<void> getCoupon(String coupon) async {
+    final doc = await _couponRepository.getCoupon(coupon);
+    _percent = doc?['value'];
+  }
 
   @action
   Future<void> addToCart(ProductModel product, String uid, int index) async {
@@ -143,18 +166,19 @@ abstract class CartStoreBase with Store {
 
   @action
   void calcCartValues() {
-    final List<Decimal> subtotals = [];
+    Decimal subtotal = Decimal.zero;
     for (var item in _cartItems) {
-      final res =
+      subtotal +=
           item.quantity.toDecimal() *
           Decimal.parse(item.product?.price.toString() ?? '0.0');
-      subtotals.add(res);
     }
-    _subtotal = subtotals.isEmpty
-        ? 0.0
-        : subtotals.reduce((a, b) => a + b).toDouble();
-
-    _total = subtotals.isEmpty ? 0.0 : (_subtotal - _discount) + _shipping;
+    final percent = Decimal.parse((_percent / 100).toString());
+    final discount = subtotal * percent;
+    final shipping = Decimal.parse(_shipping.toString());
+    final total = (subtotal - discount) + shipping;
+    _subtotal = subtotal.toDouble();
+    _discount = discount.toDouble();
+    _total = total.toDouble();
   }
 
   @action
@@ -178,5 +202,6 @@ abstract class CartStoreBase with Store {
     _total = 0.0;
     _discount = 0.0;
     _shipping = 0.0;
+    _percent = 0;
   }
 }

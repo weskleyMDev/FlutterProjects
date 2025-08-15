@@ -59,6 +59,13 @@ mixin _$CartStore on CartStoreBase, Store {
     () => super.shipping,
     name: 'CartStoreBase.shipping',
   )).value;
+  Computed<int>? _$percentComputed;
+
+  @override
+  int get percent => (_$percentComputed ??= Computed<int>(
+    () => super.percent,
+    name: 'CartStoreBase.percent',
+  )).value;
   Computed<ObservableStream<List<CartItem>>>? _$cartStreamComputed;
 
   @override
@@ -201,6 +208,52 @@ mixin _$CartStore on CartStoreBase, Store {
     });
   }
 
+  late final _$_percentAtom = Atom(
+    name: 'CartStoreBase._percent',
+    context: context,
+  );
+
+  @override
+  int get _percent {
+    _$_percentAtom.reportRead();
+    return super._percent;
+  }
+
+  @override
+  set _percent(int value) {
+    _$_percentAtom.reportWrite(value, super._percent, () {
+      super._percent = value;
+    });
+  }
+
+  late final _$isLoadingAtom = Atom(
+    name: 'CartStoreBase.isLoading',
+    context: context,
+  );
+
+  @override
+  bool get isLoading {
+    _$isLoadingAtom.reportRead();
+    return super.isLoading;
+  }
+
+  @override
+  set isLoading(bool value) {
+    _$isLoadingAtom.reportWrite(value, super.isLoading, () {
+      super.isLoading = value;
+    });
+  }
+
+  late final _$getCouponAsyncAction = AsyncAction(
+    'CartStoreBase.getCoupon',
+    context: context,
+  );
+
+  @override
+  Future<void> getCoupon(String coupon) {
+    return _$getCouponAsyncAction.run(() => super.getCoupon(coupon));
+  }
+
   late final _$addToCartAsyncAction = AsyncAction(
     'CartStoreBase.addToCart',
     context: context,
@@ -279,6 +332,7 @@ mixin _$CartStore on CartStoreBase, Store {
   @override
   String toString() {
     return '''
+isLoading: ${isLoading},
 cartItems: ${cartItems},
 length: ${length},
 quantity: ${quantity},
@@ -286,6 +340,7 @@ subtotal: ${subtotal},
 total: ${total},
 discount: ${discount},
 shipping: ${shipping},
+percent: ${percent},
 cartStream: ${cartStream},
 status: ${status}
     ''';

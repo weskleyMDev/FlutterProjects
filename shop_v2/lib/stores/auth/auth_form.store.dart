@@ -101,5 +101,8 @@ abstract class AuthFormStoreBase with Store {
   @action
   void dispose() {
     _authFormData.clear();
+    _isLoading = false;
+    _isVisible = false;
+    _imageSelected = false;
   }
 }

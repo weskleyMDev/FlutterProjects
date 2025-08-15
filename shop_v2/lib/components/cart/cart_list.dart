@@ -4,6 +4,7 @@ import 'package:fluttericon/font_awesome_icons.dart';
 import 'package:mobx/mobx.dart';
 import 'package:shop_v2/l10n/app_localizations.dart';
 import 'package:shop_v2/stores/cart/cart.store.dart';
+import 'package:transparent_image/transparent_image.dart';
 
 class CartList extends StatelessWidget {
   const CartList({super.key, required this.cartStore, required this.locale});
@@ -45,8 +46,9 @@ class CartList extends StatelessWidget {
                           margin: const EdgeInsets.only(right: 10.0),
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(12.0),
-                            child: Image.network(
-                              cartItem.product?.images[0] ?? '',
+                            child: FadeInImage.memoryNetwork(
+                              placeholder: kTransparentImage,
+                              image: cartItem.product?.images[0] ?? '',
                               height: 100.0,
                               width: 100.0,
                               fit: BoxFit.cover,
