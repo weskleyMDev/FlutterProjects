@@ -35,70 +35,81 @@ class CartList extends StatelessWidget {
               itemBuilder: (context, index) {
                 final cartItem = cartItems[index];
                 return Card(
-                  child: Stack(
-                    children: [
-                      ListTile(
-                        contentPadding: const EdgeInsets.only(left: 8.0),
-                        title: Text(
-                          cartItem.product.title[locale] ?? '',
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                        subtitle: Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: [
-                            Text(
-                              '${AppLocalizations.of(context)!.size}: ${cartItem.size}',
+                  key: ValueKey(cartItem.id),
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          margin: const EdgeInsets.only(right: 10.0),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(12.0),
+                            child: Image.network(
+                              cartItem.product?.images[0] ?? '',
+                              height: 100.0,
+                              width: 100.0,
+                              fit: BoxFit.cover,
                             ),
-                            Text('R\$ ${cartItem.product.price}'),
-                            Row(
-                              children: [
-                                Container(
-                                  height: 18.0,
-                                  width: 18.0,
-                                  margin: const EdgeInsets.only(right: 8.0),
-                                  child: Observer(
-                                    builder: (_) {
-                                      return IconButton(
-                                        onPressed: cartStore.quantity == 1
-                                            ? null
-                                            : () {
-                                                cartStore.quantity =
-                                                    cartItem.quantity;
-                                                cartStore.decrementQuantity(
-                                                  cartItem,
-                                                );
-                                              },
-                                        padding: EdgeInsets.zero,
-                                        iconSize: 18.0,
-                                        icon: Icon(Icons.remove),
-                                      );
-                                    },
-                                  ),
-                                ),
-                                Text(cartItem.quantity.toString()),
-                                Container(
-                                  height: 18.0,
-                                  width: 18.0,
-                                  margin: const EdgeInsets.only(left: 8.0),
-                                  child: IconButton(
-                                    onPressed: () {
-                                      cartStore.quantity = cartItem.quantity;
-                                      cartStore.incrementQuantity(cartItem);
-                                    },
-                                    padding: EdgeInsets.zero,
-                                    iconSize: 18.0,
-                                    icon: Icon(Icons.add),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
+                          ),
                         ),
-                      ),
-                      Positioned(
-                        top: 10,
-                        right: 5,
-                        child: SizedBox(
+                        Expanded(
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                cartItem.product?.title[locale] ?? '',
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                              Text(
+                                '${AppLocalizations.of(context)!.size}: ${cartItem.size}',
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                              Text(
+                                'R\$ ${cartItem.product?.price}',
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                              Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Container(
+                                    height: 18.0,
+                                    width: 18.0,
+                                    margin: const EdgeInsets.only(right: 8.0),
+                                    child: IconButton(
+                                      onPressed: cartItem.quantity == 1
+                                          ? null
+                                          : () {
+                                              cartStore.decrementQuantity(
+                                                cartItem,
+                                              );
+                                            },
+                                      padding: EdgeInsets.zero,
+                                      iconSize: 18.0,
+                                      icon: Icon(Icons.remove),
+                                    ),
+                                  ),
+                                  Text(cartItem.quantity.toString()),
+                                  Container(
+                                    height: 18.0,
+                                    width: 18.0,
+                                    margin: const EdgeInsets.only(left: 8.0),
+                                    child: IconButton(
+                                      onPressed: () {
+                                        cartStore.incrementQuantity(cartItem);
+                                      },
+                                      padding: EdgeInsets.zero,
+                                      iconSize: 18.0,
+                                      icon: Icon(Icons.add),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                        SizedBox(
                           height: 24.0,
                           width: 24.0,
                           child: IconButton(
@@ -117,8 +128,8 @@ class CartList extends StatelessWidget {
                             )!.remove_from_cart,
                           ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 );
               },

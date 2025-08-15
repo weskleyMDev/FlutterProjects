@@ -9,17 +9,15 @@ class CartService implements ICartService {
   @override
   Future<void> addToCart(
     ProductModel product,
-    String category,
     String uid,
     int index,
   ) async {
     final data = CartItem(
       id: '',
-      category: category,
       quantity: 1,
       size: product.sizes[index],
-      product: product,
       userId: uid,
+      productId: product.id,
     );
     final docRef = await _firestore
         .collection('users')

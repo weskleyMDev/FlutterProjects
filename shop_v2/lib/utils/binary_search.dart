@@ -1,4 +1,4 @@
-int customBinarySearch<T>(List<T> list, T item, int Function(T, T) compare) {
+int customBinarySearch<T, E>(List<T> list, E elem, int Function(T, E) compare) {
   int start = 0;
   int end = list.length - 1;
 
@@ -6,7 +6,7 @@ int customBinarySearch<T>(List<T> list, T item, int Function(T, T) compare) {
     int mid = (start + end) ~/ 2;
     T midItem = list[mid];
 
-    int comparisonResult = compare(midItem, item);
+    int comparisonResult = compare(midItem, elem);
 
     if (comparisonResult == 0) {
       return mid;

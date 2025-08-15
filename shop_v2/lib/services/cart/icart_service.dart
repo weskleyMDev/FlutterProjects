@@ -4,7 +4,6 @@ import 'package:shop_v2/models/products/product_model.dart';
 abstract class ICartService {
   Future<void> addToCart(
     ProductModel product,
-    String category,
     String uid,
     int index,
   );

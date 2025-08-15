@@ -26,14 +26,20 @@ abstract class ProductsStoreBase with Store {
     Stream.empty(),
   );
 
+  @observable
+  ObservableList<ProductModel> _productsList = ObservableList<ProductModel>();
+
   @computed
-  Stream<List<ProductModel>> get productsList => _productsStream;
+  ObservableList<ProductModel> get productsList => _productsList;
 
   @computed
   String? get categoryLabel => _categoryLabel;
 
   @computed
   int? get selectedSize => _selectedSize;
+
+  @computed
+  StreamStatus get status => _productsStream.status;
 
   set selectedSize(int? value) => _selectedSize = value;
 
@@ -42,32 +48,32 @@ abstract class ProductsStoreBase with Store {
     BuildContext context,
     CategoriesList options,
   ) async {
+    final String category;
     switch (options) {
       case CategoriesList.tshirts:
+        category = 'tshirts';
         _categoryLabel = AppLocalizations.of(context)!.tshirt(2);
-        _productsStream = ObservableStream(
-          _productsRepository.getProductsByCategory(category: 'tshirts'),
-        );
         break;
       case CategoriesList.jackets:
+        category = 'jackets';
         _categoryLabel = AppLocalizations.of(context)!.jacket(2);
-        _productsStream = ObservableStream(
-          _productsRepository.getProductsByCategory(category: 'jackets'),
-        );
         break;
       case CategoriesList.shorts:
+        category = 'shorts';
         _categoryLabel = AppLocalizations.of(context)!.shorts(2);
-        _productsStream = ObservableStream(
-          _productsRepository.getProductsByCategory(category: 'shorts'),
-        );
         break;
       case CategoriesList.pants:
+        category = 'pants';
         _categoryLabel = AppLocalizations.of(context)!.pants(2);
-        _productsStream = ObservableStream(
-          _productsRepository.getProductsByCategory(category: 'pants'),
-        );
         break;
     }
+    _productsStream = ObservableStream(
+      _productsRepository.getProductsByCategory(category: category),
+    );
+    _productsStream.listen((data) {
+      _productsList.clear();
+      _productsList.addAll(data);
+    });
   }
 
   @action

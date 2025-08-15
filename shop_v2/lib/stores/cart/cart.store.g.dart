@@ -38,6 +38,14 @@ mixin _$CartStore on CartStoreBase, Store {
     () => super.status,
     name: 'CartStoreBase.status',
   )).value;
+  Computed<ObservableMap<String, double>>? _$valuesComputed;
+
+  @override
+  ObservableMap<String, double> get values =>
+      (_$valuesComputed ??= Computed<ObservableMap<String, double>>(
+        () => super.values,
+        name: 'CartStoreBase.values',
+      )).value;
 
   late final _$_cartStreamAtom = Atom(
     name: 'CartStoreBase._cartStream',
@@ -93,20 +101,33 @@ mixin _$CartStore on CartStoreBase, Store {
     });
   }
 
+  late final _$_valuesAtom = Atom(
+    name: 'CartStoreBase._values',
+    context: context,
+  );
+
+  @override
+  ObservableMap<String, double> get _values {
+    _$_valuesAtom.reportRead();
+    return super._values;
+  }
+
+  @override
+  set _values(ObservableMap<String, double> value) {
+    _$_valuesAtom.reportWrite(value, super._values, () {
+      super._values = value;
+    });
+  }
+
   late final _$addToCartAsyncAction = AsyncAction(
     'CartStoreBase.addToCart',
     context: context,
   );
 
   @override
-  Future<void> addToCart(
-    ProductModel product,
-    String category,
-    String uid,
-    int index,
-  ) {
+  Future<void> addToCart(ProductModel product, String uid, int index) {
     return _$addToCartAsyncAction.run(
-      () => super.addToCart(product, category, uid, index),
+      () => super.addToCart(product, uid, index),
     );
   }
 
@@ -120,30 +141,42 @@ mixin _$CartStore on CartStoreBase, Store {
     return _$removeByIdAsyncAction.run(() => super.removeById(id, uid));
   }
 
+  late final _$incrementQuantityAsyncAction = AsyncAction(
+    'CartStoreBase.incrementQuantity',
+    context: context,
+  );
+
+  @override
+  Future<void> incrementQuantity(CartItem cartItem) {
+    return _$incrementQuantityAsyncAction.run(
+      () => super.incrementQuantity(cartItem),
+    );
+  }
+
+  late final _$decrementQuantityAsyncAction = AsyncAction(
+    'CartStoreBase.decrementQuantity',
+    context: context,
+  );
+
+  @override
+  Future<void> decrementQuantity(CartItem cartItem) {
+    return _$decrementQuantityAsyncAction.run(
+      () => super.decrementQuantity(cartItem),
+    );
+  }
+
   late final _$CartStoreBaseActionController = ActionController(
     name: 'CartStoreBase',
     context: context,
   );
 
   @override
-  void incrementQuantity(CartItem cartItem) {
+  void calcCartValues() {
     final _$actionInfo = _$CartStoreBaseActionController.startAction(
-      name: 'CartStoreBase.incrementQuantity',
+      name: 'CartStoreBase.calcCartValues',
     );
     try {
-      return super.incrementQuantity(cartItem);
-    } finally {
-      _$CartStoreBaseActionController.endAction(_$actionInfo);
-    }
-  }
-
-  @override
-  void decrementQuantity(CartItem cartItem) {
-    final _$actionInfo = _$CartStoreBaseActionController.startAction(
-      name: 'CartStoreBase.decrementQuantity',
-    );
-    try {
-      return super.decrementQuantity(cartItem);
+      return super.calcCartValues();
     } finally {
       _$CartStoreBaseActionController.endAction(_$actionInfo);
     }
@@ -155,7 +188,8 @@ mixin _$CartStore on CartStoreBase, Store {
 cartItems: ${cartItems},
 length: ${length},
 quantity: ${quantity},
-status: ${status}
+status: ${status},
+values: ${values}
     ''';
   }
 }

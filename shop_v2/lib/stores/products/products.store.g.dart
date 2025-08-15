@@ -9,11 +9,11 @@ part of 'products.store.dart';
 // ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic, no_leading_underscores_for_local_identifiers
 
 mixin _$ProductsStore on ProductsStoreBase, Store {
-  Computed<Stream<List<ProductModel>>>? _$productsListComputed;
+  Computed<ObservableList<ProductModel>>? _$productsListComputed;
 
   @override
-  Stream<List<ProductModel>> get productsList =>
-      (_$productsListComputed ??= Computed<Stream<List<ProductModel>>>(
+  ObservableList<ProductModel> get productsList =>
+      (_$productsListComputed ??= Computed<ObservableList<ProductModel>>(
         () => super.productsList,
         name: 'ProductsStoreBase.productsList',
       )).value;
@@ -30,6 +30,13 @@ mixin _$ProductsStore on ProductsStoreBase, Store {
   int? get selectedSize => (_$selectedSizeComputed ??= Computed<int?>(
     () => super.selectedSize,
     name: 'ProductsStoreBase.selectedSize',
+  )).value;
+  Computed<StreamStatus>? _$statusComputed;
+
+  @override
+  StreamStatus get status => (_$statusComputed ??= Computed<StreamStatus>(
+    () => super.status,
+    name: 'ProductsStoreBase.status',
   )).value;
 
   late final _$_categoryLabelAtom = Atom(
@@ -86,6 +93,24 @@ mixin _$ProductsStore on ProductsStoreBase, Store {
     });
   }
 
+  late final _$_productsListAtom = Atom(
+    name: 'ProductsStoreBase._productsList',
+    context: context,
+  );
+
+  @override
+  ObservableList<ProductModel> get _productsList {
+    _$_productsListAtom.reportRead();
+    return super._productsList;
+  }
+
+  @override
+  set _productsList(ObservableList<ProductModel> value) {
+    _$_productsListAtom.reportWrite(value, super._productsList, () {
+      super._productsList = value;
+    });
+  }
+
   late final _$toggleCategoryAsyncAction = AsyncAction(
     'ProductsStoreBase.toggleCategory',
     context: context,
@@ -120,7 +145,8 @@ mixin _$ProductsStore on ProductsStoreBase, Store {
     return '''
 productsList: ${productsList},
 categoryLabel: ${categoryLabel},
-selectedSize: ${selectedSize}
+selectedSize: ${selectedSize},
+status: ${status}
     ''';
   }
 }

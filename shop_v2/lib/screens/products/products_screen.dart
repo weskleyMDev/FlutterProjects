@@ -3,10 +3,10 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:fluttericon/font_awesome5_icons.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mobx/mobx.dart';
 import 'package:shop_v2/components/products/products_grid.dart';
 import 'package:shop_v2/components/products/products_list.dart';
 import 'package:shop_v2/l10n/app_localizations.dart';
-import 'package:shop_v2/models/products/product_model.dart';
 import 'package:shop_v2/stores/auth/auth.store.dart';
 import 'package:shop_v2/stores/cart/cart.store.dart';
 import 'package:shop_v2/stores/products/products.store.dart';
@@ -64,29 +64,27 @@ class _ProductsScreenState extends State<ProductsScreen> {
           ],
           actionsPadding: const EdgeInsets.only(right: 10),
         ),
-        body: StreamBuilder<List<ProductModel>>(
-          stream: productsStore.productsList,
-          builder: (context, snapshot) {
-            switch (snapshot.connectionState) {
-              case ConnectionState.none:
-              case ConnectionState.waiting:
+        body: Observer(
+          builder: (context) {
+            final status = productsStore.status;
+            switch (status) {
+              case StreamStatus.waiting:
                 return const Center(child: CircularProgressIndicator());
               default:
-                if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                final products = productsStore.productsList;
+                if (products.isEmpty) {
                   return Center(
                     child: Text(AppLocalizations.of(context)!.no_data_found),
                   );
-                } else {
-                  final products = snapshot.data!;
-                  products.sort((a, b) => a.price.compareTo(b.price));
-                  return TabBarView(
-                    physics: NeverScrollableScrollPhysics(),
-                    children: [
-                      ProductsGrid(products: products),
-                      ProductsList(products: products),
-                    ],
-                  );
                 }
+                products.sort((a, b) => a.price.compareTo(b.price));
+                return TabBarView(
+                  physics: NeverScrollableScrollPhysics(),
+                  children: [
+                    ProductsGrid(products: products),
+                    ProductsList(products: products),
+                  ],
+                );
             }
           },
         ),

@@ -121,7 +121,6 @@ class _ProductDetailsState extends State<ProductDetails> {
                         if (authStore.currentUser != null) {
                           cartStore.addToCart(
                             widget.product,
-                            productsStore.categoryLabel!,
                             authStore.currentUser!.id!,
                             productsStore.selectedSize!,
                           );

@@ -3,10 +3,21 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:shop_v2/l10n/app_localizations.dart';
 import 'package:shop_v2/stores/cart/cart.store.dart';
 
-class CartResume extends StatelessWidget {
+class CartResume extends StatefulWidget {
   const CartResume({super.key, required this.cartStore});
 
   final CartStore cartStore;
+
+  @override
+  State<CartResume> createState() => _CartResumeState();
+}
+
+class _CartResumeState extends State<CartResume> {
+  @override
+  void initState() {
+    super.initState();
+    widget.cartStore.calcCartValues();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +41,16 @@ class CartResume extends StatelessWidget {
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
-                Text('R\$ 0.00', overflow: TextOverflow.ellipsis),
+                Observer(
+                  builder: (_) {
+                    final subtotal = widget.cartStore.values['subtotal']
+                        ?.toStringAsFixed(2);
+                    return Text(
+                      'R\$ $subtotal',
+                      overflow: TextOverflow.ellipsis,
+                    );
+                  },
+                ),
               ],
             ),
             Row(
@@ -63,17 +83,31 @@ class CartResume extends StatelessWidget {
                     child: Text(
                       '${AppLocalizations.of(context)!.total}:',
                       overflow: TextOverflow.ellipsis,
+                      style: TextStyle(fontWeight: FontWeight.bold),
                     ),
                   ),
-                  Text('R\$ 0.00', overflow: TextOverflow.ellipsis),
+                  Observer(
+                    builder: (_) {
+                      final total = widget.cartStore.values['total']
+                          ?.toStringAsFixed(2);
+                      return Text(
+                        'R\$ $total',
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      );
+                    },
+                  ),
                 ],
               ),
             ),
             Observer(
               builder: (_) {
                 return FilledButton(
-                  onPressed: cartStore.length == 0 ? null : () {},
-                  child: Text(AppLocalizations.of(context)!.confirm_order),
+                  onPressed: widget.cartStore.length == 0 ? null : () {},
+                  child: Text(
+                    AppLocalizations.of(context)!.confirm_order,
+                    overflow: TextOverflow.ellipsis,
+                  ),
                 );
               },
             ),
