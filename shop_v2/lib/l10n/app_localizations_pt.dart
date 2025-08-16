@@ -182,4 +182,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get promo_code => 'Cupom de desconto';
+
+  @override
+  String get quantity => 'Quantidade';
 }

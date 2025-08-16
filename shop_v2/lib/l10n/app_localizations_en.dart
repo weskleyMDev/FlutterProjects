@@ -182,4 +182,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get promo_code => 'Promo Code';
+
+  @override
+  String get quantity => 'Quantity';
 }

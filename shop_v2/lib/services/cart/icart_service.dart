@@ -6,8 +6,9 @@ abstract class ICartService {
     ProductModel product,
     String uid,
     int index,
+    String category,
   );
   Future<void> removeById(String id, String uid);
-  Future<void> clearCart();
+  Future<void> clearCart(String uid);
   Future<void> setQuantity(CartItem cartItem, int quantity);
 }

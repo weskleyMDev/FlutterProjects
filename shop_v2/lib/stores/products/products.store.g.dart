@@ -9,6 +9,13 @@ part of 'products.store.dart';
 // ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic, no_leading_underscores_for_local_identifiers
 
 mixin _$ProductsStore on ProductsStoreBase, Store {
+  Computed<String?>? _$categoryIdComputed;
+
+  @override
+  String? get categoryId => (_$categoryIdComputed ??= Computed<String?>(
+    () => super.categoryId,
+    name: 'ProductsStoreBase.categoryId',
+  )).value;
   Computed<ObservableList<ProductModel>>? _$productsListComputed;
 
   @override
@@ -111,6 +118,24 @@ mixin _$ProductsStore on ProductsStoreBase, Store {
     });
   }
 
+  late final _$_categoryIdAtom = Atom(
+    name: 'ProductsStoreBase._categoryId',
+    context: context,
+  );
+
+  @override
+  String? get _categoryId {
+    _$_categoryIdAtom.reportRead();
+    return super._categoryId;
+  }
+
+  @override
+  set _categoryId(String? value) {
+    _$_categoryIdAtom.reportWrite(value, super._categoryId, () {
+      super._categoryId = value;
+    });
+  }
+
   late final _$toggleCategoryAsyncAction = AsyncAction(
     'ProductsStoreBase.toggleCategory',
     context: context,
@@ -120,6 +145,18 @@ mixin _$ProductsStore on ProductsStoreBase, Store {
   Future<void> toggleCategory(BuildContext context, CategoriesList options) {
     return _$toggleCategoryAsyncAction.run(
       () => super.toggleCategory(context, options),
+    );
+  }
+
+  late final _$getProductsByIdAsyncAction = AsyncAction(
+    'ProductsStoreBase.getProductsById',
+    context: context,
+  );
+
+  @override
+  Future<ProductModel?> getProductsById(String category, String id) {
+    return _$getProductsByIdAsyncAction.run(
+      () => super.getProductsById(category, id),
     );
   }
 
@@ -143,6 +180,7 @@ mixin _$ProductsStore on ProductsStoreBase, Store {
   @override
   String toString() {
     return '''
+categoryId: ${categoryId},
 productsList: ${productsList},
 categoryLabel: ${categoryLabel},
 selectedSize: ${selectedSize},

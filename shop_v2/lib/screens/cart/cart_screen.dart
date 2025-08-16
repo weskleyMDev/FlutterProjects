@@ -7,6 +7,7 @@ import 'package:shop_v2/components/cart/cart_list.dart';
 import 'package:shop_v2/components/cart/cart_resume.dart';
 import 'package:shop_v2/l10n/app_localizations.dart';
 import 'package:shop_v2/stores/cart/cart.store.dart';
+import 'package:shop_v2/stores/order/order.store.dart';
 
 class CartScreen extends StatefulWidget {
   const CartScreen({super.key});
@@ -17,6 +18,7 @@ class CartScreen extends StatefulWidget {
 
 class _CartScreenState extends State<CartScreen> {
   final cartStore = GetIt.instance<CartStore>();
+  final orderStore = GetIt.I.get<OrderStore>();
   late final TextEditingController _textController;
   late final ExpansibleController _controller;
 
@@ -30,7 +32,7 @@ class _CartScreenState extends State<CartScreen> {
 
   @override
   void dispose() {
-    cartStore.dispose();
+    cartStore.resetCart();
     _textController.dispose();
     _controller.dispose();
     super.dispose();
@@ -41,6 +43,7 @@ class _CartScreenState extends State<CartScreen> {
       if (_textController.text.trim().isEmpty) return;
       await cartStore.getCoupon(_textController.text.trim().toUpperCase());
       cartStore.calcCartValues();
+      orderStore.data['coupon'] = _textController.text.trim().toUpperCase();
       _controller.collapse();
     } catch (e) {
       if (!mounted) return;
@@ -120,7 +123,7 @@ class _CartScreenState extends State<CartScreen> {
               },
             ),
           ),
-          CartResume(cartStore: cartStore),
+          CartResume(cartStore: cartStore, orderStore: orderStore),
         ],
       ),
     );

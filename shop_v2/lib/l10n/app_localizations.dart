@@ -346,6 +346,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Promo Code'**
   String get promo_code;
+
+  /// Label for quantity
+  ///
+  /// In en, this message translates to:
+  /// **'Quantity'**
+  String get quantity;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

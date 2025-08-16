@@ -260,9 +260,9 @@ mixin _$CartStore on CartStoreBase, Store {
   );
 
   @override
-  Future<void> addToCart(ProductModel product, String uid, int index) {
+  Future<void> addToCart(ProductModel product, int index, String category) {
     return _$addToCartAsyncAction.run(
-      () => super.addToCart(product, uid, index),
+      () => super.addToCart(product, index, category),
     );
   }
 
@@ -300,6 +300,16 @@ mixin _$CartStore on CartStoreBase, Store {
     );
   }
 
+  late final _$clearCartAsyncAction = AsyncAction(
+    'CartStoreBase.clearCart',
+    context: context,
+  );
+
+  @override
+  Future<void> clearCart() {
+    return _$clearCartAsyncAction.run(() => super.clearCart());
+  }
+
   late final _$CartStoreBaseActionController = ActionController(
     name: 'CartStoreBase',
     context: context,
@@ -318,12 +328,12 @@ mixin _$CartStore on CartStoreBase, Store {
   }
 
   @override
-  void dispose() {
+  void resetCart() {
     final _$actionInfo = _$CartStoreBaseActionController.startAction(
-      name: 'CartStoreBase.dispose',
+      name: 'CartStoreBase.resetCart',
     );
     try {
-      return super.dispose();
+      return super.resetCart();
     } finally {
       _$CartStoreBaseActionController.endAction(_$actionInfo);
     }

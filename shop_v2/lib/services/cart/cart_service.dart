@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:shop_v2/models/cart/cart_item.dart';
 import 'package:shop_v2/models/products/product_model.dart';
 import 'package:shop_v2/services/cart/icart_service.dart';
+import 'package:uuid/uuid.dart';
 
 class CartService implements ICartService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -11,28 +12,29 @@ class CartService implements ICartService {
     ProductModel product,
     String uid,
     int index,
+    String category,
   ) async {
     final data = CartItem(
-      id: '',
+      id: Uuid().v4(),
       quantity: 1,
+      category: category,
       size: product.sizes[index],
       userId: uid,
       productId: product.id,
     );
-    final docRef = await _firestore
+    final docRef = FirebaseFirestore.instance
         .collection('users')
         .doc(uid)
         .collection('cart')
-        .add(data.toMap());
-
-    await docRef.set(data.copyWith(id: docRef.id).toMap());
+        .doc(data.id);
+    await docRef.set(data.toMap());
   }
 
   @override
-  Future<void> clearCart() async {
+  Future<void> clearCart(String uid) async {
     final snapshots = await _firestore
         .collection('users')
-        .doc('uid')
+        .doc(uid)
         .collection('cart')
         .get();
 

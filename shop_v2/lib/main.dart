@@ -7,14 +7,17 @@ import 'package:shop_v2/firebase_options.dart';
 import 'package:shop_v2/l10n/app_localizations.dart';
 import 'package:shop_v2/repositories/cart/cart_repository.dart';
 import 'package:shop_v2/repositories/coupon/coupon_repository.dart';
+import 'package:shop_v2/repositories/order/order_repository.dart';
 import 'package:shop_v2/repositories/products/products_repository.dart';
 import 'package:shop_v2/services/auth/firebase_service.dart';
 import 'package:shop_v2/services/cart/cart_service.dart';
+import 'package:shop_v2/services/order/order_service.dart';
 import 'package:shop_v2/services/showcase/showcase_service.dart';
 import 'package:shop_v2/stores/auth/auth.store.dart';
 import 'package:shop_v2/stores/auth/auth_form.store.dart';
 import 'package:shop_v2/stores/cart/cart.store.dart';
 import 'package:shop_v2/stores/components/drawer.store.dart';
+import 'package:shop_v2/stores/order/order.store.dart';
 import 'package:shop_v2/stores/products/products.store.dart';
 import 'package:shop_v2/stores/showcase/showcase.store.dart';
 import 'package:shop_v2/utils/routes/app_routes.dart';
@@ -39,6 +42,9 @@ void _setup() {
       cartService: CartService(),
       couponRepository: CouponRepository(),
     ),
+  );
+  getIt.registerLazySingleton(
+    () => OrderStore(OrderRepository(), OrderService()),
   );
 }
 

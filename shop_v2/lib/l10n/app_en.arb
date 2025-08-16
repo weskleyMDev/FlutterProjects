@@ -185,5 +185,9 @@
     "promo_code": "Promo Code",
     "@promo_code": {
         "description": "Label for promo code"
+    },
+    "quantity": "Quantity",
+    "@quantity": {
+        "description": "Label for quantity"
     }
 }

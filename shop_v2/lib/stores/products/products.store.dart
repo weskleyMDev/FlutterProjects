@@ -29,6 +29,12 @@ abstract class ProductsStoreBase with Store {
   @observable
   ObservableList<ProductModel> _productsList = ObservableList<ProductModel>();
 
+  @observable
+  String? _categoryId;
+
+  @computed
+  String? get categoryId => _categoryId;
+
   @computed
   ObservableList<ProductModel> get productsList => _productsList;
 
@@ -48,32 +54,40 @@ abstract class ProductsStoreBase with Store {
     BuildContext context,
     CategoriesList options,
   ) async {
-    final String category;
     switch (options) {
       case CategoriesList.tshirts:
-        category = 'tshirts';
+        _categoryId = 'tshirts';
         _categoryLabel = AppLocalizations.of(context)!.tshirt(2);
         break;
       case CategoriesList.jackets:
-        category = 'jackets';
+        _categoryId = 'jackets';
         _categoryLabel = AppLocalizations.of(context)!.jacket(2);
         break;
       case CategoriesList.shorts:
-        category = 'shorts';
+        _categoryId = 'shorts';
         _categoryLabel = AppLocalizations.of(context)!.shorts(2);
         break;
       case CategoriesList.pants:
-        category = 'pants';
+        _categoryId = 'pants';
         _categoryLabel = AppLocalizations.of(context)!.pants(2);
         break;
     }
     _productsStream = ObservableStream(
-      _productsRepository.getProductsByCategory(category: category),
+      _productsRepository.getProductsByCategory(category: _categoryId!),
     );
     _productsStream.listen((data) {
       _productsList.clear();
       _productsList.addAll(data);
     });
+  }
+
+  @action
+  Future<ProductModel?> getProductsById(String category, String id) async {
+    final product = await _productsRepository.getProductById(
+      category: category,
+      id: id,
+    );
+    return product;
   }
 
   @action

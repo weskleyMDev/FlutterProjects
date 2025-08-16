@@ -139,8 +139,8 @@ class _ProductDetailsState extends State<ProductDetails> {
                               cartStore.isLoading = true;
                               await cartStore.addToCart(
                                 product,
-                                authStore.currentUser!.id!,
                                 productsStore.selectedSize!,
+                                productsStore.categoryId!,
                               );
                               cartStore.isLoading = false;
                               if (!context.mounted) return;

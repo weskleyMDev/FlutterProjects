@@ -185,5 +185,9 @@
     "promo_code": "Cupom de desconto",
     "@promo_code": {
         "description": "Label for promo code"
+    },
+    "quantity": "Quantidade",
+    "@quantity": {
+        "description": "Label for quantity"
     }
 }

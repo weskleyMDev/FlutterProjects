@@ -23,8 +23,9 @@ abstract class CartStoreBase with Store {
     required ICouponRepository couponRepository,
   }) : _cartRepository = cartRepository,
        _cartService = cartService,
-       _couponRepository = couponRepository {
-    GetIt.instance<AuthStore>().userChanges.listen((user) {
+       _couponRepository = couponRepository,
+       _authStore = GetIt.instance<AuthStore>() {
+    _authStore.userChanges.listen((user) {
       if (user != null) {
         _cartStream = ObservableStream(_cartRepository.cartStream(user));
         _cartStream.listen((data) {
@@ -51,7 +52,7 @@ abstract class CartStoreBase with Store {
       }
     });
 
-    final currentUser = GetIt.instance<AuthStore>().currentUser;
+    final currentUser = _authStore.currentUser;
     if (currentUser != null) {
       _cartStream = ObservableStream(_cartRepository.cartStream(currentUser));
       _cartStream.listen((data) {
@@ -79,6 +80,7 @@ abstract class CartStoreBase with Store {
   final ICartRepository _cartRepository;
   final ICartService _cartService;
   final ICouponRepository _couponRepository;
+  final AuthStore _authStore;
 
   @observable
   ObservableStream<List<CartItem>> _cartStream = ObservableStream(
@@ -150,8 +152,14 @@ abstract class CartStoreBase with Store {
   }
 
   @action
-  Future<void> addToCart(ProductModel product, String uid, int index) async {
-    await _cartService.addToCart(product, uid, index);
+  Future<void> addToCart(
+    ProductModel product,
+    int index,
+    String category,
+  ) async {
+    final currentUser = _authStore.currentUser;
+    if (currentUser == null) return;
+    await _cartService.addToCart(product, currentUser.id!, index, category);
   }
 
   @action
@@ -196,7 +204,16 @@ abstract class CartStoreBase with Store {
   }
 
   @action
-  void dispose() {
+  Future<void> clearCart() async {
+    final currentUser = _authStore.currentUser;
+    if (currentUser == null) return;
+    await _cartService.clearCart(currentUser.id!);
+    _cartItems.clear();
+    resetCart();
+  }
+
+  @action
+  void resetCart() {
     _quantity = 0;
     _subtotal = 0.0;
     _total = 0.0;

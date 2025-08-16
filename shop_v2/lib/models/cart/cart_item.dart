@@ -5,6 +5,7 @@ import 'package:shop_v2/models/products/product_model.dart';
 class CartItem {
   final String id;
   final int quantity;
+  final String category;
   final String size;
   final String userId;
   final String productId;
@@ -13,6 +14,7 @@ class CartItem {
   CartItem({
     required this.id,
     required this.quantity,
+    required this.category,
     required this.size,
     required this.userId,
     required this.productId,
@@ -22,6 +24,7 @@ class CartItem {
   CartItem copyWith({
     String? id,
     int? quantity,
+    String? category,
     String? size,
     String? userId,
     String? productId,
@@ -30,6 +33,7 @@ class CartItem {
     return CartItem(
       id: id ?? this.id,
       quantity: quantity ?? this.quantity,
+      category: category ?? this.category,
       size: size ?? this.size,
       userId: userId ?? this.userId,
       productId: productId ?? this.productId,
@@ -41,6 +45,7 @@ class CartItem {
     return <String, dynamic>{
       'id': id,
       'quantity': quantity,
+      'category': category,
       'size': size,
       'userId': userId,
       'productId': productId,
@@ -51,6 +56,7 @@ class CartItem {
     return CartItem(
       id: map['id'] as String,
       quantity: map['quantity'] as int,
+      category: map['category'] as String,
       size: map['size'] as String,
       userId: map['userId'] as String,
       productId: map['productId'] as String,
@@ -64,7 +70,7 @@ class CartItem {
 
   @override
   String toString() {
-    return 'CartItem(id: $id, quantity: $quantity, size: $size, product: $product), userId: $userId), productId: $productId)';
+    return 'CartItem(id: $id, quantity: $quantity, category: $category, size: $size, product: $product), userId: $userId), productId: $productId)';
   }
 
   @override
@@ -73,6 +79,7 @@ class CartItem {
 
     return other.id == id &&
         other.quantity == quantity &&
+        other.category == category &&
         other.size == size &&
         other.product == product &&
         other.userId == userId &&
@@ -83,9 +90,10 @@ class CartItem {
   int get hashCode {
     return id.hashCode ^
         quantity.hashCode ^
+        category.hashCode ^
         size.hashCode ^
         product.hashCode ^
-        userId.hashCode ^ 
+        userId.hashCode ^
         productId.hashCode;
   }
 }

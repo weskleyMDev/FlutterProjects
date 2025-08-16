@@ -1,12 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:go_router/go_router.dart';
 import 'package:shop_v2/l10n/app_localizations.dart';
 import 'package:shop_v2/stores/cart/cart.store.dart';
+import 'package:shop_v2/stores/order/order.store.dart';
 
 class CartResume extends StatefulWidget {
-  const CartResume({super.key, required this.cartStore});
+  const CartResume({
+    super.key,
+    required this.cartStore,
+    required this.orderStore,
+  });
 
   final CartStore cartStore;
+  final OrderStore orderStore;
 
   @override
   State<CartResume> createState() => _CartResumeState();
@@ -125,7 +132,21 @@ class _CartResumeState extends State<CartResume> {
             Observer(
               builder: (_) {
                 return FilledButton(
-                  onPressed: widget.cartStore.length == 0 ? null : () {},
+                  onPressed: widget.cartStore.length == 0
+                      ? null
+                      : () async {
+                          try {
+                            await widget.orderStore.saveOrder();
+                            await widget.cartStore.clearCart();
+                            if (!context.mounted) return;
+                            context.goNamed('orders-screen');
+                          } catch (e) {
+                            ScaffoldMessenger.of(context).clearSnackBars();
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text(e.toString())),
+                            );
+                          }
+                        },
                   child: Text(
                     AppLocalizations.of(context)!.confirm_order,
                     overflow: TextOverflow.ellipsis,
