@@ -33,7 +33,7 @@ abstract class AuthStoreBase with Store {
   }
 
   @action
-  Future<void> init() async {
+  Future<void> initUser() async {
     final user = await _authService.userChanges.first;
     _currentUser = user;
   }

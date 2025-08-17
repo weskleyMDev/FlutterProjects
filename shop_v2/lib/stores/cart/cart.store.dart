@@ -25,12 +25,16 @@ abstract class CartStoreBase with Store {
        _cartService = cartService,
        _couponRepository = couponRepository,
        _authStore = GetIt.instance<AuthStore>() {
+    _initCart();
+  }
+
+  void _initCart() {
     _authStore.userChanges.listen((user) {
       if (user != null) {
         _cartStream = ObservableStream(_cartRepository.cartStream(user));
         _cartStream.listen((data) {
           final products = GetIt.instance<ProductsStore>().productsList;
-          if (products.isEmpty) return;
+          
           products.sort((a, b) => a.id.compareTo(b.id));
           _cartItems.clear();
           for (CartItem item in data) {
@@ -57,7 +61,6 @@ abstract class CartStoreBase with Store {
       _cartStream = ObservableStream(_cartRepository.cartStream(currentUser));
       _cartStream.listen((data) {
         final products = GetIt.instance<ProductsStore>().productsList;
-        if (products.isEmpty) return;
         products.sort((a, b) => a.id.compareTo(b.id));
         _cartItems.clear();
         for (CartItem item in data) {

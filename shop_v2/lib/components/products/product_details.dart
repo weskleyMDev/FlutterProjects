@@ -88,7 +88,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                   Container(
                     margin: const EdgeInsets.only(bottom: 12.0),
                     child: Text(
-                      'R\$ ${product.price}',
+                      'R\$ ${product.price.toStringAsFixed(2).replaceAll('.', ',')}',
                       style: TextStyle(
                         color: Theme.of(context).colorScheme.primary,
                         fontWeight: FontWeight.bold,
@@ -146,7 +146,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                               if (!context.mounted) return;
                               context.pushNamed('cart-screen');
                             } else {
-                              context.goNamed('login-screen');
+                              context.pushNamed('login-screen');
                             }
                           },
                     child: Text(

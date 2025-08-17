@@ -71,14 +71,14 @@ mixin _$AuthStore on AuthStoreBase, Store {
     return _$signOutUserAsyncAction.run(() => super.signOutUser());
   }
 
-  late final _$initAsyncAction = AsyncAction(
-    'AuthStoreBase.init',
+  late final _$initUserAsyncAction = AsyncAction(
+    'AuthStoreBase.initUser',
     context: context,
   );
 
   @override
-  Future<void> init() {
-    return _$initAsyncAction.run(() => super.init());
+  Future<void> initUser() {
+    return _$initUserAsyncAction.run(() => super.initUser());
   }
 
   @override

@@ -99,7 +99,7 @@ abstract class AuthFormStoreBase with Store {
   }
 
   @action
-  void dispose() {
+  void disposeForm() {
     _authFormData.clear();
     _isLoading = false;
     _isVisible = false;

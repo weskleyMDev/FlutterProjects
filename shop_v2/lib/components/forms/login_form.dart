@@ -31,6 +31,7 @@ class _LoginFormState extends State<LoginForm> {
   void dispose() {
     _emailController.dispose();
     _passwordController.dispose();
+    _loginFormData.disposeForm();
     super.dispose();
   }
 
@@ -49,8 +50,8 @@ class _LoginFormState extends State<LoginForm> {
         _loginFormKey.currentState!.save();
         _loginFormData.toggleLoading();
         await _loginFormData.loginUser();
+        _loginFormData.disposeForm();
         _loginFormKey.currentState!.reset();
-        _loginFormData.dispose();
         if (!mounted) return;
         context.pop();
       } on FirebaseAuthException catch (e) {

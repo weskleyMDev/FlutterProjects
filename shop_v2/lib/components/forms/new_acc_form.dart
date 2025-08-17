@@ -37,6 +37,7 @@ class _NewAccFormState extends State<NewAccForm> {
     _nameController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
+    _registerFormData.disposeForm();
     super.dispose();
   }
 
@@ -55,8 +56,8 @@ class _NewAccFormState extends State<NewAccForm> {
         _registerFormKey.currentState!.save();
         _registerFormData.toggleLoading();
         await _registerFormData.registerUser();
+        _registerFormData.disposeForm();
         _registerFormKey.currentState!.reset();
-        _registerFormData.dispose();
         if (!mounted) return;
         context.pop();
       } on FirebaseAuthException catch (e) {

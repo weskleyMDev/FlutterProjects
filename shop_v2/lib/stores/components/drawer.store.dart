@@ -27,19 +27,6 @@ abstract class DrawerStoreBase with Store {
 
   @action
   void toggleOption(DrawerOptions option) {
-    switch (option) {
-      case DrawerOptions.home:
-        _selectedOption = DrawerOptions.home;
-        break;
-      case DrawerOptions.profile:
-        _selectedOption = DrawerOptions.profile;
-        break;
-      case DrawerOptions.products:
-        _selectedOption = DrawerOptions.products;
-        break;
-      case DrawerOptions.orders:
-        _selectedOption = DrawerOptions.orders;
-        break;
-    }
+    _selectedOption = option;
   }
 }

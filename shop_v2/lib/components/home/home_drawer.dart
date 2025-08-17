@@ -139,8 +139,10 @@ class HomeDrawer extends StatelessWidget {
                   textColor: Colors.red.shade700,
                   onTap: () async {
                     await authStore.signOutUser();
+                    drawerStore.toggleOption(DrawerOptions.home);
                     if (!context.mounted) return;
                     context.pop();
+                    context.goNamed('home-screen');
                   },
                 ),
             ],

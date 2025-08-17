@@ -171,12 +171,12 @@ mixin _$AuthFormStore on AuthFormStoreBase, Store {
   }
 
   @override
-  void dispose() {
+  void disposeForm() {
     final _$actionInfo = _$AuthFormStoreBaseActionController.startAction(
-      name: 'AuthFormStoreBase.dispose',
+      name: 'AuthFormStoreBase.disposeForm',
     );
     try {
-      return super.dispose();
+      return super.disposeForm();
     } finally {
       _$AuthFormStoreBaseActionController.endAction(_$actionInfo);
     }
