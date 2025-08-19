@@ -7,36 +7,25 @@ import '../../models/app_user.dart';
 import 'iauth_service.dart';
 
 class FirebaseAuthService implements IAuthService {
-  static final _firebaseAuth = FirebaseAuth.instance;
-  static final _firestore = FirebaseFirestore.instance;
-  static AppUser? _currentUser;
-  static final _userStream = Stream<AppUser?>.multi((controller) {
-    _firebaseAuth.authStateChanges().listen(
-      (user) async {
-        if (user != null) {
-          try {
-            await _getChatUser(user);
-            controller.add(_currentUser);
-          } catch (e) {
-            controller.addError('Erro ao obter usuário');
-          }
-        } else {
-          controller.add(null);
-        }
-      },
-      onError: (error) {
-        controller.addError('Error fetching user: $error');
-      },
-    );
-  });
+  final _firebaseAuth = FirebaseAuth.instance;
+  final _firestore = FirebaseFirestore.instance;
+  AppUser? _currentUser;
 
   @override
   AppUser? get currentUser => _currentUser;
 
   @override
-  Stream<AppUser?> get userChanges => _userStream;
+  Stream<AppUser?> get userChanges =>
+      _firebaseAuth.authStateChanges().asyncMap((user) async {
+        if (user == null) {
+          _currentUser = null;
+          return null;
+        }
+        _currentUser = await _getChatUser(user);
+        return _currentUser;
+      });
 
-  static Future<AppUser?> _getChatUser(User user) async {
+  Future<AppUser?> _getChatUser(User user) async {
     try {
       final doc = await _firestore.collection('users').doc(user.uid).get();
       if (doc.exists) {
@@ -76,7 +65,7 @@ class FirebaseAuthService implements IAuthService {
   @override
   Future<void> signup({required String email, required String password}) async {
     try {
-      final UserCredential cred = await _firebaseAuth
+      final cred = await _firebaseAuth
           .createUserWithEmailAndPassword(email: email, password: password);
       final user = cred.user;
       if (user == null) throw Exception('User creation failed');
@@ -88,5 +77,8 @@ class FirebaseAuthService implements IAuthService {
   }
 
   @override
-  Future<void> logout() async => _firebaseAuth.signOut();
+  Future<void> logout() async {
+    await _firebaseAuth.signOut();
+    _currentUser = null;
+  }
 }

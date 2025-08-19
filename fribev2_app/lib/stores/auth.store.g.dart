@@ -9,13 +9,6 @@ part of 'auth.store.dart';
 // ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic, no_leading_underscores_for_local_identifiers
 
 mixin _$AuthStore on AuthStoreBase, Store {
-  Computed<AppUser?>? _$currentUserComputed;
-
-  @override
-  AppUser? get currentUser => (_$currentUserComputed ??= Computed<AppUser?>(
-    () => super.currentUser,
-    name: 'AuthStoreBase.currentUser',
-  )).value;
   Computed<Stream<AppUser?>>? _$userChangesComputed;
 
   @override
@@ -24,22 +17,29 @@ mixin _$AuthStore on AuthStoreBase, Store {
         () => super.userChanges,
         name: 'AuthStoreBase.userChanges',
       )).value;
+  Computed<AppUser?>? _$currentUserComputed;
 
-  late final _$_currentUserAtom = Atom(
-    name: 'AuthStoreBase._currentUser',
+  @override
+  AppUser? get currentUser => (_$currentUserComputed ??= Computed<AppUser?>(
+    () => super.currentUser,
+    name: 'AuthStoreBase.currentUser',
+  )).value;
+
+  late final _$_userChangesAtom = Atom(
+    name: 'AuthStoreBase._userChanges',
     context: context,
   );
 
   @override
-  ObservableStream<AppUser?> get _currentUser {
-    _$_currentUserAtom.reportRead();
-    return super._currentUser;
+  ObservableStream<AppUser?> get _userChanges {
+    _$_userChangesAtom.reportRead();
+    return super._userChanges;
   }
 
   @override
-  set _currentUser(ObservableStream<AppUser?> value) {
-    _$_currentUserAtom.reportWrite(value, super._currentUser, () {
-      super._currentUser = value;
+  set _userChanges(ObservableStream<AppUser?> value) {
+    _$_userChangesAtom.reportWrite(value, super._userChanges, () {
+      super._userChanges = value;
     });
   }
 
@@ -77,28 +77,11 @@ mixin _$AuthStore on AuthStoreBase, Store {
     return _$logoutAsyncAction.run(() => super.logout());
   }
 
-  late final _$AuthStoreBaseActionController = ActionController(
-    name: 'AuthStoreBase',
-    context: context,
-  );
-
-  @override
-  Stream<AppUser?> fetchCurrentUser() {
-    final _$actionInfo = _$AuthStoreBaseActionController.startAction(
-      name: 'AuthStoreBase.fetchCurrentUser',
-    );
-    try {
-      return super.fetchCurrentUser();
-    } finally {
-      _$AuthStoreBaseActionController.endAction(_$actionInfo);
-    }
-  }
-
   @override
   String toString() {
     return '''
-currentUser: ${currentUser},
-userChanges: ${userChanges}
+userChanges: ${userChanges},
+currentUser: ${currentUser}
     ''';
   }
 }

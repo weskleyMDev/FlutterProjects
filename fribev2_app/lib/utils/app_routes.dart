@@ -1,3 +1,4 @@
+import 'package:fribev2_app/pages/login_page.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
@@ -92,5 +93,10 @@ final GoRouter router = GoRouter(
       name: 'receipts-home',
       builder: (context, state) => ReceiptHomePage(),
     ),
+    GoRoute(
+      path: '/login',
+      name: 'login-screen',
+      builder: (context, state) => LoginPage(),
+    )
   ],
 );

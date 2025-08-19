@@ -35,12 +35,18 @@ class UserDrawer extends StatelessWidget {
                     ListTile(
                       leading: const Icon(Icons.receipt_long_outlined),
                       title: const Text('Recibos'),
-                      onTap: () => context.pushNamed('receipts-home'),
+                      onTap: () {
+                        context.pop();
+                        context.pushNamed('receipts-home');
+                      },
                     ),
                     ListTile(
                       leading: const Icon(Icons.point_of_sale_sharp),
                       title: const Text('Venda'),
-                      onTap: () => context.pushNamed('sales-home'),
+                      onTap: () {
+                        context.pop();
+                        context.pushNamed('sales-home');
+                      },
                     ),
                     Spacer(),
                     ListTile(

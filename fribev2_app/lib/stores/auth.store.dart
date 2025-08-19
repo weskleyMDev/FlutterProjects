@@ -2,29 +2,27 @@ import 'package:mobx/mobx.dart';
 
 import '../../models/app_user.dart';
 import '../../services/auth/iauth_service.dart';
+
 part 'auth.store.g.dart';
 
 class AuthStore = AuthStoreBase with _$AuthStore;
 
 abstract class AuthStoreBase with Store {
-  AuthStoreBase({required this.authService});
+  AuthStoreBase({required this.authService}) {
+    _userChanges = ObservableStream(authService.userChanges);
+  }
   final IAuthService authService;
 
   @observable
-  ObservableStream<AppUser?> _currentUser = ObservableStream(
+  ObservableStream<AppUser?> _userChanges = ObservableStream(
     Stream<AppUser?>.empty(),
   );
 
   @computed
-  AppUser? get currentUser => authService.currentUser;
+  Stream<AppUser?> get userChanges => _userChanges;
 
   @computed
-  Stream<AppUser?> get userChanges => fetchCurrentUser();
-
-  @action
-  Stream<AppUser?> fetchCurrentUser() {
-    return _currentUser = ObservableStream(authService.userChanges);
-  }
+  AppUser? get currentUser => _userChanges.value;
 
   @action
   Future<void> login({required String email, required String password}) async {

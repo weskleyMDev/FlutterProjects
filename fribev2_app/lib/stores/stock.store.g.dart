@@ -128,6 +128,21 @@ mixin _$StockStore on StockStoreBase, Store {
     );
   }
 
+  late final _$updateQuantityByIdAsyncAction = AsyncAction(
+    'StockStoreBase.updateQuantityById',
+    context: context,
+  );
+
+  @override
+  Future<void> updateQuantityById({
+    required String id,
+    required String quantity,
+  }) {
+    return _$updateQuantityByIdAsyncAction.run(
+      () => super.updateQuantityById(id: id, quantity: quantity),
+    );
+  }
+
   late final _$removeAllByCategoryAsyncAction = AsyncAction(
     'StockStoreBase.removeAllByCategory',
     context: context,

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fribev2_app/components/drawer_admin.dart';
 import 'package:go_router/go_router.dart';
 
 class StockHomePage extends StatefulWidget {
@@ -12,7 +13,8 @@ class _StockHomePageState extends State<StockHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('ESTOQUE')),
+      appBar: AppBar(title: const Text('ESTOQUE')),      
+      drawer: const DrawerAdmin(),
       body: GridView(
         padding: const EdgeInsets.all(10.0),
         gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
@@ -45,6 +47,18 @@ class _StockHomePageState extends State<StockHomePage> {
               ),
             ),
             child: const Text('Ovinos'),
+          ),
+          ElevatedButton(
+            onPressed: () => context.pushNamed(
+              'stock-category',
+              pathParameters: {'title': 'SUINO', 'category': 'SUINO'},
+            ),
+            style: ElevatedButton.styleFrom(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(15.0),
+              ),
+            ),
+            child: const Text('Suínos'),
           ),
           ElevatedButton(
             onPressed: () => context.pushNamed(

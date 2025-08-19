@@ -89,7 +89,7 @@ class _ReceiptHomePageState extends State<ReceiptHomePage> {
               setState(() => isEmail = false);
               final confirm = await _showPhoneDialog(context);
               if (confirm == true) {
-                _launchPhoneURL('wa.me', '/55$_clientData');
+                _launchPhoneURL('wa.me', '/+55$_clientData');
               }
             },
             icon: Icon(FontAwesomeIcons.whatsapp),

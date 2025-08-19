@@ -60,16 +60,17 @@ class StockCategoryPage extends StatelessWidget {
       appBar: AppBar(
         title: Text(title),
         actions: [
-          if (Platform.isWindows) Container(
-            margin: const EdgeInsets.only(right: 4.0),
-            child: IconButton(
-              onPressed: _openSysCalculator,
-              icon: const Icon(FontAwesomeIcons.calculator),
-              iconSize: 24.0,
-              padding: EdgeInsets.zero,
-              tooltip: 'Abrir Calculadora',
+          if (Platform.isWindows)
+            Container(
+              margin: const EdgeInsets.only(right: 4.0),
+              child: IconButton(
+                onPressed: _openSysCalculator,
+                icon: const Icon(FontAwesomeIcons.calculator),
+                iconSize: 24.0,
+                padding: EdgeInsets.zero,
+                tooltip: 'Abrir Calculadora',
+              ),
             ),
-          ),
           Container(
             margin: const EdgeInsets.only(right: 12.0),
             child: IconButton(
