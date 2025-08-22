@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fribev2_app/generated/l10n.dart';
 import 'package:fribev2_app/utils/capitalize_text.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
@@ -12,9 +13,11 @@ class UserHomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final authStore = Provider.of<AuthStore>(context, listen: false);
-    final name = authStore.currentUser?.email.split('@')[0].capitalize();
+    final name =
+        authStore.currentUser?.email.split('@')[0].capitalize() ??
+        S.of(context).default_username;
     return Scaffold(
-      appBar: AppBar(title: Text('Bem vindo, $name')),
+      appBar: AppBar(title: Text(S.of(context).greeting(name))),
       drawer: UserDrawer(),
       body: GridView(
         padding: const EdgeInsets.all(10.0),
@@ -32,7 +35,7 @@ class UserHomePage extends StatelessWidget {
                 borderRadius: BorderRadius.circular(15.0),
               ),
             ),
-            child: const Text('VENDA'),
+            child: Text(S.of(context).sales),
           ),
           ElevatedButton(
             onPressed: () => context.pushNamed('receipts-home'),
@@ -41,7 +44,7 @@ class UserHomePage extends StatelessWidget {
                 borderRadius: BorderRadius.circular(15.0),
               ),
             ),
-            child: const Text('RECIBOS'),
+            child: Text(S.of(context).receipts),
           ),
         ],
       ),

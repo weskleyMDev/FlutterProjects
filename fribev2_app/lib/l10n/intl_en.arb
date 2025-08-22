@@ -1,0 +1,28 @@
+{
+    "@@locale": "en",
+    "greeting": "Hello, {name}",
+    "@greeting": {
+        "description": "default greeting message",
+        "placeholders": {
+            "name": {
+                "type": "String"
+            }
+        }
+    },
+    "default_username": "User",
+    "@default_username": {
+        "description": "default username label"
+    },
+    "stock": "Stock",
+    "@stock": {
+        "description": "stock button text"
+    },
+    "receipts": "Receipts",
+    "@receipts": {
+        "description": "receipts button text"
+    },
+    "sales": "Sales",
+    "@sales": {
+        "description": "sales button text"
+    }
+}

@@ -1,0 +1,28 @@
+{
+    "@@locale": "pt",
+    "greeting": "Olá, {name}",
+    "@greeting": {
+        "description": "default greeting message",
+        "placeholders": {
+            "name": {
+                "type": "String"
+            }
+        }
+    },
+    "default_username": "Usuário(a)",
+    "@default_username": {
+        "description": "default username label"
+    },
+    "stock": "Estoque",
+    "@stock": {
+        "description": "stock button text"
+    },
+    "receipts": "Recibos",
+    "@receipts": {
+        "description": "receipts button text"
+    },
+    "sales": "Vendas",
+    "@sales": {
+        "description": "sales button text"
+    }
+}

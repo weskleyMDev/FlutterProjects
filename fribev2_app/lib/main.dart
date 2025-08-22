@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:fribev2_app/firebase_options.dart';
+import 'package:fribev2_app/generated/l10n.dart';
+import 'package:fribev2_app/utils/app_routes.dart' as AppRoutes;
 import 'package:provider/provider.dart';
 
 import 'services/auth/firebase_auth_service.dart';
@@ -36,7 +38,6 @@ class MyApp extends StatelessWidget {
         Provider(create: (_) => AuthStore(authService: FirebaseAuthService())),
         Provider(
           create: (_) => StockStore(stockService: FirebaseStockService()),
-          //dispose: (context, stock) => stock.dispose(),
         ),
         Provider(
           create: (_) => SalesStore(salesService: FirebaseSalesService()),
@@ -48,13 +49,14 @@ class MyApp extends StatelessWidget {
       child: MaterialApp.router(
         title: 'Fribe Cortes Especiais',
         debugShowCheckedModeBanner: false,
-        locale: const Locale('pt', 'BR'),
-        supportedLocales: const [Locale('pt', 'BR'), Locale('en', 'US')],
         localizationsDelegates: const [
+          S.delegate,
           GlobalMaterialLocalizations.delegate,
           GlobalWidgetsLocalizations.delegate,
           GlobalCupertinoLocalizations.delegate,
         ],
+        supportedLocales: S.delegate.supportedLocales,
+        routeInformationParser: AppRoutes.router.routeInformationParser,
         theme: brightness == Brightness.light ? theme.light() : theme.dark(),
         routerConfig: router,
       ),

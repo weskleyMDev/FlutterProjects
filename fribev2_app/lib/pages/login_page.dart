@@ -14,7 +14,7 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   bool _isLoading = false;
-  void _handleloginData(LoginFormData formData) {
+  void _handleLoginData(LoginFormData formData) {
     final authStore = Provider.of<AuthStore>(context, listen: false);
     try {
       setState(() => _isLoading = true);
@@ -45,7 +45,7 @@ class _LoginPageState extends State<LoginPage> {
                   constraints: BoxConstraints(minHeight: constraints.maxHeight),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children: [LoginForm(onSubmit: _handleloginData)],
+                    children: [LoginForm(onSubmit: _handleLoginData)],
                   ),
                 ),
               ),
