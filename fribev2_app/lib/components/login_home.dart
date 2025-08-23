@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fribev2_app/components/loading_screen.dart';
 import 'package:provider/provider.dart';
 
 import '../pages/admin_home_page.dart';
@@ -16,14 +17,14 @@ class LoginOrHome extends StatefulWidget {
 class _LoginOrHomeState extends State<LoginOrHome> {
   @override
   Widget build(BuildContext context) {
-    final authStore = Provider.of<AuthStore>(context, listen: false);
+    final authStore = context.read<AuthStore>();
     return StreamBuilder(
       stream: authStore.userChanges,
       builder: (context, snapshot) {
         switch (snapshot.connectionState) {
           case ConnectionState.none:
           case ConnectionState.waiting:
-            return const Center(child: CircularProgressIndicator());
+            return const LoadingScreen();
           default:
             if (snapshot.hasData && snapshot.data != null) {
               return snapshot.data?.role == 'user'

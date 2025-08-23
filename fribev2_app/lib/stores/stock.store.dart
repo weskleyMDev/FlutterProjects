@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:mobx/mobx.dart';
 
 import '../models/product.dart';
@@ -8,56 +10,75 @@ part 'stock.store.g.dart';
 class StockStore = StockStoreBase with _$StockStore;
 
 abstract class StockStoreBase with Store {
-  StockStoreBase({required this.stockService});
-  final IStockService stockService;
+  StockStoreBase(this._stockService) {
+    _categoryDisposer = reaction<String?>(
+      (_) => currentCategory,
+      (_) => fetchData(category: currentCategory),
+    );
+  }
+
+  final IStockService _stockService;
+  late final ReactionDisposer _categoryDisposer;
+  StreamSubscription? _subscription;
 
   @observable
   String searchQuery = '';
 
   @observable
-  String currentCategory = '';
+  String? currentCategory;
 
   @observable
-  ObservableStream<List<Product>> _products = ObservableStream(
-    Stream<List<Product>>.empty(),
-  );
+  ObservableStream<List<Product>> _productStream =
+      ObservableStream<List<Product>>(Stream.empty());
+
+  @observable
+  ObservableList<Product> _productsByCategory = ObservableList<Product>();
 
   @computed
-  Stream<List<Product>> get productsList => _products;
+  StreamStatus get productStreamStatus => _productStream.status;
 
   @computed
-  Future<void> get filterList =>
-      fetchData(category: currentCategory, query: searchQuery);
+  List<Product> get filteredProducts {
+    final query = searchQuery.toLowerCase();
+    return List.unmodifiable(
+      _productsByCategory
+          .where((p) => p.name.toLowerCase().startsWith(query))
+          .toList(),
+    );
+  }
 
   @action
-  Future<void> fetchData({String? category, String? query}) async {
-    final q = query?.toLowerCase() ?? '';
-    final stream = stockService.getProducts().map((data) {
+  Future<void> fetchData({String? category}) async {
+    await _subscription?.cancel();
+    _productStream = _stockService.getProducts().map((data) {
       return data.where((p) {
-        final matchName = p.name.toLowerCase().startsWith(q);
         final matchCategory = category == null || category.isEmpty
             ? true
             : p.category.toUpperCase() == category.toUpperCase();
-        return matchName && matchCategory;
+        return matchCategory;
       }).toList();
+    }).asObservable();
+    _subscription = _productStream.listen((data) {
+      _productsByCategory
+        ..clear()
+        ..addAll(data);
     });
-    _products = ObservableStream(stream);
   }
 
   @action
   Future<Product?> addToStock({required Product product}) async {
-    final newProduct = await stockService.saveProduct(product: product);
+    final newProduct = await _stockService.saveProduct(product: product);
     return newProduct;
   }
 
   @action
   Future<void> removeProductById({required Product product}) async {
-    await stockService.deleteProductById(product: product);
+    await _stockService.deleteProductById(product: product);
   }
 
   @action
   Future<void> updateProduct({required Product product}) async {
-    await stockService.updateProductById(product: product);
+    await _stockService.updateProductById(product: product);
   }
 
   @action
@@ -65,26 +86,22 @@ abstract class StockStoreBase with Store {
     required String id,
     required String quantity,
   }) async {
-    await stockService.updateQuantityById(id: id, quantity: quantity);
+    await _stockService.updateQuantityById(id: id, quantity: quantity);
   }
 
   @action
   Future<void> removeAllByCategory({required String category}) async {
-    await stockService.clearByCategory(category: category);
+    await _stockService.clearByCategory(category: category);
   }
 
   @action
-  void setCategory(String category) {
-    currentCategory = category;
-  }
-
-  @action
-  void reset() {
+  Future<void> disposeStock() async {
+    await _subscription?.cancel();
     searchQuery = '';
     currentCategory = '';
-  }
-
-  void dispose() {
-    reset();
+    _subscription = null;
+    _productsByCategory.clear();
+    _categoryDisposer();
+    print('DISPOSE STOCK STORE!!');
   }
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:fribev2_app/generated/l10n.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
@@ -29,12 +30,12 @@ class DrawerAdmin extends StatelessWidget {
                     ),
                     ListTile(
                       leading: const Icon(Icons.home_sharp),
-                      title: const Text('Inicio'),
+                      title: Text(S.of(context).home),
                       onTap: () => context.go('/'),
                     ),
                     ListTile(
                       leading: const Icon(Icons.storage_sharp),
-                      title: const Text('Estoque'),
+                      title: Text(S.of(context).stock),
                       onTap: () {
                         context.pop();
                         context.pushNamed('stock-home');
@@ -42,7 +43,7 @@ class DrawerAdmin extends StatelessWidget {
                     ),
                     ListTile(
                       leading: const Icon(Icons.receipt_long_outlined),
-                      title: const Text('Recibos'),
+                      title: Text(S.of(context).receipts),
                       onTap: () {
                         context.pop();
                         context.pushNamed('receipts-home');
@@ -51,7 +52,7 @@ class DrawerAdmin extends StatelessWidget {
                     Spacer(),
                     ListTile(
                       leading: const Icon(Icons.logout),
-                      title: const Text('Sair'),
+                      title: Text(S.of(context).signout),
                       onTap: () {
                         context.go('/');
                         authStore.logout();

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:fribev2_app/generated/l10n.dart';
 
 import '../models/form_data/login_form_data.dart';
 
@@ -59,17 +60,17 @@ class _LoginFormState extends State<LoginForm> {
                   key: const ValueKey('email'),
                   initialValue: _formData.email,
                   onChanged: (value) => _formData.email = value,
-                  decoration: const InputDecoration(
-                    labelText: 'Email',
+                  decoration: InputDecoration(
+                    labelText: S.of(context).email,
                     border: OutlineInputBorder(),
-                    prefixIcon: Icon(Icons.mail_outline_sharp),
+                    prefixIcon: const Icon(Icons.mail_outline_sharp),
                   ),
                   validator: (value) {
-                    final name = value?.trim() ?? '';
-                    if (name.isEmpty) return 'Email is required!';
+                    final email = value?.trim() ?? '';
+                    if (email.isEmpty) return 'Email is required!';
                     if (!RegExp(
                       r'^[a-z0-9._-]+@[a-z0-9.-]+\.[a-zA-Z]{2,}$',
-                    ).hasMatch(name)) {
+                    ).hasMatch(email)) {
                       return 'Invalid email format!';
                     }
                     return null;
@@ -84,9 +85,9 @@ class _LoginFormState extends State<LoginForm> {
                   onChanged: (value) => _formData.password = value,
                   obscureText: !_isVisible,
                   decoration: InputDecoration(
-                    labelText: 'Senha',
+                    labelText: S.of(context).password,
                     border: OutlineInputBorder(),
-                    prefixIcon: Icon(Icons.lock_outline_sharp),
+                    prefixIcon: const Icon(Icons.lock_outline_sharp),
                     suffixIcon: IconButton(
                       onPressed: () {
                         setState(() {
@@ -113,7 +114,11 @@ class _LoginFormState extends State<LoginForm> {
               const SizedBox(height: 22.0),
               ElevatedButton(
                 onPressed: _submitForm,
-                child: Text(_formData.isLogin ? 'ENTRAR' : 'CADASTRAR'),
+                child: Text(
+                  _formData.isLogin
+                      ? S.of(context).signin
+                      : S.of(context).signup,
+                ),
               ),
               const SizedBox(height: 50.0),
               // TextButton(

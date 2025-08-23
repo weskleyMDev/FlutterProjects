@@ -1,4 +1,5 @@
 import 'package:fribev2_app/pages/login_page.dart';
+import 'package:fribev2_app/pages/sales/cart_home_page.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
@@ -86,7 +87,12 @@ final GoRouter router = GoRouter(
     GoRoute(
       path: '/sales-home',
       name: 'sales-home',
-      builder: (context, state) => SalesHomePage(),
+      builder: (context, state) => SalesHomePage()
+    ),
+    GoRoute(
+      path: '/cart-home',
+      name: 'cart-home',
+      builder: (context, state) => CartHomePage()
     ),
     GoRoute(
       path: '/receipts-home',

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:fluttericon/font_awesome5_icons.dart';
 
 import '../models/form_data/stock_form_data.dart';
 import '../models/product.dart';
@@ -172,7 +172,7 @@ class _StockFormState extends State<StockForm> {
                   inputAction: TextInputAction.next,
                   onChanged: (value) =>
                       _formData.price = value.trim().replaceAll(',', '.'),
-                  prefix: FontAwesomeIcons.brazilianRealSign,
+                  prefix: FontAwesome5.dollar_sign,
                   validator: (value) {
                     final price = value?.trim().replaceAll(',', '.') ?? '0.00';
                     if (price.isEmpty) {

@@ -24,5 +24,89 @@
     "sales": "Sales",
     "@sales": {
         "description": "sales button text"
+    },
+    "home": "Home",
+    "@home": {
+        "description": "home button text"
+    },
+    "signout": "Sign out",
+    "@signout": {
+        "description": "sign out button text"
+    },
+    "password": "Password",
+    "@password": {
+        "description": "password label text"
+    },
+    "email": "Email",
+    "@email": {
+        "description": "email label text"
+    },
+    "signin": "Sign in",
+    "@signin": {
+        "description": "sign in button text"
+    },
+    "signup": "Sign up",
+    "@signup": {
+        "description": "sign up button text"
+    },
+    "set_quantity": "Enter the desired quantity",
+    "@set_quantity": {
+        "description": "quantity dialog label text"
+    },
+    "quantity": "Quantity",
+    "@quantity": {
+        "description": "quantity text field label"
+    },
+    "cancel": "Cancel",
+    "@cancel": {
+        "description": "cancel button text"
+    },
+    "confirm": "Confirm",
+    "@confirm": {
+        "description": "confirm button text"
+    },
+    "search": "Search",
+    "@search": {
+        "description": "search text field label"
+    },
+    "new_sale": "New Sale",
+    "@new_sale": {
+        "description": "new sale label text"
+    },
+    "leave": "Leave",
+    "@leave": {
+        "description": "leave button text"
+    },
+    "cart_dialog_body": "there are still items in your cart",
+    "@cart_dialog_body": {
+        "description": "cart dialog label text"
+    },
+    "cart_dialog_title": "Do you want to leave?",
+    "@cart_dialog_title": {
+        "description": "cart dialog label text"
+    },
+    "shopping_cart": "Shopping Cart",
+    "@shopping_cart": {
+        "description": "shopping cart label text"
+    },
+    "add_cart": "Add to cart",
+    "@add_cart": {
+        "description": "add to cart tooltip text"
+    },
+    "remove_cart": "Remove from cart",
+    "@remove_cart": {
+        "description": "remove from cart tooltip text"
+    },
+    "clear_cart": "Clear cart",
+    "@clear_cart": {
+        "description": "clear cart tooltip text"
+    },
+    "price": "Price",
+    "@price": {
+        "description": "price label text"
+    },
+    "no_products": "No products found!",
+    "@no_products": {
+        "description": "no products label text"
     }
 }

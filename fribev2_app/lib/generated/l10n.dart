@@ -103,6 +103,216 @@ class S {
       args: [],
     );
   }
+
+  /// `Home`
+  String get home {
+    return Intl.message(
+      'Home',
+      name: 'home',
+      desc: 'home button text',
+      args: [],
+    );
+  }
+
+  /// `Sign out`
+  String get signout {
+    return Intl.message(
+      'Sign out',
+      name: 'signout',
+      desc: 'sign out button text',
+      args: [],
+    );
+  }
+
+  /// `Password`
+  String get password {
+    return Intl.message(
+      'Password',
+      name: 'password',
+      desc: 'password label text',
+      args: [],
+    );
+  }
+
+  /// `Email`
+  String get email {
+    return Intl.message(
+      'Email',
+      name: 'email',
+      desc: 'email label text',
+      args: [],
+    );
+  }
+
+  /// `Sign in`
+  String get signin {
+    return Intl.message(
+      'Sign in',
+      name: 'signin',
+      desc: 'sign in button text',
+      args: [],
+    );
+  }
+
+  /// `Sign up`
+  String get signup {
+    return Intl.message(
+      'Sign up',
+      name: 'signup',
+      desc: 'sign up button text',
+      args: [],
+    );
+  }
+
+  /// `Enter the desired quantity`
+  String get set_quantity {
+    return Intl.message(
+      'Enter the desired quantity',
+      name: 'set_quantity',
+      desc: 'quantity dialog label text',
+      args: [],
+    );
+  }
+
+  /// `Quantity`
+  String get quantity {
+    return Intl.message(
+      'Quantity',
+      name: 'quantity',
+      desc: 'quantity text field label',
+      args: [],
+    );
+  }
+
+  /// `Cancel`
+  String get cancel {
+    return Intl.message(
+      'Cancel',
+      name: 'cancel',
+      desc: 'cancel button text',
+      args: [],
+    );
+  }
+
+  /// `Confirm`
+  String get confirm {
+    return Intl.message(
+      'Confirm',
+      name: 'confirm',
+      desc: 'confirm button text',
+      args: [],
+    );
+  }
+
+  /// `Search`
+  String get search {
+    return Intl.message(
+      'Search',
+      name: 'search',
+      desc: 'search text field label',
+      args: [],
+    );
+  }
+
+  /// `New Sale`
+  String get new_sale {
+    return Intl.message(
+      'New Sale',
+      name: 'new_sale',
+      desc: 'new sale label text',
+      args: [],
+    );
+  }
+
+  /// `Leave`
+  String get leave {
+    return Intl.message(
+      'Leave',
+      name: 'leave',
+      desc: 'leave button text',
+      args: [],
+    );
+  }
+
+  /// `there are still items in your cart`
+  String get cart_dialog_body {
+    return Intl.message(
+      'there are still items in your cart',
+      name: 'cart_dialog_body',
+      desc: 'cart dialog label text',
+      args: [],
+    );
+  }
+
+  /// `Do you want to leave?`
+  String get cart_dialog_title {
+    return Intl.message(
+      'Do you want to leave?',
+      name: 'cart_dialog_title',
+      desc: 'cart dialog label text',
+      args: [],
+    );
+  }
+
+  /// `Shopping Cart`
+  String get shopping_cart {
+    return Intl.message(
+      'Shopping Cart',
+      name: 'shopping_cart',
+      desc: 'shopping cart label text',
+      args: [],
+    );
+  }
+
+  /// `Add to cart`
+  String get add_cart {
+    return Intl.message(
+      'Add to cart',
+      name: 'add_cart',
+      desc: 'add to cart tooltip text',
+      args: [],
+    );
+  }
+
+  /// `Remove from cart`
+  String get remove_cart {
+    return Intl.message(
+      'Remove from cart',
+      name: 'remove_cart',
+      desc: 'remove from cart tooltip text',
+      args: [],
+    );
+  }
+
+  /// `Clear cart`
+  String get clear_cart {
+    return Intl.message(
+      'Clear cart',
+      name: 'clear_cart',
+      desc: 'clear cart tooltip text',
+      args: [],
+    );
+  }
+
+  /// `Price`
+  String get price {
+    return Intl.message(
+      'Price',
+      name: 'price',
+      desc: 'price label text',
+      args: [],
+    );
+  }
+
+  /// `No products found!`
+  String get no_products {
+    return Intl.message(
+      'No products found!',
+      name: 'no_products',
+      desc: 'no products label text',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

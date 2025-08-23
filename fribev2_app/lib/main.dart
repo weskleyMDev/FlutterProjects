@@ -4,18 +4,15 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:fribev2_app/firebase_options.dart';
 import 'package:fribev2_app/generated/l10n.dart';
-import 'package:fribev2_app/utils/app_routes.dart' as AppRoutes;
 import 'package:provider/provider.dart';
 
 import 'services/auth/firebase_auth_service.dart';
 import 'services/sales/firebase_sales_service.dart';
-import 'services/stock/firebase_stock_service.dart';
 import 'stores/auth.store.dart';
 import 'stores/cart.store.dart';
 import 'stores/payment.store.dart';
 import 'stores/sales.store.dart';
 import 'stores/sales_filter.store.dart';
-import 'stores/stock.store.dart';
 import 'utils/app_routes.dart';
 import 'utils/theme.dart';
 
@@ -36,9 +33,10 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         Provider(create: (_) => AuthStore(authService: FirebaseAuthService())),
-        Provider(
-          create: (_) => StockStore(stockService: FirebaseStockService()),
-        ),
+        // Provider(
+        //   create: (_) => StockStore(FirebaseStockService()),
+        //   dispose: (_, stock) => stock.disposeStock(),
+        // ),
         Provider(
           create: (_) => SalesStore(salesService: FirebaseSalesService()),
         ),
@@ -56,7 +54,6 @@ class MyApp extends StatelessWidget {
           GlobalCupertinoLocalizations.delegate,
         ],
         supportedLocales: S.delegate.supportedLocales,
-        routeInformationParser: AppRoutes.router.routeInformationParser,
         theme: brightness == Brightness.light ? theme.light() : theme.dark(),
         routerConfig: router,
       ),

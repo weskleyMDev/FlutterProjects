@@ -12,12 +12,12 @@ class FirebaseStockService implements IStockService {
   Stream<List<Product>> getProducts() {
     final snapshots = _firestore
         .collection('stock')
-        .withConverter(fromFirestore: _fromFirestore, toFirestore: _toFirestore)
         .orderBy('name')
+        .withConverter(fromFirestore: _fromFirestore, toFirestore: _toFirestore)
         .snapshots();
-    return snapshots.map(
-      (snapshot) => snapshot.docs.map((doc) => doc.data()).toList(),
-    );
+    return snapshots
+        .map((snapshot) => snapshot.docs.map((doc) => doc.data()).toList())
+        .asBroadcastStream();
   }
 
   @override

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:fluttericon/font_awesome5_icons.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -92,7 +92,7 @@ class _ReceiptHomePageState extends State<ReceiptHomePage> {
                 _launchPhoneURL('wa.me', '/+55$_clientData');
               }
             },
-            icon: Icon(FontAwesomeIcons.whatsapp),
+            icon: Icon(FontAwesome5.whatsapp),
             iconSize: 24.0,
             tooltip: 'Enviar Recibo por WhatsApp!',
           ),

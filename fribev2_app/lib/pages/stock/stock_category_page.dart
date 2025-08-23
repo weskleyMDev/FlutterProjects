@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:fluttericon/font_awesome5_icons.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
@@ -65,7 +65,7 @@ class StockCategoryPage extends StatelessWidget {
               margin: const EdgeInsets.only(right: 4.0),
               child: IconButton(
                 onPressed: _openSysCalculator,
-                icon: const Icon(FontAwesomeIcons.calculator),
+                icon: const Icon(FontAwesome5.calculator),
                 iconSize: 24.0,
                 padding: EdgeInsets.zero,
                 tooltip: 'Abrir Calculadora',
@@ -83,7 +83,7 @@ class StockCategoryPage extends StatelessWidget {
           ),
         ],
       ),
-      body: StockList(category: category),
+      body: StockList(stockStore: stockStore),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () async {
           final confirm = await _showConfirmDialog(context);

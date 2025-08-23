@@ -24,10 +24,39 @@ class MessageLookup extends MessageLookupByLibrary {
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
+    "add_cart": MessageLookupByLibrary.simpleMessage("Adicionar ao carrinho"),
+    "cancel": MessageLookupByLibrary.simpleMessage("Cancelar"),
+    "cart_dialog_body": MessageLookupByLibrary.simpleMessage(
+      "ainda há itens no carrinho",
+    ),
+    "cart_dialog_title": MessageLookupByLibrary.simpleMessage("Deseja sair?"),
+    "clear_cart": MessageLookupByLibrary.simpleMessage("Limpar carrinho"),
+    "confirm": MessageLookupByLibrary.simpleMessage("Confirmar"),
     "default_username": MessageLookupByLibrary.simpleMessage("Usuário(a)"),
+    "email": MessageLookupByLibrary.simpleMessage("Email"),
     "greeting": m0,
+    "home": MessageLookupByLibrary.simpleMessage("Ínicio"),
+    "leave": MessageLookupByLibrary.simpleMessage("Sair"),
+    "new_sale": MessageLookupByLibrary.simpleMessage("Nova Venda"),
+    "no_products": MessageLookupByLibrary.simpleMessage(
+      "Nenhum produto encontrado!",
+    ),
+    "password": MessageLookupByLibrary.simpleMessage("Senha"),
+    "price": MessageLookupByLibrary.simpleMessage("Preço"),
+    "quantity": MessageLookupByLibrary.simpleMessage("Quantidade"),
     "receipts": MessageLookupByLibrary.simpleMessage("Recibos"),
+    "remove_cart": MessageLookupByLibrary.simpleMessage("Remover do carrinho"),
     "sales": MessageLookupByLibrary.simpleMessage("Vendas"),
+    "search": MessageLookupByLibrary.simpleMessage("Buscar"),
+    "set_quantity": MessageLookupByLibrary.simpleMessage(
+      "Digite a quantidade desejada",
+    ),
+    "shopping_cart": MessageLookupByLibrary.simpleMessage(
+      "Carrinho de compras",
+    ),
+    "signin": MessageLookupByLibrary.simpleMessage("Entrar"),
+    "signout": MessageLookupByLibrary.simpleMessage("Sair"),
+    "signup": MessageLookupByLibrary.simpleMessage("Registrar"),
     "stock": MessageLookupByLibrary.simpleMessage("Estoque"),
   };
 }
