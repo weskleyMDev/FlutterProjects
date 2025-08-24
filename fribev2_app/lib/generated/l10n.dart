@@ -323,6 +323,36 @@ class S {
       args: [],
     );
   }
+
+  /// `Product added to cart!`
+  String get product_added {
+    return Intl.message(
+      'Product added to cart!',
+      name: 'product_added',
+      desc: 'product added to cart label text',
+      args: [],
+    );
+  }
+
+  /// `Remove product`
+  String get remove_product {
+    return Intl.message(
+      'Remove product',
+      name: 'remove_product',
+      desc: 'remove product tooltip text',
+      args: [],
+    );
+  }
+
+  /// `Product removed from cart!`
+  String get product_removed {
+    return Intl.message(
+      'Product removed from cart!',
+      name: 'product_removed',
+      desc: 'product removed from cart label text',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

@@ -16,6 +16,9 @@ abstract class CartStoreBase with Store {
   double _total = 0.0;
 
   @observable
+  String quantity = '';
+
+  @observable
   String? _errorMessage;
 
   /*==================================COMPUTED================================*/
@@ -39,9 +42,9 @@ abstract class CartStoreBase with Store {
   /*==================================ACTION==================================*/
 
   @action
-  bool addProduct(Product product, [int quantity = 1]) {
+  bool addProduct(Product product) {
     final index = _cartList.indexWhere((item) => item.productId == product.id);
-    final newSubtotal = (quantity.toDecimal() * Decimal.parse(product.price))
+    final newSubtotal = (Decimal.parse(quantity) * Decimal.parse(product.price))
         .toDouble();
     if (index == -1) {
       _cartList.add(
@@ -49,7 +52,7 @@ abstract class CartStoreBase with Store {
           id: Uuid().v4(),
           productId: product.id,
           product: product,
-          quantity: quantity,
+          quantity: double.parse(quantity),
           subtotal: newSubtotal,
         ),
       );
@@ -71,9 +74,22 @@ abstract class CartStoreBase with Store {
   void _setTotal() {
     Decimal result = Decimal.zero;
     for (var item in _cartList) {
-      result += item.quantity.toDecimal() * Decimal.parse(item.product!.price);
+      result +=
+          Decimal.parse(item.quantity.toString()) *
+          Decimal.parse(item.product!.price);
     }
     _total = result.toDouble();
+  }
+
+  @action
+  void updateQuantity(String productId) {
+    final index = _cartList.indexWhere((item) => item.productId == productId);
+    if (index != -1) {
+      final item = _cartList[index];
+      final newQuantity =
+          Decimal.parse(item.quantity.toString()) - Decimal.parse(quantity);
+      _cartList[index] = item.copyWith(quantity: newQuantity.toDouble());
+    }
   }
 
   @action
@@ -83,7 +99,8 @@ abstract class CartStoreBase with Store {
       final item = _cartList[index];
       final newQuantity = item.quantity + 1;
       final newSubtotal =
-          (newQuantity.toDecimal() * Decimal.parse(item.product!.price))
+          (Decimal.parse(newQuantity.toString()) *
+                  Decimal.parse(item.product!.price))
               .toDouble();
 
       _cartList[index] = item.copyWith(
@@ -101,7 +118,8 @@ abstract class CartStoreBase with Store {
       final item = _cartList[index];
       final newQuantity = item.quantity - 1;
       final newSubtotal =
-          (newQuantity.toDecimal() * Decimal.parse(item.product!.price))
+          (Decimal.parse(newQuantity.toString()) *
+                  Decimal.parse(item.product!.price))
               .toDouble();
 
       _cartList[index] = item.copyWith(
@@ -116,6 +134,7 @@ abstract class CartStoreBase with Store {
   void clearCart() {
     _cartList.clear();
     _total = 0.0;
+    quantity = '';
     print('CLEAR CART CALLED!!');
   }
 

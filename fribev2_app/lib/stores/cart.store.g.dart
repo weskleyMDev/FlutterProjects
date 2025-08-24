@@ -76,6 +76,24 @@ mixin _$CartStore on CartStoreBase, Store {
     });
   }
 
+  late final _$quantityAtom = Atom(
+    name: 'CartStoreBase.quantity',
+    context: context,
+  );
+
+  @override
+  String get quantity {
+    _$quantityAtom.reportRead();
+    return super.quantity;
+  }
+
+  @override
+  set quantity(String value) {
+    _$quantityAtom.reportWrite(value, super.quantity, () {
+      super.quantity = value;
+    });
+  }
+
   late final _$_errorMessageAtom = Atom(
     name: 'CartStoreBase._errorMessage',
     context: context,
@@ -100,12 +118,12 @@ mixin _$CartStore on CartStoreBase, Store {
   );
 
   @override
-  bool addProduct(Product product, [int quantity = 1]) {
+  bool addProduct(Product product) {
     final _$actionInfo = _$CartStoreBaseActionController.startAction(
       name: 'CartStoreBase.addProduct',
     );
     try {
-      return super.addProduct(product, quantity);
+      return super.addProduct(product);
     } finally {
       _$CartStoreBaseActionController.endAction(_$actionInfo);
     }
@@ -130,6 +148,18 @@ mixin _$CartStore on CartStoreBase, Store {
     );
     try {
       return super._setTotal();
+    } finally {
+      _$CartStoreBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void updateQuantity(String productId) {
+    final _$actionInfo = _$CartStoreBaseActionController.startAction(
+      name: 'CartStoreBase.updateQuantity',
+    );
+    try {
+      return super.updateQuantity(productId);
     } finally {
       _$CartStoreBaseActionController.endAction(_$actionInfo);
     }
@@ -186,6 +216,7 @@ mixin _$CartStore on CartStoreBase, Store {
   @override
   String toString() {
     return '''
+quantity: ${quantity},
 cartList: ${cartList},
 total: ${total},
 errorMessage: ${errorMessage},

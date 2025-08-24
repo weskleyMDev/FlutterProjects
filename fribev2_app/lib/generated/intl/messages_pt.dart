@@ -46,9 +46,16 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "password": MessageLookupByLibrary.simpleMessage("Senha"),
     "price": MessageLookupByLibrary.simpleMessage("Preço"),
+    "product_added": MessageLookupByLibrary.simpleMessage(
+      "Produto adicionado ao carrinho!",
+    ),
+    "product_removed": MessageLookupByLibrary.simpleMessage(
+      "Produto removido do carrinho!",
+    ),
     "quantity": MessageLookupByLibrary.simpleMessage("Quantidade"),
     "receipts": MessageLookupByLibrary.simpleMessage("Recibos"),
     "remove_cart": MessageLookupByLibrary.simpleMessage("Remover do carrinho"),
+    "remove_product": MessageLookupByLibrary.simpleMessage("Remover produto"),
     "sales": MessageLookupByLibrary.simpleMessage("Vendas"),
     "search": MessageLookupByLibrary.simpleMessage("Buscar"),
     "set_quantity": MessageLookupByLibrary.simpleMessage(

@@ -112,5 +112,17 @@
     "already_in_cart": "Already in cart!",
     "@already_in_cart": {
         "description": "already in cart label text"
+    },
+    "product_added": "Product added to cart!",
+    "@product_added": {
+        "description": "product added to cart label text"
+    },
+    "remove_product": "Remove product",
+    "@remove_product": {
+        "description": "remove product tooltip text"
+    },
+    "product_removed": "Product removed from cart!",
+    "@product_removed": {
+        "description": "product removed from cart label text"
     }
 }

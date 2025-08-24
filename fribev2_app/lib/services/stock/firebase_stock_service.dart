@@ -31,6 +31,16 @@ class FirebaseStockService implements IStockService {
     return doc.data();
   }
 
+  @override
+  Future<Product?> getProductById({required String id}) async {
+    final doc = await _firestore
+        .collection('stock')
+        .withConverter(fromFirestore: _fromFirestore, toFirestore: _toFirestore)
+        .doc(id)
+        .get();
+    return doc.data();
+  }
+
   Map<String, dynamic> _toFirestore(Product product, SetOptions? options) =>
       product.toMap();
 

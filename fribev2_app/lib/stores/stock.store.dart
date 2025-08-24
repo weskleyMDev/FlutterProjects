@@ -66,6 +66,12 @@ abstract class StockStoreBase with Store {
   }
 
   @action
+  Future<Product?> getProductById({required String id}) async {
+    final product = await _stockService.getProductById(id: id);
+    return product;
+  }
+
+  @action
   Future<Product?> addToStock({required Product product}) async {
     final newProduct = await _stockService.saveProduct(product: product);
     return newProduct;

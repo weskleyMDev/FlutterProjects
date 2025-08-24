@@ -110,6 +110,16 @@ mixin _$StockStore on StockStoreBase, Store {
     );
   }
 
+  late final _$getProductByIdAsyncAction = AsyncAction(
+    'StockStoreBase.getProductById',
+    context: context,
+  );
+
+  @override
+  Future<Product?> getProductById({required String id}) {
+    return _$getProductByIdAsyncAction.run(() => super.getProductById(id: id));
+  }
+
   late final _$addToStockAsyncAction = AsyncAction(
     'StockStoreBase.addToStock',
     context: context,

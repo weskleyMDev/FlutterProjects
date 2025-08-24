@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:fluttericon/font_awesome5_icons.dart';
 import 'package:fribev2_app/components/stock_list.dart';
 import 'package:fribev2_app/generated/l10n.dart';
@@ -67,15 +68,21 @@ class _SalesHomePageState extends State<SalesHomePage> {
         appBar: AppBar(
           title: Text(S.of(context).new_sale),
           actions: [
-            Badge.count(
-              count: _cartStore.cartList.length,
-              offset: Offset(0.0, 4.0),
-              child: IconButton(
-                onPressed: () => context.pushNamed('cart-home'),
-                icon: Icon(FontAwesome5.shopping_cart),
-                color: Colors.red,
-                tooltip: S.of(context).shopping_cart,
-              ),
+            Observer(
+              builder: (_) {
+                return Badge.count(
+                  count: _cartStore.cartList.length,
+                  offset: Offset(0.0, 4.0),
+                  child: IconButton(
+                    onPressed: () {
+                      context.pushNamed('cart-home');
+                    },
+                    icon: Icon(FontAwesome5.shopping_cart),
+                    color: Colors.red,
+                    tooltip: S.of(context).shopping_cart,
+                  ),
+                );
+              },
             ),
           ],
           actionsPadding: const EdgeInsets.only(right: 10.0),

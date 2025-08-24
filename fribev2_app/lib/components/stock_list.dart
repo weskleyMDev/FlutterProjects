@@ -1,3 +1,4 @@
+import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:fluttericon/font_awesome5_icons.dart';
@@ -25,6 +26,7 @@ class StockList extends StatefulWidget {
 
 class _StockListState extends State<StockList> {
   late ReactionDisposer _errorReactionDisposer;
+  late final TextEditingController _quantityController;
 
   @override
   void initState() {
@@ -40,12 +42,50 @@ class _StockListState extends State<StockList> {
         widget.cartStore.clearErrorMessage();
       }
     });
+    _quantityController = TextEditingController();
   }
 
   @override
   void dispose() {
     _errorReactionDisposer();
+    _quantityController.dispose();
     super.dispose();
+  }
+
+  Future<bool?> _showQuantityDialog() {
+    return showDialog<bool>(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text(S.of(context).set_quantity),
+          content: TextField(
+            controller: _quantityController,
+            keyboardType: TextInputType.numberWithOptions(decimal: true),
+            decoration: InputDecoration(
+              labelText: S.of(context).quantity,
+              border: OutlineInputBorder(),
+            ),
+            onChanged: (text) => widget.cartStore.quantity = text,
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                context.pop(false);
+                _quantityController.clear();
+              },
+              child: Text(S.of(context).cancel),
+            ),
+            TextButton(
+              onPressed: () {
+                context.pop(true);
+                _quantityController.clear();
+              },
+              child: Text(S.of(context).confirm),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -75,11 +115,11 @@ class _StockListState extends State<StockList> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          '${S.of(context).price}: R\$ ${product.price.replaceAll('.', ',')}',
+                          '${S.of(context).price}: R\$${product.price.replaceAll('.', ',')}',
                           overflow: TextOverflow.ellipsis,
                         ),
                         Text(
-                          '${S.of(context).stock}: ${product.amount.replaceAll('.', ',')} (${product.measure})',
+                          '${S.of(context).stock}: ${double.parse(product.amount).toStringAsFixed(3).replaceAll('.', ',')} (${product.measure})',
                           overflow: TextOverflow.ellipsis,
                         ),
                       ],
@@ -92,12 +132,47 @@ class _StockListState extends State<StockList> {
                         return IconButton(
                           onPressed: inCart
                               ? null
-                              : () {
-                                  final success = widget.cartStore.addProduct(
-                                    product,
-                                  );
-                                  if (success) {
-                                    context.pushNamed('cart-home');
+                              : () async {
+                                  final confirm = await _showQuantityDialog();
+                                  if (confirm == true) {
+                                    final newQuantity =
+                                        (Decimal.parse(product.amount) -
+                                                Decimal.parse(
+                                                  widget.cartStore.quantity,
+                                                ))
+                                            .toDouble();
+                                    if (newQuantity < 0) {
+                                      if (!context.mounted) return;
+                                      ScaffoldMessenger.of(
+                                        context,
+                                      ).clearSnackBars();
+                                      ScaffoldMessenger.of(
+                                        context,
+                                      ).showSnackBar(
+                                        SnackBar(
+                                          content: Text(
+                                            'Quantidade indisponível no estoque!',
+                                          ),
+                                        ),
+                                      );
+                                      return;
+                                    }
+                                    await widget.stockStore.updateQuantityById(
+                                      id: product.id,
+                                      quantity: newQuantity.toString(),
+                                    );
+                                    widget.cartStore.addProduct(product);
+                                    if (!context.mounted) return;
+                                    ScaffoldMessenger.of(
+                                      context,
+                                    ).clearSnackBars();
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: Text(
+                                          S.of(context).product_added,
+                                        ),
+                                      ),
+                                    );
                                   }
                                 },
                           icon: Icon(FontAwesome5.shopping_basket),

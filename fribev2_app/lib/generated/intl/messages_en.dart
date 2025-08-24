@@ -44,9 +44,16 @@ class MessageLookup extends MessageLookupByLibrary {
     "no_products": MessageLookupByLibrary.simpleMessage("No products found!"),
     "password": MessageLookupByLibrary.simpleMessage("Password"),
     "price": MessageLookupByLibrary.simpleMessage("Price"),
+    "product_added": MessageLookupByLibrary.simpleMessage(
+      "Product added to cart!",
+    ),
+    "product_removed": MessageLookupByLibrary.simpleMessage(
+      "Product removed from cart!",
+    ),
     "quantity": MessageLookupByLibrary.simpleMessage("Quantity"),
     "receipts": MessageLookupByLibrary.simpleMessage("Receipts"),
     "remove_cart": MessageLookupByLibrary.simpleMessage("Remove from cart"),
+    "remove_product": MessageLookupByLibrary.simpleMessage("Remove product"),
     "sales": MessageLookupByLibrary.simpleMessage("Sales"),
     "search": MessageLookupByLibrary.simpleMessage("Search"),
     "set_quantity": MessageLookupByLibrary.simpleMessage(

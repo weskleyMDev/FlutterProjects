@@ -40,4 +40,10 @@ class LocalStockService implements IStockService {
   Future<void> updateQuantityById({required String id, required String quantity}) {
     throw UnimplementedError();
   }
+  
+  @override
+  Future<Product?> getProductById({required String id}) {
+    // TODO: implement getProductById
+    throw UnimplementedError();
+  }
 }
