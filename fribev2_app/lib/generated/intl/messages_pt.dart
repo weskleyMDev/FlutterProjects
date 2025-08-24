@@ -25,6 +25,9 @@ class MessageLookup extends MessageLookupByLibrary {
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
     "add_cart": MessageLookupByLibrary.simpleMessage("Adicionar ao carrinho"),
+    "already_in_cart": MessageLookupByLibrary.simpleMessage(
+      "Já está no carrinho!",
+    ),
     "cancel": MessageLookupByLibrary.simpleMessage("Cancelar"),
     "cart_dialog_body": MessageLookupByLibrary.simpleMessage(
       "ainda há itens no carrinho",

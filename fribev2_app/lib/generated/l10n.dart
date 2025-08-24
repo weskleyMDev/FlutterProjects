@@ -313,6 +313,16 @@ class S {
       args: [],
     );
   }
+
+  /// `Already in cart!`
+  String get already_in_cart {
+    return Intl.message(
+      'Already in cart!',
+      name: 'already_in_cart',
+      desc: 'already in cart label text',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

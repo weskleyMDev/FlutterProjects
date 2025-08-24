@@ -5,7 +5,6 @@ import 'package:fluttericon/font_awesome5_icons.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
-import '../../components/stock_list.dart';
 import '../../stores/stock.store.dart';
 
 class StockCategoryPage extends StatelessWidget {
@@ -83,7 +82,7 @@ class StockCategoryPage extends StatelessWidget {
           ),
         ],
       ),
-      body: StockList(stockStore: stockStore),
+      //body: StockList(stockStore: stockStore, cartStore: ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () async {
           final confirm = await _showConfirmDialog(context);

@@ -4,6 +4,8 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:fribev2_app/firebase_options.dart';
 import 'package:fribev2_app/generated/l10n.dart';
+import 'package:fribev2_app/services/stock/firebase_stock_service.dart';
+import 'package:fribev2_app/stores/stock.store.dart';
 import 'package:provider/provider.dart';
 
 import 'services/auth/firebase_auth_service.dart';
@@ -33,10 +35,7 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         Provider(create: (_) => AuthStore(authService: FirebaseAuthService())),
-        // Provider(
-        //   create: (_) => StockStore(FirebaseStockService()),
-        //   dispose: (_, stock) => stock.disposeStock(),
-        // ),
+        Provider(create: (_) => StockStore(FirebaseStockService())),
         Provider(
           create: (_) => SalesStore(salesService: FirebaseSalesService()),
         ),

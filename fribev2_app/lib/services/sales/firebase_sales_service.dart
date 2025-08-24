@@ -32,8 +32,8 @@ class FirebaseSalesService implements ISalesService {
   }) async {
     final SalesReceipt newReceipt = SalesReceipt(
       id: '',
-      total: cart.totalAmount,
-      cart: cart.cartList.values.toList(),
+      total: cart.total.toString(),
+      cart: cart.cartList,
       createAt: DateTime.now(),
       payments: payments,
     );

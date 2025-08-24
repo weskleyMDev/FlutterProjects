@@ -194,7 +194,7 @@ class _StockFormState extends State<StockForm> {
                       labelText: 'Medida',
                       border: OutlineInputBorder(),
                     ),
-                    value: _selectedMeasure.isNotEmpty
+                    initialValue: _selectedMeasure.isNotEmpty
                         ? _selectedMeasure
                         : null,
                     items: _measures.map((value) {
@@ -224,7 +224,7 @@ class _StockFormState extends State<StockForm> {
                     labelText: 'Categoria',
                     border: OutlineInputBorder(),
                   ),
-                  value: _selectedCategory.isNotEmpty
+                  initialValue: _selectedCategory.isNotEmpty
                       ? _selectedCategory
                       : null,
                   items: _categories.map((value) {

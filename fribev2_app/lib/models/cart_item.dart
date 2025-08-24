@@ -1,38 +1,35 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
+
+import 'package:fribev2_app/models/product.dart';
 
 class CartItem {
   final String id;
   final String productId;
-  final String name;
-  final String quantity;
-  final String price;
-  final String subtotal;
+  final int quantity;
+  final double subtotal;
+  final Product? product;
 
   CartItem({
     required this.id,
     required this.productId,
-    required this.name,
     required this.quantity,
-    required this.price,
     required this.subtotal,
+    this.product,
   });
 
   CartItem copyWith({
     String? id,
     String? productId,
-    String? name,
-    String? quantity,
-    String? price,
-    String? subtotal,
+    int? quantity,
+    double? subtotal,
+    Product? product,
   }) {
     return CartItem(
       id: id ?? this.id,
       productId: productId ?? this.productId,
-      name: name ?? this.name,
       quantity: quantity ?? this.quantity,
-      price: price ?? this.price,
       subtotal: subtotal ?? this.subtotal,
+      product: product ?? this.product,
     );
   }
 
@@ -40,9 +37,7 @@ class CartItem {
     return <String, dynamic>{
       'id': id,
       'productId': productId,
-      'name': name,
       'quantity': quantity,
-      'price': price,
       'subtotal': subtotal,
     };
   }
@@ -51,10 +46,8 @@ class CartItem {
     return CartItem(
       id: map['id'] as String,
       productId: map['productId'] as String,
-      name: map['name'] as String,
-      quantity: map['quantity'] as String,
-      price: map['price'] as String,
-      subtotal: map['subtotal'] as String,
+      quantity: map['quantity'] as int,
+      subtotal: map['subtotal'] as double,
     );
   }
 
@@ -65,7 +58,7 @@ class CartItem {
 
   @override
   String toString() {
-    return 'CartItem(id: $id, productId: $productId, name: $name, quantity: $quantity, price: $price, subtotal: $subtotal)';
+    return 'CartItem(id: $id, productId: $productId, quantity: $quantity, subtotal: $subtotal, product: $product)';
   }
 
   @override
@@ -74,19 +67,17 @@ class CartItem {
 
     return other.id == id &&
         other.productId == productId &&
-        other.name == name &&
         other.quantity == quantity &&
-        other.price == price &&
-        other.subtotal == subtotal;
+        other.subtotal == subtotal &&
+        other.product == product;
   }
 
   @override
   int get hashCode {
     return id.hashCode ^
         productId.hashCode ^
-        name.hashCode ^
         quantity.hashCode ^
-        price.hashCode ^
-        subtotal.hashCode;
+        subtotal.hashCode ^
+        product.hashCode;
   }
 }

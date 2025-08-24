@@ -108,5 +108,9 @@
     "no_products": "No products found!",
     "@no_products": {
         "description": "no products label text"
+    },
+    "already_in_cart": "Already in cart!",
+    "@already_in_cart": {
+        "description": "already in cart label text"
     }
 }

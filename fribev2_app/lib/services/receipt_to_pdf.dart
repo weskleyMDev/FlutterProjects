@@ -63,11 +63,11 @@ class ReceiptGenerator {
                               crossAxisAlignment: pw.CrossAxisAlignment.center,
                               children: [
                                 pw.Text(
-                                  '${item.name} x${item.quantity.replaceAll('.', ',')}',
+                                  '${item.product?.name ?? ''} x${item.quantity.toString().replaceAll('.', ',')}',
                                 ),
-                                pw.Text(
-                                  'R\$ ${item.subtotal.replaceAll('.', ',')}',
-                                ),
+                                // pw.Text(
+                                //   'R\$ ${item.subtotal.replaceAll('.', ',')}',
+                                // ),
                               ],
                             );
                           },
