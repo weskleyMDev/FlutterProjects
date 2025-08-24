@@ -353,6 +353,46 @@ class S {
       args: [],
     );
   }
+
+  /// `This field is required!`
+  String get required_field {
+    return Intl.message(
+      'This field is required!',
+      name: 'required_field',
+      desc: 'required field label text',
+      args: [],
+    );
+  }
+
+  /// `Enter only numbers with up to 3 decimal places!`
+  String get decimal_valid {
+    return Intl.message(
+      'Enter only numbers with up to 3 decimal places!',
+      name: 'decimal_valid',
+      desc: 'decimal valid error text',
+      args: [],
+    );
+  }
+
+  /// `Enter only integers greater than 0!`
+  String get integer_valid {
+    return Intl.message(
+      'Enter only integers greater than 0!',
+      name: 'integer_valid',
+      desc: 'integer valid error text',
+      args: [],
+    );
+  }
+
+  /// `Quantity out of stock!`
+  String get quantity_out {
+    return Intl.message(
+      'Quantity out of stock!',
+      name: 'quantity_out',
+      desc: 'quantity out of stock error text',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

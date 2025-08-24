@@ -124,5 +124,21 @@
     "product_removed": "Produto removido do carrinho!",
     "@product_removed": {
         "description": "product removed from cart label text"
+    },
+    "required_field": "Campo obrigatório!",
+    "@required_field": {
+        "description": "required field label text"
+    },
+    "decimal_valid": "Digite apenas números até 3 casas decimais!",
+    "@decimal_valid": {
+        "description": "decimal valid error text"
+    },
+    "integer_valid": "Digite apenas números inteiros maiores que 0!",
+    "@integer_valid": {
+        "description": "integer valid error text"
+    },
+    "quantity_out": "Quantidade indisponível no estoque!",
+    "@quantity_out": {
+        "description": "quantity out of stock error text"
     }
 }

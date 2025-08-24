@@ -16,7 +16,7 @@ abstract class CartStoreBase with Store {
   double _total = 0.0;
 
   @observable
-  String quantity = '';
+  String quantity = '0';
 
   @observable
   String? _errorMessage;
@@ -82,13 +82,21 @@ abstract class CartStoreBase with Store {
   }
 
   @action
-  void updateQuantity(String productId) {
-    final index = _cartList.indexWhere((item) => item.productId == productId);
+  Future<bool> updateQuantity(String cid) async {
+    final index = _cartList.indexWhere((item) => item.id == cid);
     if (index != -1) {
       final item = _cartList[index];
-      final newQuantity =
-          Decimal.parse(item.quantity.toString()) - Decimal.parse(quantity);
-      _cartList[index] = item.copyWith(quantity: newQuantity.toDouble());
+      final newSubtotal =
+          (Decimal.parse(quantity) * Decimal.parse(item.product!.price))
+              .toDouble();
+      _cartList[index] = item.copyWith(
+        quantity: double.parse(quantity),
+        subtotal: newSubtotal,
+      );
+      _setTotal();
+      return true;
+    } else {
+      return false;
     }
   }
 
@@ -134,7 +142,7 @@ abstract class CartStoreBase with Store {
   void clearCart() {
     _cartList.clear();
     _total = 0.0;
-    quantity = '';
+    quantity = '0';
     print('CLEAR CART CALLED!!');
   }
 

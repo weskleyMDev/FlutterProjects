@@ -35,10 +35,16 @@ class MessageLookup extends MessageLookupByLibrary {
     "cart_dialog_title": MessageLookupByLibrary.simpleMessage("Deseja sair?"),
     "clear_cart": MessageLookupByLibrary.simpleMessage("Limpar carrinho"),
     "confirm": MessageLookupByLibrary.simpleMessage("Confirmar"),
+    "decimal_valid": MessageLookupByLibrary.simpleMessage(
+      "Digite apenas números até 3 casas decimais!",
+    ),
     "default_username": MessageLookupByLibrary.simpleMessage("Usuário(a)"),
     "email": MessageLookupByLibrary.simpleMessage("Email"),
     "greeting": m0,
     "home": MessageLookupByLibrary.simpleMessage("Ínicio"),
+    "integer_valid": MessageLookupByLibrary.simpleMessage(
+      "Digite apenas números inteiros maiores que 0!",
+    ),
     "leave": MessageLookupByLibrary.simpleMessage("Sair"),
     "new_sale": MessageLookupByLibrary.simpleMessage("Nova Venda"),
     "no_products": MessageLookupByLibrary.simpleMessage(
@@ -53,9 +59,15 @@ class MessageLookup extends MessageLookupByLibrary {
       "Produto removido do carrinho!",
     ),
     "quantity": MessageLookupByLibrary.simpleMessage("Quantidade"),
+    "quantity_out": MessageLookupByLibrary.simpleMessage(
+      "Quantidade indisponível no estoque!",
+    ),
     "receipts": MessageLookupByLibrary.simpleMessage("Recibos"),
     "remove_cart": MessageLookupByLibrary.simpleMessage("Remover do carrinho"),
     "remove_product": MessageLookupByLibrary.simpleMessage("Remover produto"),
+    "required_field": MessageLookupByLibrary.simpleMessage(
+      "Campo obrigatório!",
+    ),
     "sales": MessageLookupByLibrary.simpleMessage("Vendas"),
     "search": MessageLookupByLibrary.simpleMessage("Buscar"),
     "set_quantity": MessageLookupByLibrary.simpleMessage(

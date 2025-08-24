@@ -1,9 +1,9 @@
-import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:fluttericon/font_awesome5_icons.dart';
 import 'package:fribev2_app/components/loading_screen.dart';
 import 'package:fribev2_app/generated/l10n.dart';
+import 'package:fribev2_app/models/product.dart';
 import 'package:fribev2_app/stores/cart.store.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mobx/mobx.dart';
@@ -27,6 +27,7 @@ class StockList extends StatefulWidget {
 class _StockListState extends State<StockList> {
   late ReactionDisposer _errorReactionDisposer;
   late final TextEditingController _quantityController;
+  late final GlobalKey<FormState> _formStockKey;
 
   @override
   void initState() {
@@ -43,6 +44,7 @@ class _StockListState extends State<StockList> {
       }
     });
     _quantityController = TextEditingController();
+    _formStockKey = GlobalKey<FormState>();
   }
 
   @override
@@ -52,40 +54,92 @@ class _StockListState extends State<StockList> {
     super.dispose();
   }
 
-  Future<bool?> _showQuantityDialog() {
+  Future<bool?> _showQuantityDialog(Product product) async {
     return showDialog<bool>(
       context: context,
       builder: (context) {
         return AlertDialog(
           title: Text(S.of(context).set_quantity),
-          content: TextField(
-            controller: _quantityController,
-            keyboardType: TextInputType.numberWithOptions(decimal: true),
-            decoration: InputDecoration(
-              labelText: S.of(context).quantity,
-              border: OutlineInputBorder(),
+          content: Form(
+            key: _formStockKey,
+            child: TextFormField(
+              controller: _quantityController,
+              keyboardType: TextInputType.numberWithOptions(decimal: true),
+              decoration: InputDecoration(
+                labelText: S.of(context).quantity,
+                border: OutlineInputBorder(),
+              ),
+              onSaved: (text) => widget.cartStore.quantity = (text ?? '')
+                  .trim()
+                  .replaceAll(',', '.'),
+              validator: (value) {
+                final text = value?.trim().replaceAll(',', '.') ?? '';
+                if (text.isEmpty) {
+                  return S.of(context).required_field;
+                }
+                final measure = product.measure;
+                final decimalValid = RegExp(
+                  r'^(?!0+(?:[.,]0{0,3})?$)(?:[1-9]\d*|0[.,]\d{1,3}|[1-9]\d*[.,]\d{1,3})$',
+                ).hasMatch(text);
+                if (measure == 'KG' && !decimalValid) {
+                  return S.of(context).decimal_valid;
+                }
+                final intValid = RegExp(r'^[1-9]\d{0,9}$').hasMatch(text);
+                if (measure != 'KG' && !intValid) {
+                  return S.of(context).integer_valid;
+                }
+                return null;
+              },
             ),
-            onChanged: (text) => widget.cartStore.quantity = text,
           ),
           actions: [
             TextButton(
               onPressed: () {
                 context.pop(false);
-                _quantityController.clear();
+                _clearForm();
               },
               child: Text(S.of(context).cancel),
             ),
             TextButton(
-              onPressed: () {
-                context.pop(true);
-                _quantityController.clear();
-              },
+              onPressed: () => _submitQuantity(product),
               child: Text(S.of(context).confirm),
             ),
           ],
         );
       },
     );
+  }
+
+  void _clearForm() {
+    widget.cartStore.quantity = '0';
+    _quantityController.clear();
+    _formStockKey.currentState?.reset();
+  }
+
+  void _showSnackMessage(String message) {
+    ScaffoldMessenger.of(context).clearSnackBars();
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(message)));
+  }
+
+  Future<void> _submitQuantity(Product product) async {
+    final isValid = _formStockKey.currentState?.validate() ?? false;
+    if (!isValid) return;
+    _formStockKey.currentState?.save();
+    final quantity = double.parse(widget.cartStore.quantity);
+    final amount = double.parse(product.amount);
+    if (quantity > amount) {
+      _showSnackMessage(S.of(context).quantity_out);
+      return;
+    }
+    final success = widget.cartStore.addProduct(product);
+    if (success) {
+      if (!mounted) return;
+      _showSnackMessage(S.of(context).product_added);
+      _clearForm();
+      context.pop(true);
+    }
   }
 
   @override
@@ -133,47 +187,7 @@ class _StockListState extends State<StockList> {
                           onPressed: inCart
                               ? null
                               : () async {
-                                  final confirm = await _showQuantityDialog();
-                                  if (confirm == true) {
-                                    final newQuantity =
-                                        (Decimal.parse(product.amount) -
-                                                Decimal.parse(
-                                                  widget.cartStore.quantity,
-                                                ))
-                                            .toDouble();
-                                    if (newQuantity < 0) {
-                                      if (!context.mounted) return;
-                                      ScaffoldMessenger.of(
-                                        context,
-                                      ).clearSnackBars();
-                                      ScaffoldMessenger.of(
-                                        context,
-                                      ).showSnackBar(
-                                        SnackBar(
-                                          content: Text(
-                                            'Quantidade indisponível no estoque!',
-                                          ),
-                                        ),
-                                      );
-                                      return;
-                                    }
-                                    await widget.stockStore.updateQuantityById(
-                                      id: product.id,
-                                      quantity: newQuantity.toString(),
-                                    );
-                                    widget.cartStore.addProduct(product);
-                                    if (!context.mounted) return;
-                                    ScaffoldMessenger.of(
-                                      context,
-                                    ).clearSnackBars();
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(
-                                        content: Text(
-                                          S.of(context).product_added,
-                                        ),
-                                      ),
-                                    );
-                                  }
+                                  await _showQuantityDialog(product);
                                 },
                           icon: Icon(FontAwesome5.shopping_basket),
                           color: Colors.green,

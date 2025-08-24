@@ -18,18 +18,21 @@ class SalesHomePage extends StatefulWidget {
 class _SalesHomePageState extends State<SalesHomePage> {
   late final StockStore _stockStore;
   late final CartStore _cartStore;
+  late final TextEditingController _searchController;
 
   @override
   void initState() {
     super.initState();
     _stockStore = context.read<StockStore>()..fetchData();
     _cartStore = context.read<CartStore>();
+    _searchController = TextEditingController();
   }
 
   @override
   void dispose() {
     _stockStore.disposeStock();
     _cartStore.clearCart();
+    _searchController.dispose();
     super.dispose();
   }
 
@@ -56,12 +59,16 @@ class _SalesHomePageState extends State<SalesHomePage> {
     return PopScope(
       canPop: false,
       onPopInvokedWithResult: (didPop, result) async {
-        if (!didPop) {
-          final shouldExit = await _leaveDialog();
-          if (shouldExit ?? false) {
-            if (!context.mounted) return;
-            context.pop();
-          }
+        final emptyCart = _cartStore.cartList.isEmpty;
+        if (didPop) return;
+        if (emptyCart) {
+          context.pop();
+          return;
+        }
+        final shouldExit = await _leaveDialog();
+        if (shouldExit ?? false) {
+          if (!context.mounted) return;
+          context.pop();
         }
       },
       child: Scaffold(
@@ -93,6 +100,7 @@ class _SalesHomePageState extends State<SalesHomePage> {
           child: Container(
             margin: const EdgeInsets.only(left: 4.0, right: 4.0, bottom: 8.0),
             child: TextField(
+              controller: _searchController,
               decoration: InputDecoration(
                 border: OutlineInputBorder(),
                 label: Text(

@@ -112,6 +112,16 @@ mixin _$CartStore on CartStoreBase, Store {
     });
   }
 
+  late final _$updateQuantityAsyncAction = AsyncAction(
+    'CartStoreBase.updateQuantity',
+    context: context,
+  );
+
+  @override
+  Future<bool> updateQuantity(String cid) {
+    return _$updateQuantityAsyncAction.run(() => super.updateQuantity(cid));
+  }
+
   late final _$CartStoreBaseActionController = ActionController(
     name: 'CartStoreBase',
     context: context,
@@ -148,18 +158,6 @@ mixin _$CartStore on CartStoreBase, Store {
     );
     try {
       return super._setTotal();
-    } finally {
-      _$CartStoreBaseActionController.endAction(_$actionInfo);
-    }
-  }
-
-  @override
-  void updateQuantity(String productId) {
-    final _$actionInfo = _$CartStoreBaseActionController.startAction(
-      name: 'CartStoreBase.updateQuantity',
-    );
-    try {
-      return super.updateQuantity(productId);
     } finally {
       _$CartStoreBaseActionController.endAction(_$actionInfo);
     }

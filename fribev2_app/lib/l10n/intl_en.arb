@@ -124,5 +124,21 @@
     "product_removed": "Product removed from cart!",
     "@product_removed": {
         "description": "product removed from cart label text"
+    },
+    "required_field": "This field is required!",
+    "@required_field": {
+        "description": "required field label text"
+    },
+    "decimal_valid": "Enter only numbers with up to 3 decimal places!",
+    "@decimal_valid": {
+        "description": "decimal valid error text"
+    },
+    "integer_valid": "Enter only integers greater than 0!",
+    "@integer_valid": {
+        "description": "integer valid error text"
+    },
+    "quantity_out": "Quantity out of stock!",
+    "@quantity_out": {
+        "description": "quantity out of stock error text"
     }
 }

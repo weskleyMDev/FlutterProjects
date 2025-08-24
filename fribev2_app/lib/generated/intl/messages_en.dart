@@ -35,10 +35,16 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "clear_cart": MessageLookupByLibrary.simpleMessage("Clear cart"),
     "confirm": MessageLookupByLibrary.simpleMessage("Confirm"),
+    "decimal_valid": MessageLookupByLibrary.simpleMessage(
+      "Enter only numbers with up to 3 decimal places!",
+    ),
     "default_username": MessageLookupByLibrary.simpleMessage("User"),
     "email": MessageLookupByLibrary.simpleMessage("Email"),
     "greeting": m0,
     "home": MessageLookupByLibrary.simpleMessage("Home"),
+    "integer_valid": MessageLookupByLibrary.simpleMessage(
+      "Enter only integers greater than 0!",
+    ),
     "leave": MessageLookupByLibrary.simpleMessage("Leave"),
     "new_sale": MessageLookupByLibrary.simpleMessage("New Sale"),
     "no_products": MessageLookupByLibrary.simpleMessage("No products found!"),
@@ -51,9 +57,15 @@ class MessageLookup extends MessageLookupByLibrary {
       "Product removed from cart!",
     ),
     "quantity": MessageLookupByLibrary.simpleMessage("Quantity"),
+    "quantity_out": MessageLookupByLibrary.simpleMessage(
+      "Quantity out of stock!",
+    ),
     "receipts": MessageLookupByLibrary.simpleMessage("Receipts"),
     "remove_cart": MessageLookupByLibrary.simpleMessage("Remove from cart"),
     "remove_product": MessageLookupByLibrary.simpleMessage("Remove product"),
+    "required_field": MessageLookupByLibrary.simpleMessage(
+      "This field is required!",
+    ),
     "sales": MessageLookupByLibrary.simpleMessage("Sales"),
     "search": MessageLookupByLibrary.simpleMessage("Search"),
     "set_quantity": MessageLookupByLibrary.simpleMessage(
