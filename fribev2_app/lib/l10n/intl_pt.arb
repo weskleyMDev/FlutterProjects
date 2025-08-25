@@ -140,5 +140,9 @@
     "quantity_out": "Quantidade indisponível no estoque!",
     "@quantity_out": {
         "description": "quantity out of stock error text"
+    },
+    "add_payment": "Adicionar Pagamento",
+    "@add_payment": {
+        "description": "add payment button text"
     }
 }

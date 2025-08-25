@@ -393,6 +393,16 @@ class S {
       args: [],
     );
   }
+
+  /// `Add Payment`
+  String get add_payment {
+    return Intl.message(
+      'Add Payment',
+      name: 'add_payment',
+      desc: 'add payment button text',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

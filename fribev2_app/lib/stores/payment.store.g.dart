@@ -16,13 +16,14 @@ mixin _$PaymentStore on PaymentStoreBase, Store {
     () => super.payments,
     name: 'PaymentStoreBase.payments',
   )).value;
-  Computed<String>? _$paymentTypeComputed;
+  Computed<PaymentTypes?>? _$paymentTypeComputed;
 
   @override
-  String get paymentType => (_$paymentTypeComputed ??= Computed<String>(
-    () => super.paymentType,
-    name: 'PaymentStoreBase.paymentType',
-  )).value;
+  PaymentTypes? get paymentType =>
+      (_$paymentTypeComputed ??= Computed<PaymentTypes?>(
+        () => super.paymentType,
+        name: 'PaymentStoreBase.paymentType',
+      )).value;
   Computed<String>? _$paymentValueComputed;
 
   @override
@@ -62,13 +63,13 @@ mixin _$PaymentStore on PaymentStoreBase, Store {
   );
 
   @override
-  String get _paymentType {
+  PaymentTypes? get _paymentType {
     _$_paymentTypeAtom.reportRead();
     return super._paymentType;
   }
 
   @override
-  set _paymentType(String value) {
+  set _paymentType(PaymentTypes? value) {
     _$_paymentTypeAtom.reportWrite(value, super._paymentType, () {
       super._paymentType = value;
     });
@@ -132,7 +133,7 @@ mixin _$PaymentStore on PaymentStoreBase, Store {
   }
 
   @override
-  void setPaymentType(String type) {
+  void setPaymentType(PaymentTypes type) {
     final _$actionInfo = _$PaymentStoreBaseActionController.startAction(
       name: 'PaymentStoreBase.setPaymentType',
     );
@@ -156,24 +157,12 @@ mixin _$PaymentStore on PaymentStoreBase, Store {
   }
 
   @override
-  void clearFields() {
+  void clearPayments() {
     final _$actionInfo = _$PaymentStoreBaseActionController.startAction(
-      name: 'PaymentStoreBase.clearFields',
+      name: 'PaymentStoreBase.clearPayments',
     );
     try {
-      return super.clearFields();
-    } finally {
-      _$PaymentStoreBaseActionController.endAction(_$actionInfo);
-    }
-  }
-
-  @override
-  void reset() {
-    final _$actionInfo = _$PaymentStoreBaseActionController.startAction(
-      name: 'PaymentStoreBase.reset',
-    );
-    try {
-      return super.reset();
+      return super.clearPayments();
     } finally {
       _$PaymentStoreBaseActionController.endAction(_$actionInfo);
     }

@@ -7,12 +7,23 @@ part 'payment.store.g.dart';
 
 class PaymentStore = PaymentStoreBase with _$PaymentStore;
 
+enum PaymentTypes {
+  cash(type: 'Dinheiro'),
+  creditCard(type: 'Cartão de Crédito'),
+  debitCard(type: 'Cartão de Débito'),
+  pix(type: 'PIX');
+
+  const PaymentTypes({required this.type});
+
+  final String type;
+}
+
 abstract class PaymentStoreBase with Store {
   @observable
   ObservableList<Payment> _payments = ObservableList();
 
   @observable
-  String _paymentType = '';
+  PaymentTypes? _paymentType;
 
   @observable
   String _paymentValue = '';
@@ -21,14 +32,14 @@ abstract class PaymentStoreBase with Store {
   List<Payment> get payments => List.unmodifiable(_payments);
 
   @computed
-  String get paymentType => _paymentType;
+  PaymentTypes? get paymentType => _paymentType;
 
   @computed
   String get paymentValue => _paymentValue;
 
   @action
   Future<void> pay() async {
-    await addPayment(type: _paymentType, value: _paymentValue);
+    await addPayment(type: _paymentType!.type, value: '0.0');
   }
 
   @action
@@ -51,21 +62,14 @@ abstract class PaymentStoreBase with Store {
       .toStringAsFixed(2);
 
   @action
-  void setPaymentType(String type) => _paymentType = type;
+  void setPaymentType(PaymentTypes type) => _paymentType = type;
 
   @action
   void setPaymentValue(String value) => _paymentValue = value;
 
-  @action
-  void clearFields() {
-    setPaymentType('');
-    setPaymentValue('');
-  }
 
   @action
-  void reset() {
+  void clearPayments() {
     _payments.clear();
-    _paymentType = '';
-    _paymentValue = '';
   }
 }

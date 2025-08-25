@@ -140,5 +140,9 @@
     "quantity_out": "Quantity out of stock!",
     "@quantity_out": {
         "description": "quantity out of stock error text"
+    },
+    "add_payment": "Add Payment",
+    "@add_payment": {
+        "description": "add payment button text"
     }
 }
