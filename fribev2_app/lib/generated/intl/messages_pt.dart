@@ -46,6 +46,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "integer_valid": MessageLookupByLibrary.simpleMessage(
       "Digite apenas números inteiros maiores que 0!",
     ),
+    "invalid_value": MessageLookupByLibrary.simpleMessage("Valor inválido!"),
     "leave": MessageLookupByLibrary.simpleMessage("Sair"),
     "new_sale": MessageLookupByLibrary.simpleMessage("Nova Venda"),
     "no_products": MessageLookupByLibrary.simpleMessage(

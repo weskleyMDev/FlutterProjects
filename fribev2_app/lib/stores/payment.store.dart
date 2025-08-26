@@ -37,9 +37,18 @@ abstract class PaymentStoreBase with Store {
   @computed
   String get paymentValue => _paymentValue;
 
+  @computed
+  double get totalPayments => _payments
+      .fold(
+        Decimal.zero,
+        (total, payment) => total + Decimal.parse(payment.value),
+      )
+      .round(scale: 2)
+      .toDouble();
+
   @action
   Future<void> pay() async {
-    await addPayment(type: _paymentType!.type, value: '0.0');
+    await addPayment(type: _paymentType!.type, value: _paymentValue);
   }
 
   @action
@@ -56,20 +65,27 @@ abstract class PaymentStoreBase with Store {
     _payments.remove(payment);
   }
 
-  @computed
-  String get totalPayments => _payments
-      .fold(Decimal.zero, (sum, payment) => sum + Decimal.parse(payment.value))
-      .toStringAsFixed(2);
-
   @action
-  void setPaymentType(PaymentTypes type) => _paymentType = type;
+  void setPaymentType(PaymentTypes? type) => _paymentType = type;
 
   @action
   void setPaymentValue(String value) => _paymentValue = value;
 
+  @action
+  void clearPaymentFields() {
+    _paymentType = null;
+    _paymentValue = '';
+  }
 
   @action
   void clearPayments() {
     _payments.clear();
+  }
+
+  @action
+  void clearPaymentStore() {
+    clearPaymentFields();
+    clearPayments();
+  print('DISPOSE PAYMENT STORE!!');
   }
 }

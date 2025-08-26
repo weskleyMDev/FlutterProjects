@@ -31,10 +31,10 @@ mixin _$PaymentStore on PaymentStoreBase, Store {
     () => super.paymentValue,
     name: 'PaymentStoreBase.paymentValue',
   )).value;
-  Computed<String>? _$totalPaymentsComputed;
+  Computed<double>? _$totalPaymentsComputed;
 
   @override
-  String get totalPayments => (_$totalPaymentsComputed ??= Computed<String>(
+  double get totalPayments => (_$totalPaymentsComputed ??= Computed<double>(
     () => super.totalPayments,
     name: 'PaymentStoreBase.totalPayments',
   )).value;
@@ -133,7 +133,7 @@ mixin _$PaymentStore on PaymentStoreBase, Store {
   }
 
   @override
-  void setPaymentType(PaymentTypes type) {
+  void setPaymentType(PaymentTypes? type) {
     final _$actionInfo = _$PaymentStoreBaseActionController.startAction(
       name: 'PaymentStoreBase.setPaymentType',
     );
@@ -157,12 +157,36 @@ mixin _$PaymentStore on PaymentStoreBase, Store {
   }
 
   @override
+  void clearPaymentFields() {
+    final _$actionInfo = _$PaymentStoreBaseActionController.startAction(
+      name: 'PaymentStoreBase.clearPaymentFields',
+    );
+    try {
+      return super.clearPaymentFields();
+    } finally {
+      _$PaymentStoreBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   void clearPayments() {
     final _$actionInfo = _$PaymentStoreBaseActionController.startAction(
       name: 'PaymentStoreBase.clearPayments',
     );
     try {
       return super.clearPayments();
+    } finally {
+      _$PaymentStoreBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void clearPaymentStore() {
+    final _$actionInfo = _$PaymentStoreBaseActionController.startAction(
+      name: 'PaymentStoreBase.clearPaymentStore',
+    );
+    try {
+      return super.clearPaymentStore();
     } finally {
       _$PaymentStoreBaseActionController.endAction(_$actionInfo);
     }

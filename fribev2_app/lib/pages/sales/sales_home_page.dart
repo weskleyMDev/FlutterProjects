@@ -4,8 +4,10 @@ import 'package:fluttericon/font_awesome5_icons.dart';
 import 'package:fribev2_app/components/stock_list.dart';
 import 'package:fribev2_app/generated/l10n.dart';
 import 'package:fribev2_app/stores/cart.store.dart';
+import 'package:fribev2_app/stores/payment.store.dart';
 import 'package:fribev2_app/stores/stock.store.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mobx/mobx.dart';
 import 'package:provider/provider.dart';
 
 class SalesHomePage extends StatefulWidget {
@@ -16,8 +18,10 @@ class SalesHomePage extends StatefulWidget {
 }
 
 class _SalesHomePageState extends State<SalesHomePage> {
+  late ReactionDisposer _errorReactionDisposer;
   late final StockStore _stockStore;
   late final CartStore _cartStore;
+  late final PaymentStore _paymentStore;
   late final TextEditingController _searchController;
 
   @override
@@ -25,13 +29,27 @@ class _SalesHomePageState extends State<SalesHomePage> {
     super.initState();
     _stockStore = context.read<StockStore>()..fetchData();
     _cartStore = context.read<CartStore>();
+    _paymentStore = context.read<PaymentStore>();
     _searchController = TextEditingController();
+    _errorReactionDisposer = reaction((_) => _cartStore.errorMessage, (
+      error,
+    ) {
+      if (error != null) {
+        ScaffoldMessenger.of(context).clearSnackBars();
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(error)));
+        _cartStore.clearErrorMessage();
+      }
+    });
   }
 
   @override
   void dispose() {
+    _errorReactionDisposer();
     _stockStore.disposeStock();
-    _cartStore.clearCart();
+    _cartStore.clearCartStore();
+    _paymentStore.clearPaymentStore();
     _searchController.dispose();
     super.dispose();
   }
@@ -83,6 +101,8 @@ class _SalesHomePageState extends State<SalesHomePage> {
                   child: IconButton(
                     onPressed: () {
                       context.pushNamed('cart-home');
+                      _searchController.clear();
+                      _stockStore.searchQuery = '';
                     },
                     icon: Icon(FontAwesome5.shopping_cart),
                     color: Colors.red,
@@ -100,6 +120,7 @@ class _SalesHomePageState extends State<SalesHomePage> {
           child: Container(
             margin: const EdgeInsets.only(left: 4.0, right: 4.0, bottom: 8.0),
             child: TextField(
+              key: const ValueKey('search_sale'),
               controller: _searchController,
               decoration: InputDecoration(
                 border: OutlineInputBorder(),

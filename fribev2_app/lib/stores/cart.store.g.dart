@@ -24,6 +24,13 @@ mixin _$CartStore on CartStoreBase, Store {
     () => super.total,
     name: 'CartStoreBase.total',
   )).value;
+  Computed<double>? _$remainingComputed;
+
+  @override
+  double get remaining => (_$remainingComputed ??= Computed<double>(
+    () => super.remaining,
+    name: 'CartStoreBase.remaining',
+  )).value;
   Computed<String?>? _$errorMessageComputed;
 
   @override
@@ -94,6 +101,24 @@ mixin _$CartStore on CartStoreBase, Store {
     });
   }
 
+  late final _$_remainingAtom = Atom(
+    name: 'CartStoreBase._remaining',
+    context: context,
+  );
+
+  @override
+  Decimal get _remaining {
+    _$_remainingAtom.reportRead();
+    return super._remaining;
+  }
+
+  @override
+  set _remaining(Decimal value) {
+    _$_remainingAtom.reportWrite(value, super._remaining, () {
+      super._remaining = value;
+    });
+  }
+
   late final _$_errorMessageAtom = Atom(
     name: 'CartStoreBase._errorMessage',
     context: context,
@@ -118,8 +143,10 @@ mixin _$CartStore on CartStoreBase, Store {
   );
 
   @override
-  Future<bool> updateQuantity(String cid) {
-    return _$updateQuantityAsyncAction.run(() => super.updateQuantity(cid));
+  Future<bool> updateQuantity(BuildContext context, String cid) {
+    return _$updateQuantityAsyncAction.run(
+      () => super.updateQuantity(context, cid),
+    );
   }
 
   late final _$CartStoreBaseActionController = ActionController(
@@ -128,24 +155,36 @@ mixin _$CartStore on CartStoreBase, Store {
   );
 
   @override
-  bool addProduct(Product product) {
+  bool addProduct(BuildContext context, Product product) {
     final _$actionInfo = _$CartStoreBaseActionController.startAction(
       name: 'CartStoreBase.addProduct',
     );
     try {
-      return super.addProduct(product);
+      return super.addProduct(context, product);
     } finally {
       _$CartStoreBaseActionController.endAction(_$actionInfo);
     }
   }
 
   @override
-  void removeProductById(String id) {
+  void setRemaining(BuildContext context) {
+    final _$actionInfo = _$CartStoreBaseActionController.startAction(
+      name: 'CartStoreBase.setRemaining',
+    );
+    try {
+      return super.setRemaining(context);
+    } finally {
+      _$CartStoreBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void removeProductById(BuildContext context, String id) {
     final _$actionInfo = _$CartStoreBaseActionController.startAction(
       name: 'CartStoreBase.removeProductById',
     );
     try {
-      return super.removeProductById(id);
+      return super.removeProductById(context, id);
     } finally {
       _$CartStoreBaseActionController.endAction(_$actionInfo);
     }
@@ -212,11 +251,24 @@ mixin _$CartStore on CartStoreBase, Store {
   }
 
   @override
+  void clearCartStore() {
+    final _$actionInfo = _$CartStoreBaseActionController.startAction(
+      name: 'CartStoreBase.clearCartStore',
+    );
+    try {
+      return super.clearCartStore();
+    } finally {
+      _$CartStoreBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   String toString() {
     return '''
 quantity: ${quantity},
 cartList: ${cartList},
 total: ${total},
+remaining: ${remaining},
 errorMessage: ${errorMessage},
 isProductInCart: ${isProductInCart}
     ''';

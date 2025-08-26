@@ -403,6 +403,16 @@ class S {
       args: [],
     );
   }
+
+  /// `Invalid value!`
+  String get invalid_value {
+    return Intl.message(
+      'Invalid value!',
+      name: 'invalid_value',
+      desc: 'invalid value error text',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

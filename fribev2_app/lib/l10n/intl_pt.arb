@@ -144,5 +144,9 @@
     "add_payment": "Adicionar Pagamento",
     "@add_payment": {
         "description": "add payment button text"
+    },
+    "invalid_value": "Valor inválido!",
+    "@invalid_value": {
+        "description": "invalid value error text"
     }
 }

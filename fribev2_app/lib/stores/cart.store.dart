@@ -1,7 +1,10 @@
 import 'package:decimal/decimal.dart';
+import 'package:flutter/widgets.dart';
 import 'package:fribev2_app/models/cart_item.dart';
 import 'package:fribev2_app/models/product.dart';
+import 'package:fribev2_app/stores/payment.store.dart';
 import 'package:mobx/mobx.dart';
+import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 
 part 'cart.store.g.dart';
@@ -19,6 +22,9 @@ abstract class CartStoreBase with Store {
   String quantity = '0';
 
   @observable
+  Decimal _remaining = Decimal.zero;
+
+  @observable
   String? _errorMessage;
 
   /*==================================COMPUTED================================*/
@@ -28,6 +34,9 @@ abstract class CartStoreBase with Store {
 
   @computed
   double get total => _total;
+
+  @computed
+  double get remaining => _remaining.toDouble();
 
   @computed
   String? get errorMessage => _errorMessage;
@@ -42,9 +51,10 @@ abstract class CartStoreBase with Store {
   /*==================================ACTION==================================*/
 
   @action
-  bool addProduct(Product product) {
+  bool addProduct(BuildContext context, Product product) {
     final index = _cartList.indexWhere((item) => item.productId == product.id);
     final newSubtotal = (Decimal.parse(quantity) * Decimal.parse(product.price))
+        .round(scale: 2)
         .toDouble();
     if (index == -1) {
       _cartList.add(
@@ -61,13 +71,23 @@ abstract class CartStoreBase with Store {
       return false;
     }
     _setTotal();
+    setRemaining(context);
     return true;
   }
 
   @action
-  void removeProductById(String id) {
+  void setRemaining(BuildContext context) {
+    final totalPayment = context.read<PaymentStore>().totalPayments;
+    _remaining =
+        (Decimal.parse(total.toString())) -
+        Decimal.parse(totalPayment.toString()).round(scale: 2);
+  }
+
+  @action
+  void removeProductById(BuildContext context, String id) {
     _cartList.removeWhere((item) => item.id == id);
     _setTotal();
+    _remaining = Decimal.parse(_total.toString());
   }
 
   @action
@@ -78,22 +98,24 @@ abstract class CartStoreBase with Store {
           Decimal.parse(item.quantity.toString()) *
           Decimal.parse(item.product!.price);
     }
-    _total = result.toDouble();
+    _total = result.round(scale: 2).toDouble();
   }
 
   @action
-  Future<bool> updateQuantity(String cid) async {
+  Future<bool> updateQuantity(BuildContext context, String cid) async {
     final index = _cartList.indexWhere((item) => item.id == cid);
     if (index != -1) {
       final item = _cartList[index];
       final newSubtotal =
           (Decimal.parse(quantity) * Decimal.parse(item.product!.price))
+              .round(scale: 2)
               .toDouble();
       _cartList[index] = item.copyWith(
         quantity: double.parse(quantity),
         subtotal: newSubtotal,
       );
       _setTotal();
+      _remaining = Decimal.parse(_total.toString());
       return true;
     } else {
       return false;
@@ -109,6 +131,7 @@ abstract class CartStoreBase with Store {
       final newSubtotal =
           (Decimal.parse(newQuantity.toString()) *
                   Decimal.parse(item.product!.price))
+              .round(scale: 2)
               .toDouble();
 
       _cartList[index] = item.copyWith(
@@ -128,6 +151,7 @@ abstract class CartStoreBase with Store {
       final newSubtotal =
           (Decimal.parse(newQuantity.toString()) *
                   Decimal.parse(item.product!.price))
+              .round(scale: 2)
               .toDouble();
 
       _cartList[index] = item.copyWith(
@@ -142,12 +166,18 @@ abstract class CartStoreBase with Store {
   void clearCart() {
     _cartList.clear();
     _total = 0.0;
-    quantity = '0';
-    print('CLEAR CART CALLED!!');
+    quantity = '0';    
   }
 
   @action
   void clearErrorMessage() {
     _errorMessage = null;
+  }
+
+  @action
+  void clearCartStore() {
+    clearCart();
+    clearErrorMessage();
+    print('DISPOSE CART STORE!!');
   }
 }

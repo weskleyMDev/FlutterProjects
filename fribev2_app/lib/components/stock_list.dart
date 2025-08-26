@@ -25,31 +25,18 @@ class StockList extends StatefulWidget {
 }
 
 class _StockListState extends State<StockList> {
-  late ReactionDisposer _errorReactionDisposer;
   late final TextEditingController _quantityController;
   late final GlobalKey<FormState> _formStockKey;
 
   @override
   void initState() {
     super.initState();
-    _errorReactionDisposer = reaction((_) => widget.cartStore.errorMessage, (
-      error,
-    ) {
-      if (error != null) {
-        ScaffoldMessenger.of(context).clearSnackBars();
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text(error)));
-        widget.cartStore.clearErrorMessage();
-      }
-    });
     _quantityController = TextEditingController();
     _formStockKey = GlobalKey<FormState>();
   }
 
   @override
   void dispose() {
-    _errorReactionDisposer();
     _quantityController.dispose();
     super.dispose();
   }
@@ -63,7 +50,9 @@ class _StockListState extends State<StockList> {
           content: Form(
             key: _formStockKey,
             child: TextFormField(
+              key: const ValueKey('quantity_sale'),
               controller: _quantityController,
+              autofocus: true,
               keyboardType: TextInputType.numberWithOptions(decimal: true),
               decoration: InputDecoration(
                 labelText: S.of(context).quantity,
@@ -133,7 +122,7 @@ class _StockListState extends State<StockList> {
       _showSnackMessage(S.of(context).quantity_out);
       return;
     }
-    final success = widget.cartStore.addProduct(product);
+    final success = widget.cartStore.addProduct(context, product);
     if (success) {
       if (!mounted) return;
       _showSnackMessage(S.of(context).product_added);

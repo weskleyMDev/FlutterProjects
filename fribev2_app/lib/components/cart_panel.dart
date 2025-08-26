@@ -7,6 +7,7 @@ import 'package:fribev2_app/models/cart_item.dart';
 import 'package:fribev2_app/stores/cart.store.dart';
 import 'package:fribev2_app/stores/payment.store.dart';
 import 'package:fribev2_app/stores/stock.store.dart';
+import 'package:fribev2_app/utils/dialogs.dart';
 import 'package:go_router/go_router.dart';
 
 class CartPanel extends StatefulWidget {
@@ -28,12 +29,14 @@ class CartPanel extends StatefulWidget {
 class _CartPanelState extends State<CartPanel> {
   late final TextEditingController _quantityController;
   late final GlobalKey<FormState> _formCartKey;
+  late final GlobalKey<FormState> _formPayKey;
 
   @override
   void initState() {
     super.initState();
     _quantityController = TextEditingController();
     _formCartKey = GlobalKey<FormState>();
+    _formPayKey = GlobalKey<FormState>();
   }
 
   @override
@@ -57,7 +60,9 @@ class _CartPanelState extends State<CartPanel> {
           content: Form(
             key: _formCartKey,
             child: TextFormField(
+              key: const ValueKey('quantity_cart'),
               controller: _quantityController,
+              autofocus: true,
               keyboardType: TextInputType.numberWithOptions(decimal: true),
               decoration: InputDecoration(
                 labelText: S.of(context).quantity,
@@ -127,7 +132,7 @@ class _CartPanelState extends State<CartPanel> {
       _showSnackMessage(S.of(context).quantity_out);
       return;
     }
-    final success = await widget.cartStore.updateQuantity(cartItem.id);
+    final success = await widget.cartStore.updateQuantity(context, cartItem.id);
     if (success) {
       if (!mounted) return;
       _clearForm();
@@ -146,6 +151,7 @@ class _CartPanelState extends State<CartPanel> {
       final newQuantity =
           (Decimal.parse(product.amount) -
                   Decimal.parse(cartItem.quantity.toString()))
+              .round(scale: 2)
               .toDouble();
       await widget.stockStore.updateQuantityById(
         id: product.id,
@@ -192,6 +198,7 @@ class _CartPanelState extends State<CartPanel> {
                           subtitle: InkWell(
                             onTap: () async {
                               await _showQuantityDialog(cartItem);
+                              widget.paymentStore.clearPayments();
                             },
                             child: Text(
                               '${S.of(context).quantity}: ${cartItem.quantity.toStringAsFixed(decimalPlaces).replaceAll('.', ',')}',
@@ -200,7 +207,11 @@ class _CartPanelState extends State<CartPanel> {
                           ),
                           trailing: IconButton(
                             onPressed: () {
-                              widget.cartStore.removeProductById(cartItem.id);
+                              widget.cartStore.removeProductById(
+                                context,
+                                cartItem.id,
+                              );
+                              widget.paymentStore.clearPayments();
                             },
                             icon: Icon(FontAwesome.trash_empty),
                             color: Colors.red,
@@ -229,6 +240,9 @@ class _CartPanelState extends State<CartPanel> {
                         'Total: R\$${widget.cartStore.total.toStringAsFixed(2).replaceAll('.', ',')}',
                         overflow: TextOverflow.ellipsis,
                       ),
+                      subtitle: Text(
+                        'Restante: R\$${widget.cartStore.remaining.toStringAsFixed(2).replaceAll('.', ',')}',
+                      ),
                     ),
                   ],
                 ),
@@ -241,93 +255,50 @@ class _CartPanelState extends State<CartPanel> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      'Pagamento(s):',
-                      style: Theme.of(context).textTheme.titleLarge,
+                    Container(
+                      margin: const EdgeInsets.only(bottom: 12.0),
+                      child: Text(
+                        'Pagamento(s):',
+                        style: Theme.of(context).textTheme.titleLarge,
+                      ),
                     ),
                     Observer(
                       builder: (_) {
                         final payments = widget.paymentStore.payments;
-                        if (payments.isEmpty) {
-                          return Center(
-                            child: FilledButton(
-                              onPressed: () {
-                                showDialog(
-                                  context: context,
-                                  builder: (_) {
-                                    final paymentType =
-                                        widget.paymentStore.paymentType;
-                                    return AlertDialog(
-                                      title: Text('Forma de Pagamento'),
-                                      content: Form(
-                                        child: Column(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            DropdownButtonFormField(
-                                              decoration: InputDecoration(
-                                                labelText: 'Forma de Pagamento',
-                                                border: OutlineInputBorder(),
-                                              ),
-                                              initialValue: paymentType,
-                                              items: PaymentTypes.values
-                                                  .map(
-                                                    (payment) =>
-                                                        DropdownMenuItem<
-                                                          PaymentTypes
-                                                        >(
-                                                          value: payment,
-                                                          child: Text(
-                                                            payment.type,
-                                                          ),
-                                                        ),
-                                                  )
-                                                  .toList(),
-                                              onChanged: (newValue) {
-                                                if (newValue != null) {
-                                                  widget.paymentStore
-                                                      .setPaymentType(newValue);
-                                                }
-                                              },
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      actions: [
-                                        TextButton(
-                                          onPressed: () {
-                                            context.pop();
-                                          },
-                                          child: Text(S.of(context).cancel),
-                                        ),
-                                        TextButton(
-                                          onPressed: () async {
-                                            await widget.paymentStore.pay();
-                                            if (!context.mounted) return;
-                                            context.pop();
-                                          },
-                                          child: Text(S.of(context).confirm),
-                                        ),
-                                      ],
-                                    );
-                                  },
+                        final finishSale =
+                            widget.paymentStore.totalPayments ==
+                            widget.cartStore.total;
+                        return Column(
+                          children: [
+                            ListView.builder(
+                              shrinkWrap: true,
+                              physics: const NeverScrollableScrollPhysics(),
+                              itemCount: payments.length,
+                              itemBuilder: (_, index) {
+                                final payment = payments[index];
+                                return ListTile(
+                                  title: Text(
+                                    '${payment.type}: R\$${payment.value.replaceAll('.', ',')}',
+                                  ),
                                 );
                               },
-                              child: Text(S.of(context).add_payment),
                             ),
-                          );
-                        }
-                        return ListView.builder(
-                          shrinkWrap: true,
-                          physics: const NeverScrollableScrollPhysics(),
-                          itemCount: payments.length,
-                          itemBuilder: (_, index) {
-                            final payment = payments[index];
-                            return ListTile(
-                              title: Text(
-                                '${payment.type}: R\$${payment.value}',
+                            Center(
+                              child: FilledButton(
+                                onPressed: finishSale
+                                    ? null
+                                    : () {
+                                        paymentMethod(
+                                          context,
+                                          widget.paymentStore,
+                                          widget.cartStore,
+                                          _formPayKey,
+                                        );
+                                      },
+                                child: Text(S.of(context).add_payment),
                               ),
-                            );
-                          },
+                            ),
+                          ],
                         );
                       },
                     ),
@@ -336,14 +307,22 @@ class _CartPanelState extends State<CartPanel> {
               ),
             ),
             const Divider(height: 28.0),
-            FilledButton(
-              onPressed: () async {
-                final success = await _finalizeSale();
-                if (success) {
-                  widget.cartStore.clearCart();
-                }
+            Observer(
+              builder: (_) {
+                final finalize =
+                    widget.paymentStore.totalPayments == widget.cartStore.total;
+                return FilledButton(
+                  onPressed: finalize
+                      ? () async {
+                          final success = await _finalizeSale();
+                          if (success) {
+                            widget.cartStore.clearCart();
+                          }
+                        }
+                      : null,
+                  child: Text('Finalizar Pedido'),
+                );
               },
-              child: Text('Finalizar Pedido'),
             ),
           ],
         );
