@@ -79,6 +79,7 @@ class _StockCategoryPageState extends State<StockCategoryPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: Text(widget.title),
         actions: [

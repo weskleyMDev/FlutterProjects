@@ -60,6 +60,7 @@ class _LoginFormState extends State<LoginForm> {
                   key: const ValueKey('email'),
                   initialValue: _formData.email,
                   onChanged: (value) => _formData.email = value,
+                  keyboardType: TextInputType.emailAddress,
                   decoration: InputDecoration(
                     labelText: S.of(context).email,
                     border: OutlineInputBorder(),
@@ -83,6 +84,7 @@ class _LoginFormState extends State<LoginForm> {
                   key: const ValueKey('password'),
                   initialValue: _formData.password,
                   onChanged: (value) => _formData.password = value,
+                  keyboardType: TextInputType.visiblePassword,
                   obscureText: !_isVisible,
                   decoration: InputDecoration(
                     labelText: S.of(context).password,

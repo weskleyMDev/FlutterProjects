@@ -91,6 +91,7 @@ class _SalesHomePageState extends State<SalesHomePage> {
         }
       },
       child: Scaffold(
+        resizeToAvoidBottomInset: false,
         appBar: AppBar(
           title: Text(S.of(context).new_sale),
           actions: [
