@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:uuid/uuid.dart';
 
 import '../../models/payment.dart';
 import '../../models/sales_receipt.dart';
@@ -17,7 +18,7 @@ class FirebaseSalesService implements ISalesService {
         .snapshots();
     return snapshots.map(
       (snapshot) => snapshot.docs.map((doc) => doc.data()).toList(),
-    );
+    ).asBroadcastStream();
   }
 
   @override
@@ -26,25 +27,25 @@ class FirebaseSalesService implements ISalesService {
   }
 
   @override
-  Future<SalesReceipt?> createReceipt({
+  Future<SalesReceipt> createReceipt({
     required CartStore cart,
     required List<Payment> payments,
   }) async {
     final SalesReceipt newReceipt = SalesReceipt(
-      id: '',
-      total: cart.total.toString(),
+      id: Uuid().v4(),
+      total: cart.total.toStringAsFixed(2),
       cart: cart.cartList,
       createAt: DateTime.now(),
       payments: payments,
     );
 
-    final docRef = await _firestore
+    await _firestore
         .collection('sales')
+        .doc(newReceipt.id)
         .withConverter(fromFirestore: _fromFirestore, toFirestore: _toFirestore)
-        .add(newReceipt);
-    final doc = await docRef.get();
+        .set(newReceipt);
 
-    return doc.data();
+    return newReceipt;
   }
 
   Map<String, dynamic> _toFirestore(

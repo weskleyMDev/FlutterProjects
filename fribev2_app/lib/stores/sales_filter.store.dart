@@ -26,16 +26,19 @@ abstract class SalesFilterStoreBase with Store {
   String get totalOfDay => _totalOfDay;
 
   @computed
-  List<String> get sortedKeys {
-    _sortedKeys.clear();
-    _sortedKeys.addAll(
-      _groupedSales.keys.toList()..sort(
-        (a, b) => DateFormat(
-          'dd/MM/yyyy',
-        ).parse(b).compareTo(DateFormat('dd/MM/yyyy').parse(a)),
-      ),
-    );
-    return _sortedKeys;
+  List<String> get sortedKeys => List.unmodifiable(_sortedKeys);
+
+  @action
+  void _updateSortedKeys() {
+    final keys = _groupedSales.keys.toList();
+    keys.sort((a, b) {
+      final dateA = DateFormat('dd/MM/yyyy').parse(a);
+      final dateB = DateFormat('dd/MM/yyyy').parse(b);
+      return dateB.compareTo(dateA);
+    });
+    _sortedKeys
+      ..clear()
+      ..addAll(keys);
   }
 
   @action
@@ -48,6 +51,7 @@ abstract class SalesFilterStoreBase with Store {
       }
       _groupedSales[dateKey]!.add(sale);
     }
+    _updateSortedKeys();
   }
 
   @action

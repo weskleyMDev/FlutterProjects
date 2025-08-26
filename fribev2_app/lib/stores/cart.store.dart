@@ -30,7 +30,7 @@ abstract class CartStoreBase with Store {
   /*==================================COMPUTED================================*/
 
   @computed
-  ObservableList<CartItem> get cartList => _cartList;
+  List<CartItem> get cartList => _cartList;
 
   @computed
   double get total => _total;

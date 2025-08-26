@@ -4,7 +4,7 @@ import '../../stores/cart.store.dart';
 
 abstract class ISalesService {
   Stream<List<SalesReceipt>> getReceipts();
-  Future<SalesReceipt?> createReceipt({
+  Future<SalesReceipt> createReceipt({
     required CartStore cart,
     required List<Payment> payments,
   });

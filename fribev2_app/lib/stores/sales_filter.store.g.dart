@@ -93,6 +93,18 @@ mixin _$SalesFilterStore on SalesFilterStoreBase, Store {
   );
 
   @override
+  void _updateSortedKeys() {
+    final _$actionInfo = _$SalesFilterStoreBaseActionController.startAction(
+      name: 'SalesFilterStoreBase._updateSortedKeys',
+    );
+    try {
+      return super._updateSortedKeys();
+    } finally {
+      _$SalesFilterStoreBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   void setGroupedSales(List<SalesReceipt> sales) {
     final _$actionInfo = _$SalesFilterStoreBaseActionController.startAction(
       name: 'SalesFilterStoreBase.setGroupedSales',

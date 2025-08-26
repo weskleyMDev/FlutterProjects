@@ -26,7 +26,7 @@ abstract class PaymentStoreBase with Store {
   PaymentTypes? _paymentType;
 
   @observable
-  String _paymentValue = '';
+  String _paymentValue = '0';
 
   @computed
   List<Payment> get payments => List.unmodifiable(_payments);
@@ -74,7 +74,7 @@ abstract class PaymentStoreBase with Store {
   @action
   void clearPaymentFields() {
     _paymentType = null;
-    _paymentValue = '';
+    _paymentValue = '0';
   }
 
   @action

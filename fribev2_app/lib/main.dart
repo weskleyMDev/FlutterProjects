@@ -37,7 +37,7 @@ class MyApp extends StatelessWidget {
         Provider(create: (_) => AuthStore(authService: FirebaseAuthService())),
         Provider(create: (_) => StockStore(FirebaseStockService())),
         Provider(
-          create: (_) => SalesStore(salesService: FirebaseSalesService()),
+          create: (_) => SalesStore(FirebaseSalesService()),
         ),
         Provider(create: (_) => CartStore()),
         Provider(create: (_) => SalesFilterStore()),

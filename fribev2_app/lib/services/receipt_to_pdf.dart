@@ -65,9 +65,9 @@ class ReceiptGenerator {
                                 pw.Text(
                                   '${item.product?.name ?? ''} x${item.quantity.toString().replaceAll('.', ',')}',
                                 ),
-                                // pw.Text(
-                                //   'R\$ ${item.subtotal.replaceAll('.', ',')}',
-                                // ),
+                                pw.Text(
+                                  'R\$ ${item.subtotal.toStringAsFixed(2).replaceAll('.', ',')}',
+                                ),
                               ],
                             );
                           },
@@ -77,7 +77,7 @@ class ReceiptGenerator {
                           mainAxisAlignment: pw.MainAxisAlignment.end,
                           children: [
                             pw.Text(
-                              'Total: R\$ ${receipt?.total.replaceAll('.', ',')}',
+                              'Total: R\$ ${double.parse(receipt!.total).toStringAsFixed(2).replaceAll('.', ',')}',
                               style: pw.TextStyle(
                                 fontSize: 14.0,
                                 fontWeight: pw.FontWeight.bold,
@@ -91,11 +91,11 @@ class ReceiptGenerator {
                   pw.Text('-' * 80),
                   pw.SizedBox(height: 20),
                   pw.ListView.builder(
-                    itemCount: receipt?.payments.length ?? 0,
+                    itemCount: receipt.payments.length,
                     itemBuilder: (context, index) {
-                      final payment = receipt?.payments[index];
-                      final String type = payment?.type ?? 'Unknown';
-                      final String value = payment?.value ?? '0';
+                      final payment = receipt.payments[index];
+                      final String type = payment.type;
+                      final String value = payment.value;
                       return pw.Row(
                         children: [
                           pw.Text(

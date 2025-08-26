@@ -1,6 +1,12 @@
+import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:fluttericon/font_awesome5_icons.dart';
+import 'package:fribev2_app/models/sales_receipt.dart';
+import 'package:fribev2_app/utils/capitalize_text.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
+import 'package:mobx/mobx.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -15,8 +21,45 @@ class ReceiptHomePage extends StatefulWidget {
 }
 
 class _ReceiptHomePageState extends State<ReceiptHomePage> {
+  late final SalesStore _salesStore;
+  late final SalesFilterStore _salesFilterStore;
+  late ReactionDisposer _receiptDisposer;
+  late ReactionDisposer _productDisposer;
+
+  @override
+  void initState() {
+    super.initState();
+    _salesStore = context.read<SalesStore>()..fetchReceipts();
+    _salesFilterStore = context.read<SalesFilterStore>();
+    _receiptDisposer = autorun((_) {
+      final receipts = _salesStore.receipts;
+      _salesFilterStore.setGroupedSales(receipts);
+    });
+    _productDisposer = reaction<List<SalesReceipt>>(
+      (_) => _salesStore.receipts,
+      (receipts) {
+        for (var receipt in receipts) {
+          if (!_salesStore.receiptProducts.containsKey(receipt.id)) {
+            _salesStore.fetchProductForReceipt(
+              context,
+              receipt.cart,
+              receipt.id,
+            );
+          }
+        }
+      },
+    );
+  }
+
+  @override
+  void dispose() {
+    _receiptDisposer();
+    _productDisposer();
+    super.dispose();
+  }
+
   String _clientData = '';
-  bool isEmail = false;
+  bool _isEmail = false;
 
   Future<void> _launchPhoneURL(String url, String path) async {
     if (await canLaunchUrl(Uri.https(url, path))) {
@@ -44,12 +87,12 @@ class _ReceiptHomePageState extends State<ReceiptHomePage> {
       barrierDismissible: false,
       builder: (context) {
         return AlertDialog(
-          title: Text(isEmail ? 'Email' : 'Número de Telefone'),
+          title: Text(_isEmail ? 'Email' : 'Número de Telefone'),
           content: TextField(
             autofocus: true,
             keyboardType: TextInputType.phone,
             decoration: InputDecoration(
-              label: Text(isEmail ? 'Email' : 'Número'),
+              label: Text(_isEmail ? 'Email' : 'Número'),
               border: OutlineInputBorder(),
             ),
             onChanged: (value) {
@@ -75,18 +118,13 @@ class _ReceiptHomePageState extends State<ReceiptHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    final salesStore = Provider.of<SalesStore>(context, listen: false);
-    final salesFilterStore = Provider.of<SalesFilterStore>(
-      context,
-      listen: false,
-    );
     return Scaffold(
       appBar: AppBar(
         title: Text('Recibos'),
         actions: [
           IconButton(
             onPressed: () async {
-              setState(() => isEmail = false);
+              setState(() => _isEmail = false);
               final confirm = await _showPhoneDialog(context);
               if (confirm == true) {
                 _launchPhoneURL('wa.me', '/+55$_clientData');
@@ -100,7 +138,7 @@ class _ReceiptHomePageState extends State<ReceiptHomePage> {
             margin: const EdgeInsets.only(right: 10.0),
             child: IconButton(
               onPressed: () async {
-                setState(() => isEmail = true);
+                setState(() => _isEmail = true);
                 final confirm = await _showPhoneDialog(context);
                 if (confirm == true) {
                   _launchEmailURL('mail.google.com', '/mail', {
@@ -120,59 +158,108 @@ class _ReceiptHomePageState extends State<ReceiptHomePage> {
           ),
         ],
       ),
-      body: FutureBuilder(
-        future: salesStore.fetchReceipts(),
-        builder: (context, asyncSnapshot) {
-          return StreamBuilder(
-            stream: salesStore.allReceipts,
-            builder: (context, snapshot) {
-              switch (snapshot.connectionState) {
-                case ConnectionState.none:
-                case ConnectionState.waiting:
-                  return const Center(child: CircularProgressIndicator());
-                default:
-                  if (snapshot.hasError) {
-                    return const Center(child: Text('Erro ao buscar dados.'));
-                  } else {
-                    final receipts = snapshot.data ?? [];
-                    if (receipts.isEmpty) {
-                      return const Center(
-                        child: Text('Nenhum recibo encontrado.'),
-                      );
-                    }
-                    salesFilterStore.setGroupedSales(receipts);
-                    return ListView.builder(
-                      itemCount: salesFilterStore.sortedKeys.length,
-                      itemBuilder: (context, index) {
-                        final dateKey = salesFilterStore.sortedKeys[index];
-                        final salesDay =
-                            salesFilterStore.groupedSales[dateKey] ?? [];
-                        salesFilterStore.setTotalOfDay(salesDay);
-                        final totalDay = salesFilterStore.totalOfDay;
-                        return ExpansionTile(
-                          title: Text(
-                            '$dateKey - R\$ ${totalDay.replaceAll('.', ',')}',
+      body: Observer(
+        builder: (_) {
+          final locale = Localizations.localeOf(context).languageCode;
+          final currency = NumberFormat.simpleCurrency(locale: locale);
+          final measure = NumberFormat.compact(locale: locale);
+          final status = _salesStore.receiptStreamStatus;
+          if (status == StreamStatus.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          }
+          final receipts = _salesStore.receipts;
+          if (receipts.isEmpty) {
+            return const Center(child: Text('Nenhum recibo encontrado.'));
+          }
+          return ListView.builder(
+            itemCount: _salesFilterStore.sortedKeys.length,
+            itemBuilder: (_, index) {
+              final dateKey = _salesFilterStore.sortedKeys[index];
+              final salesDay = _salesFilterStore.groupedSales[dateKey] ?? [];
+              final totalDay = salesDay
+                  .fold<Decimal>(
+                    Decimal.zero,
+                    (sum, doc) => sum + Decimal.parse(doc.total),
+                  )
+                  .round(scale: 2)
+                  .toStringAsFixed(2);
+              return ExpansionTile(
+                title: Text(
+                  '$dateKey - ${currency.format(double.parse(totalDay))}',
+                  overflow: TextOverflow.ellipsis,
+                ),
+                children: [
+                  ...salesDay.map((sales) {
+                    final date = DateFormat.yMMMMEEEEd(
+                      locale,
+                    ).add_Hm().format(sales.createAt);
+                    return Column(
+                      children: [
+                        const Divider(),
+                        ListTile(
+                          title: SelectableText('Recibo: ${sales.id}'),
+                          subtitle: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                date.capitalize(),
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                              Text(
+                                'Total: ${currency.format(double.parse(sales.total))}',
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                              Observer(
+                                builder: (_) {
+                                  final cartProducts =
+                                      _salesStore.receiptProducts[sales.id] ??
+                                      [];
+                                  if (cartProducts.isEmpty) {
+                                    return const SizedBox.shrink();
+                                  }
+                                  return ListView.separated(
+                                    shrinkWrap: true,
+                                    physics:
+                                        const NeverScrollableScrollPhysics(),
+                                    itemCount: cartProducts.length,
+                                    separatorBuilder: (_, _) => const Divider(
+                                      height: 1,
+                                      thickness: 0.5,
+                                    ),
+                                    itemBuilder: (_, i) {
+                                      final cartProduct = cartProducts[i];
+                                      final productName = cartProduct
+                                          .product
+                                          .name
+                                          .capitalize();
+                                      final productQuantity = measure.format(
+                                        cartProduct.quantity,
+                                      );
+                                      final productSubtotal = currency.format(
+                                        cartProduct.subtotal,
+                                      );
+                                      return ListTile(
+                                        title: Text(
+                                          '$productName x$productQuantity',
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                        subtitle: Text(
+                                          productSubtotal,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      );
+                                    },
+                                  );
+                                },
+                              ),
+                            ],
                           ),
-                          children: [
-                            ListView.builder(
-                              shrinkWrap: true,
-                              itemCount: salesDay.length,
-                              itemBuilder: (context, index) {
-                                final sales = salesDay[index];
-                                return ListTile(
-                                  title: SelectableText('Recibo: #${sales.id}'),
-                                  subtitle: Text(
-                                    'Total: R\$ ${sales.total.replaceAll('.', ',')}',
-                                  ),
-                                );
-                              },
-                            ),
-                          ],
-                        );
-                      },
+                        ),
+                      ],
                     );
-                  }
-              }
+                  }),
+                ],
+              );
             },
           );
         },

@@ -4,8 +4,10 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:fluttericon/font_awesome_icons.dart';
 import 'package:fribev2_app/generated/l10n.dart';
 import 'package:fribev2_app/models/cart_item.dart';
+import 'package:fribev2_app/services/receipt_to_pdf.dart';
 import 'package:fribev2_app/stores/cart.store.dart';
 import 'package:fribev2_app/stores/payment.store.dart';
+import 'package:fribev2_app/stores/sales.store.dart';
 import 'package:fribev2_app/stores/stock.store.dart';
 import 'package:fribev2_app/utils/dialogs.dart';
 import 'package:go_router/go_router.dart';
@@ -16,11 +18,13 @@ class CartPanel extends StatefulWidget {
     required this.cartStore,
     required this.stockStore,
     required this.paymentStore,
+    required this.salesStore,
   });
 
   final CartStore cartStore;
   final StockStore stockStore;
   final PaymentStore paymentStore;
+  final SalesStore salesStore;
 
   @override
   State<CartPanel> createState() => _CartPanelState();
@@ -151,13 +155,18 @@ class _CartPanelState extends State<CartPanel> {
       final newQuantity =
           (Decimal.parse(product.amount) -
                   Decimal.parse(cartItem.quantity.toString()))
-              .round(scale: 2)
               .toDouble();
       await widget.stockStore.updateQuantityById(
         id: product.id,
         quantity: newQuantity.toString(),
       );
     }
+    final receipt = await widget.salesStore.createReceipt(
+      cart: widget.cartStore,
+      payments: widget.paymentStore.payments,
+    );
+
+    await ReceiptGenerator().generateReceipt(receipt: receipt);
     return true;
   }
 
@@ -316,7 +325,10 @@ class _CartPanelState extends State<CartPanel> {
                       ? () async {
                           final success = await _finalizeSale();
                           if (success) {
-                            widget.cartStore.clearCart();
+                            widget.cartStore.clearCartStore();
+                            widget.paymentStore.clearPaymentStore();
+                            if (!context.mounted) return;
+                            context.pop();
                           }
                         }
                       : null,
