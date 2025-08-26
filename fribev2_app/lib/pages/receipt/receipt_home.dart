@@ -196,64 +196,70 @@ class _ReceiptHomePageState extends State<ReceiptHomePage> {
                     ).add_Hm().format(sales.createAt);
                     return Column(
                       children: [
-                        const Divider(),
-                        ListTile(
-                          title: SelectableText('Recibo: ${sales.id}'),
-                          subtitle: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                date.capitalize(),
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                              Text(
-                                'Total: ${currency.format(double.parse(sales.total))}',
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                              Observer(
-                                builder: (_) {
-                                  final cartProducts =
-                                      _salesStore.receiptProducts[sales.id] ??
-                                      [];
-                                  if (cartProducts.isEmpty) {
-                                    return const SizedBox.shrink();
-                                  }
-                                  return ListView.separated(
-                                    shrinkWrap: true,
-                                    physics:
-                                        const NeverScrollableScrollPhysics(),
-                                    itemCount: cartProducts.length,
-                                    separatorBuilder: (_, _) => const Divider(
-                                      height: 1,
-                                      thickness: 0.5,
-                                    ),
-                                    itemBuilder: (_, i) {
-                                      final cartProduct = cartProducts[i];
-                                      final productName = cartProduct
-                                          .product
-                                          .name
-                                          .capitalize();
-                                      final productQuantity = measure.format(
-                                        cartProduct.quantity,
-                                      );
-                                      final productSubtotal = currency.format(
-                                        cartProduct.subtotal,
-                                      );
-                                      return ListTile(
-                                        title: Text(
-                                          '$productName x$productQuantity',
-                                          overflow: TextOverflow.ellipsis,
-                                        ),
-                                        subtitle: Text(
-                                          productSubtotal,
-                                          overflow: TextOverflow.ellipsis,
-                                        ),
-                                      );
-                                    },
-                                  );
-                                },
-                              ),
-                            ],
+                        Card(
+                          margin: const EdgeInsets.only(
+                            left: 10.0,
+                            right: 10.0,
+                            bottom: 8.0,
+                          ),
+                          child: ListTile(
+                            title: SelectableText('Recibo: ${sales.id}'),
+                            subtitle: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  date.capitalize(),
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                                Text(
+                                  'Total: ${currency.format(double.parse(sales.total))}',
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                                Observer(
+                                  builder: (_) {
+                                    final cartProducts =
+                                        _salesStore.receiptProducts[sales.id] ??
+                                        [];
+                                    if (cartProducts.isEmpty) {
+                                      return const SizedBox.shrink();
+                                    }
+                                    return ListView.separated(
+                                      shrinkWrap: true,
+                                      physics:
+                                          const NeverScrollableScrollPhysics(),
+                                      itemCount: cartProducts.length,
+                                      separatorBuilder: (_, _) => const Divider(
+                                        height: 1,
+                                        thickness: 0.5,
+                                      ),
+                                      itemBuilder: (_, i) {
+                                        final cartProduct = cartProducts[i];
+                                        final productName = cartProduct
+                                            .product
+                                            .name
+                                            .capitalize();
+                                        final productQuantity = measure.format(
+                                          cartProduct.quantity,
+                                        );
+                                        final productSubtotal = currency.format(
+                                          cartProduct.subtotal,
+                                        );
+                                        return ListTile(
+                                          title: Text(
+                                            '$productName x$productQuantity',
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                          subtitle: Text(
+                                            productSubtotal,
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                        );
+                                      },
+                                    );
+                                  },
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       ],
