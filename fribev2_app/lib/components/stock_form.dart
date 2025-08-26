@@ -63,7 +63,7 @@ class _StockFormState extends State<StockForm> {
     super.dispose();
   }
 
-  void _clearFFields() {
+  void _clearFields() {
     _nameController.clear();
     _amountController.clear();
     _priceController.clear();
@@ -96,7 +96,7 @@ class _StockFormState extends State<StockForm> {
         await widget.onSubmit!(_formData);
       }
       _formKey.currentState?.reset();
-      _clearFFields();
+      _clearFields();
       _showSnackbar(
         widget.product == null
             ? 'Produto salvo com sucesso!'

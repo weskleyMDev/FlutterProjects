@@ -55,6 +55,7 @@ class _ReceiptHomePageState extends State<ReceiptHomePage> {
   void dispose() {
     _receiptDisposer();
     _productDisposer();
+    _salesStore.clearSaleStore();
     super.dispose();
   }
 

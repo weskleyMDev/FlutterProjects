@@ -102,4 +102,12 @@ abstract class SalesStoreBase with Store {
   Future<void> deleteReceiptById({required SalesReceipt receipt}) async {
     await _salesService.deleteReceiptById(receipt: receipt);
   }
+
+  @action
+  Future<void> clearSaleStore() async {
+    await _subscription?.cancel();
+    _receiptProducts.clear();
+    _receipts.clear();
+    print('CLEAR SALE STORE CALLED!!');
+  }
 }

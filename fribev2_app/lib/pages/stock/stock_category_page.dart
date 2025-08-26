@@ -2,12 +2,14 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:fluttericon/font_awesome5_icons.dart';
+import 'package:fribev2_app/components/category_list.dart';
+import 'package:fribev2_app/components/search_bar.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import '../../stores/stock.store.dart';
 
-class StockCategoryPage extends StatelessWidget {
+class StockCategoryPage extends StatefulWidget {
   const StockCategoryPage({
     super.key,
     required this.title,
@@ -17,30 +19,52 @@ class StockCategoryPage extends StatelessWidget {
   final String title;
   final String category;
 
-  Future<bool?> _showConfirmDialog(BuildContext context) {
-    return showDialog<bool>(
-      context: context,
-      barrierDismissible: false,
-      builder: (context) {
-        return AlertDialog(
-          title: const Text('Confirmação'),
-          content: const Text(
-            'Você tem certeza que deseja remover todos os produtos desta categoria?',
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(false),
-              child: const Text('Cancelar'),
-            ),
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(true),
-              child: const Text('Confirmar'),
-            ),
-          ],
-        );
-      },
-    );
+  @override
+  State<StockCategoryPage> createState() => _StockCategoryPageState();
+}
+
+class _StockCategoryPageState extends State<StockCategoryPage> {
+  late final StockStore _stockStore;
+  late final TextEditingController _searchController;
+
+  @override
+  void initState() {
+    super.initState();
+    _stockStore = context.read<StockStore>()
+      ..fetchData(category: widget.category);
+    _searchController = TextEditingController();
   }
+
+  @override
+  void dispose() {
+    _stockStore.disposeStock();
+    super.dispose();
+  }
+
+  // Future<bool?> _showConfirmDialog(BuildContext context) {
+  //   return showDialog<bool>(
+  //     context: context,
+  //     barrierDismissible: false,
+  //     builder: (context) {
+  //       return AlertDialog(
+  //         title: const Text('Confirmação'),
+  //         content: const Text(
+  //           'Você tem certeza que deseja remover todos os produtos desta categoria?',
+  //         ),
+  //         actions: [
+  //           TextButton(
+  //             onPressed: () => Navigator.of(context).pop(false),
+  //             child: const Text('Cancelar'),
+  //           ),
+  //           TextButton(
+  //             onPressed: () => Navigator.of(context).pop(true),
+  //             child: const Text('Confirmar'),
+  //           ),
+  //         ],
+  //       );
+  //     },
+  //   );
+  // }
 
   void _openSysCalculator() {
     if (Platform.isWindows) {
@@ -54,10 +78,9 @@ class StockCategoryPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final stockStore = Provider.of<StockStore>(context, listen: false);
     return Scaffold(
       appBar: AppBar(
-        title: Text(title),
+        title: Text(widget.title),
         actions: [
           if (Platform.isWindows)
             Container(
@@ -82,18 +105,22 @@ class StockCategoryPage extends StatelessWidget {
           ),
         ],
       ),
-      //body: StockList(stockStore: stockStore, cartStore: ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () async {
-          final confirm = await _showConfirmDialog(context);
-          if (confirm == true) {
-            stockStore.removeAllByCategory(category: category);
-          }
-        },
-        label: Text('REMOVER TUDO'),
-        icon: Icon(Icons.delete_forever_outlined),
-        extendedPadding: EdgeInsets.symmetric(horizontal: 12.0),
+      body: CategoryList(stockStore: _stockStore),
+      bottomNavigationBar: CustomSearchBar(
+        searchController: _searchController,
+        stockStore: _stockStore,
       ),
+      // floatingActionButton: FloatingActionButton.extended(
+      //   onPressed: () async {
+      //     final confirm = await _showConfirmDialog(context);
+      //     if (confirm == true) {
+      //       stockStore.removeAllByCategory(category: widget.category);
+      //     }
+      //   },
+      //   label: Text('REMOVER TUDO'),
+      //   icon: Icon(Icons.delete_forever_outlined),
+      //   extendedPadding: EdgeInsets.symmetric(horizontal: 12.0),
+      // ),
     );
   }
 }

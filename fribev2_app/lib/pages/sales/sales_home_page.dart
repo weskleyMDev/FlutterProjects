@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:fluttericon/font_awesome5_icons.dart';
+import 'package:fribev2_app/components/search_bar.dart';
 import 'package:fribev2_app/components/stock_list.dart';
 import 'package:fribev2_app/generated/l10n.dart';
 import 'package:fribev2_app/stores/cart.store.dart';
@@ -116,25 +117,10 @@ class _SalesHomePageState extends State<SalesHomePage> {
           centerTitle: true,
         ),
         body: StockList(stockStore: _stockStore, cartStore: _cartStore),
-        bottomNavigationBar: BottomAppBar(
-          child: Container(
-            margin: const EdgeInsets.only(left: 4.0, right: 4.0, bottom: 8.0),
-            child: TextField(
-              key: const ValueKey('search_sale'),
-              controller: _searchController,
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                label: Text(
-                  S.of(context).search,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                prefixIcon: Icon(Icons.search),
-              ),
-              onChanged: (value) => _stockStore.searchQuery = value,
-            ),
-          ),
-        ),
+        bottomNavigationBar: CustomSearchBar(searchController: _searchController, stockStore: _stockStore),
       ),
     );
   }
 }
+
+

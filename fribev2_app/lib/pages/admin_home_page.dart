@@ -46,6 +46,15 @@ class AdminHomePage extends StatelessWidget {
             ),
             child: Text(S.of(context).receipts),
           ),
+          ElevatedButton(
+            onPressed: () => context.pushNamed('sales-home'),
+            style: ElevatedButton.styleFrom(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(15.0),
+              ),
+            ),
+            child: Text(S.of(context).sales),
+          ),
         ],
       ),
     );

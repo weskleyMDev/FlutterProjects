@@ -141,6 +141,16 @@ mixin _$SalesStore on SalesStoreBase, Store {
     );
   }
 
+  late final _$clearSaleStoreAsyncAction = AsyncAction(
+    'SalesStoreBase.clearSaleStore',
+    context: context,
+  );
+
+  @override
+  Future<void> clearSaleStore() {
+    return _$clearSaleStoreAsyncAction.run(() => super.clearSaleStore());
+  }
+
   @override
   String toString() {
     return '''
