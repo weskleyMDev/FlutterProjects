@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "112817562874",
+    "project_id": "todo-bloc-7afd2",
+    "storage_bucket": "todo-bloc-7afd2.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:112817562874:android:3daeece86cb4eeab861543",
+        "android_client_info": {
+          "package_name": "br.com.weskleym.formbloc.form_bloc"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAlPXMWU4Wm28id0dLeVeYgMjh6s-72Yco"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:112817562874:android:488e4efcc06b9fcf861543",
+        "android_client_info": {
+          "package_name": "br.com.weskleym.todo.todo"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAlPXMWU4Wm28id0dLeVeYgMjh6s-72Yco"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
