@@ -2,12 +2,15 @@ import 'package:form_bloc/models/report_model.dart';
 
 sealed class ReportEvent {}
 
-final class FetchReportsEvent extends ReportEvent {}
+final class SetTextEvent extends ReportEvent {
+  final String text;
 
-final class AddReportEvent extends ReportEvent {
-  final ReportModel report;
+  SetTextEvent({required this.text});
+}
 
-  AddReportEvent({required this.report});
+final class SaveReportEvent extends ReportEvent {
+  final String userId;
+  SaveReportEvent(this.userId);
 }
 
 final class RemoveReportEvent extends ReportEvent {
@@ -22,8 +25,6 @@ final class UpdateReportEvent extends ReportEvent {
   UpdateReportEvent({required this.report});
 }
 
-final class RefreshReportsEvent extends ReportEvent {
-  final List<ReportModel> reports;
+final class StartReportsStreamEvent extends ReportEvent {}
 
-  RefreshReportsEvent({required this.reports});
-}
+final class ClearFields extends ReportEvent {}

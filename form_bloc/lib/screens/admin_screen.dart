@@ -2,9 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:form_bloc/blocs/auth/auth_bloc.dart';
 import 'package:form_bloc/blocs/auth/auth_event.dart';
+import 'package:form_bloc/models/app_user.dart';
+import 'package:go_router/go_router.dart';
 
 class AdminScreen extends StatefulWidget {
-  const AdminScreen({super.key});
+  const AdminScreen({super.key, required this.user});
+
+  final AppUser user;
 
   @override
   State<AdminScreen> createState() => _AdminScreenState();
@@ -28,7 +32,11 @@ class _AdminScreenState extends State<AdminScreen> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: FilledButton(onPressed: () {}, child: Text('New Report')),
+        child: FilledButton(
+          onPressed: () =>
+              context.pushNamed('report-screen', extra: widget.user.id),
+          child: Text('New Report'),
+        ),
       ),
     );
   }

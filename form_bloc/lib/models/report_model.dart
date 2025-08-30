@@ -1,35 +1,39 @@
 import 'dart:convert';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:uuid/uuid.dart';
 
-class ReportModel {
+final class ReportModel {
   final String id;
-  final num total;
-  final DateTime createdAt;
+  final String text;
+  final String userId;
 
-  ReportModel({required this.id, required this.total, required this.createdAt});
+  const ReportModel._({
+    required this.id,
+    required this.text,
+    required this.userId,
+  });
 
-  ReportModel copyWith({String? id, num? total, DateTime? createdAt}) {
-    return ReportModel(
-      id: id ?? this.id,
-      total: total ?? this.total,
-      createdAt: createdAt ?? this.createdAt,
+  factory ReportModel.local() {
+    return ReportModel._(id: Uuid().v4(), text: '', userId: '');
+  }
+
+  ReportModel copyWith({String? text, String? userId}) {
+    return ReportModel._(
+      id: id,
+      text: text ?? this.text,
+      userId: userId ?? this.userId,
     );
   }
 
   Map<String, dynamic> toMap() {
-    return <String, dynamic>{
-      'id': id,
-      'total': total,
-      'createdAt': Timestamp.fromDate(createdAt),
-    };
+    return <String, dynamic>{'id': id, 'text': text, 'userId': userId};
   }
 
   factory ReportModel.fromMap(Map<String, dynamic> map) {
-    return ReportModel(
+    return ReportModel._(
       id: map['id'] as String,
-      total: map['total'] as num,
-      createdAt: (map['createdAt'] as Timestamp).toDate(),
+      text: map['text'] as String,
+      userId: map['userId'] as String,
     );
   }
 
@@ -39,18 +43,15 @@ class ReportModel {
       ReportModel.fromMap(json.decode(source) as Map<String, dynamic>);
 
   @override
-  String toString() =>
-      'ReportModel(id: $id, total: $total, createdAt: $createdAt)';
+  String toString() => 'ReportModel(id: $id, text: $text, userId: $userId)';
 
   @override
   bool operator ==(covariant ReportModel other) {
     if (identical(this, other)) return true;
 
-    return other.id == id &&
-        other.total == total &&
-        other.createdAt == createdAt;
+    return other.id == id && other.text == text && other.userId == userId;
   }
 
   @override
-  int get hashCode => id.hashCode ^ total.hashCode ^ createdAt.hashCode;
+  int get hashCode => id.hashCode ^ text.hashCode ^ userId.hashCode;
 }

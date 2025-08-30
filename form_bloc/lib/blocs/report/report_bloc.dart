@@ -1,49 +1,82 @@
 import 'dart:async';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:form_bloc/blocs/report/report_event.dart';
 import 'package:form_bloc/blocs/report/report_state.dart';
+import 'package:form_bloc/models/report_model.dart';
+import 'package:form_bloc/repositories/report/ireport_repository.dart';
 
 final class ReportBloc extends Bloc<ReportEvent, ReportState> {
-  StreamSubscription? _subscription;
-  ReportBloc() : super(ReportInitialState()) {
-    on<FetchReportsEvent>(_onFetchReports);
-    on<AddReportEvent>(_onAddReport);
-    on<RemoveReportEvent>(_onRemoveReport);
-    on<UpdateReportEvent>(_onUpdateReport);
-    on<RefreshReportsEvent>(_onRefreshReports);
+  final IReportRepository _reportRepository;
+  ReportBloc(this._reportRepository) : super(ReportState.local()) {
+    on<SetTextEvent>(_onSetTextEvent);
+    on<SaveReportEvent>(_onSaveReportEvent);
+    on<RemoveReportEvent>(_onRemoveReportEvent);
+    on<StartReportsStreamEvent>(_onStartReportsStreamEvent);
   }
 
-  FutureOr<void> _onFetchReports(
-    FetchReportsEvent event,
-    Emitter<ReportState> emit,
-  ) {}
-
-  FutureOr<void> _onAddReport(
-    AddReportEvent event,
-    Emitter<ReportState> emit,
-  ) {}
-
-  FutureOr<void> _onRemoveReport(
-    RemoveReportEvent event,
-    Emitter<ReportState> emit,
-  ) {}
-
-  FutureOr<void> _onUpdateReport(
-    UpdateReportEvent event,
-    Emitter<ReportState> emit,
-  ) {}
-
-  FutureOr<void> _onRefreshReports(
-    RefreshReportsEvent event,
+  FutureOr<void> _onSetTextEvent(
+    SetTextEvent event,
     Emitter<ReportState> emit,
   ) {
-    emit(ReportLoadedState(reports: event.reports));
+    emit(state.copyWith(text: event.text));
   }
 
-  @override
-  Future<void> close() async {
-    await _subscription?.cancel();
-    return super.close();
+  FutureOr<void> _onSaveReportEvent(
+    SaveReportEvent event,
+    Emitter<ReportState> emit,
+  ) async {
+    try {
+      final text = state.text;
+      if (text.isEmpty) return;
+      final report = ReportModel.local().copyWith(
+        text: text,
+        userId: event.userId,
+      );
+      emit(state.copyWith(status: ReportStatus.waiting));
+      await _reportRepository.addReport(report);
+      emit(state.copyWith(status: ReportStatus.success, text: ''));
+    } catch (e) {
+      emit(
+        state.copyWith(
+          status: ReportStatus.error,
+          error: e is FirebaseException
+              ? e.message
+              : 'Erro ao salvar relatório',
+        ),
+      );
+    }
+  }
+
+  FutureOr<void> _onStartReportsStreamEvent(
+    StartReportsStreamEvent event,
+    Emitter<ReportState> emit,
+  ) async {
+    await emit.forEach<List<ReportModel>>(
+      _reportRepository.getReports(),
+      onData: (reports) => state.copyWith(reports: reports),
+      onError: (_, _) => state.copyWith(error: 'Erro ao carregar relatórios'),
+    );
+  }
+
+  Future<void> _onRemoveReportEvent(
+    RemoveReportEvent event,
+    Emitter<ReportState> emit,
+  ) async {
+    try {
+      emit(state.copyWith(status: ReportStatus.waiting));
+      await _reportRepository.removeReport(event.report);
+      emit(state.copyWith(status: ReportStatus.success));
+    } catch (e) {
+      emit(
+        state.copyWith(
+          status: ReportStatus.error,
+          error: e is FirebaseException
+              ? e.message
+              : 'Erro ao remover relatório',
+        ),
+      );
+    }
   }
 }

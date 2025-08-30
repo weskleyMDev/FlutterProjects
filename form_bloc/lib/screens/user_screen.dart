@@ -2,9 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:form_bloc/blocs/auth/auth_bloc.dart';
 import 'package:form_bloc/blocs/auth/auth_event.dart';
+import 'package:form_bloc/models/app_user.dart';
+import 'package:go_router/go_router.dart';
 
 class UserScreen extends StatefulWidget {
-  const UserScreen({super.key});
+  const UserScreen({super.key, required this.user});
+
+  final AppUser user;
 
   @override
   State<UserScreen> createState() => _UserScreenState();
@@ -24,6 +28,14 @@ class _UserScreenState extends State<UserScreen> {
             icon: Icon(Icons.logout),
           ),
         ],
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: FilledButton(
+          onPressed: () =>
+              context.pushNamed('report-screen', extra: widget.user.id),
+          child: Text('New Report'),
+        ),
       ),
     );
   }
