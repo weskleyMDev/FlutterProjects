@@ -14,6 +14,8 @@ final class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<SignInUserEvent>(_onSignIn);
     on<SignUpUserEvent>(_onSignUp);
     on<SignOutUserEvent>(_onSignOut);
+    on<SetPasswordEvent>(_onSetPasswordEvent);
+    on<SetEmailEvent>(_onSetEmailEvent);
   }
 
   FutureOr<void> _onSignIn(
@@ -63,7 +65,7 @@ final class AuthBloc extends Bloc<AuthEvent, AuthState> {
     try {
       emit(state.copyWith(status: AuthStatus.waiting));
       await _authService.signOut();
-      emit(state.copyWith(status: AuthStatus.success));
+      emit(AuthState.local());
     } catch (e) {
       emit(
         state.copyWith(
@@ -87,5 +89,19 @@ final class AuthBloc extends Bloc<AuthEvent, AuthState> {
         error: 'Erro ao recuperar usuário',
       ),
     );
+  }
+
+  FutureOr<void> _onSetEmailEvent(
+    SetEmailEvent event,
+    Emitter<AuthState> emit,
+  ) {
+    emit(state.copyWith(email: event.email));
+  }
+
+  FutureOr<void> _onSetPasswordEvent(
+    SetPasswordEvent event,
+    Emitter<AuthState> emit,
+  ) {
+    emit(state.copyWith(password: event.password));
   }
 }

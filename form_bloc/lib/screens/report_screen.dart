@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:form_bloc/blocs/auth/auth_bloc.dart';
 import 'package:form_bloc/blocs/report/report_bloc.dart';
 import 'package:form_bloc/blocs/report/report_event.dart';
 import 'package:form_bloc/blocs/report/report_state.dart';
@@ -40,7 +39,6 @@ class _ReportScreenState extends State<ReportScreen> {
   @override
   Widget build(BuildContext context) {
     final bloc = context.read<ReportBloc>();
-    final authBloc = context.read<AuthBloc>();
     return Scaffold(
       appBar: AppBar(title: const Text('Reports')),
       body: BlocListener<ReportBloc, ReportState>(

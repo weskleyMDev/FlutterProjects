@@ -4,17 +4,19 @@ sealed class AuthEvent {}
 
 final class StartAuthStreamEvent extends AuthEvent {}
 
-final class SignInUserEvent extends AuthEvent {
+final class SetEmailEvent extends AuthEvent {
   final String email;
-  final String password;
-  SignInUserEvent({required this.email, required this.password});
+  SetEmailEvent(this.email);
 }
 
-final class SignUpUserEvent extends AuthEvent {
-  final String email;
+final class SetPasswordEvent extends AuthEvent {
   final String password;
-  SignUpUserEvent({required this.email, required this.password});
+  SetPasswordEvent(this.password);
 }
+
+final class SignInUserEvent extends AuthEvent {}
+
+final class SignUpUserEvent extends AuthEvent {}
 
 final class SignOutUserEvent extends AuthEvent {}
 

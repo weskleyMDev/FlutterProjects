@@ -1,4 +1,4 @@
-import 'package:form_bloc/screens/login_screen.dart';
+import 'package:form_bloc/components/auth_manager.dart';
 import 'package:form_bloc/screens/report_screen.dart';
 import 'package:go_router/go_router.dart';
 
@@ -8,7 +8,7 @@ final routes = GoRouter(
     GoRoute(
       path: '/',
       name: 'home-screen',
-      builder: (context, state) => const LoginScreen(),
+      builder: (context, state) => const AuthManager(),
     ),
     GoRoute(
       path: '/reports',
