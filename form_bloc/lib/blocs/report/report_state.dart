@@ -1,23 +1,20 @@
-import 'dart:convert';
+part of 'report_bloc.dart';
 
-import 'package:flutter/foundation.dart';
-import 'package:form_bloc/models/report_model.dart';
+enum ReportStatus { waiting, success, error, initial }
 
-enum ReportStatus { waiting, success, error, empty }
-
-final class ReportState {
+final class ReportState extends Equatable {
   final List<ReportModel> reports;
   final String text;
   final String userId;
-  final ReportStatus? status;
-  final Object? error;
+  final ReportStatus status;
+  final Object error;
 
   const ReportState._({
     required this.reports,
     required this.text,
     required this.userId,
-    this.status,
-    this.error,
+    required this.status,
+    required this.error,
   });
 
   factory ReportState.local() {
@@ -25,51 +22,26 @@ final class ReportState {
       reports: const [],
       text: '',
       userId: '',
-      status: null,
-      error: null,
+      status: ReportStatus.initial,
+      error: '',
     );
   }
 
   ReportState copyWith({
-    List<ReportModel>? reports,
-    String? text,
-    String? userId,
-    ReportStatus? status,
-    Object? error,
+    List<ReportModel> Function()? reports,
+    String Function()? text,
+    String Function()? userId,
+    ReportStatus Function()? status,
+    Object Function()? error,
   }) {
     return ReportState._(
-      reports: List.unmodifiable(reports ?? this.reports),
-      text: text ?? this.text,
-      userId: userId ?? this.userId,
-      status: status ?? this.status,
-      error: error ?? this.error,
+      reports: reports != null ? reports() : this.reports,
+      text: text != null ? text() : this.text,
+      userId: userId != null ? userId() : this.userId,
+      status: status != null ? status() : this.status,
+      error: error != null ? error() : this.error,
     );
   }
-
-  Map<String, dynamic> toMap() {
-    return <String, dynamic>{
-      'reports': reports.map((x) => x.toMap()).toList(),
-      'text': text,
-      'userId': userId,
-    };
-  }
-
-  factory ReportState.fromMap(Map<String, dynamic> map) {
-    return ReportState._(
-      reports: List<ReportModel>.from(
-        (map['reports'] as List).map<ReportModel>(
-          (x) => ReportModel.fromMap(x as Map<String, dynamic>),
-        ),
-      ),
-      text: map['text'] as String,
-      userId: map['userId'] as String,
-    );
-  }
-
-  String toJson() => json.encode(toMap());
-
-  factory ReportState.fromJson(String source) =>
-      ReportState.fromMap(json.decode(source) as Map<String, dynamic>);
 
   @override
   String toString() {
@@ -95,4 +67,7 @@ final class ReportState {
         status.hashCode ^
         error.hashCode;
   }
+
+  @override
+  List<Object?> get props => [reports, text, userId, status, error];
 }

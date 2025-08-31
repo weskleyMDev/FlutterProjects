@@ -20,9 +20,7 @@ class AuthManager extends StatelessWidget {
           return const LoginScreen();
         }
         if (status == AuthStatus.success) {
-          return user.role == UserRole.admin
-              ? AdminScreen(user: user)
-              : UserScreen(user: user);
+          return user.role == UserRole.admin ? AdminScreen() : UserScreen();
         } else {
           return LoginScreen();
         }

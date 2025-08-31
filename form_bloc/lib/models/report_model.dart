@@ -6,27 +6,40 @@ final class ReportModel {
   final String id;
   final String text;
   final String userId;
+  final DateTime createdAt;
 
   const ReportModel._({
     required this.id,
     required this.text,
     required this.userId,
+    required this.createdAt,
   });
 
   factory ReportModel.local() {
-    return ReportModel._(id: Uuid().v4(), text: '', userId: '');
+    return ReportModel._(
+      id: Uuid().v4(),
+      text: '',
+      userId: '',
+      createdAt: DateTime.now(),
+    );
   }
 
-  ReportModel copyWith({String? text, String? userId}) {
+  ReportModel copyWith({String Function()? text, String Function()? userId}) {
     return ReportModel._(
       id: id,
-      text: text ?? this.text,
-      userId: userId ?? this.userId,
+      text: text != null ? text() : this.text,
+      userId: userId != null ? userId() : this.userId,
+      createdAt: createdAt,
     );
   }
 
   Map<String, dynamic> toMap() {
-    return <String, dynamic>{'id': id, 'text': text, 'userId': userId};
+    return <String, dynamic>{
+      'id': id,
+      'text': text,
+      'userId': userId,
+      'createdAt': createdAt.toIso8601String(),
+    };
   }
 
   factory ReportModel.fromMap(Map<String, dynamic> map) {
@@ -34,6 +47,7 @@ final class ReportModel {
       id: map['id'] as String,
       text: map['text'] as String,
       userId: map['userId'] as String,
+      createdAt: DateTime.parse(map['createdAt'] as String),
     );
   }
 

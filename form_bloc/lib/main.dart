@@ -4,8 +4,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:form_bloc/blocs/auth/auth_bloc.dart';
 import 'package:form_bloc/blocs/auth/auth_event.dart';
+import 'package:form_bloc/blocs/auth/auth_state.dart';
 import 'package:form_bloc/blocs/report/report_bloc.dart';
-import 'package:form_bloc/blocs/report/report_event.dart';
 import 'package:form_bloc/repositories/report/report_repository.dart';
 import 'package:form_bloc/services/auth/auth_service.dart';
 import 'package:form_bloc/utils/routes/app_routes.dart';
@@ -29,25 +29,34 @@ class MyApp extends StatelessWidget {
         BlocProvider(
           create: (_) => AuthBloc(AuthService())..add(StartAuthStreamEvent()),
         ),
-        BlocProvider(
-          create: (_) =>
-              ReportBloc(ReportRepository())..add(StartReportsStreamEvent()),
-        ),
+        BlocProvider(create: (_) => ReportBloc(ReportRepository())),
       ],
-      child: MaterialApp.router(
-        debugShowCheckedModeBanner: false,
-        title: 'Flutter Demo',
-        theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+      child: BlocListener<AuthBloc, AuthState>(
+        listenWhen: (previous, current) =>
+            previous.currentUser != current.currentUser,
+        listener: (context, state) {
+          final userId = state.currentUser?.id;
+          if (userId != null) {
+            context.read<ReportBloc>().add(
+              StartReportsStreamEvent(userId: userId),
+            );
+          }
+        },
+        child: MaterialApp.router(
+          debugShowCheckedModeBanner: false,
+          title: 'Flutter Demo',
+          theme: ThemeData(
+            colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+          ),
+          supportedLocales: S.delegate.supportedLocales,
+          localizationsDelegates: const [
+            S.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          routerConfig: routes,
         ),
-        supportedLocales: S.delegate.supportedLocales,
-        localizationsDelegates: const [
-          S.delegate,
-          GlobalMaterialLocalizations.delegate,
-          GlobalWidgetsLocalizations.delegate,
-          GlobalCupertinoLocalizations.delegate,
-        ],
-        routerConfig: routes,
       ),
     );
   }

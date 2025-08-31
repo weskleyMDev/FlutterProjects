@@ -6,9 +6,11 @@ final class ReportRepository implements IReportRepository {
   final _firestore = FirebaseFirestore.instance;
 
   @override
-  Stream<List<ReportModel>> getReports() => _firestore
+  Stream<List<ReportModel>> getReports(String uid) => _firestore
       .collection('reports')
+      .where('userId', isEqualTo: uid)
       .withConverter(fromFirestore: _fromFirestore, toFirestore: _toFirestore)
+      .orderBy('createdAt', descending: true)
       .snapshots()
       .map((snapshot) => snapshot.docs.map((doc) => doc.data()).toList());
 

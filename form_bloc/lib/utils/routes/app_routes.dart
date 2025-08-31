@@ -13,10 +13,7 @@ final routes = GoRouter(
     GoRoute(
       path: '/reports',
       name: 'report-screen',
-      builder: (context, state) {
-        final userId = state.extra as String;
-        return ReportScreen(userId: userId);
-      },
+      builder: (context, state) => ReportScreen(),
     ),
   ],
 );

@@ -1,4 +1,4 @@
-import 'package:form_bloc/models/report_model.dart';
+part of 'report_bloc.dart';
 
 sealed class ReportEvent {}
 
@@ -25,6 +25,9 @@ final class UpdateReportEvent extends ReportEvent {
   UpdateReportEvent({required this.report});
 }
 
-final class StartReportsStreamEvent extends ReportEvent {}
+final class StartReportsStreamEvent extends ReportEvent {
+  final String userId;
+  StartReportsStreamEvent({required this.userId});
+}
 
 final class ClearFields extends ReportEvent {}
