@@ -1,0 +1,27 @@
+{
+    "@@locale": "en",
+    "email": "Email",
+    "@email": {
+        "description": "email label text"
+    },
+    "password": "Password",
+    "@password": {
+        "description": "password label text"
+    },
+    "login": "Login",
+    "@login": {
+        "description": "login button label text"
+    },
+    "register": "Register",
+    "@register": {
+        "description": "register button label text"
+    },
+    "have_account": "Already have an account? Sign In.",
+    "@have_account": {
+        "description": "have account textbutton label text"
+    },
+    "no_account": "Don't have an account yet? Sign up.",
+    "@no_account": {
+        "description": "have account textbutton label text"
+    }
+}

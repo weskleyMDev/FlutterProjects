@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "964693873984",
+    "project_id": "admin-shop-c3b6e",
+    "storage_bucket": "admin-shop-c3b6e.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:964693873984:android:179cc69947a943799d16a5",
+        "android_client_info": {
+          "package_name": "br.com.weskleym.adminshop.admin_shop"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAzAWkcZpjI6x4xZCQ_ghdA8uyrcG6_u2k"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
