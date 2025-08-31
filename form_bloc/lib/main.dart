@@ -37,7 +37,7 @@ class MyApp extends StatelessWidget {
         listener: (context, state) {
           final userId = state.currentUser?.id;
           if (userId != null) {
-            context.read<ReportBloc>().add(
+            BlocProvider.of<ReportBloc>(context).add(
               StartReportsStreamEvent(userId: userId),
             );
           }

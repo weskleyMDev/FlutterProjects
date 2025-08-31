@@ -37,7 +37,7 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Future<void> _submitLoginForm() async {
-    final authBloc = context.read<AuthBloc>();
+    final authBloc = BlocProvider.of<AuthBloc>(context);
     final isValid = _loginFormKey.currentState?.validate() ?? false;
     if (!isValid) return;
     _loginFormKey.currentState?.save();

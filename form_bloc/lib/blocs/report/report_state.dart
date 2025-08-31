@@ -49,25 +49,5 @@ final class ReportState extends Equatable {
   }
 
   @override
-  bool operator ==(covariant ReportState other) {
-    if (identical(this, other)) return true;
-
-    return listEquals(other.reports, reports) &&
-        other.text == text &&
-        other.userId == userId &&
-        other.status == status &&
-        other.error == error;
-  }
-
-  @override
-  int get hashCode {
-    return reports.hashCode ^
-        text.hashCode ^
-        userId.hashCode ^
-        status.hashCode ^
-        error.hashCode;
-  }
-
-  @override
   List<Object?> get props => [reports, text, userId, status, error];
 }

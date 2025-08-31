@@ -14,7 +14,7 @@ class AdminScreen extends StatefulWidget {
 class _AdminScreenState extends State<AdminScreen> {
   @override
   Widget build(BuildContext context) {
-    final auth = context.read<AuthBloc>();
+    final auth = BlocProvider.of<AuthBloc>(context);
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,

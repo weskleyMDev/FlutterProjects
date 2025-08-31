@@ -35,8 +35,9 @@ class _ReportScreenState extends State<ReportScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final bloc = context.read<ReportBloc>();
-    final userId = context.read<AuthBloc>().state.currentUser?.id ?? 'error';
+    final bloc = BlocProvider.of<ReportBloc>(context);
+    final userId =
+        BlocProvider.of<AuthBloc>(context).state.currentUser?.id ?? 'error';
     return Scaffold(
       appBar: AppBar(
         title: const Text('Reports'),
