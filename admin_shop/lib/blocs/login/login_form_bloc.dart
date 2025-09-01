@@ -7,11 +7,13 @@ part 'login_form_event.dart';
 part 'login_form_state.dart';
 
 final class LoginFormBloc extends Bloc<LoginFormEvent, LoginFormState> {
-  LoginFormBloc() : super(LoginFormState()) {
+  LoginFormBloc() : super(LoginFormState.initial()) {
     on<TogglePasswordVisibility>(_onTogglePasswordVisibility);
     on<LoginFormEmailChanged>(_onLoginFormEmailChanged);
     on<LoginFormPasswordChanged>(_onLoginFormPasswordChanged);
-    on<LoginFormSubmitted>(_onLoginFormSubmitted);
+    on<LoginFormNameChanged>(_onLoginFormNameChanged);
+    on<ClearLoginFormFields>(_onClearLoginFormFields);
+    on<ToggleLoginFormMode>(_onToggleLoginFormMode);
   }
 
   FutureOr<void> _onTogglePasswordVisibility(
@@ -72,12 +74,41 @@ final class LoginFormBloc extends Bloc<LoginFormEvent, LoginFormState> {
     }
   }
 
-  Future<void> _onLoginFormSubmitted(
-    LoginFormSubmitted event,
+  FutureOr<void> _onLoginFormNameChanged(
+    LoginFormNameChanged event,
     Emitter<LoginFormState> emit,
-  ) async {
-    emit(state.copyWith(loginStatus: () => LoginFormStatus.waiting));
-    await Future.delayed(const Duration(seconds: 2));
-    emit(state.copyWith(loginStatus: () => LoginFormStatus.success));
+  ) {
+    final name = event.name.trim();
+    if (name.isEmpty) {
+      emit(
+        state.copyWith(
+          name: () => name,
+          errorName: () => 'Please enter a name.',
+        ),
+      );
+    } else if (name.length < 4) {
+      emit(
+        state.copyWith(
+          name: () => name,
+          errorName: () => 'Name must be at least 4 characters.',
+        ),
+      );
+    } else {
+      emit(state.copyWith(name: () => name, errorName: () => ''));
+    }
+  }
+
+  FutureOr<void> _onClearLoginFormFields(
+    ClearLoginFormFields event,
+    Emitter<LoginFormState> emit,
+  ) {
+    emit(LoginFormState.initial());
+  }
+
+  FutureOr<void> _onToggleLoginFormMode(
+    ToggleLoginFormMode event,
+    Emitter<LoginFormState> emit,
+  ) {
+    emit(state.copyWith(isSignInMode: () => !state.isSignInMode));
   }
 }

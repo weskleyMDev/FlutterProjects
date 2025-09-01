@@ -1,6 +1,8 @@
+import 'package:admin_shop/blocs/auth/auth_bloc.dart';
 import 'package:admin_shop/blocs/login/login_form_bloc.dart';
 import 'package:admin_shop/firebase_options.dart';
 import 'package:admin_shop/generated/l10n.dart';
+import 'package:admin_shop/services/auth/auth_service.dart';
 import 'package:admin_shop/utils/routes/app_routes.dart';
 import 'package:admin_shop/utils/theme/theme.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -22,7 +24,13 @@ class MyApp extends StatelessWidget {
     final brightness = View.of(context).platformDispatcher.platformBrightness;
     final theme = MyTheme();
     return MultiBlocProvider(
-      providers: [BlocProvider(create: (context) => LoginFormBloc())],
+      providers: [
+        BlocProvider(create: (context) => LoginFormBloc()),
+        BlocProvider(
+          create: (context) =>
+              AuthBloc(AuthService())..add(UserChangesRequested()),
+        ),
+      ],
       child: MaterialApp.router(
         debugShowCheckedModeBanner: false,
         title: 'Admin Shop',

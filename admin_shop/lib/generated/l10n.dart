@@ -54,6 +54,16 @@ class S {
     return Localizations.of<S>(context, S);
   }
 
+  /// `Name`
+  String get name {
+    return Intl.message(
+      'Name',
+      name: 'name',
+      desc: 'name label text',
+      args: [],
+    );
+  }
+
   /// `Email`
   String get email {
     return Intl.message(

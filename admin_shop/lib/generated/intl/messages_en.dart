@@ -27,6 +27,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Already have an account? Sign In.",
     ),
     "login": MessageLookupByLibrary.simpleMessage("Login"),
+    "name": MessageLookupByLibrary.simpleMessage("Name"),
     "no_account": MessageLookupByLibrary.simpleMessage(
       "Don\'t have an account yet? Sign up.",
     ),

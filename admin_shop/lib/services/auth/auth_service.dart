@@ -52,7 +52,7 @@ final class AuthService implements IAuthService {
   Future<void> _registerUser(UserModel user) async {
     try {
       await _firestore
-          .collection('user')
+          .collection('users')
           .doc(user.id)
           .withConverter(
             fromFirestore: _fromFirestore,
@@ -73,7 +73,7 @@ final class AuthService implements IAuthService {
           _currentUser = null;
         }
         return _currentUser;
-      });
+      }).asBroadcastStream();
 
   Future<UserModel?> _getUserFromFirebase(User user) async {
     try {

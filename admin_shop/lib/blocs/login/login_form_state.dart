@@ -1,32 +1,51 @@
 part of 'login_form_bloc.dart';
 
-enum LoginFormStatus { initial, waiting, success, failure }
-
 final class LoginFormState extends Equatable {
   final String email;
   final String errorEmail;
   final String password;
   final String errorPassword;
+  final String name;
+  final String errorName;
   final bool isObscure;
-  final LoginFormStatus loginStatus;
   final String failureMessage;
+  final bool isSignInMode;
 
-  const LoginFormState({
-    this.email = '',
-    this.errorEmail = '',
-    this.password = '',
-    this.errorPassword = '',
-    this.isObscure = true,
-    this.loginStatus = LoginFormStatus.initial,
-    this.failureMessage = '',
+  const LoginFormState._({
+    required this.email,
+    required this.errorEmail,
+    required this.password,
+    required this.errorPassword,
+    required this.name,
+    required this.errorName,
+    required this.isObscure,
+    required this.failureMessage,
+    required this.isSignInMode,
   });
 
-  bool get isFormValid {
+  factory LoginFormState.initial() => const LoginFormState._(
+    email: '',
+    errorEmail: '',
+    password: '',
+    errorPassword: '',
+    name: '',
+    errorName: '',
+    isObscure: true,
+    failureMessage: '',
+    isSignInMode: true,
+  );
+
+  bool get isLoginValid {
     final isEmailValid = email.isNotEmpty && errorEmail.isEmpty;
     final isPasswordValid = password.isNotEmpty && errorPassword.isEmpty;
-    return isEmailValid &&
-        isPasswordValid &&
-        loginStatus != LoginFormStatus.waiting;
+    return isEmailValid && isPasswordValid;
+  }
+
+  bool get isSignUpValid {
+    final isEmailValid = email.isNotEmpty && errorEmail.isEmpty;
+    final isPasswordValid = password.isNotEmpty && errorPassword.isEmpty;
+    final isNameValid = name.isNotEmpty && errorName.isEmpty;
+    return isEmailValid && isPasswordValid && isNameValid;
   }
 
   LoginFormState copyWith({
@@ -34,22 +53,26 @@ final class LoginFormState extends Equatable {
     String Function()? errorEmail,
     String Function()? password,
     String Function()? errorPassword,
+    String Function()? name,
+    String Function()? errorName,
     bool Function()? isObscure,
-    LoginFormStatus Function()? loginStatus,
     String Function()? failureMessage,
+    bool Function()? isSignInMode,
   }) {
-    return LoginFormState(
+    return LoginFormState._(
       email: email != null ? email() : this.email,
       errorEmail: errorEmail != null ? errorEmail() : this.errorEmail,
       password: password != null ? password() : this.password,
       errorPassword: errorPassword != null
           ? errorPassword()
           : this.errorPassword,
+      name: name != null ? name() : this.name,
+      errorName: errorName != null ? errorName() : this.errorName,
       isObscure: isObscure != null ? isObscure() : this.isObscure,
-      loginStatus: loginStatus != null ? loginStatus() : this.loginStatus,
       failureMessage: failureMessage != null
           ? failureMessage()
           : this.failureMessage,
+      isSignInMode: isSignInMode != null ? isSignInMode() : this.isSignInMode,
     );
   }
 
@@ -59,8 +82,10 @@ final class LoginFormState extends Equatable {
     errorEmail,
     password,
     errorPassword,
+    name,
+    errorName,
     isObscure,
-    loginStatus,
     failureMessage,
+    isSignInMode,
   ];
 }

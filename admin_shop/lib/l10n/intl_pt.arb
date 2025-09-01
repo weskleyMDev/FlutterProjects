@@ -1,5 +1,9 @@
 {
     "@@locale": "pt",
+    "name": "Nome",
+    "@name": {
+        "description": "name label text"
+    },
     "email": "Email",
     "@email": {
         "description": "email label text"
