@@ -6,17 +6,17 @@ final class OrderState extends Equatable {
   final List<OrderModel> orders;
   final OrdersOverviewStatus status;
   final String? orderError;
-  const OrderState({
-    required this.orders,
-    required this.status,
-    required this.orderError,
-  });
+  final Map<String, int> userOrdersCount;
+  final Map<String, double> userOrdersTotal;
 
   const OrderState._({
     required this.orders,
     required this.status,
     required this.orderError,
-  });
+    Map<String, int>? userOrdersCount,
+    Map<String, double>? userOrdersTotal,
+  }) : userOrdersCount = userOrdersCount ?? const {},
+       userOrdersTotal = userOrdersTotal ?? const {};
 
   factory OrderState.initial() => const OrderState._(
     orders: [],
@@ -47,11 +47,19 @@ final class OrderState extends Equatable {
     List<OrderModel> Function()? orders,
     OrdersOverviewStatus Function()? status,
     String? Function()? orderError,
+    Map<String, int> Function()? userOrdersCount,
+    Map<String, double> Function()? userOrdersTotal,
   }) {
-    return OrderState(
+    return OrderState._(
       orders: orders != null ? orders() : this.orders,
       status: status != null ? status() : this.status,
       orderError: orderError != null ? orderError() : this.orderError,
+      userOrdersCount: userOrdersCount != null
+          ? userOrdersCount()
+          : this.userOrdersCount,
+      userOrdersTotal: userOrdersTotal != null
+          ? userOrdersTotal()
+          : this.userOrdersTotal,
     );
   }
 
@@ -59,5 +67,11 @@ final class OrderState extends Equatable {
   bool get stringify => true;
 
   @override
-  List<Object?> get props => [orders, status, orderError];
+  List<Object?> get props => [
+    orders,
+    status,
+    orderError,
+    userOrdersCount,
+    userOrdersTotal,
+  ];
 }

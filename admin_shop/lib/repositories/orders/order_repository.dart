@@ -1,6 +1,7 @@
 import 'package:admin_shop/models/order_model.dart';
 import 'package:admin_shop/repositories/orders/iorder_repository.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:decimal/decimal.dart';
 
 final class OrderRepository implements IOrderRepository {
   final _firestore = FirebaseFirestore.instance;
@@ -24,6 +25,30 @@ final class OrderRepository implements IOrderRepository {
     if (data == null) throw Exception('Invalid data');
     return OrderModel.fromMap(data);
   }
+
+  @override
+  Stream<int> getUserOrdersCount(String userId) => _firestore
+      .collection('orders')
+      .where('userId', isEqualTo: userId)
+      .snapshots()
+      .map((snapshot) => snapshot.docs.length);
+
+  @override
+  Stream<double> getUserTotalOrders(String userId) => _firestore
+      .collection('orders')
+      .where('userId', isEqualTo: userId)
+      .snapshots()
+      .map(
+        (snapshot) => snapshot.docs
+            .fold<Decimal>(
+              Decimal.zero,
+              (total, doc) =>
+                  total +
+                  Decimal.parse((doc.data()['total'] as num).toString()),
+            )
+            .round(scale: 2)
+            .toDouble(),
+      );
 
   @override
   Stream<List<OrderModel>?> get orderStream => _fetchOrders();

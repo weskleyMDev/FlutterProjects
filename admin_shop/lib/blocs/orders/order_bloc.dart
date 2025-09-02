@@ -16,6 +16,8 @@ final class OrderBloc extends Bloc<OrderEvent, OrderState> {
     on<OrdersOverviewSubscriptionRequested>(
       _onOrdersOverviewSubscriptionRequested,
     );
+    on<UserOrdersCountRequested>(_onUserOrdersCountRequested);
+    on<UserOrdersTotalRequested>(_onUserOrdersTotalRequested);
   }
 
   Future<void> _onOrdersOverviewSubscriptionRequested(
@@ -27,6 +29,44 @@ final class OrderBloc extends Bloc<OrderEvent, OrderState> {
       _orderRepository.orderStream,
       onData: (data) =>
           data != null ? OrderState.success(data) : OrderState.initial(),
+      onError: (error, _) => OrderState.failure(
+        error is FirebaseException
+            ? (error.message ?? 'Firebase unknown error!')
+            : error.toString(),
+      ),
+    );
+  }
+
+  Future<void> _onUserOrdersCountRequested(
+    UserOrdersCountRequested event,
+    Emitter<OrderState> emit,
+  ) async {
+    await emit.forEach<int>(
+      _orderRepository.getUserOrdersCount(event.userId),
+      onData: (counter) {
+        final updatedCount = Map<String, int>.from(state.userOrdersCount);
+        updatedCount[event.userId] = counter;
+        return state.copyWith(userOrdersCount: () => updatedCount);
+      },
+      onError: (error, _) => OrderState.failure(
+        error is FirebaseException
+            ? (error.message ?? 'Firebase unknown error!')
+            : error.toString(),
+      ),
+    );
+  }
+
+  Future<void> _onUserOrdersTotalRequested(
+    UserOrdersTotalRequested event,
+    Emitter<OrderState> emit,
+  ) async {
+    await emit.forEach<double>(
+      _orderRepository.getUserTotalOrders(event.userId),
+      onData: (total) {
+        final updatedTotal = Map<String, double>.from(state.userOrdersTotal);
+        updatedTotal[event.userId] = total;
+        return state.copyWith(userOrdersTotal: () => updatedTotal);
+      },
       onError: (error, _) => OrderState.failure(
         error is FirebaseException
             ? (error.message ?? 'Firebase unknown error!')
