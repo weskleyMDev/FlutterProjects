@@ -2,29 +2,51 @@ import 'dart:convert';
 
 import 'package:equatable/equatable.dart';
 
-class UserModel extends Equatable {
+final class UserModel extends Equatable {
   final String id;
   final String name;
   final String email;
-  const UserModel({required this.id, required this.name, required this.email});
+  final String? imageUrl;
 
-  UserModel copyWith({String? id, String? name, String? email}) {
-    return UserModel(
-      id: id ?? this.id,
-      name: name ?? this.name,
-      email: email ?? this.email,
+  const UserModel._({
+    required this.id,
+    required this.name,
+    required this.email,
+    required this.imageUrl,
+  });
+
+  factory UserModel.empty() =>
+      const UserModel._(id: '', name: '', email: '', imageUrl: '');
+
+  UserModel copyWith({
+    String Function()? id,
+    String Function()? name,
+    String Function()? email,
+    String Function()? imageUrl,
+  }) {
+    return UserModel._(
+      id: id != null ? id() : this.id,
+      name: name != null ? name() : this.name,
+      email: email != null ? email() : this.email,
+      imageUrl: imageUrl != null ? imageUrl() : this.imageUrl,
     );
   }
 
   Map<String, dynamic> toMap() {
-    return <String, dynamic>{'id': id, 'name': name, 'email': email};
+    return <String, dynamic>{
+      'id': id,
+      'name': name,
+      'email': email,
+      'imageUrl': imageUrl,
+    };
   }
 
   factory UserModel.fromMap(Map<String, dynamic> map) {
-    return UserModel(
+    return UserModel._(
       id: map['id'] as String,
       name: map['name'] as String,
       email: map['email'] as String,
+      imageUrl: map['imageUrl'] as String?,
     );
   }
 

@@ -1,5 +1,5 @@
 import 'package:admin_shop/blocs/auth/auth_bloc.dart';
-import 'package:admin_shop/blocs/login/login_form_bloc.dart';
+import 'package:admin_shop/blocs/login_form/login_form_bloc.dart';
 import 'package:admin_shop/generated/l10n.dart';
 import 'package:admin_shop/screens/loading_screen.dart';
 import 'package:flutter/material.dart';
@@ -40,6 +40,40 @@ class _LoginScreenState extends State<LoginScreen> {
     _emailFocusNode.dispose();
     _passwordFocusNode.dispose();
     super.dispose();
+  }
+
+  void _clearFields() {
+    _nameController.clear();
+    _emailController.clear();
+    _passwordController.clear();
+  }
+
+  Future<void> _submitForm(
+    LoginFormState formState,
+    LoginFormBloc loginBloc,
+    AuthBloc authBloc,
+  ) async {
+    try {
+      if (formState.isSignInMode) {
+        authBloc.add(
+          SignInRequested(email: formState.email, password: formState.password),
+        );
+        loginBloc.add(ClearLoginFormFields());
+      } else {
+        authBloc.add(
+          SignUpRequested(
+            name: formState.name,
+            email: formState.email,
+            password: formState.password,
+          ),
+        );
+        loginBloc.add(ClearLoginFormFields());
+      }
+    } catch (e) {
+      rethrow;
+    } finally {
+      _clearFields();
+    }
   }
 
   @override
@@ -150,27 +184,18 @@ class _LoginScreenState extends State<LoginScreen> {
                             onPressed: formState.isSignInMode
                                 ? (!formState.isLoginValid
                                       ? null
-                                      : () {
-                                          authBloc.add(
-                                            SignInRequested(
-                                              email: formState.email,
-                                              password: formState.password,
-                                            ),
-                                          );
-                                          loginBloc.add(ClearLoginFormFields());
-                                        })
+                                      : () => _submitForm(
+                                          formState,
+                                          loginBloc,
+                                          authBloc,
+                                        ))
                                 : (!formState.isSignUpValid
                                       ? null
-                                      : () {
-                                          authBloc.add(
-                                            SignUpRequested(
-                                              name: formState.name,
-                                              email: formState.email,
-                                              password: formState.password,
-                                            ),
-                                          );
-                                          loginBloc.add(ClearLoginFormFields());
-                                        }),
+                                      : () => _submitForm(
+                                          formState,
+                                          loginBloc,
+                                          authBloc,
+                                        )),
                             style: FilledButton.styleFrom(
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(5.0),

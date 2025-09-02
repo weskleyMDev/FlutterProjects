@@ -54,6 +54,16 @@ class S {
     return Localizations.of<S>(context, S);
   }
 
+  /// `Welcome, {name}!`
+  String greeting(String name) {
+    return Intl.message(
+      'Welcome, $name!',
+      name: 'greeting',
+      desc: 'greeting text',
+      args: [name],
+    );
+  }
+
   /// `Name`
   String get name {
     return Intl.message(
@@ -94,6 +104,16 @@ class S {
     );
   }
 
+  /// `Logout`
+  String get logout {
+    return Intl.message(
+      'Logout',
+      name: 'logout',
+      desc: 'logout button label text',
+      args: [],
+    );
+  }
+
   /// `Register`
   String get register {
     return Intl.message(
@@ -120,6 +140,36 @@ class S {
       'Don\'t have an account yet? Sign up.',
       name: 'no_account',
       desc: 'have account textbutton label text',
+      args: [],
+    );
+  }
+
+  /// `Products`
+  String get products {
+    return Intl.message(
+      'Products',
+      name: 'products',
+      desc: 'products label text',
+      args: [],
+    );
+  }
+
+  /// `Orders`
+  String get orders {
+    return Intl.message(
+      'Orders',
+      name: 'orders',
+      desc: 'orders label text',
+      args: [],
+    );
+  }
+
+  /// `Clients`
+  String get clients {
+    return Intl.message(
+      'Clients',
+      name: 'clients',
+      desc: 'clients label text',
       args: [],
     );
   }

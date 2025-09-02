@@ -1,7 +1,11 @@
 import 'package:admin_shop/blocs/auth/auth_bloc.dart';
-import 'package:admin_shop/blocs/login/login_form_bloc.dart';
+import 'package:admin_shop/blocs/login_form/login_form_bloc.dart';
+import 'package:admin_shop/blocs/orders/order_bloc.dart';
+import 'package:admin_shop/blocs/users/user_bloc.dart';
 import 'package:admin_shop/firebase_options.dart';
 import 'package:admin_shop/generated/l10n.dart';
+import 'package:admin_shop/repositories/clients/user_repository.dart';
+import 'package:admin_shop/repositories/orders/order_repository.dart';
 import 'package:admin_shop/services/auth/auth_service.dart';
 import 'package:admin_shop/utils/routes/app_routes.dart';
 import 'package:admin_shop/utils/theme/theme.dart';
@@ -29,6 +33,16 @@ class MyApp extends StatelessWidget {
         BlocProvider(
           create: (context) =>
               AuthBloc(AuthService())..add(UserChangesRequested()),
+        ),
+        BlocProvider(
+          create: (context) =>
+              OrderBloc(OrderRepository())
+                ..add(OrdersOverviewSubscriptionRequested()),
+        ),
+        BlocProvider(
+          create: (context) =>
+              UserBloc(UserRepository())
+                ..add(UsersOverviewSubscriptionRequested()),
         ),
       ],
       child: MaterialApp.router(

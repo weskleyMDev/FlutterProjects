@@ -11,9 +11,6 @@ class AuthManager extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<AuthBloc, AuthState>(
       builder: (context, state) {
-        /* if (state.status == AuthStatus.waiting) {
-          return LoadingScreen();
-        } else  */
         if (state.status == AuthStatus.success) {
           final user = state.user;
           if (user != null) {

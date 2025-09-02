@@ -1,5 +1,14 @@
 {
     "@@locale": "en",
+    "greeting": "Welcome, {name}!",
+    "@greeting": {
+        "description": "greeting text",
+        "placeholders": {
+            "name": {
+                "type": "String"
+            }
+        }
+    },
     "name": "Name",
     "@name": {
         "description": "name label text"
@@ -16,6 +25,10 @@
     "@login": {
         "description": "login button label text"
     },
+    "logout": "Logout",
+    "@logout": {
+        "description": "logout button label text"
+    },
     "register": "Register",
     "@register": {
         "description": "register button label text"
@@ -27,5 +40,17 @@
     "no_account": "Don't have an account yet? Sign up.",
     "@no_account": {
         "description": "have account textbutton label text"
+    },
+    "products": "Products",
+    "@products": {
+        "description": "products label text"
+    },
+    "orders": "Orders",
+    "@orders": {
+        "description": "orders label text"
+    },
+    "clients": "Clients",
+    "@clients": {
+        "description": "clients label text"
     }
 }

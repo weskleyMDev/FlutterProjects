@@ -1,5 +1,14 @@
 {
     "@@locale": "pt",
+    "greeting": "Bem vindo, {name}!",
+    "@greeting": {
+        "description": "greeting text",
+        "placeholders": {
+            "name": {
+                "type": "String"
+            }
+        }
+    },
     "name": "Nome",
     "@name": {
         "description": "name label text"
@@ -16,6 +25,10 @@
     "@login": {
         "description": "login button label text"
     },
+    "logout": "Sair",
+    "@logout": {
+        "description": "logout button label text"
+    },
     "register": "Cadastrar",
     "@register": {
         "description": "register button label text"
@@ -27,5 +40,17 @@
     "no_account": "Ainda não tem uma conta? Cadastre-se.",
     "@no_account": {
         "description": "have account textbutton label text"
+    },
+    "products": "Produtos",
+    "@products": {
+        "description": "products label text"
+    },
+    "orders": "Pedidos",
+    "@orders": {
+        "description": "orders label text"
+    },
+    "clients": "Clientes",
+    "@clients": {
+        "description": "clients label text"
     }
 }

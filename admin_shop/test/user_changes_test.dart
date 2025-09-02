@@ -11,10 +11,10 @@ class MockAuthService extends Mock implements IAuthService {}
 void main() {
   late AuthBloc authBloc;
   late MockAuthService mockAuthService;
-  final mockUser = UserModel(
-    id: '123',
-    email: 'test@example.com',
-    name: 'Test User',
+  final mockUser = UserModel.empty().copyWith(
+    id: () => '123',
+    email: () => 'test@example.com',
+    name: () => 'Test User',
   );
 
   setUp(() {
@@ -33,20 +33,14 @@ void main() {
   blocTest<AuthBloc, AuthState>(
     'emits success when userChanges emits a UserModel',
     build: () {
-      final user = UserModel(id: '123', name: 'Test', email: 'test@test.com');
-
       when(
         () => mockAuthService.userChanges,
-      ).thenAnswer((_) => Stream.value(user));
+      ).thenAnswer((_) => Stream.value(mockUser));
 
       return authBloc;
     },
     act: (bloc) => bloc.add(UserChangesRequested()),
-    expect: () => [
-      AuthState.success(
-        user: UserModel(id: '123', name: 'Test', email: 'test@test.com'),
-      ),
-    ],
+    expect: () => [AuthState.success(user: mockUser)],
   );
 
   blocTest<AuthBloc, AuthState>(
@@ -82,7 +76,7 @@ void main() {
             email: any(named: 'email'),
             password: any(named: 'password'),
           ),
-        ).thenAnswer((_) async => mockUser); 
+        ).thenAnswer((_) async => mockUser);
         return authBloc;
       },
       act: (bloc) => bloc.add(
@@ -93,9 +87,7 @@ void main() {
           status: () => AuthStatus.waiting,
           errorMessage: () => null,
         ),
-        authBloc.state.copyWith(
-          status: () => AuthStatus.success,
-        ), 
+        authBloc.state.copyWith(status: () => AuthStatus.success),
       ],
       verify: (_) {
         verify(

@@ -82,7 +82,6 @@ final class AuthBloc extends Bloc<AuthEvent, AuthState> {
     Emitter<AuthState> emit,
   ) async {
     emit(state.copyWith(status: () => AuthStatus.waiting));
-    await Future.delayed(const Duration(seconds: 1));
     await emit.forEach<UserModel?>(
       _authService.userChanges,
       onData: (user) =>
@@ -92,4 +91,5 @@ final class AuthBloc extends Bloc<AuthEvent, AuthState> {
       ),
     );
   }
+
 }

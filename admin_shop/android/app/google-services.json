@@ -1,13 +1,14 @@
 {
   "project_info": {
-    "project_number": "964693873984",
-    "project_id": "admin-shop-c3b6e",
-    "storage_bucket": "admin-shop-c3b6e.firebasestorage.app"
+    "project_number": "948361375925",
+    "firebase_url": "https://shop-app-d5e68-default-rtdb.firebaseio.com",
+    "project_id": "shop-app-d5e68",
+    "storage_bucket": "shop-app-d5e68.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:964693873984:android:179cc69947a943799d16a5",
+        "mobilesdk_app_id": "1:948361375925:android:f0aa391bbbc23049048efc",
         "android_client_info": {
           "package_name": "br.com.weskleym.adminshop.admin_shop"
         }
@@ -15,7 +16,26 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyAzAWkcZpjI6x4xZCQ_ghdA8uyrcG6_u2k"
+          "current_key": "AIzaSyAIbCj8tuR4Iv9o8K-HwyU_4IDIcOwwGtA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:948361375925:android:b26f585d237d0bd5048efc",
+        "android_client_info": {
+          "package_name": "br.com.weskleym.shopv2.shop_v2"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAIbCj8tuR4Iv9o8K-HwyU_4IDIcOwwGtA"
         }
       ],
       "services": {
