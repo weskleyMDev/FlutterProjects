@@ -17,7 +17,7 @@ final class ProductModel extends Equatable {
     required this.sizes,
   });
 
-  factory ProductModel.initial() => const ProductModel._(
+  factory ProductModel.empty() => const ProductModel._(
     id: '',
     price: 0.0,
     title: {},
@@ -56,8 +56,8 @@ final class ProductModel extends Equatable {
       id: map['id'] as String,
       price: map['price'] as num,
       title: Map<String, String>.from((map['title'] as Map<String, dynamic>)),
-      images: List<String>.from((map['images'] as List<dynamic>)),
-      sizes: List<String>.from((map['sizes'] as List<dynamic>)),
+      images: List<String>.from((map['images'] as List)),
+      sizes: List<String>.from((map['sizes'] as List)),
     );
   }
 
