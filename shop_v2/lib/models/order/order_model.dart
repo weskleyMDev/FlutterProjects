@@ -10,9 +10,9 @@ class OrderModel {
   final String userId;
   final DateTime createdAt;
   final List<CartItem> products;
-  final double total;
+  final num total;
   final String? coupon;
-  final int status;
+  final num status;
 
   OrderModel({
     required this.id,
@@ -29,9 +29,9 @@ class OrderModel {
     String? userId,
     DateTime? createdAt,
     List<CartItem>? products,
-    double? total,
+    num? total,
     String? coupon,
-    int? status,
+    num? status,
   }) {
     return OrderModel(
       id: id ?? this.id,
@@ -66,9 +66,9 @@ class OrderModel {
           (x) => CartItem.fromMap(x as Map<String, dynamic>),
         ),
       ),
-      total: map['total'] as double,
+      total: map['total'] as num,
       coupon: map['coupon'] != null ? map['coupon'] as String : null,
-      status: map['status'] as int,
+      status: map['status'] as num,
     );
   }
 

@@ -9,13 +9,13 @@ part of 'order.store.dart';
 // ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic, no_leading_underscores_for_local_identifiers
 
 mixin _$OrderStore on OrderStoreBase, Store {
-  Computed<ObservableStream<List<OrderModel>>>? _$orderStreamComputed;
+  Computed<List<OrderModel>>? _$ordersComputed;
 
   @override
-  ObservableStream<List<OrderModel>> get orderStream =>
-      (_$orderStreamComputed ??= Computed<ObservableStream<List<OrderModel>>>(
-        () => super.orderStream,
-        name: 'OrderStoreBase.orderStream',
+  List<OrderModel> get orders =>
+      (_$ordersComputed ??= Computed<List<OrderModel>>(
+        () => super.orders,
+        name: 'OrderStoreBase.orders',
       )).value;
   Computed<StreamStatus>? _$orderStatusComputed;
 
@@ -109,7 +109,7 @@ mixin _$OrderStore on OrderStoreBase, Store {
   @override
   String toString() {
     return '''
-orderStream: ${orderStream},
+orders: ${orders},
 orderStatus: ${orderStatus},
 data: ${data}
     ''';

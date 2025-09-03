@@ -42,7 +42,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
           if (status == StreamStatus.waiting) {
             return const Center(child: CircularProgressIndicator());
           } else {
-            final orders = orderStore.orderStream.value ?? [];
+            final orders = orderStore.orders;
             if (orders.isEmpty) {
               return const Center(child: Text('No orders found'));
             }

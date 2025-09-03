@@ -27,7 +27,7 @@ abstract class OrderStoreBase with Store {
   ObservableMap<String, dynamic> _data = ObservableMap();
 
   @computed
-  ObservableStream<List<OrderModel>> get orderStream => _orderStream;
+  List<OrderModel> get orders => _orderStream.value ?? [];
 
   @computed
   StreamStatus get orderStatus => _orderStream.status;
