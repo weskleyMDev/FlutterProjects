@@ -5,7 +5,7 @@ import 'package:equatable/equatable.dart';
 
 final class CartItem extends Equatable {
   final String id;
-  final int quantity;
+  final num quantity;
   final String category;
   final String size;
   final String userId;
@@ -34,7 +34,7 @@ final class CartItem extends Equatable {
 
   CartItem copyWith({
     String Function()? id,
-    int Function()? quantity,
+    num Function()? quantity,
     String Function()? category,
     String Function()? size,
     String Function()? userId,
@@ -66,7 +66,7 @@ final class CartItem extends Equatable {
   factory CartItem.fromMap(Map<String, dynamic> map) {
     return CartItem._(
       id: map['id'] as String,
-      quantity: map['quantity'] as int,
+      quantity: map['quantity'] as num,
       category: map['category'] as String,
       size: map['size'] as String,
       userId: map['userId'] as String,

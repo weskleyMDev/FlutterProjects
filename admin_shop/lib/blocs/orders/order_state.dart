@@ -7,14 +7,14 @@ final class OrderState extends Equatable {
   final OrdersOverviewStatus status;
   final String? orderError;
   final Map<String, int> userOrdersCount;
-  final Map<String, double> userOrdersTotal;
+  final Map<String, num> userOrdersTotal;
 
   const OrderState._({
     required this.orders,
     required this.status,
     required this.orderError,
     Map<String, int>? userOrdersCount,
-    Map<String, double>? userOrdersTotal,
+    Map<String, num>? userOrdersTotal,
   }) : userOrdersCount = userOrdersCount ?? const {},
        userOrdersTotal = userOrdersTotal ?? const {};
 
@@ -48,7 +48,7 @@ final class OrderState extends Equatable {
     OrdersOverviewStatus Function()? status,
     String? Function()? orderError,
     Map<String, int> Function()? userOrdersCount,
-    Map<String, double> Function()? userOrdersTotal,
+    Map<String, num> Function()? userOrdersTotal,
   }) {
     return OrderState._(
       orders: orders != null ? orders() : this.orders,

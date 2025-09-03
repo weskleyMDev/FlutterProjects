@@ -4,7 +4,7 @@ import 'package:equatable/equatable.dart';
 
 final class ProductModel extends Equatable {
   final String id;
-  final double price;
+  final num price;
   final Map<String, String> title;
   final List<String> images;
   final List<String> sizes;
@@ -27,7 +27,7 @@ final class ProductModel extends Equatable {
 
   ProductModel copyWith({
     String Function()? id,
-    double Function()? price,
+    num Function()? price,
     Map<String, String> Function()? title,
     List<String> Function()? images,
     List<String> Function()? sizes,
@@ -54,7 +54,7 @@ final class ProductModel extends Equatable {
   factory ProductModel.fromMap(Map<String, dynamic> map) {
     return ProductModel._(
       id: map['id'] as String,
-      price: map['price'] as double,
+      price: map['price'] as num,
       title: Map<String, String>.from((map['title'] as Map<String, dynamic>)),
       images: List<String>.from((map['images'] as List<dynamic>)),
       sizes: List<String>.from((map['sizes'] as List<dynamic>)),

@@ -9,9 +9,9 @@ final class OrderModel extends Equatable {
   final String userId;
   final DateTime createdAt;
   final List<CartItem> products;
-  final double total;
+  final num total;
   final String? coupon;
-  final int status;
+  final num status;
 
   const OrderModel._({
     required this.id,
@@ -38,9 +38,9 @@ final class OrderModel extends Equatable {
     String Function()? userId,
     DateTime Function()? createdAt,
     List<CartItem> Function()? products,
-    double Function()? total,
+    num Function()? total,
     String? Function()? coupon,
-    int Function()? status,
+    num Function()? status,
   }) {
     return OrderModel._(
       id: id != null ? id() : this.id,
@@ -75,9 +75,9 @@ final class OrderModel extends Equatable {
           (x) => CartItem.fromMap(x as Map<String, dynamic>),
         ),
       ),
-      total: map['total'] as double,
+      total: map['total'] as num,
       coupon: map['coupon'] as String?,
-      status: map['status'] as int,
+      status: map['status'] as num,
     );
   }
 
