@@ -1,17 +1,39 @@
-import 'package:todo/models/todo_model.dart';
+part of 'todo_bloc.dart';
 
-sealed class TodoState {}
+enum TodoStatus { initial, loading, loaded, error }
 
-class TodoInitial extends TodoState {}
-
-class TodoLoading extends TodoState {}
-
-class TodoLoaded extends TodoState {
+final class TodoState extends Equatable {
   final List<TodoModel> todos;
-  TodoLoaded({required this.todos});
-}
+  final String text;
+  final TodoStatus status;
+  final String errorMessage;
 
-class TodoError extends TodoState {
-  final Exception error;
-  TodoError({required this.error});
+  const TodoState._({
+    required this.todos,
+    required this.text,
+    required this.status,
+    required this.errorMessage,
+  });
+
+  factory TodoState.initial() => const TodoState._(
+    todos: [],
+    text: '',
+    status: TodoStatus.initial,
+    errorMessage: '',
+  );
+
+  TodoState copyWith({
+    List<TodoModel> Function()? todos,
+    String Function()? text,
+    TodoStatus Function()? status,
+    String Function()? errorMessage,
+  }) => TodoState._(
+    todos: todos?.call() ?? this.todos,
+    text: text?.call() ?? this.text,
+    status: status?.call() ?? this.status,
+    errorMessage: errorMessage?.call() ?? this.errorMessage,
+  );
+
+  @override
+  List<Object?> get props => [todos, text, status, errorMessage];
 }

@@ -1,12 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:todo/models/todo_model.dart';
-import 'package:todo/repositories/itodo_repository.dart';
 import 'package:uuid/uuid.dart';
+
+part 'itodo_repository.dart';
 
 class TodoRepository implements ITodoRepository {
   final _firestore = FirebaseFirestore.instance;
 
-  Stream<List<TodoModel>> fetchData() {
+  Stream<QuerySnapshot<TodoModel>> _fetchData() {
     return _firestore
         .collection('todos')
         .withConverter<TodoModel>(
@@ -14,7 +15,6 @@ class TodoRepository implements ITodoRepository {
           toFirestore: _toFirestore,
         )
         .snapshots()
-        .map((snapshot) => snapshot.docs.map((doc) => doc.data()).toList())
         .asBroadcastStream();
   }
 
@@ -26,7 +26,7 @@ class TodoRepository implements ITodoRepository {
     SnapshotOptions? options,
   ) {
     final data = snapshot.data();
-    if (data == null) throw Exception('Invalid data');
+    if (data == null) return TodoModel.empty();
     return TodoModel.fromMap(data);
   }
 
@@ -47,5 +47,5 @@ class TodoRepository implements ITodoRepository {
   }
 
   @override
-  Stream<List<TodoModel>> get todoStream => fetchData();
+  Stream<QuerySnapshot<TodoModel>> get todoStream => _fetchData();
 }

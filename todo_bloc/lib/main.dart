@@ -19,7 +19,9 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider<TodoBloc>(create: (_) => TodoBloc(TodoRepository())),
+        BlocProvider<TodoBloc>(
+          create: (_) => TodoBloc(TodoRepository())..add(FetchTodos()),
+        ),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

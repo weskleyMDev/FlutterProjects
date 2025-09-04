@@ -11,6 +11,8 @@ class TodoModel {
 
   const TodoModel({required this.id, required this.text});
 
+  factory TodoModel.empty() => const TodoModel(id: '', text: '');
+
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||

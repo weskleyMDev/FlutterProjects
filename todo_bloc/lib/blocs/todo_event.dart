@@ -1,20 +1,28 @@
-import 'package:todo/models/todo_model.dart';
+part of 'todo_bloc.dart';
 
-sealed class TodoEvent {}
+sealed class TodoEvent extends Equatable {
+  const TodoEvent();
 
-class FetchTodos extends TodoEvent {}
+  @override
+  List<Object> get props => [];
+}
 
-class AddTodo extends TodoEvent {
+final class FetchTodos extends TodoEvent {
+  const FetchTodos();
+  @override
+  List<Object> get props => [];
+}
+
+final class AddTodo extends TodoEvent {
+  const AddTodo(this.text);
   final String text;
-  AddTodo({required this.text});
+  @override
+  List<Object> get props => [text];
 }
 
-class DeleteTodo extends TodoEvent {
+final class DeleteTodo extends TodoEvent {
+  const DeleteTodo(this.id);
   final String id;
-  DeleteTodo({required this.id});
-}
-
-class TodosUpdated extends TodoEvent {
-  final List<TodoModel> todos;
-  TodosUpdated(this.todos);
+  @override
+  List<Object> get props => [id];
 }

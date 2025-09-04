@@ -1,7 +1,7 @@
-import 'package:todo/models/todo_model.dart';
+part of 'todo_repository.dart';
 
-abstract class ITodoRepository {
-  Stream<List<TodoModel>> get todoStream;
+abstract interface class ITodoRepository {
+  Stream<QuerySnapshot<TodoModel>> get todoStream;
   Future<TodoModel> addTodo(String text);
   Future<void> deleteTodoById(String id);
 }
