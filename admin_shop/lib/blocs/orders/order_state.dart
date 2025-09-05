@@ -2,6 +2,18 @@ part of 'order_bloc.dart';
 
 enum OrdersOverviewStatus { initial, loading, success, failure }
 
+enum OrderProgressStatus {
+  packing({'en': 'Packing', 'pt': 'Embalando'}),
+  shipping({'en': 'Shipping', 'pt': 'Enviando'}),
+  delivered({'en': 'Delivered', 'pt': 'Entregue'});
+
+  final Map<String, String> translations;
+
+  const OrderProgressStatus(this.translations);
+
+  String label(String locale) => translations[locale] ?? name;
+}
+
 final class OrderState extends Equatable {
   final List<OrderModel> orders;
   final OrdersOverviewStatus status;
@@ -24,25 +36,6 @@ final class OrderState extends Equatable {
     orderError: null,
   );
 
-  factory OrderState.loading({List<OrderModel> orders = const []}) =>
-      OrderState._(
-        orders: orders,
-        status: OrdersOverviewStatus.loading,
-        orderError: null,
-      );
-
-  factory OrderState.success(List<OrderModel> orders) => OrderState._(
-    orders: orders,
-    status: OrdersOverviewStatus.success,
-    orderError: null,
-  );
-
-  factory OrderState.failure(String? orderError) => OrderState._(
-    orders: [],
-    status: OrdersOverviewStatus.failure,
-    orderError: orderError,
-  );
-
   OrderState copyWith({
     List<OrderModel> Function()? orders,
     OrdersOverviewStatus Function()? status,
@@ -51,15 +44,11 @@ final class OrderState extends Equatable {
     Map<String, num> Function()? userOrdersTotal,
   }) {
     return OrderState._(
-      orders: orders != null ? orders() : this.orders,
-      status: status != null ? status() : this.status,
-      orderError: orderError != null ? orderError() : this.orderError,
-      userOrdersCount: userOrdersCount != null
-          ? userOrdersCount()
-          : this.userOrdersCount,
-      userOrdersTotal: userOrdersTotal != null
-          ? userOrdersTotal()
-          : this.userOrdersTotal,
+      orders: orders?.call() ?? this.orders,
+      status: status?.call() ?? this.status,
+      orderError: orderError?.call() ?? this.orderError,
+      userOrdersCount: userOrdersCount?.call() ?? this.userOrdersCount,
+      userOrdersTotal: userOrdersTotal?.call() ?? this.userOrdersTotal,
     );
   }
 

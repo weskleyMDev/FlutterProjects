@@ -26,5 +26,37 @@ final class OrderRepository implements IOrderRepository {
   }
 
   @override
+  Future<void> setStatusCode(String oid, bool inc) async {
+    try {
+      final orderDoc = await _firestore
+          .collection('orders')
+          .doc(oid)
+          .withConverter(
+            fromFirestore: _fromFirestore,
+            toFirestore: _toFirestore,
+          )
+          .get();
+      if (!orderDoc.exists) throw Exception('Order not found!');
+      final order = orderDoc.data();
+      if (order == null) throw Exception('Invalid order data!');
+      final currentStatus = order.status;
+      if (currentStatus < 1 || currentStatus > 3) {
+        throw Exception('Invalid status value!');
+      }
+      num nextStatus = 0;
+      if (inc) {
+        nextStatus = currentStatus < 3 ? currentStatus + 1 : currentStatus;
+      } else {
+        nextStatus = currentStatus > 1 ? currentStatus - 1 : currentStatus;
+      }
+      await _firestore.collection('orders').doc(oid).update({
+        'status': nextStatus,
+      });
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  @override
   Stream<List<OrderModel>?> get orderStream => _fetchOrders();
 }

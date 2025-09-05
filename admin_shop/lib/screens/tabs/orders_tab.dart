@@ -17,11 +17,24 @@ class OrdersTab extends StatefulWidget {
 }
 
 class _OrdersTabState extends State<OrdersTab> {
+  Color? _statusColor(num status) {
+    final Color? color;
+    if (status == 1) {
+      color = Colors.amber;
+    } else if (status == 2) {
+      color = Colors.blue;
+    } else {
+      color = Colors.green;
+    }
+    return color;
+  }
+
   @override
   Widget build(BuildContext context) {
     final locale = Localizations.localeOf(context).languageCode;
     final currency = NumberFormat.compactSimpleCurrency(locale: locale);
     final date = DateFormat.yMMMMEEEEd(locale).add_Hm();
+    final orderBloc = BlocProvider.of<OrderBloc>(context);
     return BlocBuilder<OrderBloc, OrderState>(
       builder: (context, orderState) {
         if (orderState.status == OrdersOverviewStatus.initial ||
@@ -37,10 +50,21 @@ class _OrdersTabState extends State<OrdersTab> {
             itemCount: orders.length,
             itemBuilder: (context, index) {
               final order = orders[index];
+              final orderStatus =
+                  OrderProgressStatus.values[order.status.toInt() - 1];
+              final orderLabel = orderStatus.label(locale);
               return Card(
                 child: ExpansionTile(
-                  title: Text(
-                    'Pedido: #${order.id}',
+                  title: Text.rich(
+                    TextSpan(
+                      text: 'Pedido: #${order.id} - ',
+                      children: [
+                        TextSpan(
+                          text: orderLabel,
+                          style: TextStyle(color: _statusColor(order.status)),
+                        ),
+                      ],
+                    ),
                     overflow: TextOverflow.ellipsis,
                   ),
                   subtitle: Text(date.format(order.createdAt).capitalize()),
@@ -134,7 +158,11 @@ class _OrdersTabState extends State<OrdersTab> {
                             style: TextButton.styleFrom(
                               shape: RoundedRectangleBorder(),
                             ),
-                            onPressed: () {},
+                            onPressed: order.status == 1
+                                ? null
+                                : () => orderBloc.add(
+                                    SetStatusCodeRequested(order.id, false),
+                                  ),
                             child: Text('Regredir'),
                           ),
                         ),
@@ -144,7 +172,11 @@ class _OrdersTabState extends State<OrdersTab> {
                               foregroundColor: Colors.green,
                               shape: RoundedRectangleBorder(),
                             ),
-                            onPressed: () {},
+                            onPressed: order.status == 3
+                                ? null
+                                : () => orderBloc.add(
+                                    SetStatusCodeRequested(order.id, true),
+                                  ),
                             child: Text('Avançar'),
                           ),
                         ),

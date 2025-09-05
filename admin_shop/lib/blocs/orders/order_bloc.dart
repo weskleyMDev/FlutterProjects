@@ -17,13 +17,14 @@ final class OrderBloc extends Bloc<OrderEvent, OrderState> {
     on<OrdersOverviewSubscriptionRequested>(
       _onOrdersOverviewSubscriptionRequested,
     );
+    on<SetStatusCodeRequested>(_onSetStatusCodeRequested);
   }
 
   Future<void> _onOrdersOverviewSubscriptionRequested(
     OrdersOverviewSubscriptionRequested event,
     Emitter<OrderState> emit,
   ) async {
-    emit(OrderState.loading(orders: state.orders));
+    emit(state.copyWith(status: () => OrdersOverviewStatus.loading));
     await emit.forEach<List<OrderModel>?>(
       _orderRepository.orderStream,
       onData: (data) {
@@ -38,16 +39,37 @@ final class OrderBloc extends Bloc<OrderEvent, OrderState> {
                   .round(scale: 2)
                   .toDouble();
         }
-        return OrderState.success(data).copyWith(
+        return state.copyWith(
+          orders: () => data,
+          status: () => OrdersOverviewStatus.success,
           userOrdersCount: () => count,
           userOrdersTotal: () => totalSpent,
         );
       },
-      onError: (error, _) => OrderState.failure(
-        error is FirebaseException
+      onError: (error, _) => state.copyWith(
+        status: () => OrdersOverviewStatus.failure,
+        orderError: () => error is FirebaseException
             ? (error.message ?? 'Firebase unknown error!')
             : error.toString(),
       ),
     );
+  }
+
+  Future<void> _onSetStatusCodeRequested(
+    SetStatusCodeRequested event,
+    Emitter<OrderState> emit,
+  ) async {
+    try {
+      await _orderRepository.setStatusCode(event.oid, event.isIncrement);
+      emit(state.copyWith(status: () => OrdersOverviewStatus.success));
+    } catch (e) {
+      emit(
+        state.copyWith(
+          orderError: () => e is FirebaseException
+              ? (e.message ?? 'Firebase unknown error!')
+              : e.toString(),
+        ),
+      );
+    }
   }
 }
