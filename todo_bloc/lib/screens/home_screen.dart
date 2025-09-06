@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:fluttericon/font_awesome5_icons.dart';
+import 'package:intl/intl.dart';
 import 'package:todo/blocs/todo_bloc.dart';
 import 'package:todo/screens/loading_screen.dart';
 
@@ -17,7 +17,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    _todoBloc = context.read<TodoBloc>();
+    _todoBloc = BlocProvider.of<TodoBloc>(context);
     _textEditingController = TextEditingController();
   }
 
@@ -39,79 +39,64 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       resizeToAvoidBottomInset: true,
       appBar: AppBar(centerTitle: true, title: const Text('Todo App')),
-      body: BlocBuilder<TodoBloc, TodoState>(
-        builder: (context, state) {
-          if (state.status == TodoStatus.loading) {
-            return LoadingScreen();
-          } else if (state.status == TodoStatus.loaded) {
-            final todos = state.todos;
-
-            return Column(
-              children: [
-                Expanded(
-                  child: todos.isEmpty
-                      ? const Center(child: Text('No todos found'))
-                      : ListView.builder(
-                          itemCount: todos.length,
-                          itemBuilder: (_, index) {
-                            final todo = todos[index];
-                            return ListTile(
-                              title: Text(todo.text),
-                              trailing: IconButton(
-                                onPressed: () =>
-                                    _todoBloc.add(DeleteTodo(todo.id)),
-                                icon: Icon(FontAwesome5.trash_alt),
-                                iconSize: 18.0,
-                                color: Colors.red,
-                                padding: EdgeInsets.zero,
-                                tooltip: 'Remove Todo',
-                              ),
-                            );
-                          },
-                        ),
-                ),
-                Card(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: TextField(
-                            controller: _textEditingController,
-                            keyboardType: TextInputType.text,
-                            textInputAction: TextInputAction.done,
-                            decoration: const InputDecoration(
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.all(
-                                  Radius.circular(12),
-                                ),
-                              ),
-                              labelText: 'Add Todo',
-                            ),
-                            onSubmitted: (_) => _submitText(),
-                          ),
-                        ),
-                        IconButton(
-                          onPressed: _submitText,
-                          icon: const Icon(FontAwesome5.plus),
-                          iconSize: 18.0,
-                          color: Colors.deepPurple,
-                          padding: EdgeInsets.zero,
-                          tooltip: 'Add Todo',
-                        ),
-                      ],
+      body: Stack(
+        children: [
+          BlocBuilder<TodoBloc, TodoState>(
+            builder: (context, todoState) {
+              if (todoState.status == TodoStatus.loading) {
+                return const LoadingScreen();
+              }
+              final todos = todoState.todos;
+              return ListView.builder(
+                itemCount: todos.length,
+                itemBuilder: (context, index) {
+                  final todo = todos[index];
+                  final date = DateFormat.yMEd().add_Hm().format(
+                    todo.createdAt,
+                  );
+                  return ListTile(
+                    title: Text(todo.text),
+                    subtitle: Text(date),
+                    trailing: IconButton(
+                      onPressed: () => _todoBloc.add(DeleteTodo(todo.id)),
+                      icon: const Icon(Icons.delete_rounded),
                     ),
-                  ),
+                  );
+                },
+              );
+            },
+          ),
+          Positioned(
+            bottom: 0.0,
+            right: 0.0,
+            left: 0.0,
+            child: Card(
+              margin: const EdgeInsets.all(12.0),
+              elevation: 2.0,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: TextField(
+                        controller: _textEditingController,
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(),
+                          labelText: 'Add Todo',
+                        ),
+                        onSubmitted: (_) => _submitText(),
+                      ),
+                    ),
+                    IconButton(
+                      onPressed: _submitText,
+                      icon: Icon(Icons.add_rounded),
+                    ),
+                  ],
                 ),
-              ],
-            );
-          } else {
-            return const Center(child: Text('Something went wrong'));
-          }
-        },
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

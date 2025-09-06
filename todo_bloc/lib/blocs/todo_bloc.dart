@@ -1,7 +1,7 @@
 import 'dart:async';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:todo/models/todo_model.dart';
 import 'package:todo/repositories/todo_repository.dart';
@@ -19,37 +19,15 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
 
   Future<void> _onFetchTodos(FetchTodos event, Emitter<TodoState> emit) async {
     emit(state.copyWith(status: () => TodoStatus.loading));
-    await emit.forEach<QuerySnapshot<TodoModel>>(
+    await emit.forEach<List<TodoModel>>(
       _todoRepository.todoStream,
-      onData: (snapshot) {
-        List<TodoModel> todos = [];
-        for (var doc in snapshot.docChanges) {
-          final data = doc.doc.data();
-          if (data == null) continue;
-          switch (doc.type) {
-            case DocumentChangeType.added:
-              todos.add(data);
-              break;
-            case DocumentChangeType.modified:
-              final modifiedTodo = data;
-              todos = todos.map((todo) {
-                if (todo.id == modifiedTodo.id) return modifiedTodo;
-                return todo;
-              }).toList();
-              break;
-            case DocumentChangeType.removed:
-              todos.removeWhere((todo) => todo.id == data.id);
-              break;
-          }
-        }
-        return state.copyWith(
-          todos: () => todos,
-          status: () => TodoStatus.loaded,
-        );
-      },
+      onData: (data) =>
+          state.copyWith(todos: () => data, status: () => TodoStatus.loaded),
       onError: (error, _) {
         return state.copyWith(
-          errorMessage: () => error.toString(),
+          errorMessage: () => error is FirebaseException
+              ? error.message ?? 'Unknown error!'
+              : error.toString(),
           status: () => TodoStatus.error,
         );
       },
@@ -59,13 +37,8 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
   Future<void> _onAddTodo(AddTodo event, Emitter<TodoState> emit) async {
     emit(state.copyWith(status: () => TodoStatus.loading));
     try {
-      final newTodo = await _todoRepository.addTodo(event.text);
-      emit(
-        state.copyWith(
-          todos: () => [...state.todos, newTodo],
-          status: () => TodoStatus.loaded,
-        ),
-      );
+      await _todoRepository.addTodo(event.text);
+      emit(state.copyWith(status: () => TodoStatus.loaded));
     } catch (e) {
       emit(
         state.copyWith(
@@ -80,13 +53,7 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
     emit(state.copyWith(status: () => TodoStatus.loading));
     try {
       await _todoRepository.deleteTodoById(event.id);
-      emit(
-        state.copyWith(
-          todos: () =>
-              state.todos.where((todo) => todo.id != event.id).toList(),
-          status: () => TodoStatus.loaded,
-        ),
-      );
+      emit(state.copyWith(status: () => TodoStatus.loaded));
     } catch (e) {
       emit(
         state.copyWith(
