@@ -37,6 +37,7 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
   Future<void> _onAddTodo(AddTodo event, Emitter<TodoState> emit) async {
     emit(state.copyWith(status: () => TodoStatus.loading));
     try {
+      await Future.delayed(const Duration(seconds: 2));
       await _todoRepository.addTodo(event.text);
       emit(state.copyWith(status: () => TodoStatus.loaded));
     } catch (e) {

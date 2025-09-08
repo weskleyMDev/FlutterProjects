@@ -43,26 +43,29 @@ class _HomeScreenState extends State<HomeScreen> {
         children: [
           BlocBuilder<TodoBloc, TodoState>(
             builder: (context, todoState) {
-              if (todoState.status == TodoStatus.loading) {
-                return const LoadingScreen();
-              }
               final todos = todoState.todos;
-              return ListView.builder(
-                itemCount: todos.length,
-                itemBuilder: (context, index) {
-                  final todo = todos[index];
-                  final date = DateFormat.yMEd().add_Hm().format(
-                    todo.createdAt,
-                  );
-                  return ListTile(
-                    title: Text(todo.text),
-                    subtitle: Text(date),
-                    trailing: IconButton(
-                      onPressed: () => _todoBloc.add(DeleteTodo(todo.id)),
-                      icon: const Icon(Icons.delete_rounded),
-                    ),
-                  );
-                },
+              return Stack(
+                children: [
+                  ListView.builder(
+                    itemCount: todos.length,
+                    itemBuilder: (context, index) {
+                      final todo = todos[index];
+                      final date = DateFormat.yMEd().add_Hm().format(
+                        todo.createdAt,
+                      );
+                      return ListTile(
+                        title: Text(todo.text),
+                        subtitle: Text(date),
+                        trailing: IconButton(
+                          onPressed: () => _todoBloc.add(DeleteTodo(todo.id)),
+                          icon: const Icon(Icons.delete_rounded),
+                        ),
+                      );
+                    },
+                  ),
+                  if (todoState.status == TodoStatus.loading)
+                    const LoadingScreen(),
+                ],
               );
             },
           ),

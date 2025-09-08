@@ -3,6 +3,7 @@ import 'package:admin_shop/generated/l10n.dart';
 import 'package:admin_shop/screens/loading_screen.dart';
 import 'package:admin_shop/screens/tabs/clients_tab.dart';
 import 'package:admin_shop/screens/tabs/orders_tab.dart';
+import 'package:admin_shop/screens/tabs/products_tab.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttericon/font_awesome5_icons.dart';
@@ -58,11 +59,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   });
                 },
                 physics: const NeverScrollableScrollPhysics(),
-                children: [
-                  ClientsTab(),
-                  OrdersTab(),
-                  Container(color: Colors.blue),
-                ],
+                children: [ClientsTab(), OrdersTab(), ProductsTab()],
               ),
               (state.status == AuthStatus.waiting)
                   ? const LoadingScreen()
