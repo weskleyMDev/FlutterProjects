@@ -1,6 +1,7 @@
 import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:fluttericon/font_awesome5_icons.dart';
 import 'package:fluttericon/font_awesome_icons.dart';
 import 'package:fribev2_app/generated/l10n.dart';
 import 'package:fribev2_app/models/cart_item.dart';
@@ -32,6 +33,7 @@ class CartPanel extends StatefulWidget {
 
 class _CartPanelState extends State<CartPanel> {
   late final TextEditingController _quantityController;
+  late final TextEditingController _discountController;
   late final GlobalKey<FormState> _formCartKey;
   late final GlobalKey<FormState> _formPayKey;
 
@@ -39,6 +41,7 @@ class _CartPanelState extends State<CartPanel> {
   void initState() {
     super.initState();
     _quantityController = TextEditingController();
+    _discountController = TextEditingController();
     _formCartKey = GlobalKey<FormState>();
     _formPayKey = GlobalKey<FormState>();
   }
@@ -46,6 +49,7 @@ class _CartPanelState extends State<CartPanel> {
   @override
   void dispose() {
     _quantityController.dispose();
+    _discountController.dispose();
     super.dispose();
   }
 
@@ -179,6 +183,7 @@ class _CartPanelState extends State<CartPanel> {
           return Center(child: SelectableText(S.of(context).no_products));
         }
         return ListView(
+          shrinkWrap: true,
           children: [
             Card(
               child: Padding(
@@ -228,6 +233,44 @@ class _CartPanelState extends State<CartPanel> {
                           ),
                         );
                       },
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            Card(
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Desconto:',
+                      style: Theme.of(context).textTheme.titleLarge,
+                    ),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: TextField(
+                              key: const ValueKey('discount_cart'),
+                              controller: _discountController,
+                              decoration: InputDecoration(
+                                labelText: 'Desconto',
+                                border: OutlineInputBorder(),
+                                prefixIcon: Icon(FontAwesome.ticket),
+                              ),
+                            ),
+                          ),
+                        ),
+                        IconButton.filled(
+                          onPressed: () {},
+                          icon: const Icon(FontAwesome5.plus),
+                          tooltip: 'Adicionar Desconto',
+                          iconSize: 22.0,
+                        ),
+                      ],
                     ),
                   ],
                 ),
