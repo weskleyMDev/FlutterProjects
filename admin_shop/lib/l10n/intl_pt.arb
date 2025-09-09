@@ -52,5 +52,41 @@
     "clients": "Clientes",
     "@clients": {
         "description": "clients label text"
+    },
+    "shirt": "{count, plural, zero{Nenhuma Camisa} one{Camisa} other{Camisas}}",
+    "@shirt": {
+        "description": "shirt button label text",
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "jacket": "{count, plural, zero{Nenhum Casaco} one{Casaco} other{Casacos}}",
+    "@jacket": {
+        "description": "jacket button label text",
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "pants": "{count, plural, zero{Nenhuma Calça} one{Calça} other{Calças}}",
+    "@pants": {
+        "description": "pants button label text",
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "shorts": "{count, plural, zero{Nenhuma Bermuda} one{Bermuda} other{Bermudas}}",
+    "@shorts": {
+        "description": "shorts button label text",
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
     }
 }

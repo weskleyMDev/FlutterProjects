@@ -173,6 +173,58 @@ class S {
       args: [],
     );
   }
+
+  /// `{count, plural, zero{No Shirt} one{Shirt} other{Shirts}}`
+  String shirt(int count) {
+    return Intl.plural(
+      count,
+      zero: 'No Shirt',
+      one: 'Shirt',
+      other: 'Shirts',
+      name: 'shirt',
+      desc: 'shirt button label text',
+      args: [count],
+    );
+  }
+
+  /// `{count, plural, zero{No Jacket} one{Jacket} other{Jackets}}`
+  String jacket(int count) {
+    return Intl.plural(
+      count,
+      zero: 'No Jacket',
+      one: 'Jacket',
+      other: 'Jackets',
+      name: 'jacket',
+      desc: 'jacket button label text',
+      args: [count],
+    );
+  }
+
+  /// `{count, plural, zero{No Pants} one{Pants} other{Pants}}`
+  String pants(int count) {
+    return Intl.plural(
+      count,
+      zero: 'No Pants',
+      one: 'Pants',
+      other: 'Pants',
+      name: 'pants',
+      desc: 'pants button label text',
+      args: [count],
+    );
+  }
+
+  /// `{count, plural, zero{No Shorts} one{Shorts} other{Shorts}}`
+  String shorts(int count) {
+    return Intl.plural(
+      count,
+      zero: 'No Shorts',
+      one: 'Shorts',
+      other: 'Shorts',
+      name: 'shorts',
+      desc: 'shorts button label text',
+      args: [count],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

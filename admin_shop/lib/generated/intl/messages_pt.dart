@@ -22,6 +22,18 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m0(name) => "Bem vindo, ${name}!";
 
+  static String m1(count) =>
+      "${Intl.plural(count, zero: 'Nenhum Casaco', one: 'Casaco', other: 'Casacos')}";
+
+  static String m2(count) =>
+      "${Intl.plural(count, zero: 'Nenhuma Calça', one: 'Calça', other: 'Calças')}";
+
+  static String m3(count) =>
+      "${Intl.plural(count, zero: 'Nenhuma Camisa', one: 'Camisa', other: 'Camisas')}";
+
+  static String m4(count) =>
+      "${Intl.plural(count, zero: 'Nenhuma Bermuda', one: 'Bermuda', other: 'Bermudas')}";
+
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
     "clients": MessageLookupByLibrary.simpleMessage("Clientes"),
@@ -30,6 +42,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "have_account": MessageLookupByLibrary.simpleMessage(
       "Já tem uma conta? Faça login.",
     ),
+    "jacket": m1,
     "login": MessageLookupByLibrary.simpleMessage("Entrar"),
     "logout": MessageLookupByLibrary.simpleMessage("Sair"),
     "name": MessageLookupByLibrary.simpleMessage("Nome"),
@@ -37,8 +50,11 @@ class MessageLookup extends MessageLookupByLibrary {
       "Ainda não tem uma conta? Cadastre-se.",
     ),
     "orders": MessageLookupByLibrary.simpleMessage("Pedidos"),
+    "pants": m2,
     "password": MessageLookupByLibrary.simpleMessage("Senha"),
     "products": MessageLookupByLibrary.simpleMessage("Produtos"),
     "register": MessageLookupByLibrary.simpleMessage("Cadastrar"),
+    "shirt": m3,
+    "shorts": m4,
   };
 }
