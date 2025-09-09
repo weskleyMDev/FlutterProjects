@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:admin_shop/blocs/auth/auth_bloc.dart';
 import 'package:admin_shop/blocs/login_form/login_form_bloc.dart';
 import 'package:admin_shop/blocs/orders/order_bloc.dart';
@@ -17,15 +15,26 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:window_size/window_size.dart';
+import 'package:window_manager/window_manager.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
-    setWindowTitle('Admin Shop');
-    setWindowMinSize(const Size(800, 600));
-  }
+  await Future.wait([
+    Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform),
+    windowManager.ensureInitialized(),
+  ]);
+  WindowOptions windowOptions = const WindowOptions(
+    size: Size(800, 600),
+    minimumSize: Size(800, 600),
+    center: true,
+    backgroundColor: Colors.transparent,
+    skipTaskbar: false,
+    title: 'Admin Shop',
+    titleBarStyle: TitleBarStyle.normal,
+  );
+  windowManager.waitUntilReadyToShow(windowOptions, () async {
+    await Future.wait([windowManager.show(), windowManager.focus()]);
+  });
   runApp(const MyApp());
 }
 
