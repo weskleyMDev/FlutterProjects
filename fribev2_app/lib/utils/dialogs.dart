@@ -52,6 +52,9 @@ void paymentMethod(
                 margin: const EdgeInsets.only(top: 10.0),
                 child: TextFormField(
                   key: const ValueKey('payment_value'),
+                  keyboardType: TextInputType.numberWithOptions(
+                    decimal: true,
+                  ),
                   decoration: InputDecoration(
                     labelText: 'Valor',
                     border: OutlineInputBorder(),

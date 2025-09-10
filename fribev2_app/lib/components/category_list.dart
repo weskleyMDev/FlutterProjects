@@ -49,8 +49,16 @@ class _CategoryListState extends State<CategoryList> {
           itemCount: products.length,
           itemBuilder: (_, index) {
             final product = products[index];
-            final amount = numFormat.format(double.parse(product.amount));
-            final price = currencyFormat.format(double.parse(product.price));
+            final amountDouble = double.parse(
+              product.amount.replaceAll(',', '.'),
+            );
+            final amountFormatted = amountDouble.toStringAsFixed(3);
+
+            final priceDouble = double.parse(
+              product.price.replaceAll(',', '.'),
+            );
+            final priceFormatted = currencyFormat.format(priceDouble);
+
             return Card(
               color: Colors.transparent,
               margin: EdgeInsets.symmetric(horizontal: 12, vertical: 4),
@@ -96,8 +104,10 @@ class _CategoryListState extends State<CategoryList> {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12.0),
                     ),
-                    title: Text('${product.name} - $price'),
-                    subtitle: Text('Estoque: $amount(${product.measure})'),
+                    title: Text('${product.name} - $priceFormatted'),
+                    subtitle: Text(
+                      'Estoque: $amountFormatted (${product.measure})',
+                    ),
                   ),
                 ),
               ),

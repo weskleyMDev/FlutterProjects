@@ -1,9 +1,9 @@
-import 'dart:io';
-
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttericon/font_awesome5_icons.dart';
 import 'package:fribev2_app/components/category_list.dart';
 import 'package:fribev2_app/components/search_bar.dart';
+import 'package:fribev2_app/utils/calculator_launcher_stub.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
@@ -67,14 +67,13 @@ class _StockCategoryPageState extends State<StockCategoryPage> {
   // }
 
   void _openSysCalculator() {
-    if (Platform.isWindows) {
-      Process.start('calc.exe', []);
-    } else if (Platform.isAndroid) {
-      return;
-    } else {
-      throw UnsupportedError('Calculadora não foi encontrada no sistema!');
-    }
+  try {
+    openSystemCalculator();
+  } catch (e) {
+    // Pode exibir um snackbar, dialog etc.
+    debugPrint(e.toString());
   }
+}
 
   @override
   Widget build(BuildContext context) {
@@ -83,7 +82,7 @@ class _StockCategoryPageState extends State<StockCategoryPage> {
       appBar: AppBar(
         title: Text(widget.title),
         actions: [
-          if (Platform.isWindows)
+          if (!kIsWeb && defaultTargetPlatform == TargetPlatform.windows)
             Container(
               margin: const EdgeInsets.only(right: 4.0),
               child: IconButton(
