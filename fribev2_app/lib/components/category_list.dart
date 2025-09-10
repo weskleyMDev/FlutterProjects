@@ -42,7 +42,6 @@ class _CategoryListState extends State<CategoryList> {
     return Observer(
       builder: (_) {
         final locale = Localizations.localeOf(context).languageCode;
-        final numFormat = NumberFormat.compact(locale: locale);
         final currencyFormat = NumberFormat.simpleCurrency(locale: locale);
         final products = widget.stockStore.filteredProducts;
         return ListView.builder(
