@@ -5,7 +5,6 @@ import 'package:fluttericon/font_awesome5_icons.dart';
 import 'package:fluttericon/font_awesome_icons.dart';
 import 'package:fribev2_app/generated/l10n.dart';
 import 'package:fribev2_app/models/cart_item.dart';
-import 'package:fribev2_app/services/receipt_to_pdf.dart';
 import 'package:fribev2_app/stores/cart.store.dart';
 import 'package:fribev2_app/stores/payment.store.dart';
 import 'package:fribev2_app/stores/sales.store.dart';
@@ -34,6 +33,7 @@ class CartPanel extends StatefulWidget {
 class _CartPanelState extends State<CartPanel> {
   late final TextEditingController _quantityController;
   late final TextEditingController _discountController;
+  late final TextEditingController _shippingController;
   late final GlobalKey<FormState> _formCartKey;
   late final GlobalKey<FormState> _formPayKey;
 
@@ -42,6 +42,7 @@ class _CartPanelState extends State<CartPanel> {
     super.initState();
     _quantityController = TextEditingController();
     _discountController = TextEditingController();
+    _shippingController = TextEditingController();
     _formCartKey = GlobalKey<FormState>();
     _formPayKey = GlobalKey<FormState>();
   }
@@ -50,6 +51,7 @@ class _CartPanelState extends State<CartPanel> {
   void dispose() {
     _quantityController.dispose();
     _discountController.dispose();
+    _shippingController.dispose();
     super.dispose();
   }
 
@@ -165,12 +167,12 @@ class _CartPanelState extends State<CartPanel> {
         quantity: newQuantity.toString(),
       );
     }
-    final receipt = await widget.salesStore.createReceipt(
+    await widget.salesStore.createReceipt(
       cart: widget.cartStore,
       payments: widget.paymentStore.payments,
     );
 
-    await ReceiptGenerator().generateReceipt(receipt: receipt);
+    // await ReceiptGenerator().generateReceipt(receipt: receipt);
     return true;
   }
 
@@ -238,6 +240,7 @@ class _CartPanelState extends State<CartPanel> {
                 ),
               ),
             ),
+            const Divider(height: 28.0),
             Card(
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
@@ -267,7 +270,7 @@ class _CartPanelState extends State<CartPanel> {
                             ),
                           ),
                         ),
-                        IconButton.filled(
+                        IconButton(
                           onPressed: () {
                             widget.cartStore.setDiscount(
                               _discountController.text.trim().replaceAll(
@@ -280,6 +283,56 @@ class _CartPanelState extends State<CartPanel> {
                           },
                           icon: const Icon(FontAwesome5.plus),
                           tooltip: 'Adicionar Desconto',
+                          iconSize: 22.0,
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            Card(
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Entrega:',
+                      style: Theme.of(context).textTheme.titleLarge,
+                    ),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: TextField(
+                              key: const ValueKey('shipping_cart'),
+                              controller: _shippingController,
+                              keyboardType: TextInputType.numberWithOptions(
+                                decimal: true,
+                              ),
+                              decoration: InputDecoration(
+                                labelText: 'Entrega',
+                                border: OutlineInputBorder(),
+                                prefixIcon: Icon(FontAwesome.ticket),
+                              ),
+                            ),
+                          ),
+                        ),
+                        IconButton(
+                          onPressed: () {
+                            widget.cartStore.setShipping(
+                              _shippingController.text.trim().replaceAll(
+                                ',',
+                                '.',
+                              ),
+                            );
+                            _shippingController.clear();
+                            widget.paymentStore.clearPayments();
+                          },
+                          icon: const Icon(FontAwesome5.plus),
+                          tooltip: 'Adicionar Taxa de Entrega',
                           iconSize: 22.0,
                         ),
                       ],
@@ -301,11 +354,22 @@ class _CartPanelState extends State<CartPanel> {
                     ),
                     ListTile(
                       title: Text(
-                        'Total: R\$${widget.cartStore.total.toStringAsFixed(2).replaceAll('.', ',')}',
+                        'Total: R\$ ${widget.cartStore.total.toStringAsFixed(2).replaceAll('.', ',')}',
                         overflow: TextOverflow.ellipsis,
                       ),
-                      subtitle: Text(
-                        'Restante: R\$${widget.cartStore.remaining.toStringAsFixed(2).replaceAll('.', ',')}',
+                      subtitle: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Restante: R\$ ${widget.cartStore.remaining.toStringAsFixed(2).replaceAll('.', ',')}',
+                          ),
+                          Text(
+                            'Desconto: R\$ ${double.parse(widget.cartStore.discount).toStringAsFixed(2).replaceAll('.', ',')}',
+                          ),
+                          Text(
+                            'Entrega: R\$ ${double.parse(widget.cartStore.shipping).toStringAsFixed(2).replaceAll('.', ',')}',
+                          ),
+                        ],
                       ),
                     ),
                   ],
@@ -375,19 +439,31 @@ class _CartPanelState extends State<CartPanel> {
               builder: (_) {
                 final finalize =
                     widget.paymentStore.totalPayments == widget.cartStore.total;
-                return FilledButton(
-                  onPressed: finalize
-                      ? () async {
-                          final success = await _finalizeSale();
-                          if (success) {
-                            widget.cartStore.clearCartStore();
-                            widget.paymentStore.clearPaymentStore();
-                            if (!context.mounted) return;
-                            context.pop();
+                return Padding(
+                  padding: const EdgeInsets.all(5.0),
+                  child: FilledButton(
+                    onPressed: finalize
+                        ? () async {
+                            final success = await _finalizeSale();
+                            if (success) {
+                              widget.cartStore.clearCartStore();
+                              widget.paymentStore.clearPaymentStore();
+                              if (!context.mounted) return;
+                              context.pop();
+                            }
                           }
-                        }
-                      : null,
-                  child: Text('Finalizar Pedido'),
+                        : null,
+                    style: ElevatedButton.styleFrom(
+                      minimumSize: const Size.fromHeight(50),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8.0),
+                      ),
+                    ),
+                    child: Text(
+                      'Finalizar Pedido',
+                      style: TextStyle(fontSize: 18.0),
+                    ),
+                  ),
                 );
               },
             ),

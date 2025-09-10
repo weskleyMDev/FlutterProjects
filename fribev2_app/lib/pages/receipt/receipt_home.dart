@@ -163,7 +163,6 @@ class _ReceiptHomePageState extends State<ReceiptHomePage> {
         builder: (_) {
           final locale = Localizations.localeOf(context).languageCode;
           final currency = NumberFormat.simpleCurrency(locale: locale);
-          final measure = NumberFormat.compact(locale: locale);
           final status = _salesStore.receiptStreamStatus;
           if (status == StreamStatus.waiting) {
             return const Center(child: CircularProgressIndicator());
@@ -215,6 +214,14 @@ class _ReceiptHomePageState extends State<ReceiptHomePage> {
                                   'Total: ${currency.format(double.parse(sales.total))}',
                                   overflow: TextOverflow.ellipsis,
                                 ),
+                                Text(
+                                  'Desconto: ${currency.format(double.parse(sales.discount))}',
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                                Text(
+                                  'Frete: ${currency.format(double.parse(sales.shipping))}',
+                                  overflow: TextOverflow.ellipsis,
+                                ),
                                 Observer(
                                   builder: (_) {
                                     final cartProducts =
@@ -238,15 +245,14 @@ class _ReceiptHomePageState extends State<ReceiptHomePage> {
                                             .product
                                             .name
                                             .capitalize();
-                                        final productQuantity = measure.format(
-                                          cartProduct.quantity,
-                                        );
+                                        final productQuantity =
+                                            cartProduct.quantity;
                                         final productSubtotal = currency.format(
                                           cartProduct.subtotal,
                                         );
                                         return ListTile(
                                           title: Text(
-                                            '$productName x$productQuantity',
+                                            '$productName x${productQuantity.toStringAsFixed(3).replaceAll('.', ',')}',
                                             overflow: TextOverflow.ellipsis,
                                           ),
                                           subtitle: Text(

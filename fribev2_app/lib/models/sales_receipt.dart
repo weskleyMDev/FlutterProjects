@@ -12,6 +12,7 @@ class SalesReceipt {
   final DateTime createAt;
   final List<Payment> payments;
   final String discount;
+  final String shipping;
 
   SalesReceipt({
     required this.id,
@@ -20,6 +21,7 @@ class SalesReceipt {
     required this.createAt,
     required this.payments,
     required this.discount,
+    required this.shipping,
   });
 
   SalesReceipt copyWith({
@@ -29,6 +31,7 @@ class SalesReceipt {
     DateTime? createAt,
     List<Payment>? payments,
     String? discount,
+    String? shipping,
   }) {
     return SalesReceipt(
       id: id ?? this.id,
@@ -37,6 +40,7 @@ class SalesReceipt {
       createAt: createAt ?? this.createAt,
       payments: payments ?? this.payments,
       discount: discount ?? this.discount,
+      shipping: shipping ?? this.shipping,
     );
   }
 
@@ -47,6 +51,7 @@ class SalesReceipt {
       'createAt': createAt.toIso8601String(),
       'payments': payments.map((x) => x.toMap()).toList(),
       'discount': discount,
+      'shipping': shipping,
     };
   }
 
@@ -66,6 +71,7 @@ class SalesReceipt {
             .map<Payment>((x) => Payment.fromMap(x)),
       ),
       discount: map['discount'] as String,
+      shipping: map['shipping'] as String,
     );
   }
 
@@ -76,7 +82,7 @@ class SalesReceipt {
 
   @override
   String toString() {
-    return 'SalesReceipt(id: $id, total: $total, cart: $cart, createAt: $createAt, payments: $payments)';
+    return 'SalesReceipt(id: $id, total: $total, cart: $cart, createAt: $createAt, payments: $payments, discount: $discount, shipping: $shipping)';
   }
 
   @override
@@ -88,7 +94,8 @@ class SalesReceipt {
         listEquals(other.cart, cart) &&
         other.createAt == createAt &&
         listEquals(other.payments, payments) &&
-        other.discount == discount;
+        other.discount == discount &&
+        other.shipping == shipping;
   }
 
   @override
@@ -98,6 +105,7 @@ class SalesReceipt {
         cart.hashCode ^
         createAt.hashCode ^
         payments.hashCode ^
-        discount.hashCode;
+        discount.hashCode ^
+        shipping.hashCode;
   }
 }

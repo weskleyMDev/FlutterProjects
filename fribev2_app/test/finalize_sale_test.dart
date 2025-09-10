@@ -75,6 +75,7 @@ void main() {
       createAt: DateTime.now(),
       payments: [],
       discount: '0.0',
+      shipping: '0.0',
     );
 
     when(() => cartStore.cartList).thenReturn([cartItem]);

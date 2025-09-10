@@ -38,6 +38,7 @@ class FirebaseSalesService implements ISalesService {
       createAt: DateTime.now(),
       payments: payments,
       discount: cart.discount,
+      shipping: cart.shipping,
     );
 
     await _firestore
