@@ -1,6 +1,5 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:fribev2_app/firebase_options.dart';
 import 'package:fribev2_app/generated/l10n.dart';
@@ -20,7 +19,6 @@ import 'utils/theme.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await dotenv.load(fileName: '.env');
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   runApp(const MyApp());
 }
@@ -36,9 +34,7 @@ class MyApp extends StatelessWidget {
       providers: [
         Provider(create: (_) => AuthStore(authService: FirebaseAuthService())),
         Provider(create: (_) => StockStore(FirebaseStockService())),
-        Provider(
-          create: (_) => SalesStore(FirebaseSalesService()),
-        ),
+        Provider(create: (_) => SalesStore(FirebaseSalesService())),
         Provider(create: (_) => CartStore()),
         Provider(create: (_) => SalesFilterStore()),
         Provider(create: (_) => PaymentStore()),

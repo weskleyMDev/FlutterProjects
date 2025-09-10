@@ -256,6 +256,9 @@ class _CartPanelState extends State<CartPanel> {
                             child: TextField(
                               key: const ValueKey('discount_cart'),
                               controller: _discountController,
+                              keyboardType: TextInputType.numberWithOptions(
+                                decimal: true,
+                              ),
                               decoration: InputDecoration(
                                 labelText: 'Desconto',
                                 border: OutlineInputBorder(),
@@ -265,7 +268,16 @@ class _CartPanelState extends State<CartPanel> {
                           ),
                         ),
                         IconButton.filled(
-                          onPressed: () {},
+                          onPressed: () {
+                            widget.cartStore.setDiscount(
+                              _discountController.text.trim().replaceAll(
+                                ',',
+                                '.',
+                              ),
+                            );
+                            _discountController.clear();
+                            widget.paymentStore.clearPayments();
+                          },
                           icon: const Icon(FontAwesome5.plus),
                           tooltip: 'Adicionar Desconto',
                           iconSize: 22.0,

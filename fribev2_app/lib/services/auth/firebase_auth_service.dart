@@ -31,6 +31,14 @@ class FirebaseAuthService implements IAuthService {
       if (doc.exists) {
         final chatUser = AppUser.fromMap(doc.data()!, user.uid);
         _currentUser = chatUser;
+        _firestore.collection('users').doc(user.uid).snapshots().listen((
+          snapshot,
+        ) {
+          if (snapshot.exists && snapshot.data()?['isActive'] == false) {
+            _firebaseAuth.signOut();
+            _currentUser = null;
+          }
+        });
         return chatUser;
       } else {
         _currentUser = null;
@@ -65,8 +73,10 @@ class FirebaseAuthService implements IAuthService {
   @override
   Future<void> signup({required String email, required String password}) async {
     try {
-      final cred = await _firebaseAuth
-          .createUserWithEmailAndPassword(email: email, password: password);
+      final cred = await _firebaseAuth.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
       final user = cred.user;
       if (user == null) throw Exception('User creation failed');
       final newUser = AppUser(id: user.uid, email: email);

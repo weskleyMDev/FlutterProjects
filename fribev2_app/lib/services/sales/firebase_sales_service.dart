@@ -16,9 +16,9 @@ class FirebaseSalesService implements ISalesService {
         .withConverter(fromFirestore: _fromFirestore, toFirestore: _toFirestore)
         .orderBy('createAt', descending: true)
         .snapshots();
-    return snapshots.map(
-      (snapshot) => snapshot.docs.map((doc) => doc.data()).toList(),
-    ).asBroadcastStream();
+    return snapshots
+        .map((snapshot) => snapshot.docs.map((doc) => doc.data()).toList())
+        .asBroadcastStream();
   }
 
   @override
@@ -37,6 +37,7 @@ class FirebaseSalesService implements ISalesService {
       cart: cart.cartList,
       createAt: DateTime.now(),
       payments: payments,
+      discount: cart.discount,
     );
 
     await _firestore

@@ -11,6 +11,7 @@ class SalesReceipt {
   final List<CartItem> cart;
   final DateTime createAt;
   final List<Payment> payments;
+  final String discount;
 
   SalesReceipt({
     required this.id,
@@ -18,6 +19,7 @@ class SalesReceipt {
     required this.cart,
     required this.createAt,
     required this.payments,
+    required this.discount,
   });
 
   SalesReceipt copyWith({
@@ -26,6 +28,7 @@ class SalesReceipt {
     List<CartItem>? cart,
     DateTime? createAt,
     List<Payment>? payments,
+    String? discount,
   }) {
     return SalesReceipt(
       id: id ?? this.id,
@@ -33,6 +36,7 @@ class SalesReceipt {
       cart: cart ?? this.cart,
       createAt: createAt ?? this.createAt,
       payments: payments ?? this.payments,
+      discount: discount ?? this.discount,
     );
   }
 
@@ -42,6 +46,7 @@ class SalesReceipt {
       'cart': cart.map((x) => x.toMap()).toList(),
       'createAt': createAt.toIso8601String(),
       'payments': payments.map((x) => x.toMap()).toList(),
+      'discount': discount,
     };
   }
 
@@ -60,6 +65,7 @@ class SalesReceipt {
             .whereType<Map<String, dynamic>>()
             .map<Payment>((x) => Payment.fromMap(x)),
       ),
+      discount: map['discount'] as String,
     );
   }
 
@@ -81,7 +87,8 @@ class SalesReceipt {
         other.total == total &&
         listEquals(other.cart, cart) &&
         other.createAt == createAt &&
-        listEquals(other.payments, payments);
+        listEquals(other.payments, payments) &&
+        other.discount == discount;
   }
 
   @override
@@ -90,6 +97,7 @@ class SalesReceipt {
         total.hashCode ^
         cart.hashCode ^
         createAt.hashCode ^
-        payments.hashCode;
+        payments.hashCode ^
+        discount.hashCode;
   }
 }

@@ -19,6 +19,9 @@ abstract class CartStoreBase with Store {
   double _total = 0.0;
 
   @observable
+  String _discount = '0.0';
+
+  @observable
   String quantity = '0';
 
   @observable
@@ -34,6 +37,9 @@ abstract class CartStoreBase with Store {
 
   @computed
   double get total => _total;
+
+  @computed
+  String get discount => _discount;
 
   @computed
   double get remaining => _remaining.toDouble();
@@ -98,7 +104,14 @@ abstract class CartStoreBase with Store {
           Decimal.parse(item.quantity.toString()) *
           Decimal.parse(item.product!.price);
     }
-    _total = result.round(scale: 2).toDouble();
+    _total = (result - Decimal.parse(_discount)).round(scale: 2).toDouble();
+  }
+
+  @action
+  void setDiscount(String value) {
+    _discount = value;
+    _setTotal();
+    _remaining = Decimal.parse(_total.toString());
   }
 
   @action
@@ -166,7 +179,7 @@ abstract class CartStoreBase with Store {
   void clearCart() {
     _cartList.clear();
     _total = 0.0;
-    quantity = '0';    
+    quantity = '0';
   }
 
   @action

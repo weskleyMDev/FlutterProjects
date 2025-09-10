@@ -10,9 +10,15 @@ import '../models/sales_receipt.dart';
 class ReceiptGenerator {
   Future<void> generateReceipt({required SalesReceipt? receipt}) async {
     final receiveId = receipt?.id ?? Uuid().v4();
-    final directory = await getApplicationDocumentsDirectory();
-
-    final recibosDir = Directory('${directory.path}/Recibos');
+    //final directory = await getApplicationDocumentsDirectory();
+    final directory = await getExternalStorageDirectory();
+    if (directory == null) {
+      throw Exception(
+        'Não foi possível acessar o armazenamento do dispositivo.',
+      );
+    }
+    //final recibosDir = Directory('${directory.path}/Recibos');
+    final recibosDir = Directory('${directory.path}/../Download/Recibos');
 
     if (!await recibosDir.exists()) {
       await recibosDir.create(recursive: true);
@@ -124,5 +130,6 @@ class ReceiptGenerator {
     );
 
     await pdfFile.writeAsBytes(await pdf.save());
+    print('PDF salvo em: ${pdfFile.path}');
   }
 }
