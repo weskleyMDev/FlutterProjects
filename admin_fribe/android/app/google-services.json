@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "582566355394",
+    "project_id": "fribe-db",
+    "storage_bucket": "fribe-db.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:582566355394:android:6b4acc53c9f2f3d0b7765b",
+        "android_client_info": {
+          "package_name": "br.com.weskley.fribev2.fribev2_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCM9O1-y-etfnDxcEe5u-thnyQaCmyeUUI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:582566355394:android:ddd2ef9c6dde64f0b7765b",
+        "android_client_info": {
+          "package_name": "br.com.weskleym.adminfribe.admin_fribe"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCM9O1-y-etfnDxcEe5u-thnyQaCmyeUUI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
