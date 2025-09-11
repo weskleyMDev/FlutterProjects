@@ -14,6 +14,7 @@ class SalesReceipt {
   final String discount;
   final String shipping;
   final String discountReason;
+  final String tariffs;
 
   SalesReceipt({
     required this.id,
@@ -23,7 +24,8 @@ class SalesReceipt {
     required this.payments,
     required this.discount,
     required this.shipping,
-    this.discountReason = '',
+    required this.discountReason,
+    required this.tariffs,
   });
 
   SalesReceipt copyWith({
@@ -35,6 +37,7 @@ class SalesReceipt {
     String? discount,
     String? shipping,
     String? discountReason,
+    String? tariffs,
   }) {
     return SalesReceipt(
       id: id ?? this.id,
@@ -45,6 +48,7 @@ class SalesReceipt {
       discount: discount ?? this.discount,
       shipping: shipping ?? this.shipping,
       discountReason: discountReason ?? this.discountReason,
+      tariffs: tariffs ?? this.tariffs,
     );
   }
 
@@ -57,6 +61,7 @@ class SalesReceipt {
       'discount': discount,
       'shipping': shipping,
       'discountReason': discountReason,
+      'tariffs': tariffs,
     };
   }
 
@@ -78,6 +83,7 @@ class SalesReceipt {
       discount: map['discount'] as String,
       shipping: map['shipping'] as String,
       discountReason: map['discountReason'] as String,
+      tariffs: map['tariffs'] as String,
     );
   }
 
@@ -88,7 +94,7 @@ class SalesReceipt {
 
   @override
   String toString() {
-    return 'SalesReceipt(id: $id, total: $total, cart: $cart, createAt: $createAt, payments: $payments, discount: $discount, shipping: $shipping, discountReason: $discountReason)';
+    return 'SalesReceipt(id: $id, total: $total, cart: $cart, createAt: $createAt, payments: $payments, discount: $discount, shipping: $shipping, discountReason: $discountReason), tariffs: $tariffs';
   }
 
   @override
@@ -102,7 +108,8 @@ class SalesReceipt {
         listEquals(other.payments, payments) &&
         other.discount == discount &&
         other.shipping == shipping &&
-        other.discountReason == discountReason;
+        other.discountReason == discountReason &&
+        other.tariffs == tariffs;
   }
 
   @override
@@ -114,6 +121,7 @@ class SalesReceipt {
         payments.hashCode ^
         discount.hashCode ^
         shipping.hashCode ^
-        discountReason.hashCode;
+        discountReason.hashCode ^
+        tariffs.hashCode;
   }
 }

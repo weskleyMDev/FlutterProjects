@@ -76,6 +76,8 @@ void main() {
       payments: [],
       discount: '0.0',
       shipping: '0.0',
+      discountReason: '',
+      tariffs: '0.0',
     );
 
     when(() => cartStore.cartList).thenReturn([cartItem]);

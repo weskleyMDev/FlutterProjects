@@ -36,6 +36,7 @@ class _CartPanelState extends State<CartPanel> {
   late final TextEditingController _discountController;
   late final TextEditingController _discountReasonController;
   late final TextEditingController _shippingController;
+  late final TextEditingController _tariffsController;
   late final GlobalKey<FormState> _formCartKey;
   late final GlobalKey<FormState> _formPayKey;
 
@@ -46,6 +47,7 @@ class _CartPanelState extends State<CartPanel> {
     _discountController = TextEditingController();
     _discountReasonController = TextEditingController();
     _shippingController = TextEditingController();
+    _tariffsController = TextEditingController();
     _formCartKey = GlobalKey<FormState>();
     _formPayKey = GlobalKey<FormState>();
   }
@@ -56,6 +58,7 @@ class _CartPanelState extends State<CartPanel> {
     _discountController.dispose();
     _discountReasonController.dispose();
     _shippingController.dispose();
+    _tariffsController.dispose();
     super.dispose();
   }
 
@@ -377,6 +380,56 @@ class _CartPanelState extends State<CartPanel> {
                 ),
               ),
             ),
+            Card(
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Juros:',
+                      style: Theme.of(context).textTheme.titleLarge,
+                    ),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: TextField(
+                              key: const ValueKey('tariffs_cart'),
+                              controller: _tariffsController,
+                              keyboardType: TextInputType.numberWithOptions(
+                                decimal: true,
+                              ),
+                              decoration: InputDecoration(
+                                labelText: 'Juros',
+                                border: OutlineInputBorder(),
+                                prefixIcon: Icon(
+                                  FontAwesome5.credit_card,
+                                  size: 18.0,
+                                ),
+                              ),
+                              onChanged: (_) {
+                                if (_tariffsController.text.isEmpty) {
+                                  widget.cartStore.setTariffs('0');
+                                } else {
+                                  widget.cartStore.setTariffs(
+                                    _tariffsController.text.trim().replaceAll(
+                                      ',',
+                                      '.',
+                                    ),
+                                  );
+                                }
+                              },
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
             const Divider(height: 28.0),
             Card(
               child: Padding(
@@ -406,6 +459,10 @@ class _CartPanelState extends State<CartPanel> {
                           ),
                           Text(
                             'Entrega: R\$ ${double.parse(widget.cartStore.shipping).toStringAsFixed(2).replaceAll('.', ',')}',
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          Text(
+                            'Juros: R\$ ${double.parse(widget.cartStore.tariffs).toStringAsFixed(2).replaceAll('.', ',')}',
                             overflow: TextOverflow.ellipsis,
                           ),
                         ],

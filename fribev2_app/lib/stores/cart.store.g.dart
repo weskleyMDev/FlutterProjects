@@ -45,6 +45,13 @@ mixin _$CartStore on CartStoreBase, Store {
     () => super.shipping,
     name: 'CartStoreBase.shipping',
   )).value;
+  Computed<String>? _$tariffsComputed;
+
+  @override
+  String get tariffs => (_$tariffsComputed ??= Computed<String>(
+    () => super.tariffs,
+    name: 'CartStoreBase.tariffs',
+  )).value;
   Computed<double>? _$remainingComputed;
 
   @override
@@ -155,6 +162,24 @@ mixin _$CartStore on CartStoreBase, Store {
   set _shipping(String value) {
     _$_shippingAtom.reportWrite(value, super._shipping, () {
       super._shipping = value;
+    });
+  }
+
+  late final _$_tariffsAtom = Atom(
+    name: 'CartStoreBase._tariffs',
+    context: context,
+  );
+
+  @override
+  String get _tariffs {
+    _$_tariffsAtom.reportRead();
+    return super._tariffs;
+  }
+
+  @override
+  set _tariffs(String value) {
+    _$_tariffsAtom.reportWrite(value, super._tariffs, () {
+      super._tariffs = value;
     });
   }
 
@@ -302,6 +327,18 @@ mixin _$CartStore on CartStoreBase, Store {
   }
 
   @override
+  void setTariffs(String value) {
+    final _$actionInfo = _$CartStoreBaseActionController.startAction(
+      name: 'CartStoreBase.setTariffs',
+    );
+    try {
+      return super.setTariffs(value);
+    } finally {
+      _$CartStoreBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   void incrementQuantity(String productId) {
     final _$actionInfo = _$CartStoreBaseActionController.startAction(
       name: 'CartStoreBase.incrementQuantity',
@@ -370,6 +407,7 @@ total: ${total},
 discount: ${discount},
 discountReason: ${discountReason},
 shipping: ${shipping},
+tariffs: ${tariffs},
 remaining: ${remaining},
 errorMessage: ${errorMessage},
 isProductInCart: ${isProductInCart}
