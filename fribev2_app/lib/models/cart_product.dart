@@ -4,8 +4,8 @@ import 'package:fribev2_app/models/product.dart';
 
 class CartProduct {
   final Product product;
-  final double quantity;
-  final double subtotal;
+  final num quantity;
+  final num subtotal;
 
   CartProduct({
     required this.product,
@@ -13,7 +13,7 @@ class CartProduct {
     required this.subtotal,
   });
 
-  CartProduct copyWith({Product? product, double? quantity, double? subtotal}) {
+  CartProduct copyWith({Product? product, num? quantity, num? subtotal}) {
     return CartProduct(
       product: product ?? this.product,
       quantity: quantity ?? this.quantity,
@@ -32,8 +32,8 @@ class CartProduct {
   factory CartProduct.fromMap(Map<String, dynamic> map, String pid) {
     return CartProduct(
       product: Product.fromMap(map['product'] as Map<String, dynamic>, pid),
-      quantity: map['quantity'] as double,
-      subtotal: map['subtotal'] as double,
+      quantity: map['quantity'] as num,
+      subtotal: map['subtotal'] as num,
     );
   }
 

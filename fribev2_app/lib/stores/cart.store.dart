@@ -195,6 +195,9 @@ abstract class CartStoreBase with Store {
     _cartList.clear();
     _total = 0.0;
     quantity = '0';
+    _discount = '0.0';
+    _shipping = '0.0';
+    _remaining = Decimal.zero;
   }
 
   @action

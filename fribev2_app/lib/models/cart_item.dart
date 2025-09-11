@@ -5,8 +5,8 @@ import 'package:fribev2_app/models/product.dart';
 class CartItem {
   final String id;
   final String productId;
-  final double quantity;
-  final double subtotal;
+  final num quantity;
+  final num subtotal;
   final Product? product;
 
   CartItem({
@@ -20,8 +20,8 @@ class CartItem {
   CartItem copyWith({
     String? id,
     String? productId,
-    double? quantity,
-    double? subtotal,
+    num? quantity,
+    num? subtotal,
     Product? product,
   }) {
     return CartItem(
@@ -46,8 +46,8 @@ class CartItem {
     return CartItem(
       id: map['id'] as String,
       productId: map['productId'] as String,
-      quantity: map['quantity'] as double,
-      subtotal: map['subtotal'] as double,
+      quantity: map['quantity'] as num,
+      subtotal: map['subtotal'] as num,
     );
   }
 

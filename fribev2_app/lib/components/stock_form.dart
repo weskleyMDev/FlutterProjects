@@ -134,7 +134,7 @@ class _StockFormState extends State<StockForm> {
                     if (name.isEmpty) {
                       return 'Campo obrigatório!';
                     }
-                    final valid = RegExp(r'^[a-zA-Z\s/]*$').hasMatch(name);
+                    final valid = RegExp(r'^[a-zA-Z0-9\s/]*$').hasMatch(name);
                     if (!valid) {
                       return 'Utilize apenas letras sem caracteres especiais!';
                     }

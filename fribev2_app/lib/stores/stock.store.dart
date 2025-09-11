@@ -42,7 +42,7 @@ abstract class StockStoreBase with Store {
     final query = searchQuery.toLowerCase();
     return List.unmodifiable(
       _productsByCategory
-          .where((p) => p.name.toLowerCase().startsWith(query))
+          .where((p) => p.name.toLowerCase().contains(query))
           .toList(),
     );
   }
