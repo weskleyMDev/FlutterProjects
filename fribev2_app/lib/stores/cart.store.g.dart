@@ -31,6 +31,13 @@ mixin _$CartStore on CartStoreBase, Store {
     () => super.discount,
     name: 'CartStoreBase.discount',
   )).value;
+  Computed<String>? _$discountReasonComputed;
+
+  @override
+  String get discountReason => (_$discountReasonComputed ??= Computed<String>(
+    () => super.discountReason,
+    name: 'CartStoreBase.discountReason',
+  )).value;
   Computed<String>? _$shippingComputed;
 
   @override
@@ -112,6 +119,24 @@ mixin _$CartStore on CartStoreBase, Store {
   set _discount(String value) {
     _$_discountAtom.reportWrite(value, super._discount, () {
       super._discount = value;
+    });
+  }
+
+  late final _$_discountReasonAtom = Atom(
+    name: 'CartStoreBase._discountReason',
+    context: context,
+  );
+
+  @override
+  String get _discountReason {
+    _$_discountReasonAtom.reportRead();
+    return super._discountReason;
+  }
+
+  @override
+  set _discountReason(String value) {
+    _$_discountReasonAtom.reportWrite(value, super._discountReason, () {
+      super._discountReason = value;
     });
   }
 
@@ -253,12 +278,12 @@ mixin _$CartStore on CartStoreBase, Store {
   }
 
   @override
-  void setDiscount(String value) {
+  void setDiscount(String discount, String reason) {
     final _$actionInfo = _$CartStoreBaseActionController.startAction(
       name: 'CartStoreBase.setDiscount',
     );
     try {
-      return super.setDiscount(value);
+      return super.setDiscount(discount, reason);
     } finally {
       _$CartStoreBaseActionController.endAction(_$actionInfo);
     }
@@ -343,6 +368,7 @@ quantity: ${quantity},
 cartList: ${cartList},
 total: ${total},
 discount: ${discount},
+discountReason: ${discountReason},
 shipping: ${shipping},
 remaining: ${remaining},
 errorMessage: ${errorMessage},

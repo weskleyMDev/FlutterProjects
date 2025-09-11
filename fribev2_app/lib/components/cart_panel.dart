@@ -9,6 +9,7 @@ import 'package:fribev2_app/stores/cart.store.dart';
 import 'package:fribev2_app/stores/payment.store.dart';
 import 'package:fribev2_app/stores/sales.store.dart';
 import 'package:fribev2_app/stores/stock.store.dart';
+import 'package:fribev2_app/utils/capitalize_text.dart';
 import 'package:fribev2_app/utils/dialogs.dart';
 import 'package:go_router/go_router.dart';
 
@@ -33,6 +34,7 @@ class CartPanel extends StatefulWidget {
 class _CartPanelState extends State<CartPanel> {
   late final TextEditingController _quantityController;
   late final TextEditingController _discountController;
+  late final TextEditingController _discountReasonController;
   late final TextEditingController _shippingController;
   late final GlobalKey<FormState> _formCartKey;
   late final GlobalKey<FormState> _formPayKey;
@@ -42,6 +44,7 @@ class _CartPanelState extends State<CartPanel> {
     super.initState();
     _quantityController = TextEditingController();
     _discountController = TextEditingController();
+    _discountReasonController = TextEditingController();
     _shippingController = TextEditingController();
     _formCartKey = GlobalKey<FormState>();
     _formPayKey = GlobalKey<FormState>();
@@ -51,6 +54,7 @@ class _CartPanelState extends State<CartPanel> {
   void dispose() {
     _quantityController.dispose();
     _discountController.dispose();
+    _discountReasonController.dispose();
     _shippingController.dispose();
     super.dispose();
   }
@@ -251,39 +255,71 @@ class _CartPanelState extends State<CartPanel> {
                       'Desconto:',
                       style: Theme.of(context).textTheme.titleLarge,
                     ),
-                    Row(
+                    Column(
                       children: [
-                        Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: TextField(
-                              key: const ValueKey('discount_cart'),
-                              controller: _discountController,
-                              keyboardType: TextInputType.numberWithOptions(
-                                decimal: true,
-                              ),
-                              decoration: InputDecoration(
-                                labelText: 'Desconto',
-                                border: OutlineInputBorder(),
-                                prefixIcon: Icon(FontAwesome.ticket),
-                              ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: TextField(
+                            key: const ValueKey('discount_cart'),
+                            controller: _discountController,
+                            keyboardType: TextInputType.numberWithOptions(
+                              decimal: true,
+                            ),
+                            decoration: InputDecoration(
+                              labelText: 'Desconto',
+                              border: OutlineInputBorder(),
+                              prefixIcon: Icon(FontAwesome.ticket),
                             ),
                           ),
                         ),
-                        IconButton(
-                          onPressed: () {
-                            widget.cartStore.setDiscount(
-                              _discountController.text.trim().replaceAll(
-                                ',',
-                                '.',
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: TextField(
+                                  key: const ValueKey('discount_reason'),
+                                  controller: _discountReasonController,
+                                  decoration: InputDecoration(
+                                    labelText: 'Motivo do Desconto',
+                                    border: OutlineInputBorder(),
+                                    prefixIcon: Icon(
+                                      FontAwesome5.pencil_alt,
+                                      size: 18.0,
+                                    ),
+                                  ),
+                                  onChanged: (_) {},
+                                ),
                               ),
-                            );
-                            _discountController.clear();
-                            widget.paymentStore.clearPayments();
-                          },
-                          icon: const Icon(FontAwesome5.plus),
-                          tooltip: 'Adicionar Desconto',
-                          iconSize: 22.0,
+                            ),
+                            IconButton(
+                              onPressed: () {
+                                if (_discountController.text.isEmpty) return;
+                                if (_discountController.text.isNotEmpty &&
+                                    _discountReasonController.text.isEmpty) {
+                                  _showSnackMessage(
+                                    'Por favor, insira o motivo do desconto.',
+                                  );
+                                  return;
+                                }
+                                widget.cartStore.setDiscount(
+                                  _discountController.text.trim().replaceAll(
+                                    ',',
+                                    '.',
+                                  ),
+                                  _discountReasonController.text
+                                      .trim()
+                                      .capitalize(),
+                                );
+                                _discountController.clear();
+                                _discountReasonController.clear();
+                                widget.paymentStore.clearPayments();
+                              },
+                              icon: const Icon(FontAwesome5.plus),
+                              tooltip: 'Adicionar Desconto',
+                              iconSize: 22.0,
+                            ),
+                          ],
                         ),
                       ],
                     ),
@@ -315,25 +351,25 @@ class _CartPanelState extends State<CartPanel> {
                               decoration: InputDecoration(
                                 labelText: 'Entrega',
                                 border: OutlineInputBorder(),
-                                prefixIcon: Icon(FontAwesome.ticket),
+                                prefixIcon: Icon(
+                                  FontAwesome5.shipping_fast,
+                                  size: 18.0,
+                                ),
                               ),
+                              onChanged: (_) {
+                                if (_shippingController.text.isEmpty) {
+                                  widget.cartStore.setShipping('0');
+                                } else {
+                                  widget.cartStore.setShipping(
+                                    _shippingController.text.trim().replaceAll(
+                                      ',',
+                                      '.',
+                                    ),
+                                  );
+                                }
+                              },
                             ),
                           ),
-                        ),
-                        IconButton(
-                          onPressed: () {
-                            widget.cartStore.setShipping(
-                              _shippingController.text.trim().replaceAll(
-                                ',',
-                                '.',
-                              ),
-                            );
-                            _shippingController.clear();
-                            widget.paymentStore.clearPayments();
-                          },
-                          icon: const Icon(FontAwesome5.plus),
-                          tooltip: 'Adicionar Taxa de Entrega',
-                          iconSize: 22.0,
                         ),
                       ],
                     ),
@@ -362,12 +398,15 @@ class _CartPanelState extends State<CartPanel> {
                         children: [
                           Text(
                             'Restante: R\$ ${widget.cartStore.remaining.toStringAsFixed(2).replaceAll('.', ',')}',
+                            overflow: TextOverflow.ellipsis,
                           ),
                           Text(
-                            'Desconto: R\$ ${double.parse(widget.cartStore.discount).toStringAsFixed(2).replaceAll('.', ',')}',
+                            'Desconto: R\$ ${double.parse(widget.cartStore.discount).toStringAsFixed(2).replaceAll('.', ',')}(${widget.cartStore.discountReason})',
+                            overflow: TextOverflow.ellipsis,
                           ),
                           Text(
                             'Entrega: R\$ ${double.parse(widget.cartStore.shipping).toStringAsFixed(2).replaceAll('.', ',')}',
+                            overflow: TextOverflow.ellipsis,
                           ),
                         ],
                       ),

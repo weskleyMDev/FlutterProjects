@@ -19,10 +19,13 @@ abstract class CartStoreBase with Store {
   double _total = 0.0;
 
   @observable
-  String _discount = '0.0';
+  String _discount = '0';
 
   @observable
-  String _shipping = '0.0';
+  String _discountReason = '';
+
+  @observable
+  String _shipping = '0';
 
   @observable
   String quantity = '0';
@@ -43,6 +46,9 @@ abstract class CartStoreBase with Store {
 
   @computed
   String get discount => _discount;
+
+  @computed
+  String get discountReason => _discountReason;
 
   @computed
   String get shipping => _shipping;
@@ -116,8 +122,9 @@ abstract class CartStoreBase with Store {
   }
 
   @action
-  void setDiscount(String value) {
-    _discount = value;
+  void setDiscount(String discount, String reason) {
+    _discount = discount;
+    _discountReason = reason;
     _setTotal();
     _remaining = Decimal.parse(_total.toString());
   }
@@ -196,6 +203,7 @@ abstract class CartStoreBase with Store {
     _total = 0.0;
     quantity = '0';
     _discount = '0.0';
+    _discountReason = '';
     _shipping = '0.0';
     _remaining = Decimal.zero;
   }

@@ -39,6 +39,7 @@ class FirebaseSalesService implements ISalesService {
       payments: payments,
       discount: cart.discount,
       shipping: cart.shipping,
+      discountReason: cart.discountReason,
     );
 
     await _firestore

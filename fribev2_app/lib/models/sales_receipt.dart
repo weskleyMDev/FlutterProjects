@@ -13,6 +13,7 @@ class SalesReceipt {
   final List<Payment> payments;
   final String discount;
   final String shipping;
+  final String discountReason;
 
   SalesReceipt({
     required this.id,
@@ -22,6 +23,7 @@ class SalesReceipt {
     required this.payments,
     required this.discount,
     required this.shipping,
+    this.discountReason = '',
   });
 
   SalesReceipt copyWith({
@@ -32,6 +34,7 @@ class SalesReceipt {
     List<Payment>? payments,
     String? discount,
     String? shipping,
+    String? discountReason,
   }) {
     return SalesReceipt(
       id: id ?? this.id,
@@ -41,6 +44,7 @@ class SalesReceipt {
       payments: payments ?? this.payments,
       discount: discount ?? this.discount,
       shipping: shipping ?? this.shipping,
+      discountReason: discountReason ?? this.discountReason,
     );
   }
 
@@ -52,6 +56,7 @@ class SalesReceipt {
       'payments': payments.map((x) => x.toMap()).toList(),
       'discount': discount,
       'shipping': shipping,
+      'discountReason': discountReason,
     };
   }
 
@@ -72,6 +77,7 @@ class SalesReceipt {
       ),
       discount: map['discount'] as String,
       shipping: map['shipping'] as String,
+      discountReason: map['discountReason'] as String,
     );
   }
 
@@ -82,7 +88,7 @@ class SalesReceipt {
 
   @override
   String toString() {
-    return 'SalesReceipt(id: $id, total: $total, cart: $cart, createAt: $createAt, payments: $payments, discount: $discount, shipping: $shipping)';
+    return 'SalesReceipt(id: $id, total: $total, cart: $cart, createAt: $createAt, payments: $payments, discount: $discount, shipping: $shipping, discountReason: $discountReason)';
   }
 
   @override
@@ -95,7 +101,8 @@ class SalesReceipt {
         other.createAt == createAt &&
         listEquals(other.payments, payments) &&
         other.discount == discount &&
-        other.shipping == shipping;
+        other.shipping == shipping &&
+        other.discountReason == discountReason;
   }
 
   @override
@@ -106,6 +113,7 @@ class SalesReceipt {
         createAt.hashCode ^
         payments.hashCode ^
         discount.hashCode ^
-        shipping.hashCode;
+        shipping.hashCode ^
+        discountReason.hashCode;
   }
 }
