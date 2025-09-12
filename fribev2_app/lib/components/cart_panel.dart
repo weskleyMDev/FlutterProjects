@@ -5,6 +5,7 @@ import 'package:fluttericon/font_awesome5_icons.dart';
 import 'package:fluttericon/font_awesome_icons.dart';
 import 'package:fribev2_app/generated/l10n.dart';
 import 'package:fribev2_app/models/cart_item.dart';
+import 'package:fribev2_app/services/receipt_to_pdf_web.dart';
 import 'package:fribev2_app/stores/cart.store.dart';
 import 'package:fribev2_app/stores/payment.store.dart';
 import 'package:fribev2_app/stores/sales.store.dart';
@@ -174,12 +175,13 @@ class _CartPanelState extends State<CartPanel> {
         quantity: newQuantity.toString(),
       );
     }
-    await widget.salesStore.createReceipt(
+    final receipt = await widget.salesStore.createReceipt(
       cart: widget.cartStore,
       payments: widget.paymentStore.payments,
     );
 
     // await ReceiptGenerator().generateReceipt(receipt: receipt);
+    await ReceiptGeneratorWeb().generateReceiptWeb(receipt: receipt);
     return true;
   }
 

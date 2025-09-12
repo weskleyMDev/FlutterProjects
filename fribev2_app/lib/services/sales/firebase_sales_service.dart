@@ -60,7 +60,7 @@ class FirebaseSalesService implements ISalesService {
   SalesReceipt _fromFirestore(
     DocumentSnapshot<Map<String, dynamic>> snapshot,
     SnapshotOptions? options,
-  ) => SalesReceipt.fromMap(snapshot.data()!, snapshot.id);
+  ) => SalesReceipt.fromMap(snapshot.data()!);
 
   @override
   Future<void> updateReceipt({required SalesReceipt receipt}) async {

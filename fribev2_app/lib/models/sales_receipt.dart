@@ -54,6 +54,7 @@ class SalesReceipt {
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
+      'id': id,
       'total': total,
       'cart': cart.map((x) => x.toMap()).toList(),
       'createAt': createAt.toIso8601String(),
@@ -65,9 +66,9 @@ class SalesReceipt {
     };
   }
 
-  factory SalesReceipt.fromMap(Map<String, dynamic> map, String sid) {
+  factory SalesReceipt.fromMap(Map<String, dynamic> map) {
     return SalesReceipt(
-      id: sid,
+      id: map['id'] as String,
       total: map['total'] as String,
       cart: List<CartItem>.from(
         (map['cart'] as List<dynamic>)
@@ -89,8 +90,8 @@ class SalesReceipt {
 
   String toJson() => json.encode(toMap());
 
-  factory SalesReceipt.fromJson(String source, String sid) =>
-      SalesReceipt.fromMap(json.decode(source) as Map<String, dynamic>, sid);
+  factory SalesReceipt.fromJson(String source) =>
+      SalesReceipt.fromMap(json.decode(source) as Map<String, dynamic>);
 
   @override
   String toString() {

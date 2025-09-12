@@ -1,23 +1,15 @@
-import 'dart:io';
+import 'dart:html' as html;
+import 'dart:js_util' as js_util;
 
 import 'package:intl/intl.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:uuid/uuid.dart';
 
 import '../models/sales_receipt.dart';
 
-class ReceiptGenerator {
-  Future<void> generateReceipt({required SalesReceipt? receipt}) async {
+class ReceiptGeneratorWeb {
+  Future<void> generateReceiptWeb({required SalesReceipt? receipt}) async {
     final receiveId = receipt?.id ?? Uuid().v4();
-    final directory = await getApplicationDocumentsDirectory();
-    final recibosDir = Directory('${directory.path}/Recibos');
-
-    if (!await recibosDir.exists()) {
-      await recibosDir.create(recursive: true);
-    }
-
-    final pdfFile = File('${recibosDir.path}/$receiveId.pdf');
 
     final receiptProducts = receipt?.cart ?? [];
     final date = DateFormat(
@@ -52,25 +44,20 @@ class ReceiptGenerator {
                     margin: const pw.EdgeInsets.symmetric(vertical: 8.0),
                     child: pw.Column(
                       children: [
-                        pw.ListView.builder(
-                          itemCount: receiptProducts.length,
-                          itemBuilder: (context, index) {
-                            final item = receiptProducts[index];
-                            return pw.Row(
-                              mainAxisAlignment:
-                                  pw.MainAxisAlignment.spaceBetween,
-                              crossAxisAlignment: pw.CrossAxisAlignment.center,
-                              children: [
-                                pw.Text(
-                                  '${item.product?.name ?? ''} x${item.quantity.toString().replaceAll('.', ',')}',
-                                ),
-                                pw.Text(
-                                  'R\$ ${item.subtotal.toStringAsFixed(2).replaceAll('.', ',')}',
-                                ),
-                              ],
-                            );
-                          },
-                        ),
+                        for (var item in receiptProducts)
+                          pw.Row(
+                            mainAxisAlignment:
+                                pw.MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: pw.CrossAxisAlignment.center,
+                            children: [
+                              pw.Text(
+                                '${item.product?.name ?? ''} x${item.quantity.toString().replaceAll('.', ',')}',
+                              ),
+                              pw.Text(
+                                'R\$ ${item.subtotal.toStringAsFixed(2).replaceAll('.', ',')}',
+                              ),
+                            ],
+                          ),
                         pw.SizedBox(height: 20),
                         pw.Row(
                           mainAxisAlignment: pw.MainAxisAlignment.end,
@@ -89,26 +76,19 @@ class ReceiptGenerator {
                   ),
                   pw.Text('-' * 80),
                   pw.SizedBox(height: 20),
-                  pw.ListView.builder(
-                    itemCount: receipt.payments.length,
-                    itemBuilder: (context, index) {
-                      final payment = receipt.payments[index];
-                      final String type = payment.type;
-                      final String value = payment.value;
-                      return pw.Row(
-                        children: [
-                          pw.Text(
-                            '$type: ',
-                            style: pw.TextStyle(fontSize: 12.0),
-                          ),
-                          pw.Text(
-                            'R\$ ${double.parse(value).toStringAsFixed(2).replaceAll('.', ',')}',
-                            style: pw.TextStyle(fontSize: 12.0),
-                          ),
-                        ],
-                      );
-                    },
-                  ),
+                  for (var payment in receipt.payments)
+                    pw.Row(
+                      children: [
+                        pw.Text(
+                          '${payment.type}: ',
+                          style: pw.TextStyle(fontSize: 12.0),
+                        ),
+                        pw.Text(
+                          'R\$ ${double.parse(payment.value).toStringAsFixed(2).replaceAll('.', ',')}',
+                          style: pw.TextStyle(fontSize: 12.0),
+                        ),
+                      ],
+                    ),
                   pw.SizedBox(height: 50),
                   pw.Text(
                     'Obrigado pela preferência!',
@@ -122,6 +102,21 @@ class ReceiptGenerator {
       ),
     );
 
-    await pdfFile.writeAsBytes(await pdf.save());
+    final pdfBytes = await pdf.save();
+
+    js_util.jsify(pdfBytes);
+
+    final blob = html.Blob([pdfBytes]);
+
+    final url = html.Url.createObjectUrlFromBlob(blob);
+
+    final anchor = html.AnchorElement()
+      ..href = url
+      ..target = '_blank'
+      ..download = '$receiveId.pdf';
+
+    anchor.click();
+
+    html.Url.revokeObjectUrl(url);
   }
 }
