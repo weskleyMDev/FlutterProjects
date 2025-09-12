@@ -1,4 +1,5 @@
 import 'package:admin_fribe/blocs/sales_receipt/sales_receipt_bloc.dart';
+import 'package:admin_fribe/cubits/home_tab/home_tab_cubit.dart';
 import 'package:admin_fribe/firebase_options.dart';
 import 'package:admin_fribe/generated/l10n.dart';
 import 'package:admin_fribe/repositories/sales_receipt/isales_receipt_repository.dart';
@@ -9,10 +10,27 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:window_manager/window_manager.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  await Future.wait([
+    Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform),
+    windowManager.ensureInitialized(),
+  ]);
+
+  WindowOptions windowOptions = WindowOptions(
+    size: const Size(800, 600),
+    minimumSize: const Size(800, 600),
+    title: "Admin Fribe",
+    center: true,
+    backgroundColor: Colors.transparent,
+    skipTaskbar: false,
+    titleBarStyle: TitleBarStyle.normal,
+  );
+  windowManager.waitUntilReadyToShow(windowOptions, () async {
+    await Future.wait([windowManager.show(), windowManager.focus()]);
+  });
   runApp(const MyApp());
 }
 
@@ -26,10 +44,15 @@ class MyApp extends StatelessWidget {
     final theme = MaterialTheme(textTheme);
     return RepositoryProvider<ISalesReceiptRepository>(
       create: (context) => SalesReceiptRepository(),
-      child: BlocProvider(
-        create: (context) => SalesReceiptBloc(
-          RepositoryProvider.of<ISalesReceiptRepository>(context),
-        )..add(const LoadSalesReceipts()),
+      child: MultiBlocProvider(
+        providers: [
+          BlocProvider(
+            create: (context) => SalesReceiptBloc(
+              RepositoryProvider.of<ISalesReceiptRepository>(context),
+            )..add(const LoadSalesReceipts()),
+          ),
+          BlocProvider(create: (context) => HomeTabCubit()),
+        ],
         child: MaterialApp.router(
           title: 'Admin Fribe',
           debugShowCheckedModeBanner: false,
