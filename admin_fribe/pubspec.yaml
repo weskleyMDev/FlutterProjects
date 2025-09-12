@@ -30,12 +30,14 @@ environment:
 dependencies:
   cloud_firestore: ^6.0.1
   cupertino_icons: ^1.0.8
+  decimal: ^3.2.4
   equatable: ^2.0.7
   firebase_auth: ^6.0.2
   firebase_core: ^4.1.0
   flutter:
     sdk: flutter
   flutter_bloc: ^9.1.1
+  flutter_launcher_icons: ^0.14.4
   flutter_localizations:
     sdk: flutter
   go_router: ^16.2.1
@@ -47,6 +49,16 @@ dev_dependencies:
   flutter_lints: ^5.0.0
   flutter_test:
     sdk: flutter
+
+flutter_launcher_icons:
+  android: true
+  image_path: "assets/icon/favicon.png"
+  web:
+    generate: true
+    image_path: "assets/icon/favicon.png"
+  windows:
+    generate: true
+    image_path: "assets/icon/favicon.png"
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
