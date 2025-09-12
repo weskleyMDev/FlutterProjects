@@ -1,6 +1,7 @@
-import 'package:admin_fribe/repositories/sales_receipt/isales_receipt_repository.dart';
+import 'package:admin_fribe/blocs/sales_receipt/sales_receipt_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -12,30 +13,36 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
-    final repository = RepositoryProvider.of<ISalesReceiptRepository>(context);
     return Scaffold(
-      body: StreamBuilder(
-        stream: repository.getSalesReceiptsStream(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
+      body: BlocBuilder<SalesReceiptBloc, SalesReceiptState>(
+        builder: (context, state) {
+          if (state.salesStatus == SalesReceiptStatus.loading) {
             return const Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
-          } else if (snapshot.hasData) {
-            final salesReceipts = snapshot.data!;
+          } else if (state.salesStatus == SalesReceiptStatus.failure) {
+            return Center(child: Text('Error: ${state.salesErrorMessage}'));
+          } else if (state.salesStatus == SalesReceiptStatus.success) {
             return ListView.builder(
-              itemCount: salesReceipts.length,
+              itemCount: state.salesReceipts.length,
               itemBuilder: (context, index) {
-                final receipt = salesReceipts[index];
+                final receipt = state.salesReceipts[index];
+                final locale = Localizations.localeOf(context).languageCode;
+                final date = DateFormat.yMd(
+                  locale,
+                ).add_Hm().format(receipt.createAt);
                 return ListTile(
                   title: Text('ID: ${receipt.id}'),
-                  subtitle: Text('Amount: \$${receipt.total}'),
+                  subtitle: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('Amount: \$${receipt.total}'),
+                      Text('Date: $date'),
+                    ],
+                  ),
                 );
               },
             );
-          } else {
-            return const Center(child: Text('No data available'));
           }
+          return const Center(child: Text('Please wait...'));
         },
       ),
     );

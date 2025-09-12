@@ -1,3 +1,4 @@
+import 'package:admin_fribe/blocs/sales_receipt/sales_receipt_bloc.dart';
 import 'package:admin_fribe/firebase_options.dart';
 import 'package:admin_fribe/generated/l10n.dart';
 import 'package:admin_fribe/repositories/sales_receipt/isales_receipt_repository.dart';
@@ -25,18 +26,23 @@ class MyApp extends StatelessWidget {
     final theme = MaterialTheme(textTheme);
     return RepositoryProvider<ISalesReceiptRepository>(
       create: (context) => SalesReceiptRepository(),
-      child: MaterialApp.router(
-        title: 'Admin Fribe',
-        debugShowCheckedModeBanner: false,
-        theme: brightness == Brightness.light ? theme.light() : theme.dark(),
-        supportedLocales: S.delegate.supportedLocales,
-        localizationsDelegates: const [
-          S.delegate,
-          GlobalMaterialLocalizations.delegate,
-          GlobalWidgetsLocalizations.delegate,
-          GlobalCupertinoLocalizations.delegate,
-        ],
-        routerConfig: routes,
+      child: BlocProvider(
+        create: (context) => SalesReceiptBloc(
+          RepositoryProvider.of<ISalesReceiptRepository>(context),
+        )..add(const LoadSalesReceipts()),
+        child: MaterialApp.router(
+          title: 'Admin Fribe',
+          debugShowCheckedModeBanner: false,
+          theme: brightness == Brightness.light ? theme.light() : theme.dark(),
+          supportedLocales: S.delegate.supportedLocales,
+          localizationsDelegates: const [
+            S.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          routerConfig: routes,
+        ),
       ),
     );
   }
