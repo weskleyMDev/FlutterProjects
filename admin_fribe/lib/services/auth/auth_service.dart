@@ -81,8 +81,13 @@ final class AuthService implements IAuthService {
         if (user != null) {
           if (await _isAdmin(uid: user.uid)) {
             _currentUser = await _getUserFromFirebase(user);
+
           } else {
             await _firebaseAuth.signOut();
+            throw FirebaseAuthException(
+              code: 'operation-not-allowed',
+              message: 'User is not an admin!',
+            );
           }
         } else {
           _currentUser = null;
@@ -123,7 +128,7 @@ final class AuthService implements IAuthService {
 
   Future<bool> _isAdmin({required String uid}) async {
     try {
-      final doc = await _firestore.collection('admins').doc(uid).get();
+      final doc = await _firestore.collection('admin').doc(uid).get();
       if (doc.data() != null) {
         return true;
       } else {

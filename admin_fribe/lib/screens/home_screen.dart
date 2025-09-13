@@ -1,3 +1,4 @@
+import 'package:admin_fribe/blocs/auth/auth_bloc.dart';
 import 'package:admin_fribe/cubits/home_tab/home_tab_cubit.dart';
 import 'package:admin_fribe/screens/receipts_screen.dart';
 import 'package:admin_fribe/screens/report_screen.dart';
@@ -12,7 +13,20 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final homeCubit = BlocProvider.of<HomeTabCubit>(context);
+    final authBloc = BlocProvider.of<AuthBloc>(context);
     return Scaffold(
+      appBar: AppBar(
+        title: const Text('Admin Fribe'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.logout),
+            tooltip: 'Logout',
+            onPressed: () {
+              authBloc.add(const AuthLogoutRequested());
+            },
+          ),
+        ],
+      ),
       body: BlocBuilder<HomeTabCubit, HomeTabState>(
         builder: (context, state) {
           return IndexedStack(

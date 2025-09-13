@@ -1,8 +1,11 @@
+import 'package:admin_fribe/blocs/auth/auth_bloc.dart';
+import 'package:admin_fribe/blocs/login_form/login_form_bloc.dart';
 import 'package:admin_fribe/blocs/sales_receipt/sales_receipt_bloc.dart';
 import 'package:admin_fribe/cubits/home_tab/home_tab_cubit.dart';
 import 'package:admin_fribe/firebase_options.dart';
 import 'package:admin_fribe/generated/l10n.dart';
 import 'package:admin_fribe/repositories/sales_receipt/isales_receipt_repository.dart';
+import 'package:admin_fribe/services/auth/auth_service.dart';
 import 'package:admin_fribe/utils/font/font.dart';
 import 'package:admin_fribe/utils/routes/routes.dart';
 import 'package:admin_fribe/utils/theme/theme.dart';
@@ -42,8 +45,13 @@ class MyApp extends StatelessWidget {
     final brightness = View.of(context).platformDispatcher.platformBrightness;
     TextTheme textTheme = createTextTheme(context, "Nunito Sans", "Lora");
     final theme = MaterialTheme(textTheme);
-    return RepositoryProvider<ISalesReceiptRepository>(
-      create: (context) => SalesReceiptRepository(),
+    return MultiRepositoryProvider(
+      providers: [
+        RepositoryProvider<ISalesReceiptRepository>(
+          create: (context) => SalesReceiptRepository(),
+        ),
+        RepositoryProvider<IAuthService>(create: (context) => AuthService()),
+      ],
       child: MultiBlocProvider(
         providers: [
           BlocProvider(
@@ -52,6 +60,16 @@ class MyApp extends StatelessWidget {
             )..add(const LoadSalesReceipts()),
           ),
           BlocProvider(create: (context) => HomeTabCubit()),
+          BlocProvider(
+            create: (context) => LoginFormBloc(
+              authService: RepositoryProvider.of<IAuthService>(context),
+            ),
+          ),
+          BlocProvider(
+            create: (context) => AuthBloc(
+              authService: RepositoryProvider.of<IAuthService>(context),
+            )..add(const AuthSubscriptionRequested()),
+          ),
         ],
         child: MaterialApp.router(
           title: 'Admin Fribe',
