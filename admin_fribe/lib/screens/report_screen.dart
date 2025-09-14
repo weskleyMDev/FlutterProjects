@@ -22,35 +22,16 @@ class ReportScreen extends StatelessWidget {
         } else if (state.salesStatus == SalesReceiptStatus.success) {
           final locale = Localizations.localeOf(context).languageCode;
           final currency = NumberFormat.simpleCurrency(locale: locale);
+          final numberFormat = NumberFormat.decimalPatternDigits(
+            locale: locale,
+            decimalDigits: 3,
+          );
           final salesReceipts = state.salesReceipts;
           if (salesReceipts.isEmpty) {
             return const Center(child: Text('No sales receipts found.'));
           }
-          final totalDiscount = salesReceipts.fold<Decimal>(
-            Decimal.zero,
-            (previousValue, element) =>
-                previousValue + Decimal.parse(element.discount),
-          );
-          final grandTotal = salesReceipts.fold<Decimal>(
-            Decimal.zero,
-            (previousValue, element) =>
-                previousValue + Decimal.parse(element.total),
-          );
-          final productCount = salesReceipts
-              .expand((e) => e.cart.map((p) => {p.productId: p.quantity}))
-              .fold<Map<String, Decimal>>({}, (
-                Map<String, Decimal> acc,
-                product,
-              ) {
-                product.forEach((productId, quantity) {
-                  acc[productId] =
-                      (acc[productId] ?? Decimal.zero) +
-                      Decimal.parse(quantity.toString());
-                });
-                return acc;
-              });
           final List<MapEntry<String, Decimal>> sortedProducts =
-              productCount.entries.toList()
+              state.totalQuantity.entries.toList()
                 ..sort((a, b) => b.value.compareTo(a.value));
           return Center(
             child: ListView(
@@ -59,7 +40,7 @@ class ReportScreen extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.only(left: 16.0),
                   child: Text(
-                    'Total Discount: ${currency.format(totalDiscount.toDouble())}\nTotal Geral: ${currency.format(grandTotal.toDouble())}',
+                    'Total Discount: ${currency.format(state.totalDiscount.toDouble())}\nTotal Sales: ${currency.format(state.totalSales.toDouble())}',
                   ),
                 ),
                 const SizedBox(height: 20),
@@ -69,23 +50,27 @@ class ReportScreen extends StatelessWidget {
                   itemCount: sortedProducts.length,
                   itemBuilder: (context, index) {
                     final productEntry = sortedProducts[index];
-                    return ListTile(
-                      title: BlocSelector<ProductBloc, ProductState, String>(
-                        selector: (productState) {
-                          return productState.products
-                                  .firstWhere(
-                                    (product) =>
-                                        product?.id == productEntry.key,
-                                    orElse: () => ProductModel.empty(),
-                                  )
-                                  ?.name ??
-                              '';
-                        },
-                        builder: (context, productName) {
-                          return Text(productName);
-                        },
-                      ),
-                      subtitle: Text('Sold: ${productEntry.value}'),
+                    return BlocSelector<
+                      ProductBloc,
+                      ProductState,
+                      ProductModel
+                    >(
+                      selector: (productState) {
+                        final product = productState.products.firstWhere(
+                          (product) => product?.id == productEntry.key,
+                          orElse: () => ProductModel.empty(),
+                        );
+
+                        return product ?? ProductModel.empty();
+                      },
+                      builder: (context, p) {
+                        return ListTile(
+                          title: Text('${p.name} - ${p.price}'),
+                          subtitle: Text(
+                            'Sold: ${numberFormat.format(productEntry.value.toDouble())}(${p.measure})',
+                          ),
+                        );
+                      },
                     );
                   },
                 ),

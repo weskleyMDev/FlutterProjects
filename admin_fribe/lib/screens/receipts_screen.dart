@@ -1,7 +1,9 @@
 import 'package:admin_fribe/blocs/sales_receipt/sales_receipt_bloc.dart';
 import 'package:admin_fribe/widgets/sales_receipt_tile.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 
 class ReceiptsScreen extends StatelessWidget {
   const ReceiptsScreen({super.key});
@@ -19,18 +21,41 @@ class ReceiptsScreen extends StatelessWidget {
           if (salesReceipts.isEmpty) {
             return const Center(child: Text('No sales receipts found.'));
           }
-          return ListView.builder(
-            itemCount: salesReceipts.length,
-            itemBuilder: (context, index) {
-              final receipt = salesReceipts[index];
-              return Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: SalesReceiptTile(receipt: receipt),
-                ),
-              );
-            },
+
+          final grouped = groupBy(
+            salesReceipts,
+            (r) => DateFormat('yyyy-MM-dd').format(r.createAt),
           );
+          final dateKeys = grouped.keys.toList()
+            ..sort((a, b) => b.compareTo(a));
+
+          final items = <Widget>[];
+          for (final date in dateKeys) {
+            final receiptsOfDay = grouped[date]!;
+            items.add(
+              ExpansionTile(
+                title: Text(
+                  DateFormat('dd/MM/yyyy').format(DateTime.parse(date)),
+                  style: const TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                children: receiptsOfDay
+                    .map(
+                      (receipt) => Card(
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: SalesReceiptTile(receipt: receipt),
+                        ),
+                      ),
+                    )
+                    .toList(),
+              ),
+            );
+          }
+
+          return ListView(children: items);
         }
         return Center(
           child: Column(

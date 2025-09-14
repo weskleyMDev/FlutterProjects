@@ -1,7 +1,9 @@
+import 'package:admin_fribe/blocs/product/product_bloc.dart';
+import 'package:admin_fribe/models/product_model.dart';
 import 'package:admin_fribe/models/sales_receipt_model.dart';
 import 'package:admin_fribe/utils/capitalize_text.dart';
-import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 
 class SalesReceiptTile extends StatelessWidget {
@@ -13,11 +15,6 @@ class SalesReceiptTile extends StatelessWidget {
     final locale = Localizations.localeOf(context).languageCode;
     final currency = NumberFormat.simpleCurrency(locale: locale);
     final date = DateFormat.yMEd(locale).add_Hm().format(receipt.createAt);
-    final quantitySum = receipt.cart.fold<Decimal>(
-      Decimal.zero,
-      (previousValue, element) =>
-          previousValue + Decimal.parse(element.quantity.toString()),
-    );
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -44,11 +41,26 @@ class SalesReceiptTile extends StatelessWidget {
             'Razão: ${receipt.discountReason}',
             overflow: TextOverflow.ellipsis,
           ),
-        Text('Total de itens: $quantitySum', overflow: TextOverflow.ellipsis),
         ...receipt.cart.map(
-          (e) => Text(
-            '${e.productId} x${e.quantity}',
-            overflow: TextOverflow.ellipsis,
+          (e) => BlocSelector<ProductBloc, ProductState, String>(
+            selector: (state) {
+              return state.products
+                      .firstWhere(
+                        (product) => product?.id == e.productId,
+                        orElse: () => ProductModel.empty(),
+                      )
+                      ?.name ??
+                  e.productId;
+            },
+            builder: (context, state) {
+              return ListTile(
+                titleTextStyle: TextStyle(fontSize: 12.0),
+                title: Text(
+                  '$state x${e.quantity}',
+                  overflow: TextOverflow.ellipsis,
+                ),
+              );
+            },
           ),
         ),
       ],

@@ -19,6 +19,29 @@ final class SalesReceiptState extends Equatable {
     salesErrorMessage: null,
   );
 
+  Decimal get totalSales => salesReceipts.fold<Decimal>(
+    Decimal.zero,
+    (previousValue, element) => previousValue + Decimal.parse(element.total),
+  );
+
+  Decimal get totalDiscount => salesReceipts.fold<Decimal>(
+    Decimal.zero,
+    (previousValue, element) => previousValue + Decimal.parse(element.discount),
+  );
+
+  Map<String, Decimal> get totalQuantity {
+    return salesReceipts
+        .expand((e) => e.cart.map((p) => {p.productId: p.quantity}))
+        .fold<Map<String, Decimal>>({}, (Map<String, Decimal> prev, product) {
+          product.forEach((productId, quantity) {
+            prev[productId] =
+                (prev[productId] ?? Decimal.zero) +
+                Decimal.parse(quantity.toString());
+          });
+          return prev;
+        });
+  }
+
   SalesReceiptState copyWith({
     List<SalesReceipt> Function()? salesReceipts,
     SalesReceiptStatus Function()? salesStatus,
