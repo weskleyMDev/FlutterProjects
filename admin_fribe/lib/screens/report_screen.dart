@@ -34,25 +34,57 @@ class ReportScreen extends StatelessWidget {
             (previousValue, element) =>
                 previousValue + Decimal.parse(element.total),
           );
-          return Column(
-            children: [
-              Center(
-                child: Text(
+          final productCount = salesReceipts
+              .expand((e) => e.cart.map((p) => {p.productId: p.quantity}))
+              .fold<Map<String, Decimal>>({}, (
+                Map<String, Decimal> acc,
+                product,
+              ) {
+                product.forEach((productId, quantity) {
+                  acc[productId] =
+                      (acc[productId] ?? Decimal.zero) +
+                      Decimal.parse(quantity.toString());
+                });
+                return acc;
+              });
+          print(productCount);
+          final List<MapEntry<String, Decimal>> sortedProducts =
+              productCount.entries.toList()
+                ..sort((a, b) => b.value.compareTo(a.value));
+          return Center(
+            child: ListView(
+              shrinkWrap: true,              
+              children: [
+                Text(
                   'Total Discount: ${currency.format(totalDiscount.toDouble())}\nTotal Geral: ${currency.format(grandTotal.toDouble())}',
                 ),
-              ),
-            ],
+                const SizedBox(height: 20),
+                ListView.builder(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: sortedProducts.length,
+                  itemBuilder: (context, index) {
+                    final productEntry = sortedProducts[index];
+                    return ListTile(
+                      title: Text('Product ID: ${productEntry.key}'),
+                      trailing: Text('Sold: ${productEntry.value}'),
+                    );
+                  },
+                ),
+              ],
+            ),
+          );
+        } else {
+          return Center(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const CircularProgressIndicator(),
+                Text('Please wait...'),
+              ],
+            ),
           );
         }
-        return Center(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const CircularProgressIndicator(),
-              Text('Please wait...'),
-            ],
-          ),
-        );
       },
     );
   }
