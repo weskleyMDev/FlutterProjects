@@ -20,19 +20,23 @@ final class AuthBloc extends Bloc<AuthEvent, AuthState> {
     AuthSubscriptionRequested event,
     Emitter<AuthState> emit,
   ) async {
-    await emit.forEach<UserModel?>(
-      _authService.userChanges,
-      onData: (user) {
-        if (user != null) {
-          return AuthState.authenticated(user);
-        } else {
-          return const AuthState.unauthenticated(null);
-        }
-      },
-      onError: (e, _) => e is FirebaseAuthException
-          ? AuthState.unauthenticated(e.message)
-          : AuthState.unauthenticated(e.toString()),
-    );
+    try {
+      await emit.forEach<UserModel?>(
+        _authService.userChanges,
+        onData: (user) {
+          if (user != null) {
+            return AuthState.authenticated(user);
+          } else {
+            return const AuthState.unauthenticated(null);
+          }
+        },
+        onError: (e, _) => e is FirebaseAuthException
+            ? AuthState.unauthenticated(e.message)
+            : AuthState.unauthenticated(e.toString()),
+      );
+    } catch (e) {
+      emit(AuthState.unauthenticated("Unknown error: $e"));
+    }
   }
 
   Future<void> _onLogoutRequested(

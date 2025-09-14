@@ -14,7 +14,9 @@ class ReportScreen extends StatelessWidget {
         if (state.salesStatus == SalesReceiptStatus.loading) {
           return const Center(child: CircularProgressIndicator());
         } else if (state.salesStatus == SalesReceiptStatus.failure) {
-          return Center(child: Text('Error: ${state.salesErrorMessage}'));
+          return Center(
+            child: SelectableText('Error: ${state.salesErrorMessage}'),
+          );
         } else if (state.salesStatus == SalesReceiptStatus.success) {
           final locale = Localizations.localeOf(context).languageCode;
           final currency = NumberFormat.simpleCurrency(locale: locale);
@@ -32,10 +34,14 @@ class ReportScreen extends StatelessWidget {
             (previousValue, element) =>
                 previousValue + Decimal.parse(element.total),
           );
-          return Center(
-            child: Text(
-              'Total Discount: ${currency.format(totalDiscount.toDouble())}\nTotal Geral: ${currency.format(grandTotal.toDouble())}',
-            ),
+          return Column(
+            children: [
+              Center(
+                child: Text(
+                  'Total Discount: ${currency.format(totalDiscount.toDouble())}\nTotal Geral: ${currency.format(grandTotal.toDouble())}',
+                ),
+              ),
+            ],
           );
         }
         return Center(

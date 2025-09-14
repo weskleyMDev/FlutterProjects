@@ -79,9 +79,9 @@ final class AuthService implements IAuthService {
   Stream<UserModel?> get userChanges =>
       _firebaseAuth.authStateChanges().asyncMap((user) async {
         if (user != null) {
-          if (await _isAdmin(uid: user.uid)) {
+          final isAdmin = await _isAdmin(uid: user.uid);
+          if (isAdmin) {
             _currentUser = await _getUserFromFirebase(user);
-
           } else {
             await _firebaseAuth.signOut();
             throw FirebaseAuthException(
