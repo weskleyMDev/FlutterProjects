@@ -5,6 +5,7 @@ import 'package:admin_fribe/repositories/sales_receipt/isales_receipt_repository
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:rxdart/rxdart.dart';
 
 part 'sales_receipt_event.dart';
 part 'sales_receipt_state.dart';
@@ -14,7 +15,12 @@ final class SalesReceiptBloc
   final ISalesReceiptRepository _salesReceiptRepository;
   SalesReceiptBloc(this._salesReceiptRepository)
     : super(SalesReceiptState.initial()) {
-    on<LoadSalesReceipts>(_onLoadSalesReceipts);
+    on<LoadSalesReceipts>(
+      _onLoadSalesReceipts,
+      transformer: (events, mapper) => events
+          .debounceTime(const Duration(milliseconds: 300))
+          .switchMap(mapper),
+    );
   }
 
   Future<void> _onLoadSalesReceipts(

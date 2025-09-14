@@ -1,4 +1,6 @@
+import 'package:admin_fribe/blocs/product/product_bloc.dart';
 import 'package:admin_fribe/blocs/sales_receipt/sales_receipt_bloc.dart';
+import 'package:admin_fribe/models/product_model.dart';
 import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -47,16 +49,18 @@ class ReportScreen extends StatelessWidget {
                 });
                 return acc;
               });
-          print(productCount);
           final List<MapEntry<String, Decimal>> sortedProducts =
               productCount.entries.toList()
                 ..sort((a, b) => b.value.compareTo(a.value));
           return Center(
             child: ListView(
-              shrinkWrap: true,              
+              shrinkWrap: true,
               children: [
-                Text(
-                  'Total Discount: ${currency.format(totalDiscount.toDouble())}\nTotal Geral: ${currency.format(grandTotal.toDouble())}',
+                Padding(
+                  padding: const EdgeInsets.only(left: 16.0),
+                  child: Text(
+                    'Total Discount: ${currency.format(totalDiscount.toDouble())}\nTotal Geral: ${currency.format(grandTotal.toDouble())}',
+                  ),
                 ),
                 const SizedBox(height: 20),
                 ListView.builder(
@@ -66,8 +70,22 @@ class ReportScreen extends StatelessWidget {
                   itemBuilder: (context, index) {
                     final productEntry = sortedProducts[index];
                     return ListTile(
-                      title: Text('Product ID: ${productEntry.key}'),
-                      trailing: Text('Sold: ${productEntry.value}'),
+                      title: BlocSelector<ProductBloc, ProductState, String>(
+                        selector: (productState) {
+                          return productState.products
+                                  .firstWhere(
+                                    (product) =>
+                                        product?.id == productEntry.key,
+                                    orElse: () => ProductModel.empty(),
+                                  )
+                                  ?.name ??
+                              '';
+                        },
+                        builder: (context, productName) {
+                          return Text(productName);
+                        },
+                      ),
+                      subtitle: Text('Sold: ${productEntry.value}'),
                     );
                   },
                 ),
