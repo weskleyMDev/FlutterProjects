@@ -1,6 +1,7 @@
 import 'package:admin_fribe/blocs/sales_receipt/sales_receipt_bloc.dart';
 import 'package:admin_fribe/widgets/sales_receipt_tile.dart';
 import 'package:collection/collection.dart';
+import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
@@ -32,10 +33,17 @@ class ReceiptsScreen extends StatelessWidget {
           final items = <Widget>[];
           for (final date in dateKeys) {
             final receiptsOfDay = grouped[date]!;
+            final totalOfDay = receiptsOfDay
+                .fold<Decimal>(
+                  Decimal.zero,
+                  (previousValue, element) =>
+                      previousValue + Decimal.parse(element.total),
+                )
+                .round(scale: 2);
             items.add(
               ExpansionTile(
                 title: Text(
-                  DateFormat('dd/MM/yyyy').format(DateTime.parse(date)),
+                  '${DateFormat('dd/MM/yyyy').format(DateTime.parse(date))} - Total: ${NumberFormat.simpleCurrency(locale: Localizations.localeOf(context).languageCode).format(totalOfDay.toDouble())}',
                   style: const TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.bold,

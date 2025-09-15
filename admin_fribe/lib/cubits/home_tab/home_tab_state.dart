@@ -1,6 +1,6 @@
 part of 'home_tab_cubit.dart';
 
-enum HomeTabs { report, sales, vouchers }
+enum HomeTabs { report, sales, vouchers, products }
 
 final class HomeTabState extends Equatable {
   final HomeTabs tab;

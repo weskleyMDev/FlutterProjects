@@ -19,15 +19,29 @@ final class SalesReceiptState extends Equatable {
     salesErrorMessage: null,
   );
 
-  Decimal get totalSales => salesReceipts.fold<Decimal>(
-    Decimal.zero,
-    (previousValue, element) => previousValue + Decimal.parse(element.total),
-  );
+  Decimal get totalSales => salesReceipts
+      .fold<Decimal>(
+        Decimal.zero,
+        (previousValue, element) =>
+            previousValue + Decimal.parse(element.total),
+      )
+      .round(scale: 2);
 
-  Decimal get totalDiscount => salesReceipts.fold<Decimal>(
-    Decimal.zero,
-    (previousValue, element) => previousValue + Decimal.parse(element.discount),
-  );
+  Decimal get totalDiscount => salesReceipts
+      .fold<Decimal>(
+        Decimal.zero,
+        (previousValue, element) =>
+            previousValue + Decimal.parse(element.discount),
+      )
+      .round(scale: 2);
+
+  Decimal get totalShipping => salesReceipts
+      .fold<Decimal>(
+        Decimal.zero,
+        (previousValue, element) =>
+            previousValue + Decimal.parse(element.shipping),
+      )
+      .round(scale: 2);
 
   Map<String, Decimal> get totalQuantity {
     return salesReceipts

@@ -1,5 +1,6 @@
 import 'package:admin_fribe/blocs/auth/auth_bloc.dart';
 import 'package:admin_fribe/cubits/home_tab/home_tab_cubit.dart';
+import 'package:admin_fribe/screens/products_screen.dart';
 import 'package:admin_fribe/screens/receipts_screen.dart';
 import 'package:admin_fribe/screens/report_screen.dart';
 import 'package:admin_fribe/screens/vouchers_screen.dart';
@@ -35,6 +36,7 @@ class HomeScreen extends StatelessWidget {
               ReportScreen(),
               ReceiptsScreen(),
               VouchersScreen(),
+              ProductsScreen(),
             ],
           );
         },
@@ -58,6 +60,11 @@ class HomeScreen extends StatelessWidget {
               icon: const Icon(FontAwesome5.money_check_alt),
               onPressed: () => homeCubit.setTab(HomeTabs.vouchers),
               tooltip: 'Vales',
+            ),
+            IconButton(
+              icon: const Icon(FontAwesome5.cubes),
+              onPressed: () => homeCubit.setTab(HomeTabs.products),
+              tooltip: 'Produtos',
             ),
           ],
         ),
