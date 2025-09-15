@@ -7,14 +7,20 @@ final class ProductRepository implements IProductRepository {
   final _firestore = FirebaseFirestore.instance;
 
   @override
-  Future<void> addProduct(ProductModel product) {
-    throw UnimplementedError();
-  }
+  Future<void> addProduct(ProductModel product) => _firestore
+      .collection('stock')
+      .withConverter<ProductModel>(
+        fromFirestore: _fromFirestore,
+        toFirestore: _toFirestore,
+      )
+      .add(product);
 
   @override
-  Future<void> deleteProduct(String id) {
-    throw UnimplementedError();
-  }
+  Future<void> deleteProduct(String id) => _firestore
+      .collection('stock')
+      .doc(id)
+      .delete();
+
 
   @override
   Stream<List<ProductModel?>> getAllProducts() => _firestore
@@ -23,6 +29,7 @@ final class ProductRepository implements IProductRepository {
         fromFirestore: _fromFirestore,
         toFirestore: _toFirestore,
       )
+      .orderBy('name')
       .snapshots()
       .map((snapshot) => snapshot.docs.map((doc) => doc.data()).toList())
       .asBroadcastStream();
@@ -49,9 +56,14 @@ final class ProductRepository implements IProductRepository {
   }
 
   @override
-  Future<void> updateProduct(ProductModel product) {
-    throw UnimplementedError();
-  }
+  Future<void> updateProduct(ProductModel product) => _firestore
+      .collection('stock')
+      .doc(product.id)
+      .withConverter<ProductModel>(
+        fromFirestore: _fromFirestore,
+        toFirestore: _toFirestore,
+      )
+      .update(product.toMap());
 
   Map<String, dynamic> _toFirestore(
     ProductModel product,

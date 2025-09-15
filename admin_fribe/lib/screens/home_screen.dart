@@ -7,6 +7,7 @@ import 'package:admin_fribe/screens/vouchers_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttericon/font_awesome5_icons.dart';
+import 'package:go_router/go_router.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -20,7 +21,12 @@ class HomeScreen extends StatelessWidget {
         title: const Text('Admin Fribe'),
         actions: [
           IconButton(
-            icon: const Icon(Icons.logout),
+            icon: const Icon(FontAwesome5.plus),
+            tooltip: 'Add Product',
+            onPressed: () => GoRouter.of(context).pushNamed('new-product'),
+          ),
+          IconButton(
+            icon: const Icon(FontAwesome5.sign_out_alt),
             tooltip: 'Logout',
             onPressed: () {
               authBloc.add(const AuthLogoutRequested());
@@ -44,7 +50,7 @@ class HomeScreen extends StatelessWidget {
       bottomNavigationBar: BottomAppBar(
         shape: const CircularNotchedRectangle(),
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             IconButton(
               icon: const Icon(FontAwesome5.clipboard_list),

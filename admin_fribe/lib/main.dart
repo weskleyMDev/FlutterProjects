@@ -1,5 +1,6 @@
 import 'package:admin_fribe/blocs/auth/auth_bloc.dart';
 import 'package:admin_fribe/blocs/login_form/login_form_bloc.dart';
+import 'package:admin_fribe/blocs/new_product_form/new_product_form_bloc.dart';
 import 'package:admin_fribe/blocs/product/product_bloc.dart';
 import 'package:admin_fribe/blocs/sales_receipt/sales_receipt_bloc.dart';
 import 'package:admin_fribe/cubits/home_tab/home_tab_cubit.dart';
@@ -80,6 +81,7 @@ class MyApp extends StatelessWidget {
                 ProductBloc(RepositoryProvider.of<IProductRepository>(context))
                   ..add(const LoadProductsStream()),
           ),
+          BlocProvider(create: (context) => NewProductFormBloc()),
         ],
         child: MaterialApp.router(
           title: 'Admin Fribe',
