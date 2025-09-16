@@ -25,8 +25,8 @@ final class ProductCategoryChanged extends NewProductFormEvent {
   List<Object?> get props => [value];
 }
 
-final class ValidateForm extends NewProductFormEvent {
-  const ValidateForm();
+final class FormSubmitted extends NewProductFormEvent {
+  const FormSubmitted();
 
   @override
   List<Object?> get props => [];

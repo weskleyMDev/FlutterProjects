@@ -3,6 +3,7 @@ import 'package:admin_fribe/blocs/new_product_form/validator/product_category_va
 import 'package:admin_fribe/utils/capitalize_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 class NewProductScreen extends StatefulWidget {
   const NewProductScreen({super.key});
@@ -74,37 +75,9 @@ class _NewProductScreenState extends State<NewProductScreen> {
               ),
               const SizedBox(height: 16.0),
               ElevatedButton(
-                onPressed: productState.isFormEmpty
-                    ? null
-                    : () {
-                        _newProductFormBloc.add(const ValidateForm());
-                        if (!productState.isFormValid) {
-                          ScaffoldMessenger.of(context)
-                            ..clearSnackBars()
-                            ..showSnackBar(
-                              SnackBar(
-                                content: Text(
-                                  productState.errorMessage ?? 'Unknown error!',
-                                ),
-                              ),
-                            );
-                          return;
-                        }
-                        /* if (productState.isFormNotValid) {
-                          ScaffoldMessenger.of(context)
-                            ..clearSnackBars()
-                            ..showSnackBar(
-                              const SnackBar(
-                                content: Text(
-                                  'Please fix the errors in the form.',
-                                ),
-                              ),
-                            );
-                          return;
-                        } else {
-                          GoRouter.of(context).pop();
-                        } */
-                      },
+                onPressed: productState.isFormValid
+                    ? () => GoRouter.of(context).pop()
+                    : null,
                 child: const Text('Save Product'),
               ),
             ],

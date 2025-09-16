@@ -4,6 +4,7 @@ final class NewProductFormState extends Equatable {
   const NewProductFormState._({
     this.productName = const ProductNameInput.pure(),
     this.productCategory = const ProductCategoryInput.pure(),
+    this.formStatus = FormzSubmissionStatus.initial,
     this.isFormValid = false,
     this.errorMessage,
   });
@@ -12,6 +13,7 @@ final class NewProductFormState extends Equatable {
 
   final ProductNameInput productName;
   final ProductCategoryInput productCategory;
+  final FormzSubmissionStatus formStatus;
   final bool isFormValid;
   final String? errorMessage;
 
@@ -44,12 +46,14 @@ final class NewProductFormState extends Equatable {
   NewProductFormState copyWith({
     ProductNameInput Function()? productName,
     ProductCategoryInput Function()? productCategory,
+    FormzSubmissionStatus Function()? formStatus,
     bool Function()? isFormValid,
     String? Function()? errorMessage,
   }) {
     return NewProductFormState._(
       productName: productName?.call() ?? this.productName,
       productCategory: productCategory?.call() ?? this.productCategory,
+      formStatus: formStatus?.call() ?? this.formStatus,
       isFormValid: isFormValid?.call() ?? this.isFormValid,
       errorMessage: errorMessage?.call() ?? this.errorMessage,
     );
@@ -62,6 +66,7 @@ final class NewProductFormState extends Equatable {
   List<Object?> get props => [
     productName,
     productCategory,
+    formStatus,
     isFormValid,
     errorMessage,
   ];

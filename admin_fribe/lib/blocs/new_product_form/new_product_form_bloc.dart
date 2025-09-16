@@ -2,6 +2,7 @@ import 'package:admin_fribe/blocs/new_product_form/validator/product_category_va
 import 'package:admin_fribe/blocs/new_product_form/validator/product_name_validator.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:formz/formz.dart';
 
 part 'new_product_form_event.dart';
 part 'new_product_form_state.dart';
@@ -11,7 +12,7 @@ final class NewProductFormBloc
   NewProductFormBloc() : super(const NewProductFormState.initial()) {
     on<ProductNameChanged>(_onProductNameChanged);
     on<ProductCategoryChanged>(_onProductCategoryChanged);
-    on<ValidateForm>(_onValidateForm);
+    on<FormSubmitted>(_onFormSubmitted);
     on<ResetProductForm>(_onResetProductForm);
   }
 
@@ -20,7 +21,12 @@ final class NewProductFormBloc
     Emitter<NewProductFormState> emit,
   ) {
     final productName = ProductNameInput.dirty(event.value);
-    emit(state.copyWith(productName: () => productName));
+    emit(
+      state.copyWith(
+        productName: () => productName,
+        isFormValid: () => Formz.validate([productName, state.productCategory]),
+      ),
+    );
   }
 
   void _onProductCategoryChanged(
@@ -28,26 +34,37 @@ final class NewProductFormBloc
     Emitter<NewProductFormState> emit,
   ) {
     final productCategory = ProductCategoryInput.dirty(event.value);
-    emit(state.copyWith(productCategory: () => productCategory));
+    emit(
+      state.copyWith(
+        productCategory: () => productCategory,
+        isFormValid: () => Formz.validate([state.productName, productCategory]),
+      ),
+    );
   }
 
-  void _onValidateForm(ValidateForm event, Emitter<NewProductFormState> emit) {
-    if (state.isFormEmpty) {
+  Future<void> _onFormSubmitted(
+    FormSubmitted event,
+    Emitter<NewProductFormState> emit,
+  ) async {
+    if (state.isFormValid) {
       emit(
         state.copyWith(
-          errorMessage: () => 'Please fill out all fields',
-          isFormValid: () => false,
+          formStatus: () => FormzSubmissionStatus.inProgress,
+          errorMessage: null,
         ),
       );
-    } else if (state.isFormNotValid) {
+    }
+    emit(state.copyWith(formStatus: () => FormzSubmissionStatus.inProgress));
+    try {
+      await Future.delayed(const Duration(seconds: 2));
+      emit(state.copyWith(formStatus: () => FormzSubmissionStatus.success));
+    } catch (e) {
       emit(
         state.copyWith(
-          errorMessage: () => 'Please fix the errors in the form.',
-          isFormValid: () => false,
+          formStatus: () => FormzSubmissionStatus.failure,
+          errorMessage: () => 'Failed to submit the form. Please try again.',
         ),
       );
-    } else {
-      emit(state.copyWith(errorMessage: null, isFormValid: () => true));
     }
   }
 
