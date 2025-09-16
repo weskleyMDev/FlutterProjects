@@ -9,18 +9,16 @@ final class ProductRepository implements IProductRepository {
   @override
   Future<void> addProduct(ProductModel product) => _firestore
       .collection('stock')
+      .doc(product.id)
       .withConverter<ProductModel>(
         fromFirestore: _fromFirestore,
         toFirestore: _toFirestore,
       )
-      .add(product);
+      .set(product);
 
   @override
-  Future<void> deleteProduct(String id) => _firestore
-      .collection('stock')
-      .doc(id)
-      .delete();
-
+  Future<void> deleteProduct(String id) =>
+      _firestore.collection('stock').doc(id).delete();
 
   @override
   Stream<List<ProductModel?>> getAllProducts() => _firestore
@@ -56,7 +54,7 @@ final class ProductRepository implements IProductRepository {
   }
 
   @override
-  Future<void> updateProduct(ProductModel product) => _firestore
+  Future<void> updateProduct(ProductModel product) async => _firestore
       .collection('stock')
       .doc(product.id)
       .withConverter<ProductModel>(

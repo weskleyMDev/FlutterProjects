@@ -14,7 +14,7 @@ final class ProductCategoryInput
     if (value.isEmpty) {
       return ProductCategoryInputError.empty;
     }
-    if (!ProductCategory.values.any((e) => e.name == value)) {
+    if (!ProductCategory.values.any((e) => e.name.toUpperCase() == value)) {
       return ProductCategoryInputError.invalid;
     }
     return null;
