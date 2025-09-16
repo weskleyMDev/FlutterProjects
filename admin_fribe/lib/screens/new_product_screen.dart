@@ -1,7 +1,8 @@
 import 'package:admin_fribe/blocs/new_product_form/new_product_form_bloc.dart';
+import 'package:admin_fribe/blocs/new_product_form/validator/product_category_validator.dart';
+import 'package:admin_fribe/utils/capitalize_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
 
 class NewProductScreen extends StatefulWidget {
   const NewProductScreen({super.key});
@@ -45,32 +46,65 @@ class _NewProductScreenState extends State<NewProductScreen> {
                   border: OutlineInputBorder(),
                   errorText: productState.productNameErrorText,
                 ),
-                onChanged: (_) => _newProductFormBloc.add(
-                  ProductNameChanged(_productNameController.text.trim()),
-                ),
+                onChanged: (value) =>
+                    _newProductFormBloc.add(ProductNameChanged(value.trim())),
               ),
               const SizedBox(height: 16.0),
-              TextField(
-                decoration: const InputDecoration(
-                  labelText: 'Price',
+              DropdownButtonFormField<ProductCategory>(
+                items: ProductCategory.values
+                    .map(
+                      (category) => DropdownMenuItem(
+                        value: category,
+                        child: Text(category.name.capitalize()),
+                      ),
+                    )
+                    .toList(),
+                onChanged: (value) {
+                  if (value != null) {
+                    _newProductFormBloc.add(
+                      ProductCategoryChanged(value.name.trim()),
+                    );
+                  }
+                },
+                decoration: InputDecoration(
+                  labelText: 'Select a Category',
                   border: OutlineInputBorder(),
+                  errorText: productState.productCategoryErrorText,
                 ),
-                keyboardType: TextInputType.number,
-              ),
-              const SizedBox(height: 16.0),
-              TextField(
-                decoration: const InputDecoration(
-                  labelText: 'Description',
-                  border: OutlineInputBorder(),
-                ),
-                maxLines: 3,
               ),
               const SizedBox(height: 16.0),
               ElevatedButton(
-                onPressed: () {
-                  _productNameController.clear();
-                  GoRouter.of(context).pop();
-                },
+                onPressed: productState.isFormEmpty
+                    ? null
+                    : () {
+                        _newProductFormBloc.add(const ValidateForm());
+                        if (!productState.isFormValid) {
+                          ScaffoldMessenger.of(context)
+                            ..clearSnackBars()
+                            ..showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                  productState.errorMessage ?? 'Unknown error!',
+                                ),
+                              ),
+                            );
+                          return;
+                        }
+                        /* if (productState.isFormNotValid) {
+                          ScaffoldMessenger.of(context)
+                            ..clearSnackBars()
+                            ..showSnackBar(
+                              const SnackBar(
+                                content: Text(
+                                  'Please fix the errors in the form.',
+                                ),
+                              ),
+                            );
+                          return;
+                        } else {
+                          GoRouter.of(context).pop();
+                        } */
+                      },
                 child: const Text('Save Product'),
               ),
             ],
