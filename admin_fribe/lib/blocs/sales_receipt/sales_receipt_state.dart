@@ -43,6 +43,58 @@ final class SalesReceiptState extends Equatable {
       )
       .round(scale: 2);
 
+  Decimal get totalCredit => salesReceipts
+      .where(
+        (receipt) => receipt.payments.any(
+          (payment) => payment.type == 'Cartão de Crédito',
+        ),
+      )
+      .fold<Decimal>(
+        Decimal.zero,
+        (previousValue, element) =>
+            previousValue + Decimal.parse(element.total),
+      )
+      .round(scale: 2);
+
+  Decimal get totalDebit => salesReceipts
+      .where(
+        (receipt) => receipt.payments.any(
+          (payment) => payment.type == 'Cartão de Débito',
+        ),
+      )
+      .fold<Decimal>(
+        Decimal.zero,
+        (previousValue, element) =>
+            previousValue + Decimal.parse(element.total),
+      )
+      .round(scale: 2);
+
+  Decimal get totalCash => salesReceipts
+      .where(
+        (receipt) => receipt.payments.any(
+          (payment) => payment.type == 'Dinheiro',
+        ),
+      )
+      .fold<Decimal>(
+        Decimal.zero,
+        (previousValue, element) =>
+            previousValue + Decimal.parse(element.total),
+      )
+      .round(scale: 2);
+
+  Decimal get totalPix => salesReceipts
+      .where(
+        (receipt) => receipt.payments.any(
+          (payment) => payment.type == 'PIX',
+        ),
+      )
+      .fold<Decimal>(
+        Decimal.zero,
+        (previousValue, element) =>
+            previousValue + Decimal.parse(element.total),
+      )
+      .round(scale: 2);
+
   Map<String, Decimal> get totalQuantity {
     return salesReceipts
         .expand((e) => e.cart.map((p) => {p.productId: p.quantity}))

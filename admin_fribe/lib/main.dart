@@ -81,7 +81,11 @@ class MyApp extends StatelessWidget {
                 ProductBloc(RepositoryProvider.of<IProductRepository>(context))
                   ..add(const LoadProductsStream()),
           ),
-          BlocProvider(create: (context) => NewProductFormBloc()),
+          BlocProvider(
+            create: (context) => NewProductFormBloc(
+              RepositoryProvider.of<IProductRepository>(context),
+            ),
+          ),
         ],
         child: MaterialApp.router(
           title: 'Admin Fribe',

@@ -86,6 +86,19 @@ class ReportScreen extends StatelessWidget {
                       previousValue + Decimal.parse(element.shipping),
                 )
                 .round(scale: 2);
+
+            final totalCashOfWeek = receiptsOfWeek
+                .where(
+                  (receipt) => receipt.payments.any(
+                    (payment) => payment.type == 'Dinheiro',
+                  ),
+                )
+                .fold<Decimal>(
+                  Decimal.zero,
+                  (previousValue, element) =>
+                      previousValue + Decimal.parse(element.total),
+                )
+                .round(scale: 2);
             items.add(
               ExpansionTile(
                 title: Text(
@@ -96,7 +109,7 @@ class ReportScreen extends StatelessWidget {
                   ),
                 ),
                 subtitle: Text(
-                  'Total da Semana: ${NumberFormat.simpleCurrency(locale: Localizations.localeOf(context).languageCode).format(totalOfWeek.toDouble())}\nDescontos: ${NumberFormat.simpleCurrency(locale: Localizations.localeOf(context).languageCode).format(discountOfWeek.toDouble())}\nFrete: ${NumberFormat.simpleCurrency(locale: Localizations.localeOf(context).languageCode).format(shippingOfWeek.toDouble())}',
+                  'Total da Semana: ${NumberFormat.simpleCurrency(locale: Localizations.localeOf(context).languageCode).format(totalOfWeek.toDouble())}\nDinheiro: ${NumberFormat.simpleCurrency(locale: Localizations.localeOf(context).languageCode).format(totalCashOfWeek.toDouble())}\nDescontos: ${NumberFormat.simpleCurrency(locale: Localizations.localeOf(context).languageCode).format(discountOfWeek.toDouble())}\nFrete: ${NumberFormat.simpleCurrency(locale: Localizations.localeOf(context).languageCode).format(shippingOfWeek.toDouble())}',
                   style: const TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.w500,
@@ -144,7 +157,7 @@ class ReportScreen extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.only(left: 16.0, top: 16.0),
                 child: Text(
-                  'Total Discount: ${currency.format(state.totalDiscount.toDouble())}\nTotal Shipping: ${currency.format(state.totalShipping.toDouble())}\nTotal Sales: ${currency.format(state.totalSales.toDouble())}',
+                  'Total Discount: ${currency.format(state.totalDiscount.toDouble())}\nTotal Shipping: ${currency.format(state.totalShipping.toDouble())}\nTotal Sales: ${currency.format(state.totalSales.toDouble())}\nTotal Credit Card: ${currency.format(state.totalCredit.toDouble())}\nTotal Debit Card: ${currency.format(state.totalDebit.toDouble())}\nTotal Cash: ${currency.format(state.totalCash.toDouble())}\nTotal PIX: ${currency.format(state.totalPix.toDouble())}',
                   style: const TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
