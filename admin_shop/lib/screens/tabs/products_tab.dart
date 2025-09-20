@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:fluttericon/font_awesome5_icons.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:transparent_image/transparent_image.dart';
 
@@ -54,6 +55,13 @@ class ProductsTab extends StatelessWidget {
                       itemBuilder: (context, productIndex) {
                         final product = products[productIndex];
                         return ListTile(
+                          onTap: () => GoRouter.of(context).pushNamed(
+                            'product-edit',
+                            extra: {
+                              'category': categories[index].name,
+                              'product': product,
+                            },
+                          ),
                           leading: ClipRRect(
                             borderRadius: BorderRadius.circular(8),
                             child: FadeInImage.memoryNetwork(
@@ -80,7 +88,10 @@ class ProductsTab extends StatelessWidget {
               },
             ),
             TextButton.icon(
-              onPressed: () {},
+              onPressed: () => GoRouter.of(context).pushNamed(
+                'product-edit',
+                extra: {'category': categories[index].name, 'product': null},
+              ),
               label: Text('Adicionar Produto'),
               icon: Icon(FontAwesome5.plus),
             ),
