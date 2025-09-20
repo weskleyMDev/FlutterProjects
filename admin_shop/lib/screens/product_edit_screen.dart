@@ -1,4 +1,5 @@
 import 'package:admin_shop/blocs/product_edit/product_edit_bloc.dart';
+import 'package:admin_shop/blocs/product_edit/validator/sizes_input.dart';
 import 'package:admin_shop/models/product_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -44,7 +45,9 @@ class _ProductEditFormState extends State<ProductEditForm> {
     _priceController = TextEditingController(
       text: _productBloc.state.productPrice.value,
     );
-    _imagesController = TextEditingController();
+    _imagesController = TextEditingController(
+      text: _productBloc.state.productImageUrl.value,
+    );
   }
 
   @override
@@ -105,7 +108,9 @@ class _ProductEditFormState extends State<ProductEditForm> {
                     TextField(
                       controller: _priceController,
                       onChanged: (_) => _productBloc.add(
-                        ProductPriceChanged(_priceController.text.trim()),
+                        ProductPriceChanged(
+                          _priceController.text.trim().replaceAll(',', '.'),
+                        ),
                       ),
                       decoration: InputDecoration(
                         labelText: 'Price',
@@ -119,10 +124,36 @@ class _ProductEditFormState extends State<ProductEditForm> {
                     const SizedBox(height: 20),
                     TextField(
                       controller: _imagesController,
-                      decoration: const InputDecoration(
+                      onChanged: (_) => _productBloc.add(
+                        ProductImageUrlChanged(_imagesController.text.trim()),
+                      ),
+                      decoration: InputDecoration(
                         labelText: 'Image URL',
                         border: OutlineInputBorder(),
+                        errorText: state.productImageUrlError,
                       ),
+                    ),
+                    const SizedBox(height: 20),
+                    Text(
+                      'Available Sizes',
+                      style: Theme.of(context).textTheme.titleMedium,
+                    ),
+                    Wrap(
+                      spacing: 10.0,
+                      children: SizesFilter.values.map((size) {
+                        final isSelected = state.productSizes.value.contains(
+                          size,
+                        );
+                        return FilterChip(
+                          label: Text(size.name.toUpperCase()),
+                          selected: isSelected,
+                          onSelected: (selected) {
+                            _productBloc.add(
+                              ProductSizesChanged(size, selected: selected),
+                            );
+                          },
+                        );
+                      }).toList(),
                     ),
                     const SizedBox(height: 40),
                     ElevatedButton(

@@ -25,6 +25,25 @@ final class ProductPriceChanged extends ProductEditEvent {
   List<Object?> get props => [price];
 }
 
+final class ProductImageUrlChanged extends ProductEditEvent {
+  final String imageUrl;
+
+  const ProductImageUrlChanged(this.imageUrl);
+
+  @override
+  List<Object?> get props => [imageUrl];
+}
+
+final class ProductSizesChanged extends ProductEditEvent {
+  final SizesFilter size;
+  final bool selected;
+
+  const ProductSizesChanged(this.size, {this.selected = false});
+
+  @override
+  List<Object?> get props => [size, selected];
+}
+
 final class ProductEditSubmitted extends ProductEditEvent {
   final String locale;
   const ProductEditSubmitted({required this.locale});

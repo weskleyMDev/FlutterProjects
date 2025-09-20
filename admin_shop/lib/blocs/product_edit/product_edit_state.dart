@@ -3,6 +3,8 @@ part of 'product_edit_bloc.dart';
 final class ProductEditState extends Equatable {
   final ProductInput productName;
   final PriceInput productPrice;
+  final ImageUrlInput productImageUrl;
+  final SizesInput productSizes;
   final FormzSubmissionStatus status;
   final ProductModel? initialProduct;
   final bool isValid;
@@ -10,6 +12,8 @@ final class ProductEditState extends Equatable {
   const ProductEditState._({
     this.productName = const ProductInput.pure(),
     this.productPrice = const PriceInput.pure(),
+    this.productImageUrl = const ImageUrlInput.pure(),
+    this.productSizes = const SizesInput.pure(),
     this.status = FormzSubmissionStatus.initial,
     this.initialProduct,
     this.isValid = false,
@@ -20,12 +24,26 @@ final class ProductEditState extends Equatable {
   factory ProductEditState.editing(ProductModel? product, String locale) =>
       ProductEditState._(
         productName: ProductInput.dirty(product?.title[locale] ?? ''),
-        productPrice: PriceInput.dirty(product?.price.toString() ?? ''),
+        productPrice: PriceInput.dirty(product?.price.toStringAsFixed(2) ?? ''),
+        productImageUrl: ImageUrlInput.dirty(product?.images.first ?? ''),
+        productSizes: SizesInput.dirty(
+          product != null
+              ? product.sizes
+                    .map(
+                      (size) => SizesFilter.values.firstWhere(
+                        (e) => e.name == size.toString().toLowerCase(),
+                        orElse: () => SizesFilter.m,
+                      ),
+                    )
+                    .toSet()
+              : {},
+        ),
         status: FormzSubmissionStatus.initial,
         initialProduct: product,
         isValid: Formz.validate([
           ProductInput.dirty(product?.title[locale] ?? ''),
-          //PriceInput.dirty(product?.price.toString() ?? ''),
+          PriceInput.dirty(product?.price.toString() ?? ''),
+          ImageUrlInput.dirty(product?.images.first ?? ''),
         ]),
       );
 
@@ -51,9 +69,26 @@ final class ProductEditState extends Equatable {
     return errorText[productPrice.error];
   }
 
+  String? get productImageUrlError {
+    if (productImageUrl.isPure) return null;
+    final errorText = {
+      ImageUrlInputError.empty: 'Image URL cannot be empty',
+      ImageUrlInputError.invalid: 'Image URL is invalid',
+    };
+    return errorText[productImageUrl.error];
+  }
+
+  String? get productSizesError {
+    if (productSizes.isPure) return null;
+    final errorText = {SizesInputError.empty: 'Select at least one size'};
+    return errorText[productSizes.error];
+  }
+
   ProductEditState copyWith({
     ProductInput Function()? productName,
     PriceInput Function()? productPrice,
+    ImageUrlInput Function()? productImageUrl,
+    SizesInput Function()? productSizes,
     FormzSubmissionStatus Function()? status,
     ProductModel? Function()? initialProduct,
     bool Function()? isValid,
@@ -61,6 +96,8 @@ final class ProductEditState extends Equatable {
     return ProductEditState._(
       productName: productName?.call() ?? this.productName,
       productPrice: productPrice?.call() ?? this.productPrice,
+      productImageUrl: productImageUrl?.call() ?? this.productImageUrl,
+      productSizes: productSizes?.call() ?? this.productSizes,
       status: status?.call() ?? this.status,
       initialProduct: initialProduct?.call() ?? this.initialProduct,
       isValid: isValid?.call() ?? this.isValid,
@@ -74,6 +111,8 @@ final class ProductEditState extends Equatable {
   List<Object?> get props => [
     productName,
     productPrice,
+    productImageUrl,
+    productSizes,
     status,
     initialProduct,
     isValid,

@@ -7,7 +7,7 @@ final class ProductModel extends Equatable {
   final num price;
   final Map<String, String> title;
   final List<String> images;
-  final List<String> sizes;
+  final List<dynamic> sizes;
 
   const ProductModel._({
     required this.id,
@@ -30,7 +30,7 @@ final class ProductModel extends Equatable {
     num Function()? price,
     Map<String, String> Function()? title,
     List<String> Function()? images,
-    List<String> Function()? sizes,
+    List<dynamic> Function()? sizes,
   }) {
     return ProductModel._(
       id: id != null ? id() : this.id,
@@ -57,7 +57,7 @@ final class ProductModel extends Equatable {
       price: map['price'] as num,
       title: Map<String, String>.from((map['title'] as Map<String, dynamic>)),
       images: List<String>.from((map['images'] as List)),
-      sizes: List<String>.from((map['sizes'] as List)),
+      sizes: List<dynamic>.from((map['sizes'] as List)),
     );
   }
 
