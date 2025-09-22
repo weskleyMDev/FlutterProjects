@@ -86,19 +86,87 @@ class ReportScreen extends StatelessWidget {
                       previousValue + Decimal.parse(element.shipping),
                 )
                 .round(scale: 2);
-
             final totalCashOfWeek = receiptsOfWeek
-                .where(
-                  (receipt) => receipt.payments.any(
-                    (payment) => payment.type == 'Dinheiro',
-                  ),
-                )
-                .fold<Decimal>(
-                  Decimal.zero,
-                  (previousValue, element) =>
-                      previousValue + Decimal.parse(element.total),
-                )
+                .fold<Decimal>(Decimal.zero, (total, receipt) {
+                  final payments = receipt.payments;
+                  final cashPayments = payments.where(
+                    (p) => p.type == 'Dinheiro',
+                  );
+
+                  final cashSum = cashPayments.fold<Decimal>(Decimal.zero, (
+                    subtotal,
+                    payment,
+                  ) {
+                    final value = Decimal.parse(
+                      (payment.value).replaceAll(',', '.'),
+                    );
+                    return subtotal + value;
+                  });
+
+                  return total + cashSum;
+                })
                 .round(scale: 2);
+            final totalCreditOfWeek = receiptsOfWeek.fold<Decimal>(
+              Decimal.zero,
+              (total, receipt) {
+                final payments = receipt.payments;
+                final creditPayments = payments.where(
+                  (p) => p.type == 'Cartão de Crédito',
+                );
+
+                final creditSum = creditPayments.fold<Decimal>(Decimal.zero, (
+                  subtotal,
+                  payment,
+                ) {
+                  final value = Decimal.parse(
+                    (payment.value).replaceAll(',', '.'),
+                  );
+                  return subtotal + value;
+                });
+
+                return total + creditSum;
+              },
+            );
+            final totalDebitOfWeek = receiptsOfWeek.fold<Decimal>(
+              Decimal.zero,
+              (total, receipt) {
+                final payments = receipt.payments;
+                final debitPayments = payments.where(
+                  (p) => p.type == 'Cartão de Débito',
+                );
+
+                final debitSum = debitPayments.fold<Decimal>(Decimal.zero, (
+                  subtotal,
+                  payment,
+                ) {
+                  final value = Decimal.parse(
+                    (payment.value).replaceAll(',', '.'),
+                  );
+                  return subtotal + value;
+                });
+
+                return total + debitSum;
+              },
+            );
+            final totalPixOfWeek = receiptsOfWeek.fold<Decimal>(Decimal.zero, (
+              total,
+              receipt,
+            ) {
+              final payments = receipt.payments;
+              final pixPayments = payments.where((p) => p.type == 'PIX');
+
+              final pixSum = pixPayments.fold<Decimal>(Decimal.zero, (
+                subtotal,
+                payment,
+              ) {
+                final value = Decimal.parse(
+                  (payment.value).replaceAll(',', '.'),
+                );
+                return subtotal + value;
+              });
+
+              return total + pixSum;
+            });
             items.add(
               ExpansionTile(
                 title: Text(
@@ -109,7 +177,7 @@ class ReportScreen extends StatelessWidget {
                   ),
                 ),
                 subtitle: Text(
-                  'Total da Semana: ${NumberFormat.simpleCurrency(locale: Localizations.localeOf(context).languageCode).format(totalOfWeek.toDouble())}\nDinheiro: ${NumberFormat.simpleCurrency(locale: Localizations.localeOf(context).languageCode).format(totalCashOfWeek.toDouble())}\nDescontos: ${NumberFormat.simpleCurrency(locale: Localizations.localeOf(context).languageCode).format(discountOfWeek.toDouble())}\nFrete: ${NumberFormat.simpleCurrency(locale: Localizations.localeOf(context).languageCode).format(shippingOfWeek.toDouble())}',
+                  'Total da Semana: ${NumberFormat.simpleCurrency(locale: Localizations.localeOf(context).languageCode).format(totalOfWeek.toDouble())}\nDinheiro: ${NumberFormat.simpleCurrency(locale: Localizations.localeOf(context).languageCode).format(totalCashOfWeek.toDouble())}\nCartão de Crédito: ${NumberFormat.simpleCurrency(locale: Localizations.localeOf(context).languageCode).format(totalCreditOfWeek.toDouble())}\nCartão de Débito: ${NumberFormat.simpleCurrency(locale: Localizations.localeOf(context).languageCode).format(totalDebitOfWeek.toDouble())}\nPIX: ${NumberFormat.simpleCurrency(locale: Localizations.localeOf(context).languageCode).format(totalPixOfWeek.toDouble())}\nDescontos: ${NumberFormat.simpleCurrency(locale: Localizations.localeOf(context).languageCode).format(discountOfWeek.toDouble())}\nFrete: ${NumberFormat.simpleCurrency(locale: Localizations.localeOf(context).languageCode).format(shippingOfWeek.toDouble())}',
                   style: const TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.w500,

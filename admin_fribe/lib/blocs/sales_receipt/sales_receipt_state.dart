@@ -43,57 +43,72 @@ final class SalesReceiptState extends Equatable {
       )
       .round(scale: 2);
 
-  Decimal get totalCredit => salesReceipts
-      .where(
-        (receipt) => receipt.payments.any(
-          (payment) => payment.type == 'Cartão de Crédito',
-        ),
-      )
-      .fold<Decimal>(
-        Decimal.zero,
-        (previousValue, element) =>
-            previousValue + Decimal.parse(element.total),
-      )
-      .round(scale: 2);
+  Decimal get totalCredit => salesReceipts.fold<Decimal>(Decimal.zero, (
+    total,
+    receipt,
+  ) {
+    final payments = receipt.payments;
+    final creditPayments = payments.where((p) => p.type == 'Cartão de Crédito');
 
-  Decimal get totalDebit => salesReceipts
-      .where(
-        (receipt) => receipt.payments.any(
-          (payment) => payment.type == 'Cartão de Débito',
-        ),
-      )
-      .fold<Decimal>(
-        Decimal.zero,
-        (previousValue, element) =>
-            previousValue + Decimal.parse(element.total),
-      )
-      .round(scale: 2);
+    final creditSum = creditPayments.fold<Decimal>(Decimal.zero, (
+      subtotal,
+      payment,
+    ) {
+      final value = Decimal.parse((payment.value).replaceAll(',', '.'));
+      return subtotal + value;
+    });
 
-  Decimal get totalCash => salesReceipts
-      .where(
-        (receipt) => receipt.payments.any(
-          (payment) => payment.type == 'Dinheiro',
-        ),
-      )
-      .fold<Decimal>(
-        Decimal.zero,
-        (previousValue, element) =>
-            previousValue + Decimal.parse(element.total),
-      )
-      .round(scale: 2);
+    return total + creditSum;
+  });
 
-  Decimal get totalPix => salesReceipts
-      .where(
-        (receipt) => receipt.payments.any(
-          (payment) => payment.type == 'PIX',
-        ),
-      )
-      .fold<Decimal>(
-        Decimal.zero,
-        (previousValue, element) =>
-            previousValue + Decimal.parse(element.total),
-      )
-      .round(scale: 2);
+  Decimal get totalDebit => salesReceipts.fold<Decimal>(Decimal.zero, (
+    total,
+    receipt,
+  ) {
+    final payments = receipt.payments;
+    final debitPayments = payments.where((p) => p.type == 'Cartão de Débito');
+
+    final debitSum = debitPayments.fold<Decimal>(Decimal.zero, (
+      subtotal,
+      payment,
+    ) {
+      final value = Decimal.parse((payment.value).replaceAll(',', '.'));
+      return subtotal + value;
+    });
+
+    return total + debitSum;
+  });
+
+  Decimal get totalCash =>
+      salesReceipts.fold<Decimal>(Decimal.zero, (total, receipt) {
+        final payments = receipt.payments;
+        final cashPayments = payments.where((p) => p.type == 'Dinheiro');
+
+        final cashSum = cashPayments.fold<Decimal>(Decimal.zero, (
+          subtotal,
+          payment,
+        ) {
+          final value = Decimal.parse((payment.value).replaceAll(',', '.'));
+          return subtotal + value;
+        });
+
+        return total + cashSum;
+      });
+
+  Decimal get totalPix => salesReceipts.fold<Decimal>(Decimal.zero, (total, receipt) {
+        final payments = receipt.payments;
+        final pixPayments = payments.where((p) => p.type == 'PIX');
+
+        final pixSum = pixPayments.fold<Decimal>(Decimal.zero, (
+          subtotal,
+          payment,
+        ) {
+          final value = Decimal.parse((payment.value).replaceAll(',', '.'));
+          return subtotal + value;
+        });
+
+        return total + pixSum;
+      });
 
   Map<String, Decimal> get totalQuantity {
     return salesReceipts
