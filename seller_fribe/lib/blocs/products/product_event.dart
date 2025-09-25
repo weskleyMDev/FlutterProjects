@@ -10,3 +10,12 @@ sealed class ProductEvent extends Equatable {
 final class ProductSubscribeRequested extends ProductEvent {
   const ProductSubscribeRequested();
 }
+
+final class ProductSearchQueryChanged extends ProductEvent {
+  const ProductSearchQueryChanged(this.query);
+
+  final String query;
+
+  @override
+  List<Object?> get props => [query];
+}

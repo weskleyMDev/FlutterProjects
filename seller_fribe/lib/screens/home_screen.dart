@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fluttericon/font_awesome5_icons.dart';
 import 'package:seller_fribe/blocs/auth/auth_bloc.dart';
+import 'package:seller_fribe/blocs/cart/cart_bloc.dart';
 import 'package:seller_fribe/blocs/products/product_bloc.dart';
-import 'package:seller_fribe/widgets/product_tile.dart';
+import 'package:seller_fribe/cubits/home_tab/home_tab_cubit.dart';
+import 'package:seller_fribe/screens/cart_screen.dart';
+import 'package:seller_fribe/screens/products_screen.dart';
 import 'package:seller_fribe/widgets/user_drawer.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -14,40 +18,50 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   late final AuthBloc _authBloc;
+  late final HomeTabCubit _homeTabCubit;
+  late final ProductBloc _productBloc;
+  late final CartBloc _cartBloc;
   @override
   void initState() {
     super.initState();
     _authBloc = BlocProvider.of<AuthBloc>(context);
+    _homeTabCubit = BlocProvider.of<HomeTabCubit>(context);
+    _productBloc = BlocProvider.of<ProductBloc>(context);
+    _cartBloc = BlocProvider.of<CartBloc>(context);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('NOVA VENDA')),
+      appBar: AppBar(title: const Text('NOVA VENDA'), centerTitle: true),
       drawer: UserDrawer(authBloc: _authBloc),
-      body: BlocBuilder<ProductBloc, ProductState>(
+      body: BlocBuilder<HomeTabCubit, HomeTabState>(
         builder: (context, state) {
-          final products = state.products;
-          if (products.isEmpty) {
-            return const Center(child: Text('Nenhum produto encontrado.'));
-          }
-          return Stack(
+          return IndexedStack(
+            index: state.currentTab.index,
             children: [
-              ListView.builder(
-                itemCount: products.length,
-                itemBuilder: (context, index) {
-                  final product = products[index];
-                  return ProductTile(product: product);
-                },
-              ),
-              if (state.status == ProductStatus.loading)
-                Container(
-                  color: Colors.black87,
-                  child: const Center(child: CircularProgressIndicator()),
-                ),
+              ProductsScreen(productBloc: _productBloc, cartBloc: _cartBloc),
+              CartScreen(cartBloc: _cartBloc),
             ],
           );
         },
+      ),
+      bottomNavigationBar: BottomAppBar(
+        shape: const CircularNotchedRectangle(),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            IconButton(
+              icon: const Icon(FontAwesome5.cubes),
+              iconSize: 28.0,
+              onPressed: () => _homeTabCubit.switchTab(HomeTabs.products),
+            ),
+            IconButton(
+              icon: const Icon(FontAwesome5.shopping_cart),
+              onPressed: () => _homeTabCubit.switchTab(HomeTabs.cart),
+            ),
+          ],
+        ),
       ),
     );
   }

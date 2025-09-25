@@ -3,12 +3,16 @@ part of 'product_bloc.dart';
 enum ProductStatus { initial, loading, success, failure }
 
 final class ProductState extends Equatable {
-  final List<ProductModel> products;
+  final List<ProductModel> allProducts;
+  final List<ProductModel> filteredProducts;
+  final SearchInput searchInput;
   final ProductStatus status;
   final String? errorMessage;
 
   const ProductState._({
-    this.products = const [],
+    this.allProducts = const [],
+    this.filteredProducts = const [],
+    this.searchInput = const SearchInput.pure(),
     this.status = ProductStatus.initial,
     this.errorMessage,
   });
@@ -17,7 +21,9 @@ final class ProductState extends Equatable {
 
   ProductState withLoading() {
     return ProductState._(
-      products: products,
+      allProducts: allProducts,
+      filteredProducts: filteredProducts,
+      searchInput: searchInput,
       status: ProductStatus.loading,
       errorMessage: null,
     );
@@ -25,7 +31,9 @@ final class ProductState extends Equatable {
 
   ProductState withSuccess(List<ProductModel> products) {
     return ProductState._(
-      products: products,
+      allProducts: products,
+      filteredProducts: products,
+      searchInput: searchInput,
       status: ProductStatus.success,
       errorMessage: null,
     );
@@ -33,9 +41,25 @@ final class ProductState extends Equatable {
 
   ProductState withFailure([String? errorMessage]) {
     return ProductState._(
-      products: products,
+      allProducts: allProducts,
+      filteredProducts: filteredProducts,
+      searchInput: searchInput,
       status: ProductStatus.failure,
       errorMessage: errorMessage,
+    );
+  }
+
+  ProductState withSearch(String query) {
+    final newSearch = SearchInput.dirty(query);
+    final newFiltered = allProducts.where((product) {
+      return product.name.toLowerCase().contains(query.toLowerCase());
+    }).toList();
+    return ProductState._(
+      allProducts: allProducts,
+      filteredProducts: newFiltered,
+      searchInput: newSearch,
+      status: status,
+      errorMessage: null,
     );
   }
 
@@ -43,5 +67,11 @@ final class ProductState extends Equatable {
   bool? get stringify => true;
 
   @override
-  List<Object?> get props => [products, status, errorMessage];
+  List<Object?> get props => [
+    allProducts,
+    filteredProducts,
+    searchInput,
+    status,
+    errorMessage,
+  ];
 }

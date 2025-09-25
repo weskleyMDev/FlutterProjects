@@ -6,8 +6,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:seller_fribe/blocs/auth/auth_bloc.dart';
+import 'package:seller_fribe/blocs/cart/cart_bloc.dart';
 import 'package:seller_fribe/blocs/login/login_bloc.dart';
 import 'package:seller_fribe/blocs/products/product_bloc.dart';
+import 'package:seller_fribe/cubits/home_tab/home_tab_cubit.dart';
 import 'package:seller_fribe/firebase_options.dart';
 import 'package:seller_fribe/generated/l10n.dart';
 import 'package:seller_fribe/repositories/products/product_repository.dart';
@@ -74,6 +76,8 @@ class MyApp extends StatelessWidget {
               ),
             )..add(const ProductSubscribeRequested()),
           ),
+          BlocProvider<HomeTabCubit>(create: (context) => HomeTabCubit()),
+          BlocProvider<CartBloc>(create: (context) => CartBloc()),
         ],
         child: MaterialApp.router(
           debugShowCheckedModeBanner: false,

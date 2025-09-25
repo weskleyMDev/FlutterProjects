@@ -1,6 +1,9 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:seller_fribe/blocs/products/validator/search_input.dart';
 import 'package:seller_fribe/models/product_model.dart';
 import 'package:seller_fribe/repositories/products/product_repository.dart';
 
@@ -13,6 +16,7 @@ final class ProductBloc extends Bloc<ProductEvent, ProductState> {
     : _productRepository = productRepository,
       super(const ProductState.initial()) {
     on<ProductSubscribeRequested>(_onProductSubscribeRequested);
+    on<ProductSearchQueryChanged>(_onProductSearchQueryChanged);
   }
 
   Future<void> _onProductSubscribeRequested(
@@ -36,5 +40,12 @@ final class ProductBloc extends Bloc<ProductEvent, ProductState> {
     } catch (e) {
       emit(state.withFailure(e.toString()));
     }
+  }
+
+  FutureOr<void> _onProductSearchQueryChanged(
+    ProductSearchQueryChanged event,
+    Emitter<ProductState> emit,
+  ) {
+    emit(state.withSearch(event.query));
   }
 }
