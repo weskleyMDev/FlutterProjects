@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:formz/formz.dart';
 import 'package:seller_fribe/blocs/login/login_bloc.dart';
 
@@ -41,13 +42,21 @@ class _LoginScreenState extends State<LoginScreen> {
           body: Stack(
             children: [
               Padding(
-                padding: const EdgeInsets.all(8.0),
+                padding: const EdgeInsets.symmetric(horizontal: 22.0),
                 child: Center(
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
+                      ClipOval(
+                        child: SvgPicture.asset(
+                          'assets/images/logo.svg',
+                          width: 250,
+                          height: 250,
+                        ),
+                      ),
+                      const SizedBox(height: 32.0),
                       TextField(
                         key: const ValueKey('loginForm_emailInput_textField'),
                         onChanged: (email) =>

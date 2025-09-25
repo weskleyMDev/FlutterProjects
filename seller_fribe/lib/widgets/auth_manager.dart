@@ -15,7 +15,7 @@ class AuthManager extends StatefulWidget {
 }
 
 class _AuthManagerState extends State<AuthManager> {
-  late final StreamSubscription<List<ConnectivityResult>>
+  late final StreamSubscription<List<ConnectivityResult>>?
   _connectivitySubscription;
 
   bool _hasNoConnection = false;
@@ -23,7 +23,6 @@ class _AuthManagerState extends State<AuthManager> {
   @override
   void initState() {
     super.initState();
-
     _connectivitySubscription = Connectivity().onConnectivityChanged.listen((
       results,
     ) {
@@ -48,7 +47,8 @@ class _AuthManagerState extends State<AuthManager> {
 
   @override
   void dispose() {
-    _connectivitySubscription.cancel();
+    _connectivitySubscription?.cancel();
+    _connectivitySubscription = null;
     super.dispose();
   }
 

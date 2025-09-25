@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:seller_fribe/models/user_model.dart';
@@ -7,6 +9,8 @@ part 'iauth_service.dart';
 final class AuthService implements IAuthService {
   final _auth = FirebaseAuth.instance;
   final _firestore = FirebaseFirestore.instance;
+  StreamSubscription<DocumentSnapshot<UserModel>>? _userDocSubscription;
+  String? _currentListeningUserId;
 
   @override
   Stream<UserModel?> get userChanges =>
@@ -26,27 +30,33 @@ final class AuthService implements IAuthService {
 
   @override
   Future<void> signOut() async {
+    await _userDocSubscription?.cancel();
+    _userDocSubscription = null;
     await _auth.signOut();
   }
 
   Future<UserModel?> _getUserFromFirestore(User user) async {
     try {
-      final doc = await _firestore
+      final docRef = _firestore
           .collection('users')
           .doc(user.uid)
           .withConverter(
             fromFirestore: _fromFirestore,
             toFirestore: _toFirestore,
-          )
-          .get();
+          );
+
+      final doc = await docRef.get();
       if (doc.exists) {
-        _firestore.collection('users').doc(user.uid).snapshots().listen((
-          snapshot,
-        ) {
-          if (snapshot.exists && snapshot.data()?['isActive'] == false) {
-            _auth.signOut();
-          }
-        });
+        if (_currentListeningUserId != user.uid) {
+          await _userDocSubscription?.cancel();
+          _userDocSubscription = docRef.snapshots().listen((snapshot) {
+            if (snapshot.exists && snapshot.data()?.isActive == false) {
+              _auth.signOut();
+            }
+          });
+          _currentListeningUserId = user.uid;
+        }
+
         return doc.data();
       } else {
         return null;
