@@ -55,10 +55,26 @@ class _HomeScreenState extends State<HomeScreen> {
               icon: const Icon(FontAwesome5.cubes),
               iconSize: 28.0,
               onPressed: () => _homeTabCubit.switchTab(HomeTabs.products),
+              tooltip: 'Produtos',
             ),
-            IconButton(
-              icon: const Icon(FontAwesome5.shopping_cart),
-              onPressed: () => _homeTabCubit.switchTab(HomeTabs.cart),
+            Badge(
+              label: BlocSelector<CartBloc, CartState, int>(
+                selector: (state) => state.cartItems.length,
+                builder: (context, cartItemCount) {
+                  return Text(
+                    cartItemCount.toString(),
+                    style: const TextStyle(
+                      fontSize: 12.0,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  );
+                },
+              ),
+              child: IconButton(
+                icon: const Icon(FontAwesome5.shopping_cart),
+                onPressed: () => _homeTabCubit.switchTab(HomeTabs.cart),
+                tooltip: 'Carrinho',
+              ),
             ),
           ],
         ),

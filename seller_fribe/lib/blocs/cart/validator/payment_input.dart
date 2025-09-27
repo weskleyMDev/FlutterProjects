@@ -6,6 +6,12 @@ final class PaymentInput extends FormzInput<String, PaymentInputError> {
   const PaymentInput.pure() : super.pure('');
   const PaymentInput.dirty([super.value = '']) : super.dirty();
 
+  static double _total = 0.0;
+
+  static void setPaymentTotal(double total) {
+    _total = total;
+  }
+
   static final _paymentRegex = RegExp(r'^-?(0|[1-9]\d*)([.,]\d{1,2})?$');
 
   @override
@@ -17,6 +23,7 @@ final class PaymentInput extends FormzInput<String, PaymentInputError> {
     }
     if (parsed < 0) return PaymentInputError.negative;
     if (parsed == 0) return PaymentInputError.zero;
+    if (parsed > _total) return PaymentInputError.exceedsTotal;
     return null;
   }
 }

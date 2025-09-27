@@ -23,6 +23,7 @@ class ProductTile extends StatelessWidget {
       context: context,
       builder: (context) =>
           QuantityDialog(cartBloc: cartBloc, product: product),
+      barrierDismissible: false,
     );
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 4.0),

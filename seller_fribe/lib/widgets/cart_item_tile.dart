@@ -38,11 +38,11 @@ class CartItemTile extends StatelessWidget {
             return Padding(
               padding: const EdgeInsets.symmetric(
                 vertical: 3.0,
-                horizontal: 12.0,
+                horizontal: 8.0,
               ),
-              child: Chip(
-                padding: const EdgeInsets.symmetric(vertical: 5.0),
-                label: ListTile(
+              child: Card(
+                elevation: 2.0,
+                child: ListTile(
                   title: Text(product.name),
                   subtitle: Text(
                     'Quantidade: ${amount.format(item.quantity)} (${product.measure})\nSubtotal: ${currency.format(item.subtotal)}',

@@ -25,6 +25,19 @@ final class CartDiscountChanged extends CartEvent {
   List<Object> get props => [discount];
 }
 
+final class CartDiscountReasonChanged extends CartEvent {
+  const CartDiscountReasonChanged(this.reason);
+
+  final String reason;
+
+  @override
+  List<Object> get props => [reason];
+}
+
+final class ClearDiscountReasonInput extends CartEvent {
+  const ClearDiscountReasonInput();
+}
+
 final class CartShippingChanged extends CartEvent {
   const CartShippingChanged(this.shipping);
 
@@ -56,6 +69,10 @@ final class OnPaymentMethodChanged extends CartEvent {
   List<Object> get props => [method];
 }
 
+final class ClearPaymentMethod extends CartEvent {
+  const ClearPaymentMethod();
+}
+
 final class PaymentInputChanged extends CartEvent {
   const PaymentInputChanged(this.value);
 
@@ -66,12 +83,12 @@ final class PaymentInputChanged extends CartEvent {
 }
 
 final class SavePaymentMethod extends CartEvent {
-  const SavePaymentMethod(this.payment);
-
-  final PaymentModel payment;
+  final String method;
+  final String amount;
+  const SavePaymentMethod({required this.method, required this.amount});
 
   @override
-  List<Object> get props => [payment];
+  List<Object> get props => [method, amount];
 }
 
 final class RemovePaymentMethod extends CartEvent {
@@ -103,4 +120,8 @@ final class UpdateItemQuantity extends CartEvent {
 
 final class ClearCart extends CartEvent {
   const ClearCart();
+}
+
+final class ClearPayments extends CartEvent {
+  const ClearPayments();
 }

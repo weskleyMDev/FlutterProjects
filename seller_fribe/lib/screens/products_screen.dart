@@ -22,10 +22,13 @@ class _ProductsScreenState extends State<ProductsScreen> {
   Widget build(BuildContext context) {
     return BlocBuilder<ProductBloc, ProductState>(
       builder: (context, state) {
-        final products = state.filteredProducts;
-        if (products.isEmpty) {
-          return const Center(child: Text('Nenhum produto encontrado.'));
+        if (state.status == ProductStatus.loading) {
+          return Container(
+            color: Colors.black87,
+            child: const Center(child: CircularProgressIndicator()),
+          );
         }
+        final products = state.filteredProducts;
         return Stack(
           children: [
             Column(
@@ -47,24 +50,21 @@ class _ProductsScreenState extends State<ProductsScreen> {
                   ),
                 ),
                 Expanded(
-                  child: ListView.builder(
-                    itemCount: products.length,
-                    itemBuilder: (context, index) {
-                      final product = products[index];
-                      return ProductTile(
-                        product: product,
-                        cartBloc: widget.cartBloc,
-                      );
-                    },
-                  ),
+                  child: products.isNotEmpty
+                      ? ListView.builder(
+                          itemCount: products.length,
+                          itemBuilder: (context, index) {
+                            final product = products[index];
+                            return ProductTile(
+                              product: product,
+                              cartBloc: widget.cartBloc,
+                            );
+                          },
+                        )
+                      : const Center(child: Text('Nenhum produto encontrado')),
                 ),
               ],
             ),
-            if (state.status == ProductStatus.loading)
-              Container(
-                color: Colors.black87,
-                child: const Center(child: CircularProgressIndicator()),
-              ),
           ],
         );
       },

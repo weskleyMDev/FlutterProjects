@@ -19,6 +19,8 @@ class CartBloc extends Bloc<CartEvent, CartState> {
   CartBloc() : super(const CartState.initial()) {
     on<CartProductQuantityChanged>(_onQuantityChanged);
     on<CartDiscountChanged>(_onDiscountChanged);
+    on<CartDiscountReasonChanged>(_onDiscountReasonChanged);
+    on<ClearDiscountReasonInput>(_onClearDiscountReasonInput);
     on<CartShippingChanged>(_onShippingChanged);
     on<SaveCartItem>(_onSaveCartItem);
     on<ClearQuantityInput>(_onClearQuantityInput);
@@ -29,6 +31,8 @@ class CartBloc extends Bloc<CartEvent, CartState> {
     on<RemovePaymentMethod>(_onRemovePaymentMethod);
     on<OnPaymentMethodChanged>(_onPaymentMethodChanged);
     on<PaymentInputChanged>(_onPaymentInputChanged);
+    on<ClearPaymentMethod>(_onClearPaymentMethod);
+    on<ClearPayments>(_onClearPayments);
   }
 
   void _onQuantityChanged(
@@ -40,13 +44,52 @@ class CartBloc extends Bloc<CartEvent, CartState> {
   }
 
   void _onDiscountChanged(CartDiscountChanged event, Emitter<CartState> emit) {
-    final input = DiscountInput.dirty(event.discount);
-    emit(state.copyWith(discountInput: () => input));
+    final discountInput = DiscountInput.dirty(event.discount.trim());
+
+    final discountValue = discountInput.value.replaceAll(',', '.');
+
+    final hasDiscount =
+        discountValue.isNotEmpty &&
+        Decimal.tryParse(discountValue) != Decimal.zero;
+
+    final updatedReasonInput = hasDiscount
+        ? (state.discountReasonInput.isPure
+              ? DiscountReasonInput.dirty(state.discountReasonInput.value)
+              : state.discountReasonInput)
+        : const DiscountReasonInput.pure();
+
+    emit(
+      state.copyWith(
+        payments: () => [],
+        discountInput: () => discountInput,
+        discountReasonInput: () => updatedReasonInput,
+      ),
+    );
+  }
+
+  void _onDiscountReasonChanged(
+    CartDiscountReasonChanged event,
+    Emitter<CartState> emit,
+  ) {
+    final input = DiscountReasonInput.dirty(event.reason);
+    emit(state.copyWith(discountReasonInput: () => input));
+  }
+
+  void _onClearDiscountReasonInput(
+    ClearDiscountReasonInput event,
+    Emitter<CartState> emit,
+  ) {
+    emit(
+      state.copyWith(
+        discountReasonInput: () => const DiscountReasonInput.pure(),
+        submissionStatus: () => FormzSubmissionStatus.initial,
+      ),
+    );
   }
 
   void _onShippingChanged(CartShippingChanged event, Emitter<CartState> emit) {
     final input = ShippingInput.dirty(event.shipping);
-    emit(state.copyWith(shippingInput: () => input));
+    emit(state.copyWith(payments: () => [], shippingInput: () => input));
   }
 
   void _onPaymentMethodChanged(
@@ -62,6 +105,19 @@ class CartBloc extends Bloc<CartEvent, CartState> {
   ) {
     final input = PaymentInput.dirty(event.value);
     emit(state.copyWith(paymentInput: () => input));
+  }
+
+  void _onClearPaymentMethod(
+    ClearPaymentMethod event,
+    Emitter<CartState> emit,
+  ) {
+    emit(
+      state.copyWith(
+        selectedPaymentMethod: () => PaymentsMethod.dinheiro,
+        paymentInput: () => const PaymentInput.pure(),
+        submissionStatus: () => FormzSubmissionStatus.initial,
+      ),
+    );
   }
 
   void _onSaveCartItem(SaveCartItem event, Emitter<CartState> emit) {
@@ -110,11 +166,14 @@ class CartBloc extends Bloc<CartEvent, CartState> {
   }
 
   void _onRemoveItem(RemoveItemFromCart event, Emitter<CartState> emit) {
-    final updatedItems = state.cartItems
-        .where((item) => item.productId != event.productId)
-        .toList();
+    final updatedItems = List<CartItemModel>.from(state.cartItems)
+      ..removeWhere((item) => item.productId == event.productId);
 
-    emit(state.copyWith(cartItems: () => updatedItems));
+    if (updatedItems.isEmpty) {
+      emit(CartState.initial());
+    } else {
+      emit(state.copyWith(cartItems: () => updatedItems));
+    }
   }
 
   void _onUpdateItemQuantity(
@@ -140,14 +199,26 @@ class CartBloc extends Bloc<CartEvent, CartState> {
   }
 
   void _onClearCart(ClearCart event, Emitter<CartState> emit) {
-    emit(state.copyWith(cartItems: () => []));
+    emit(CartState.initial());
   }
 
   void _onSavePaymentMethod(SavePaymentMethod event, Emitter<CartState> emit) {
+    emit(
+      state.copyWith(submissionStatus: () => FormzSubmissionStatus.inProgress),
+    );
     try {
       final updatedPayments = List<PaymentModel>.from(state.payments);
-      updatedPayments.add(event.payment);
-      emit(state.copyWith(payments: () => updatedPayments));
+      final newPayment = PaymentModel.empty().copyWith(
+        method: () => event.method,
+        amount: () => event.amount,
+      );
+      updatedPayments.add(newPayment);
+      emit(
+        state.copyWith(
+          payments: () => updatedPayments,
+          submissionStatus: () => FormzSubmissionStatus.success,
+        ),
+      );
     } catch (e) {
       emit(
         state.copyWith(
@@ -176,5 +247,9 @@ class CartBloc extends Bloc<CartEvent, CartState> {
         ),
       );
     }
+  }
+
+  void _onClearPayments(ClearPayments event, Emitter<CartState> emit) {
+    emit(state.copyWith(payments: () => []));
   }
 }

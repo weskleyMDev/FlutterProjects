@@ -65,6 +65,8 @@ final class CartState extends Equatable {
 
   bool get isDiscountReasonValid => Formz.validate([discountReasonInput]);
 
+  bool get isPaymentValid => Formz.validate([paymentInput]);
+
   String? get quantityError {
     if (quantityInput.isPure) return null;
     final error = {
@@ -143,6 +145,28 @@ final class CartState extends Equatable {
     } else {
       return (subtotal).round(scale: 2);
     }
+  }
+
+  Decimal get paidAmount => payments
+      .fold<Decimal>(
+        Decimal.zero,
+        (previousValue, element) =>
+            previousValue + Decimal.parse(element.amount.replaceAll(',', '.')),
+      )
+      .round(scale: 2);
+
+  Decimal get remainingAmount => (total - paidAmount).round(scale: 2);
+
+  bool get canFinalize {
+    final hasDiscount =
+        discountInput.value.trim().isNotEmpty;
+
+    final isDiscountValidAndReasoned =
+        !hasDiscount || (hasDiscount && isDiscountReasonValid);
+
+    return cartItems.isNotEmpty &&
+        remainingAmount <= Decimal.zero &&
+        isDiscountValidAndReasoned;
   }
 
   @override

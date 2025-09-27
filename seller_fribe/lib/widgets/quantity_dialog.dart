@@ -41,9 +41,11 @@ class _QuantityDialogState extends State<QuantityDialog> {
         return AlertDialog(
           title: Text(widget.product.name),
           content: TextField(
+            autofocus: true,
             keyboardType: const TextInputType.numberWithOptions(decimal: true),
             decoration: InputDecoration(
               labelText: 'Quantidade',
+              suffixText: widget.product.measure,
               border: OutlineInputBorder(),
               errorText: state.quantityError,
             ),

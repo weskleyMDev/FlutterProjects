@@ -3,8 +3,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:seller_fribe/blocs/cart/cart_bloc.dart';
 import 'package:seller_fribe/blocs/cart/validator/discount_input.dart';
+import 'package:seller_fribe/blocs/cart/validator/payment_input.dart';
 import 'package:seller_fribe/widgets/cart_item_tile.dart';
 import 'package:seller_fribe/widgets/payment_dialog.dart';
+import 'package:seller_fribe/widgets/payment_tile.dart';
 
 class CartScreen extends StatelessWidget {
   const CartScreen({super.key, required this.cartBloc});
@@ -24,6 +26,7 @@ class CartScreen extends StatelessWidget {
       showDialog(
         context: context,
         builder: (context) => PaymentDialog(cartBloc: cartBloc),
+        barrierDismissible: false,
       );
     }
 
@@ -31,6 +34,7 @@ class CartScreen extends StatelessWidget {
       builder: (context, state) {
         final cartItems = state.cartItems;
         DiscountInput.setTotal(state.subtotal.toDouble());
+        PaymentInput.setPaymentTotal(state.remainingAmount.toDouble());
         final shipping = double.tryParse(state.shippingInput.value) ?? 0.0;
         final discount = double.tryParse(state.discountInput.value) ?? 0.0;
         if (cartItems.isEmpty) {
@@ -75,10 +79,14 @@ class CartScreen extends StatelessWidget {
                     horizontal: 12.0,
                   ),
                   child: TextField(
+                    enabled: state.discountInput.value.isNotEmpty,
                     decoration: InputDecoration(
                       labelText: 'Motivo',
                       border: const OutlineInputBorder(),
+                      errorText: state.discountReasonError,
                     ),
+                    onChanged: (value) =>
+                        cartBloc.add(CartDiscountReasonChanged(value.trim())),
                   ),
                 ),
                 Padding(
@@ -105,27 +113,17 @@ class CartScreen extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.all(12.0),
                   child: Text(
-                    'Subtotal: ${currency.format(state.subtotal.toDouble())}\nDesconto: ${currency.format(discount)}\nFrete: ${currency.format(shipping)}\nTotal: ${currency.format(state.total.toDouble())}',
+                    'Subtotal: ${currency.format(state.subtotal.toDouble())}\nDesconto: ${currency.format(discount)}\nFrete: ${currency.format(shipping)}\nTotal: ${currency.format(state.total.toDouble())}\nRestante: ${currency.format(state.remainingAmount.toDouble())}',
                     style: const TextStyle(fontSize: 16.0),
                   ),
                 ),
                 const Divider(thickness: 2.0),
-                Padding(
-                  padding: const EdgeInsets.all(12.0),
-                  child: ListTile(
-                    title: const Text('Pagamentos:'),
-                    subtitle: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: state.payments.map((payment) {
-                        return Text(payment.method);
-                      }).toList(),
-                    ),
-                    trailing: IconButton(
-                      onPressed: openPaymentDialog,
-                      icon: const Icon(Icons.add_circle),
-                    ),
-                  ),
+                PaymentTile(
+                  currency: currency,
+                  state: state,
+                  openPaymentDialog: openPaymentDialog,
                 ),
+                const Divider(thickness: 2.0),
                 Padding(
                   padding: const EdgeInsets.all(12.0),
                   child: FilledButton(
@@ -136,9 +134,11 @@ class CartScreen extends StatelessWidget {
                       ),
                       backgroundColor: Colors.orange.shade600,
                     ),
-                    onPressed: () {
-                      print(state.cartItems);
-                    },
+                    onPressed: state.canFinalize
+                        ? () {
+                            print(state.discountReasonInput.value);
+                          }
+                        : null,
                     child: const Text(
                       'Finalizar Venda',
                       style: TextStyle(fontWeight: FontWeight.bold),

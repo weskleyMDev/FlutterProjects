@@ -15,7 +15,6 @@ import 'package:seller_fribe/generated/l10n.dart';
 import 'package:seller_fribe/repositories/products/product_repository.dart';
 import 'package:seller_fribe/services/auth/auth_service.dart';
 import 'package:seller_fribe/utils/routes/routes.dart';
-import 'package:seller_fribe/utils/themes/fonts.dart';
 import 'package:seller_fribe/utils/themes/theme.dart';
 import 'package:window_manager/window_manager.dart';
 
@@ -48,8 +47,8 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     //final brightness = View.of(context).platformDispatcher.platformBrightness;
-    final textTheme = createTextTheme(context, "Roboto", "Overpass");
-    final theme = MaterialTheme(textTheme);
+    //final textTheme = createTextTheme(context, "Roboto", "Overpass");
+    final theme = MaterialTheme();
     return MultiRepositoryProvider(
       providers: [
         RepositoryProvider<IAuthService>(create: (context) => AuthService()),
