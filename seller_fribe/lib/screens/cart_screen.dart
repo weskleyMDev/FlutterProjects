@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:seller_fribe/blocs/cart/cart_bloc.dart';
 import 'package:seller_fribe/blocs/cart/validator/discount_input.dart';
 import 'package:seller_fribe/widgets/cart_item_tile.dart';
+import 'package:seller_fribe/widgets/payment_dialog.dart';
 
 class CartScreen extends StatelessWidget {
   const CartScreen({super.key, required this.cartBloc});
@@ -18,102 +19,134 @@ class CartScreen extends StatelessWidget {
       decimalDigits: 3,
     );
     final currency = NumberFormat.simpleCurrency(locale: locale);
+
+    Future<void> openPaymentDialog() async {
+      showDialog(
+        context: context,
+        builder: (context) => PaymentDialog(cartBloc: cartBloc),
+      );
+    }
+
     return BlocBuilder<CartBloc, CartState>(
       builder: (context, state) {
         final cartItems = state.cartItems;
         DiscountInput.setTotal(state.subtotal.toDouble());
+        final shipping = double.tryParse(state.shippingInput.value) ?? 0.0;
+        final discount = double.tryParse(state.discountInput.value) ?? 0.0;
         if (cartItems.isEmpty) {
           return const Center(child: Text('Carrinho vazio'));
         } else {
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              CartItemTile(
-                cartItems: cartItems,
-                amount: amount,
-                currency: currency,
-                cartBloc: cartBloc,
-              ),
-              const Divider(thickness: 2.0),
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                  vertical: 6.0,
-                  horizontal: 12.0,
+          return SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                CartItemTile(
+                  cartItems: cartItems,
+                  amount: amount,
+                  currency: currency,
+                  cartBloc: cartBloc,
                 ),
-                child: TextField(
-                  keyboardType: TextInputType.numberWithOptions(decimal: true),
-                  decoration: InputDecoration(
-                    labelText: 'Desconto',
-                    prefixText: '${currency.currencySymbol} ',
-                    border: const OutlineInputBorder(),
-                    errorText: state.discountError,
+                const Divider(thickness: 2.0),
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 6.0,
+                    horizontal: 12.0,
                   ),
-                  onChanged: (value) {
-                    cartBloc.add(
-                      CartDiscountChanged(value.trim().replaceAll(',', '.')),
-                    );
-                  },
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                  vertical: 6.0,
-                  horizontal: 12.0,
-                ),
-                child: TextField(
-                  decoration: InputDecoration(
-                    labelText: 'Motivo',
-                    border: const OutlineInputBorder(),
-                  ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                  vertical: 6.0,
-                  horizontal: 12.0,
-                ),
-                child: TextField(
-                  keyboardType: TextInputType.numberWithOptions(decimal: true),
-                  decoration: InputDecoration(
-                    labelText: 'Frete',
-                    prefixText: '${currency.currencySymbol} ',
-                    border: const OutlineInputBorder(),
-                    errorText: state.shippingError,
-                  ),
-                  onChanged: (value) => cartBloc.add(
-                    CartShippingChanged(value.trim().replaceAll(',', '.')),
-                  ),
-                ),
-              ),
-              const Divider(thickness: 2.0),
-              Padding(
-                padding: const EdgeInsets.all(12.0),
-                child: Chip(
-                  label: Text(
-                    'Total: ${currency.format(state.total.toDouble())}',
-                  ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(12.0),
-                child: FilledButton(
-                  style: FilledButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(vertical: 20.0),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8.0),
+                  child: TextField(
+                    keyboardType: TextInputType.numberWithOptions(
+                      decimal: true,
                     ),
-                    backgroundColor: Colors.orange.shade600,
-                  ),
-                  onPressed: () {
-                    print(state.cartItems);
-                  },
-                  child: const Text(
-                    'Finalizar Venda',
-                    style: TextStyle(fontWeight: FontWeight.bold),
+                    decoration: InputDecoration(
+                      labelText: 'Desconto',
+                      prefixText: '${currency.currencySymbol} ',
+                      border: const OutlineInputBorder(),
+                      errorText: state.discountError,
+                    ),
+                    onChanged: (value) {
+                      cartBloc.add(
+                        CartDiscountChanged(value.trim().replaceAll(',', '.')),
+                      );
+                    },
                   ),
                 ),
-              ),
-            ],
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 6.0,
+                    horizontal: 12.0,
+                  ),
+                  child: TextField(
+                    decoration: InputDecoration(
+                      labelText: 'Motivo',
+                      border: const OutlineInputBorder(),
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 6.0,
+                    horizontal: 12.0,
+                  ),
+                  child: TextField(
+                    keyboardType: TextInputType.numberWithOptions(
+                      decimal: true,
+                    ),
+                    decoration: InputDecoration(
+                      labelText: 'Frete',
+                      prefixText: '${currency.currencySymbol} ',
+                      border: const OutlineInputBorder(),
+                      errorText: state.shippingError,
+                    ),
+                    onChanged: (value) => cartBloc.add(
+                      CartShippingChanged(value.trim().replaceAll(',', '.')),
+                    ),
+                  ),
+                ),
+                const Divider(thickness: 2.0),
+                Padding(
+                  padding: const EdgeInsets.all(12.0),
+                  child: Text(
+                    'Subtotal: ${currency.format(state.subtotal.toDouble())}\nDesconto: ${currency.format(discount)}\nFrete: ${currency.format(shipping)}\nTotal: ${currency.format(state.total.toDouble())}',
+                    style: const TextStyle(fontSize: 16.0),
+                  ),
+                ),
+                const Divider(thickness: 2.0),
+                Padding(
+                  padding: const EdgeInsets.all(12.0),
+                  child: ListTile(
+                    title: const Text('Pagamentos:'),
+                    subtitle: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: state.payments.map((payment) {
+                        return Text(payment.method);
+                      }).toList(),
+                    ),
+                    trailing: IconButton(
+                      onPressed: openPaymentDialog,
+                      icon: const Icon(Icons.add_circle),
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(12.0),
+                  child: FilledButton(
+                    style: FilledButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(vertical: 20.0),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8.0),
+                      ),
+                      backgroundColor: Colors.orange.shade600,
+                    ),
+                    onPressed: () {
+                      print(state.cartItems);
+                    },
+                    child: const Text(
+                      'Finalizar Venda',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                ),
+              ],
+            ),
           );
         }
       },

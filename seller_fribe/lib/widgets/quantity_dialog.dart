@@ -26,7 +26,6 @@ class _QuantityDialogState extends State<QuantityDialog> {
       listener: (context, state) {
         if (state.submissionStatus == FormzSubmissionStatus.success) {
           GoRouter.of(context).pop();
-          print(state.cartItems);
           widget.cartBloc.add(const ClearQuantityInput());
         } else if (state.submissionStatus == FormzSubmissionStatus.failure) {
           ScaffoldMessenger.of(context)

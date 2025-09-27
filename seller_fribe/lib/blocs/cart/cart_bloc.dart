@@ -4,9 +4,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
 import 'package:seller_fribe/blocs/cart/validator/discount_input.dart';
 import 'package:seller_fribe/blocs/cart/validator/discount_reason_input.dart';
+import 'package:seller_fribe/blocs/cart/validator/payment_input.dart';
 import 'package:seller_fribe/blocs/cart/validator/quantity_input.dart';
 import 'package:seller_fribe/blocs/cart/validator/shipping_input.dart';
 import 'package:seller_fribe/models/cart_item_model.dart';
+import 'package:seller_fribe/models/payment_model.dart';
 import 'package:seller_fribe/models/product_model.dart';
 import 'package:uuid/uuid.dart';
 
@@ -23,6 +25,10 @@ class CartBloc extends Bloc<CartEvent, CartState> {
     on<RemoveItemFromCart>(_onRemoveItem);
     on<UpdateItemQuantity>(_onUpdateItemQuantity);
     on<ClearCart>(_onClearCart);
+    on<SavePaymentMethod>(_onSavePaymentMethod);
+    on<RemovePaymentMethod>(_onRemovePaymentMethod);
+    on<OnPaymentMethodChanged>(_onPaymentMethodChanged);
+    on<PaymentInputChanged>(_onPaymentInputChanged);
   }
 
   void _onQuantityChanged(
@@ -33,20 +39,29 @@ class CartBloc extends Bloc<CartEvent, CartState> {
     emit(state.copyWith(quantityInput: () => input));
   }
 
-  void _onDiscountChanged(
-    CartDiscountChanged event,
-    Emitter<CartState> emit,
-  ) {
+  void _onDiscountChanged(CartDiscountChanged event, Emitter<CartState> emit) {
     final input = DiscountInput.dirty(event.discount);
     emit(state.copyWith(discountInput: () => input));
   }
 
-  void _onShippingChanged(
-    CartShippingChanged event,
-    Emitter<CartState> emit,
-  ) {
+  void _onShippingChanged(CartShippingChanged event, Emitter<CartState> emit) {
     final input = ShippingInput.dirty(event.shipping);
     emit(state.copyWith(shippingInput: () => input));
+  }
+
+  void _onPaymentMethodChanged(
+    OnPaymentMethodChanged event,
+    Emitter<CartState> emit,
+  ) {
+    emit(state.copyWith(selectedPaymentMethod: () => event.method));
+  }
+
+  void _onPaymentInputChanged(
+    PaymentInputChanged event,
+    Emitter<CartState> emit,
+  ) {
+    final input = PaymentInput.dirty(event.value);
+    emit(state.copyWith(paymentInput: () => input));
   }
 
   void _onSaveCartItem(SaveCartItem event, Emitter<CartState> emit) {
@@ -126,5 +141,40 @@ class CartBloc extends Bloc<CartEvent, CartState> {
 
   void _onClearCart(ClearCart event, Emitter<CartState> emit) {
     emit(state.copyWith(cartItems: () => []));
+  }
+
+  void _onSavePaymentMethod(SavePaymentMethod event, Emitter<CartState> emit) {
+    try {
+      final updatedPayments = List<PaymentModel>.from(state.payments);
+      updatedPayments.add(event.payment);
+      emit(state.copyWith(payments: () => updatedPayments));
+    } catch (e) {
+      emit(
+        state.copyWith(
+          submissionStatus: () => FormzSubmissionStatus.failure,
+          errorMessage: () => 'Erro ao adicionar método de pagamento: $e',
+        ),
+      );
+    }
+  }
+
+  void _onRemovePaymentMethod(
+    RemovePaymentMethod event,
+    Emitter<CartState> emit,
+  ) {
+    try {
+      final updatedPayments = List<PaymentModel>.from(state.payments);
+      if (event.index >= 0 && event.index < updatedPayments.length) {
+        updatedPayments.removeAt(event.index);
+        emit(state.copyWith(payments: () => updatedPayments));
+      }
+    } catch (e) {
+      emit(
+        state.copyWith(
+          submissionStatus: () => FormzSubmissionStatus.failure,
+          errorMessage: () => 'Erro ao remover método de pagamento: $e',
+        ),
+      );
+    }
   }
 }

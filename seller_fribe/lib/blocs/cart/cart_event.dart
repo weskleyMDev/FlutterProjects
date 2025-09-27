@@ -47,6 +47,41 @@ final class SaveCartItem extends CartEvent {
   List<Object> get props => [product];
 }
 
+final class OnPaymentMethodChanged extends CartEvent {
+  const OnPaymentMethodChanged(this.method);
+
+  final PaymentsMethod method;
+
+  @override
+  List<Object> get props => [method];
+}
+
+final class PaymentInputChanged extends CartEvent {
+  const PaymentInputChanged(this.value);
+
+  final String value;
+
+  @override
+  List<Object> get props => [value];
+}
+
+final class SavePaymentMethod extends CartEvent {
+  const SavePaymentMethod(this.payment);
+
+  final PaymentModel payment;
+
+  @override
+  List<Object> get props => [payment];
+}
+
+final class RemovePaymentMethod extends CartEvent {
+  final int index;
+  const RemovePaymentMethod(this.index);
+
+  @override
+  List<Object> get props => [index];
+}
+
 final class RemoveItemFromCart extends CartEvent {
   const RemoveItemFromCart(this.productId);
 
