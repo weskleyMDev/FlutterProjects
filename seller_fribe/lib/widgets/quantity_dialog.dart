@@ -63,7 +63,7 @@ class _QuantityDialogState extends State<QuantityDialog> {
               child: const Text('Cancelar'),
             ),
             ElevatedButton(
-              onPressed: state.isValid
+              onPressed: state.isQuantityValid
                   ? () {
                       widget.cartBloc.add(SaveCartItem(widget.product));
                     }

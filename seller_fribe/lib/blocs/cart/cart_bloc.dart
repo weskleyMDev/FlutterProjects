@@ -2,7 +2,10 @@ import 'package:decimal/decimal.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
+import 'package:seller_fribe/blocs/cart/validator/discount_input.dart';
+import 'package:seller_fribe/blocs/cart/validator/discount_reason_input.dart';
 import 'package:seller_fribe/blocs/cart/validator/quantity_input.dart';
+import 'package:seller_fribe/blocs/cart/validator/shipping_input.dart';
 import 'package:seller_fribe/models/cart_item_model.dart';
 import 'package:seller_fribe/models/product_model.dart';
 import 'package:uuid/uuid.dart';
@@ -13,6 +16,8 @@ part 'cart_state.dart';
 class CartBloc extends Bloc<CartEvent, CartState> {
   CartBloc() : super(const CartState.initial()) {
     on<CartProductQuantityChanged>(_onQuantityChanged);
+    on<CartDiscountChanged>(_onDiscountChanged);
+    on<CartShippingChanged>(_onShippingChanged);
     on<SaveCartItem>(_onSaveCartItem);
     on<ClearQuantityInput>(_onClearQuantityInput);
     on<RemoveItemFromCart>(_onRemoveItem);
@@ -26,6 +31,22 @@ class CartBloc extends Bloc<CartEvent, CartState> {
   ) {
     final input = QuantityInput.dirty(event.quantity);
     emit(state.copyWith(quantityInput: () => input));
+  }
+
+  void _onDiscountChanged(
+    CartDiscountChanged event,
+    Emitter<CartState> emit,
+  ) {
+    final input = DiscountInput.dirty(event.discount);
+    emit(state.copyWith(discountInput: () => input));
+  }
+
+  void _onShippingChanged(
+    CartShippingChanged event,
+    Emitter<CartState> emit,
+  ) {
+    final input = ShippingInput.dirty(event.shipping);
+    emit(state.copyWith(shippingInput: () => input));
   }
 
   void _onSaveCartItem(SaveCartItem event, Emitter<CartState> emit) {

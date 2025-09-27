@@ -19,3 +19,4 @@ final class ProductSearchQueryChanged extends ProductEvent {
   @override
   List<Object?> get props => [query];
 }
+

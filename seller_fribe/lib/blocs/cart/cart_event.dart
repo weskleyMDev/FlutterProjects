@@ -16,6 +16,24 @@ final class CartProductQuantityChanged extends CartEvent {
   List<Object> get props => [quantity];
 }
 
+final class CartDiscountChanged extends CartEvent {
+  const CartDiscountChanged(this.discount);
+
+  final String discount;
+
+  @override
+  List<Object> get props => [discount];
+}
+
+final class CartShippingChanged extends CartEvent {
+  const CartShippingChanged(this.shipping);
+
+  final String shipping;
+
+  @override
+  List<Object> get props => [shipping];
+}
+
 final class ClearQuantityInput extends CartEvent {
   const ClearQuantityInput();
 }
