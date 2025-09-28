@@ -20,3 +20,10 @@ final class ProductSearchQueryChanged extends ProductEvent {
   List<Object?> get props => [query];
 }
 
+final class ProductUpdateAmountRequested extends ProductEvent {
+  final List<CartItemModel> cartItems;
+  const ProductUpdateAmountRequested(this.cartItems);
+
+  @override
+  List<Object?> get props => [cartItems];
+}

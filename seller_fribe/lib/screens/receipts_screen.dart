@@ -3,7 +3,9 @@ import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+import 'package:seller_fribe/blocs/auth/auth_bloc.dart';
 import 'package:seller_fribe/blocs/receipts/receipt_bloc.dart';
+import 'package:seller_fribe/widgets/user_drawer.dart';
 
 class ReceiptsScreen extends StatefulWidget {
   const ReceiptsScreen({super.key});
@@ -13,12 +15,21 @@ class ReceiptsScreen extends StatefulWidget {
 }
 
 class _ReceiptsScreenState extends State<ReceiptsScreen> {
+  late final AuthBloc _authBloc;
+
+  @override
+  void initState() {
+    super.initState();
+    _authBloc = BlocProvider.of<AuthBloc>(context);
+  }
+
   @override
   Widget build(BuildContext context) {
     final locale = Localizations.localeOf(context).languageCode;
     final currency = NumberFormat.simpleCurrency(locale: locale);
     return Scaffold(
       appBar: AppBar(title: const Text('RECIBOS'), centerTitle: true),
+      drawer: UserDrawer(authBloc: _authBloc),
       body: BlocBuilder<ReceiptBloc, ReceiptState>(
         builder: (context, state) {
           if (state.status == ReceiptStatus.loading) {

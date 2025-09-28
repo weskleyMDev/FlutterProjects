@@ -8,11 +8,14 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:seller_fribe/blocs/auth/auth_bloc.dart';
 import 'package:seller_fribe/blocs/cart/cart_bloc.dart';
 import 'package:seller_fribe/blocs/login/login_bloc.dart';
+import 'package:seller_fribe/blocs/pending_sales/pending_sales_bloc.dart';
+import 'package:seller_fribe/blocs/pending_sales/pending_sales_event.dart';
 import 'package:seller_fribe/blocs/products/product_bloc.dart';
 import 'package:seller_fribe/blocs/receipts/receipt_bloc.dart';
 import 'package:seller_fribe/cubits/home_tab/home_tab_cubit.dart';
 import 'package:seller_fribe/firebase_options.dart';
 import 'package:seller_fribe/generated/l10n.dart';
+import 'package:seller_fribe/repositories/pending_sales/pending_sale_repository.dart';
 import 'package:seller_fribe/repositories/products/product_repository.dart';
 import 'package:seller_fribe/repositories/receipts/receipt_repository.dart';
 import 'package:seller_fribe/services/auth/auth_service.dart';
@@ -60,6 +63,9 @@ class MyApp extends StatelessWidget {
         RepositoryProvider<IReceiptRepository>(
           create: (context) => ReceiptRepository(),
         ),
+        RepositoryProvider<IPendingSaleRepository>(
+          create: (context) => PendingSaleRepository(),
+        ),
       ],
       child: MultiBlocProvider(
         providers: [
@@ -86,6 +92,11 @@ class MyApp extends StatelessWidget {
             create: (context) =>
                 ReceiptBloc(RepositoryProvider.of<IReceiptRepository>(context))
                   ..add(const ReceiptsSubscribedRequest()),
+          ),
+          BlocProvider<PendingSalesBloc>(
+            create: (context) => PendingSalesBloc(
+              RepositoryProvider.of<IPendingSaleRepository>(context),
+            )..add(const LoadPendingSales()),
           ),
         ],
         child: MaterialApp.router(

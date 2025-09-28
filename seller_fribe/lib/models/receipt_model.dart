@@ -12,6 +12,7 @@ final class ReceiptModel extends Equatable {
   final String total;
   final List<PaymentModel> payments;
   final List<CartItemModel> cart;
+  final bool status;
 
   const ReceiptModel._({
     this.id = '',
@@ -23,6 +24,7 @@ final class ReceiptModel extends Equatable {
     this.total = '',
     this.payments = const [],
     this.cart = const [],
+    this.status = true,
   });
 
   const ReceiptModel.empty() : this._();
@@ -37,6 +39,7 @@ final class ReceiptModel extends Equatable {
     String Function()? total,
     List<PaymentModel> Function()? payments,
     List<CartItemModel> Function()? cart,
+    bool Function()? status,
   }) => ReceiptModel._(
     id: id?.call() ?? this.id,
     createAt: createAt?.call() ?? this.createAt,
@@ -47,6 +50,7 @@ final class ReceiptModel extends Equatable {
     total: total?.call() ?? this.total,
     payments: payments?.call() ?? this.payments,
     cart: cart?.call() ?? this.cart,
+    status: status?.call() ?? this.status,
   );
 
   Map<String, dynamic> toMap() => {
@@ -59,6 +63,7 @@ final class ReceiptModel extends Equatable {
     'total': total,
     'payments': payments.map((x) => x.toMap()).toList(),
     'cart': cart.map((x) => x.toMap()).toList(),
+    'status': status,
   };
 
   factory ReceiptModel.fromMap(Map<String, dynamic> map) => ReceiptModel._(
@@ -83,6 +88,7 @@ final class ReceiptModel extends Equatable {
             ),
           )
         : [],
+    status: map['status'] ?? true,
   );
 
   @override
@@ -99,5 +105,6 @@ final class ReceiptModel extends Equatable {
     total,
     payments,
     cart,
+    status,
   ];
 }

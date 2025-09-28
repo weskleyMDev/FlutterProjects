@@ -48,6 +48,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 cartBloc: _cartBloc,
                 receiptBloc: _receiptBloc,
                 homeTabCubit: _homeTabCubit,
+                productBloc: _productBloc,
               ),
             ],
           );

@@ -35,18 +35,26 @@ final class ReceiptRepository implements IReceiptRepository {
   }
 
   @override
-  Future<void> savePendingReceipt(ReceiptModel receiptData, String client) async {
+  Future<void> savePendingReceipt(
+    ReceiptModel receiptData,
+    String client,
+  ) async {
     try {
-      await _firestore
-          .collection('pending_sales')
-          .doc(client)
-          .collection('pending_receipts')
-          .doc(receiptData.id)
-          .withConverter<ReceiptModel>(
-            fromFirestore: _fromFirestore,
-            toFirestore: _toFirestore,
-          )
-          .set(receiptData);
+      await Future.wait([
+        _firestore.collection('pending_sales').doc(client).set({
+          'name': client,
+        }, SetOptions(merge: true)),
+        _firestore
+            .collection('pending_sales')
+            .doc(client)
+            .collection('pending_receipts')
+            .doc(receiptData.id)
+            .withConverter<ReceiptModel>(
+              fromFirestore: _fromFirestore,
+              toFirestore: _toFirestore,
+            )
+            .set(receiptData),
+      ]);
     } catch (e) {
       rethrow;
     }

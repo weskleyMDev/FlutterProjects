@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:fluttericon/font_awesome5_icons.dart';
 import 'package:go_router/go_router.dart';
 import 'package:seller_fribe/blocs/auth/auth_bloc.dart';
 
@@ -22,20 +23,32 @@ class UserDrawer extends StatelessWidget {
             ),
           ),
           ListTile(
+            leading: const Icon(Icons.point_of_sale),
             title: const Text('Venda'),
             onTap: () {
-              // Handle profile tap
+              Navigator.of(context).pop();
+              GoRouter.of(context).goNamed('home');
             },
           ),
           ListTile(
-            title: const Text('Recibos'),
+            leading: const Icon(FontAwesome5.money_check_alt, size: 20.0),
+            title: const Text('Vales'),
             onTap: () {
               Navigator.of(context).pop();
-              GoRouter.of(context).push('/receipts');
+              GoRouter.of(context).goNamed('pending_sales');
+            },
+          ),
+          ListTile(
+            leading: const Icon(FontAwesome5.receipt),
+            title: const Text('Recibos'),
+            onTap: () {
+              Navigator.of( context).pop();
+              GoRouter.of(context).goNamed('receipts');
             },
           ),
           const Spacer(),
           ListTile(
+            leading: const Icon(Icons.logout),
             title: const Text('Sair'),
             onTap: () {
               Navigator.of(context).pop();

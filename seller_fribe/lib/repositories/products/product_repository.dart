@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:decimal/decimal.dart';
 import 'package:seller_fribe/models/product_model.dart';
 
 part 'iproduct_repository.dart';
@@ -19,11 +20,33 @@ final class ProductRepository implements IProductRepository {
       .asBroadcastStream();
 
   @override
-  Future<void> updateAmountProduct(ProductModel product) async {
+  Future<void> updateAmountProduct(
+    String productId,
+    String amountToSubtract,
+  ) async {
     try {
-      await _firestore.collection('stock').doc(product.id).update({
-        'amount': product.amount,
-      });
+      final docRef = _firestore
+          .collection('stock')
+          .doc(productId)
+          .withConverter(
+            fromFirestore: _fromFirestore,
+            toFirestore: _toFirestore,
+          );
+      final snapshot = await docRef.get();
+      final data = snapshot.data();
+      if (data == null) {
+        throw Exception('Product with ID $productId does not exist.');
+      }
+      final currentAmount = data.amount;
+      final toDecimal = Decimal.parse(currentAmount);
+      final toSubtract = Decimal.parse(amountToSubtract);
+      final newAmount = toDecimal - toSubtract;
+      if (newAmount < Decimal.zero) {
+        throw Exception(
+          'Insufficient stock for product ID $productId. Current amount: $currentAmount, attempted to subtract: $amountToSubtract.',
+        );
+      }
+      await docRef.update({'amount': newAmount.toString()});
     } catch (e) {
       rethrow;
     }

@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:seller_fribe/blocs/products/validator/search_input.dart';
+import 'package:seller_fribe/models/cart_item_model.dart';
 import 'package:seller_fribe/models/product_model.dart';
 import 'package:seller_fribe/repositories/products/product_repository.dart';
 
@@ -17,6 +18,7 @@ final class ProductBloc extends Bloc<ProductEvent, ProductState> {
       super(const ProductState.initial()) {
     on<ProductSubscribeRequested>(_onProductSubscribeRequested);
     on<ProductSearchQueryChanged>(_onProductSearchQueryChanged);
+    on<ProductUpdateAmountRequested>(_onProductUpdateAmountRequested);
   }
 
   Future<void> _onProductSubscribeRequested(
@@ -37,6 +39,25 @@ final class ProductBloc extends Bloc<ProductEvent, ProductState> {
             ? state.withFailure(e.message)
             : state.withFailure(e.toString()),
       );
+    } catch (e) {
+      emit(state.withFailure(e.toString()));
+    }
+  }
+
+  Future<void> _onProductUpdateAmountRequested(
+    ProductUpdateAmountRequested event,
+    Emitter<ProductState> emit,
+  ) async {
+    emit(state.withLoading());
+    try {
+      final futures = event.cartItems.map((cartItem) {
+        return _productRepository.updateAmountProduct(
+          cartItem.productId,
+          cartItem.quantity.toString(),
+        );
+      }).toList();
+      await Future.wait(futures);
+      emit(state.withSuccess(state.allProducts));
     } catch (e) {
       emit(state.withFailure(e.toString()));
     }

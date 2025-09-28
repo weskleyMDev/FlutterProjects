@@ -4,8 +4,10 @@ import 'package:intl/intl.dart';
 import 'package:seller_fribe/blocs/cart/cart_bloc.dart';
 import 'package:seller_fribe/blocs/cart/validator/discount_input.dart';
 import 'package:seller_fribe/blocs/cart/validator/payment_input.dart';
+import 'package:seller_fribe/blocs/products/product_bloc.dart';
 import 'package:seller_fribe/blocs/receipts/receipt_bloc.dart';
 import 'package:seller_fribe/cubits/home_tab/home_tab_cubit.dart';
+import 'package:seller_fribe/models/cart_item_model.dart';
 import 'package:seller_fribe/models/receipt_model.dart';
 import 'package:seller_fribe/widgets/cart_item_tile.dart';
 import 'package:seller_fribe/widgets/payment_dialog.dart';
@@ -17,11 +19,13 @@ class CartScreen extends StatelessWidget {
     super.key,
     required this.cartBloc,
     required this.receiptBloc,
+    required this.productBloc,
     required this.homeTabCubit,
   });
 
   final CartBloc cartBloc;
   final ReceiptBloc receiptBloc;
+  final ProductBloc productBloc;
   final HomeTabCubit homeTabCubit;
 
   @override
@@ -42,7 +46,7 @@ class CartScreen extends StatelessWidget {
     }
 
     Future<void> createReceipt(CartState state) async {
-      final receiptData = ReceiptModel.empty().copyWith(
+      final baseReceiptData = ReceiptModel.empty().copyWith(
         id: () => const Uuid().v4(),
         createAt: () => DateTime.now(),
         discount: () => state.discountInput.value,
@@ -53,23 +57,19 @@ class CartScreen extends StatelessWidget {
         payments: () => state.payments,
         tariffs: () => state.tariffsInput.value,
       );
-      receiptBloc.add(CreateReceipt(receiptData));
+      if (state.pendingSaleInput.isValid) {
+        final client = state.pendingSaleInput.normalizedValue;
+        final pendingReceiptData = baseReceiptData.copyWith(
+          status: () => false,
+        );
+        receiptBloc.add(CreatePendingReceipt(pendingReceiptData, client));
+      } else {
+        receiptBloc.add(CreateReceipt(baseReceiptData));
+      }
     }
 
-    Future<void> createPendingSale(CartState state) async {
-      final receiptData = ReceiptModel.empty().copyWith(
-        id: () => const Uuid().v4(),
-        createAt: () => DateTime.now(),
-        discount: () => state.discountInput.value,
-        discountReason: () => state.discountReasonInput.value,
-        shipping: () => state.shippingInput.value,
-        total: () => state.total.toStringAsFixed(2),
-        cart: () => state.cartItems,
-        payments: () => state.payments,
-        tariffs: () => state.tariffsInput.value,
-      );
-      final client = state.pendingSaleInput.normalizedValue;
-      receiptBloc.add(CreatePendingReceipt(receiptData, client));
+    Future<void> updateProductAmount(List<CartItemModel> cartItems) async {
+      productBloc.add(ProductUpdateAmountRequested(cartItems));
     }
 
     return BlocBuilder<CartBloc, CartState>(
@@ -181,11 +181,11 @@ class CartScreen extends StatelessWidget {
                   ),
                 ),
                 const Divider(thickness: 2.0),
-                  PaymentTile(
-                    currency: currency,
-                    state: state,
-                    openPaymentDialog: openPaymentDialog,
-                  ),
+                PaymentTile(
+                  currency: currency,
+                  state: state,
+                  openPaymentDialog: openPaymentDialog,
+                ),
                 const Divider(thickness: 2.0),
                 Padding(
                   padding: const EdgeInsets.all(12.0),
@@ -199,11 +199,8 @@ class CartScreen extends StatelessWidget {
                     ),
                     onPressed: state.canFinalize
                         ? () async {
-                            if (state.pendingSaleInput.isValid) {
-                              await createPendingSale(state);
-                            } else {
-                              await createReceipt(state);
-                            }
+                            await createReceipt(state);
+                            await updateProductAmount(cartItems);
                             cartBloc.add(const ClearCart());
                             homeTabCubit.switchTab(HomeTabs.products);
                           }

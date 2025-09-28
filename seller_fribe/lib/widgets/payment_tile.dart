@@ -53,6 +53,7 @@ class PaymentTile extends StatelessWidget {
                             ),
                           ],
                         ),
+                        if (state.pendingSaleInput.isValid)
                         Text(
                           'Cliente: ${state.pendingSaleInput.value.capitalize()}',
                         ),
