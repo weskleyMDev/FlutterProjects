@@ -35,7 +35,7 @@ Future<void> main() async {
       center: true,
       backgroundColor: Colors.transparent,
       skipTaskbar: false,
-      title: 'Seller Fribe',
+      title: 'Fribe Cortes Especiais',
       titleBarStyle: TitleBarStyle.normal,
     );
 
@@ -101,7 +101,7 @@ class MyApp extends StatelessWidget {
         ],
         child: MaterialApp.router(
           debugShowCheckedModeBanner: false,
-          title: 'Seller Fribe',
+          title: 'Fribe Cortes Especiais',
           theme: theme.dark(),
           supportedLocales: S.delegate.supportedLocales,
           localizationsDelegates: [
