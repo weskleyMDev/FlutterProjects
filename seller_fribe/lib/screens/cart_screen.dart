@@ -4,14 +4,25 @@ import 'package:intl/intl.dart';
 import 'package:seller_fribe/blocs/cart/cart_bloc.dart';
 import 'package:seller_fribe/blocs/cart/validator/discount_input.dart';
 import 'package:seller_fribe/blocs/cart/validator/payment_input.dart';
+import 'package:seller_fribe/blocs/receipts/receipt_bloc.dart';
+import 'package:seller_fribe/cubits/home_tab/home_tab_cubit.dart';
+import 'package:seller_fribe/models/receipt_model.dart';
 import 'package:seller_fribe/widgets/cart_item_tile.dart';
 import 'package:seller_fribe/widgets/payment_dialog.dart';
 import 'package:seller_fribe/widgets/payment_tile.dart';
+import 'package:uuid/uuid.dart';
 
 class CartScreen extends StatelessWidget {
-  const CartScreen({super.key, required this.cartBloc});
+  const CartScreen({
+    super.key,
+    required this.cartBloc,
+    required this.receiptBloc,
+    required this.homeTabCubit,
+  });
 
   final CartBloc cartBloc;
+  final ReceiptBloc receiptBloc;
+  final HomeTabCubit homeTabCubit;
 
   @override
   Widget build(BuildContext context) {
@@ -30,6 +41,37 @@ class CartScreen extends StatelessWidget {
       );
     }
 
+    Future<void> createReceipt(CartState state) async {
+      final receiptData = ReceiptModel.empty().copyWith(
+        id: () => const Uuid().v4(),
+        createAt: () => DateTime.now(),
+        discount: () => state.discountInput.value,
+        discountReason: () => state.discountReasonInput.value,
+        shipping: () => state.shippingInput.value,
+        total: () => state.total.toStringAsFixed(2),
+        cart: () => state.cartItems,
+        payments: () => state.payments,
+        tariffs: () => state.tariffsInput.value,
+      );
+      receiptBloc.add(CreateReceipt(receiptData));
+    }
+
+    Future<void> createPendingSale(CartState state) async {
+      final receiptData = ReceiptModel.empty().copyWith(
+        id: () => const Uuid().v4(),
+        createAt: () => DateTime.now(),
+        discount: () => state.discountInput.value,
+        discountReason: () => state.discountReasonInput.value,
+        shipping: () => state.shippingInput.value,
+        total: () => state.total.toStringAsFixed(2),
+        cart: () => state.cartItems,
+        payments: () => state.payments,
+        tariffs: () => state.tariffsInput.value,
+      );
+      final client = state.pendingSaleInput.normalizedValue;
+      receiptBloc.add(CreatePendingReceipt(receiptData, client));
+    }
+
     return BlocBuilder<CartBloc, CartState>(
       builder: (context, state) {
         final cartItems = state.cartItems;
@@ -37,6 +79,7 @@ class CartScreen extends StatelessWidget {
         PaymentInput.setPaymentTotal(state.remainingAmount.toDouble());
         final shipping = double.tryParse(state.shippingInput.value) ?? 0.0;
         final discount = double.tryParse(state.discountInput.value) ?? 0.0;
+        final tariffs = double.tryParse(state.tariffsInput.value) ?? 0.0;
         if (cartItems.isEmpty) {
           return const Center(child: Text('Carrinho vazio'));
         } else {
@@ -109,20 +152,40 @@ class CartScreen extends StatelessWidget {
                     ),
                   ),
                 ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 6.0,
+                    horizontal: 12.0,
+                  ),
+                  child: TextField(
+                    keyboardType: TextInputType.numberWithOptions(
+                      decimal: true,
+                    ),
+                    decoration: InputDecoration(
+                      labelText: 'Juros/Taxas',
+                      prefixText: '${currency.currencySymbol} ',
+                      border: const OutlineInputBorder(),
+                      errorText: state.tariffsError,
+                    ),
+                    onChanged: (value) => cartBloc.add(
+                      CartTariffsChanged(value.trim().replaceAll(',', '.')),
+                    ),
+                  ),
+                ),
                 const Divider(thickness: 2.0),
                 Padding(
                   padding: const EdgeInsets.all(12.0),
                   child: Text(
-                    'Subtotal: ${currency.format(state.subtotal.toDouble())}\nDesconto: ${currency.format(discount)}\nFrete: ${currency.format(shipping)}\nTotal: ${currency.format(state.total.toDouble())}\nRestante: ${currency.format(state.remainingAmount.toDouble())}',
+                    'Subtotal: ${currency.format(state.subtotal.toDouble())}\nDesconto: ${currency.format(discount)}\nFrete: ${currency.format(shipping)}\nJuros/Taxas: ${currency.format(tariffs)}\nTotal: ${currency.format(state.total.toDouble())}\nRestante: ${currency.format(state.remainingAmount.toDouble())}',
                     style: const TextStyle(fontSize: 16.0),
                   ),
                 ),
                 const Divider(thickness: 2.0),
-                PaymentTile(
-                  currency: currency,
-                  state: state,
-                  openPaymentDialog: openPaymentDialog,
-                ),
+                  PaymentTile(
+                    currency: currency,
+                    state: state,
+                    openPaymentDialog: openPaymentDialog,
+                  ),
                 const Divider(thickness: 2.0),
                 Padding(
                   padding: const EdgeInsets.all(12.0),
@@ -135,8 +198,14 @@ class CartScreen extends StatelessWidget {
                       backgroundColor: Colors.orange.shade600,
                     ),
                     onPressed: state.canFinalize
-                        ? () {
-                            print(state.discountReasonInput.value);
+                        ? () async {
+                            if (state.pendingSaleInput.isValid) {
+                              await createPendingSale(state);
+                            } else {
+                              await createReceipt(state);
+                            }
+                            cartBloc.add(const ClearCart());
+                            homeTabCubit.switchTab(HomeTabs.products);
                           }
                         : null,
                     child: const Text(

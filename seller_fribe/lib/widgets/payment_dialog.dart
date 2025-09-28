@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
-import 'package:go_router/go_router.dart';
 import 'package:seller_fribe/blocs/cart/cart_bloc.dart';
 
 class PaymentDialog extends StatefulWidget {
@@ -75,13 +74,30 @@ class _PaymentDialogState extends State<PaymentDialog> {
                     },
                   ),
                 ),
+                if (state.selectedPaymentMethod == PaymentsMethod.vale)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 12.0),
+                    child: TextField(
+                      keyboardType: TextInputType.name,
+                      decoration: InputDecoration(
+                        labelText: 'Cliente',
+                        border: const OutlineInputBorder(),
+                        errorText: state.pendingSaleError,
+                      ),
+                      onChanged: (value) {
+                        widget.cartBloc.add(
+                          PendingSaleInputChanged(value.trim()),
+                        );
+                      },
+                    ),
+                  ),
               ],
             ),
           ),
           actions: [
             TextButton(
               onPressed: () {
-                GoRouter.of(context).pop();
+                Navigator.of(context).pop();
                 widget.cartBloc.add(const ClearPaymentMethod());
               },
               child: const Text('Fechar'),
@@ -96,6 +112,7 @@ class _PaymentDialogState extends State<PaymentDialog> {
                           SavePaymentMethod(method: method, amount: amount),
                         );
                       }
+                      print(state.selectedPaymentMethod);
                     }
                   : null,
               child:

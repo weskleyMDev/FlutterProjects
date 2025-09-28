@@ -30,14 +30,15 @@ class UserDrawer extends StatelessWidget {
           ListTile(
             title: const Text('Recibos'),
             onTap: () {
-              // Handle settings tap
+              Navigator.of(context).pop();
+              GoRouter.of(context).push('/receipts');
             },
           ),
           const Spacer(),
           ListTile(
             title: const Text('Sair'),
             onTap: () {
-              GoRouter.of(context).pop();
+              Navigator.of(context).pop();
               authBloc.add(const AuthLogoutRequested());
             },
           ),

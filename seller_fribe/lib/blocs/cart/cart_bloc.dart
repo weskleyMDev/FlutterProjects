@@ -5,8 +5,10 @@ import 'package:formz/formz.dart';
 import 'package:seller_fribe/blocs/cart/validator/discount_input.dart';
 import 'package:seller_fribe/blocs/cart/validator/discount_reason_input.dart';
 import 'package:seller_fribe/blocs/cart/validator/payment_input.dart';
+import 'package:seller_fribe/blocs/cart/validator/pending_sale_input.dart';
 import 'package:seller_fribe/blocs/cart/validator/quantity_input.dart';
 import 'package:seller_fribe/blocs/cart/validator/shipping_input.dart';
+import 'package:seller_fribe/blocs/cart/validator/tariffs_input.dart';
 import 'package:seller_fribe/models/cart_item_model.dart';
 import 'package:seller_fribe/models/payment_model.dart';
 import 'package:seller_fribe/models/product_model.dart';
@@ -33,6 +35,18 @@ class CartBloc extends Bloc<CartEvent, CartState> {
     on<PaymentInputChanged>(_onPaymentInputChanged);
     on<ClearPaymentMethod>(_onClearPaymentMethod);
     on<ClearPayments>(_onClearPayments);
+    on<CartTariffsChanged>(_onTariffsChanged);
+    on<PendingSaleInputChanged>(_onPendingSaleInputChanged);
+  }
+
+
+
+  void _onPendingSaleInputChanged(
+    PendingSaleInputChanged event,
+    Emitter<CartState> emit,
+  ) {
+    final input = PendingSaleInput.dirty(event.value);
+    emit(state.copyWith(pendingSaleInput: () => input));
   }
 
   void _onQuantityChanged(
@@ -118,6 +132,11 @@ class CartBloc extends Bloc<CartEvent, CartState> {
         submissionStatus: () => FormzSubmissionStatus.initial,
       ),
     );
+  }
+
+  void _onTariffsChanged(CartTariffsChanged event, Emitter<CartState> emit) {
+    final input = TariffsInput.dirty(event.tariffs.trim());
+    emit(state.copyWith(payments: () => [], tariffsInput: () => input));
   }
 
   void _onSaveCartItem(SaveCartItem event, Emitter<CartState> emit) {
@@ -209,8 +228,8 @@ class CartBloc extends Bloc<CartEvent, CartState> {
     try {
       final updatedPayments = List<PaymentModel>.from(state.payments);
       final newPayment = PaymentModel.empty().copyWith(
-        method: () => event.method,
-        amount: () => event.amount,
+        type: () => event.method,
+        value: () => event.amount,
       );
       updatedPayments.add(newPayment);
       emit(

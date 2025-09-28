@@ -26,10 +26,7 @@ class PaymentTile extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
-                'Pagamentos:',
-                style: TextStyle(fontSize: 18.0),
-              ),
+              const Text('Pagamentos:', style: TextStyle(fontSize: 18.0)),
               IconButton(
                 onPressed: openPaymentDialog,
                 icon: const Icon(Icons.add_circle),
@@ -42,11 +39,23 @@ class PaymentTile extends StatelessWidget {
             Column(
               children: state.payments
                   .map(
-                    (payment) => Row(
+                    (payment) => Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('${payment.method.capitalize()}: '),
-                        Text(currency.format(double.tryParse(payment.amount) ?? 0.0)),
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text('${payment.type.capitalize()}: '),
+                            Text(
+                              currency.format(
+                                double.tryParse(payment.value) ?? 0.0,
+                              ),
+                            ),
+                          ],
+                        ),
+                        Text(
+                          'Cliente: ${state.pendingSaleInput.value.capitalize()}',
+                        ),
                       ],
                     ),
                   )

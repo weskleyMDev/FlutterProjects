@@ -4,6 +4,7 @@ import 'package:fluttericon/font_awesome5_icons.dart';
 import 'package:seller_fribe/blocs/auth/auth_bloc.dart';
 import 'package:seller_fribe/blocs/cart/cart_bloc.dart';
 import 'package:seller_fribe/blocs/products/product_bloc.dart';
+import 'package:seller_fribe/blocs/receipts/receipt_bloc.dart';
 import 'package:seller_fribe/cubits/home_tab/home_tab_cubit.dart';
 import 'package:seller_fribe/screens/cart_screen.dart';
 import 'package:seller_fribe/screens/products_screen.dart';
@@ -21,6 +22,7 @@ class _HomeScreenState extends State<HomeScreen> {
   late final HomeTabCubit _homeTabCubit;
   late final ProductBloc _productBloc;
   late final CartBloc _cartBloc;
+  late final ReceiptBloc _receiptBloc;
   @override
   void initState() {
     super.initState();
@@ -28,6 +30,7 @@ class _HomeScreenState extends State<HomeScreen> {
     _homeTabCubit = BlocProvider.of<HomeTabCubit>(context);
     _productBloc = BlocProvider.of<ProductBloc>(context);
     _cartBloc = BlocProvider.of<CartBloc>(context);
+    _receiptBloc = BlocProvider.of<ReceiptBloc>(context);
   }
 
   @override
@@ -41,7 +44,11 @@ class _HomeScreenState extends State<HomeScreen> {
             index: state.currentTab.index,
             children: [
               ProductsScreen(productBloc: _productBloc, cartBloc: _cartBloc),
-              CartScreen(cartBloc: _cartBloc),
+              CartScreen(
+                cartBloc: _cartBloc,
+                receiptBloc: _receiptBloc,
+                homeTabCubit: _homeTabCubit,
+              ),
             ],
           );
         },

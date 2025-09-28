@@ -7,6 +7,15 @@ sealed class CartEvent extends Equatable {
   List<Object> get props => [];
 }
 
+final class PendingSaleInputChanged extends CartEvent {
+  const PendingSaleInputChanged(this.value);
+
+  final String value;
+
+  @override
+  List<Object> get props => [value];
+}
+
 final class CartProductQuantityChanged extends CartEvent {
   const CartProductQuantityChanged(this.quantity);
 
@@ -45,6 +54,15 @@ final class CartShippingChanged extends CartEvent {
 
   @override
   List<Object> get props => [shipping];
+}
+
+final class CartTariffsChanged extends CartEvent {
+  const CartTariffsChanged(this.tariffs);
+
+  final String tariffs;
+
+  @override
+  List<Object> get props => [tariffs];
 }
 
 final class ClearQuantityInput extends CartEvent {

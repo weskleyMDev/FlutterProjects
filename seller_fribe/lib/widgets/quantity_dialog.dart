@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
-import 'package:go_router/go_router.dart';
 import 'package:seller_fribe/blocs/cart/cart_bloc.dart';
 import 'package:seller_fribe/models/product_model.dart';
 
@@ -25,7 +24,7 @@ class _QuantityDialogState extends State<QuantityDialog> {
     return BlocConsumer<CartBloc, CartState>(
       listener: (context, state) {
         if (state.submissionStatus == FormzSubmissionStatus.success) {
-          GoRouter.of(context).pop();
+          Navigator.of(context).pop();
           widget.cartBloc.add(const ClearQuantityInput());
         } else if (state.submissionStatus == FormzSubmissionStatus.failure) {
           ScaffoldMessenger.of(context)
@@ -59,7 +58,7 @@ class _QuantityDialogState extends State<QuantityDialog> {
             TextButton(
               onPressed: () {
                 widget.cartBloc.add(const ClearQuantityInput());
-                GoRouter.of(context).pop();
+                Navigator.of(context).pop();
               },
               child: const Text('Cancelar'),
             ),

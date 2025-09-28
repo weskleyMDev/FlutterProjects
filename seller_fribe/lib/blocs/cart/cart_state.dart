@@ -9,7 +9,9 @@ final class CartState extends Equatable {
   final QuantityInput quantityInput;
   final DiscountInput discountInput;
   final ShippingInput shippingInput;
+  final TariffsInput tariffsInput;
   final PaymentInput paymentInput;
+  final PendingSaleInput pendingSaleInput;
   final DiscountReasonInput discountReasonInput;
   final FormzSubmissionStatus submissionStatus;
   final String? errorMessage;
@@ -22,7 +24,9 @@ final class CartState extends Equatable {
     this.discountInput = const DiscountInput.pure(),
     this.shippingInput = const ShippingInput.pure(),
     this.discountReasonInput = const DiscountReasonInput.pure(),
+    this.tariffsInput = const TariffsInput.pure(),
     this.paymentInput = const PaymentInput.pure(),
+    this.pendingSaleInput = const PendingSaleInput.pure(),
     this.submissionStatus = FormzSubmissionStatus.initial,
     this.errorMessage,
   });
@@ -36,7 +40,9 @@ final class CartState extends Equatable {
     QuantityInput Function()? quantityInput,
     DiscountInput Function()? discountInput,
     ShippingInput Function()? shippingInput,
+    TariffsInput Function()? tariffsInput,
     PaymentInput Function()? paymentInput,
+    PendingSaleInput Function()? pendingSaleInput,
     DiscountReasonInput Function()? discountReasonInput,
     FormzSubmissionStatus Function()? submissionStatus,
     String? Function()? errorMessage,
@@ -51,7 +57,9 @@ final class CartState extends Equatable {
       shippingInput: shippingInput?.call() ?? this.shippingInput,
       discountReasonInput:
           discountReasonInput?.call() ?? this.discountReasonInput,
+      tariffsInput: tariffsInput?.call() ?? this.tariffsInput,
       paymentInput: paymentInput?.call() ?? this.paymentInput,
+      pendingSaleInput: pendingSaleInput?.call() ?? this.pendingSaleInput,
       submissionStatus: submissionStatus?.call() ?? this.submissionStatus,
       errorMessage: errorMessage?.call() ?? this.errorMessage,
     );
@@ -66,6 +74,10 @@ final class CartState extends Equatable {
   bool get isDiscountReasonValid => Formz.validate([discountReasonInput]);
 
   bool get isPaymentValid => Formz.validate([paymentInput]);
+
+  bool get isTariffsValid => Formz.validate([tariffsInput]);
+
+  bool get isPendingSaleValid => Formz.validate([pendingSaleInput]);
 
   String? get quantityError {
     if (quantityInput.isPure) return null;
@@ -119,6 +131,26 @@ final class CartState extends Equatable {
     return error[paymentInput.error];
   }
 
+  String? get tariffsError {
+    if (tariffsInput.isPure) return null;
+    final error = {
+      TariffsInputError.invalid: 'Tarifa inválida.',
+      TariffsInputError.negative: 'Tarifa não pode ser negativa.',
+      TariffsInputError.zero: 'Tarifa não pode ser zero.',
+    };
+    return error[tariffsInput.error];
+  }
+
+  String? get pendingSaleError {
+    if (pendingSaleInput.isPure) return null;
+    final error = {
+      PendingSaleInputError.empty: 'O identificador é obrigatório.',
+      PendingSaleInputError.invalid:
+          'O identificador só pode conter letras, números e underscores.',
+    };
+    return error[pendingSaleInput.error];
+  }
+
   Decimal get subtotal => cartItems
       .fold<Decimal>(
         Decimal.zero,
@@ -139,9 +171,10 @@ final class CartState extends Equatable {
 
     final discount = safeParse(discountInput.value);
     final shipping = safeParse(shippingInput.value);
+    final tariffs = safeParse(tariffsInput.value);
 
-    if (isDiscountValid && isShippingValid) {
-      return (subtotal - discount + shipping).round(scale: 2);
+    if (isDiscountValid && isShippingValid && isTariffsValid) {
+      return ((subtotal + shipping + tariffs) - discount).round(scale: 2);
     } else {
       return (subtotal).round(scale: 2);
     }
@@ -151,15 +184,14 @@ final class CartState extends Equatable {
       .fold<Decimal>(
         Decimal.zero,
         (previousValue, element) =>
-            previousValue + Decimal.parse(element.amount.replaceAll(',', '.')),
+            previousValue + Decimal.parse(element.value.replaceAll(',', '.')),
       )
       .round(scale: 2);
 
   Decimal get remainingAmount => (total - paidAmount).round(scale: 2);
 
   bool get canFinalize {
-    final hasDiscount =
-        discountInput.value.trim().isNotEmpty;
+    final hasDiscount = discountInput.value.trim().isNotEmpty;
 
     final isDiscountValidAndReasoned =
         !hasDiscount || (hasDiscount && isDiscountReasonValid);
@@ -181,7 +213,9 @@ final class CartState extends Equatable {
     discountInput,
     shippingInput,
     discountReasonInput,
+    tariffsInput,
     paymentInput,
+    pendingSaleInput,
     submissionStatus,
     errorMessage,
   ];

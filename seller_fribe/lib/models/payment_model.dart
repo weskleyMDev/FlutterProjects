@@ -1,37 +1,31 @@
 import 'package:equatable/equatable.dart';
 
 final class PaymentModel extends Equatable {
-  final String method;
-  final String amount;
+  final String type;
+  final String value;
 
-  const PaymentModel._({this.method = '', this.amount = ''});
+  const PaymentModel._({this.type = '', this.value = ''});
 
   const PaymentModel.empty() : this._();
 
-  PaymentModel copyWith({
-    String? Function()? method,
-    String? Function()? amount,
-  }) {
+  PaymentModel copyWith({String? Function()? type, String? Function()? value}) {
     return PaymentModel._(
-      method: method?.call() ?? this.method,
-      amount: amount?.call() ?? this.amount,
+      type: type?.call() ?? this.type,
+      value: value?.call() ?? this.value,
     );
   }
 
   Map<String, dynamic> toMap() {
-    return {'method': method, 'amount': amount};
+    return {'type': type, 'value': value};
   }
 
   factory PaymentModel.fromMap(Map<String, dynamic> map) {
-    return PaymentModel._(
-      method: map['method'] ?? '',
-      amount: map['amount'] ?? '',
-    );
+    return PaymentModel._(type: map['type'] ?? '', value: map['value'] ?? '');
   }
 
   @override
   bool? get stringify => true;
 
   @override
-  List<Object> get props => [method, amount];
+  List<Object> get props => [type, value];
 }

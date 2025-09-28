@@ -9,10 +9,12 @@ import 'package:seller_fribe/blocs/auth/auth_bloc.dart';
 import 'package:seller_fribe/blocs/cart/cart_bloc.dart';
 import 'package:seller_fribe/blocs/login/login_bloc.dart';
 import 'package:seller_fribe/blocs/products/product_bloc.dart';
+import 'package:seller_fribe/blocs/receipts/receipt_bloc.dart';
 import 'package:seller_fribe/cubits/home_tab/home_tab_cubit.dart';
 import 'package:seller_fribe/firebase_options.dart';
 import 'package:seller_fribe/generated/l10n.dart';
 import 'package:seller_fribe/repositories/products/product_repository.dart';
+import 'package:seller_fribe/repositories/receipts/receipt_repository.dart';
 import 'package:seller_fribe/services/auth/auth_service.dart';
 import 'package:seller_fribe/utils/routes/routes.dart';
 import 'package:seller_fribe/utils/themes/theme.dart';
@@ -55,6 +57,9 @@ class MyApp extends StatelessWidget {
         RepositoryProvider<IProductRepository>(
           create: (context) => ProductRepository(),
         ),
+        RepositoryProvider<IReceiptRepository>(
+          create: (context) => ReceiptRepository(),
+        ),
       ],
       child: MultiBlocProvider(
         providers: [
@@ -77,6 +82,11 @@ class MyApp extends StatelessWidget {
           ),
           BlocProvider<HomeTabCubit>(create: (context) => HomeTabCubit()),
           BlocProvider<CartBloc>(create: (context) => CartBloc()),
+          BlocProvider<ReceiptBloc>(
+            create: (context) =>
+                ReceiptBloc(RepositoryProvider.of<IReceiptRepository>(context))
+                  ..add(const ReceiptsSubscribedRequest()),
+          ),
         ],
         child: MaterialApp.router(
           debugShowCheckedModeBanner: false,
