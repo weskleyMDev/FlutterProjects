@@ -4,6 +4,8 @@ import 'package:intl/intl.dart';
 import 'package:seller_fribe/blocs/auth/auth_bloc.dart';
 import 'package:seller_fribe/blocs/pending_sales/pending_sales_bloc.dart';
 import 'package:seller_fribe/blocs/pending_sales/pending_sales_state.dart';
+import 'package:seller_fribe/blocs/products/product_bloc.dart';
+import 'package:seller_fribe/models/product_model.dart';
 import 'package:seller_fribe/repositories/pending_sales/pending_sale_repository.dart';
 import 'package:seller_fribe/utils/capitalize_text.dart';
 import 'package:seller_fribe/widgets/user_drawer.dart';
@@ -65,18 +67,51 @@ class _PendingSalesScreenState extends State<PendingSalesScreen> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             SelectableText(receipt.id),
-                            Text(paymentStatus),
+                            Text(
+                              paymentStatus,
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
                           ],
                         ),
                         subtitle: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(date),
+                            Text(date.capitalize()),
                             Text(
                               'Total: ${currency.format(double.parse(receipt.total))}',
                               style: const TextStyle(
                                 fontWeight: FontWeight.bold,
                               ),
+                            ),
+                            ...receipt.cart.map(
+                              (e) =>
+                                  BlocSelector<
+                                    ProductBloc,
+                                    ProductState,
+                                    ProductModel
+                                  >(
+                                    selector: (state) {
+                                      return state.allProducts.firstWhere(
+                                        (product) =>
+                                            product.id ==
+                                            receipt.cart.first.productId,
+                                      );
+                                    },
+                                    builder: (context, product) {
+                                      return Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text(
+                                            '   ${product.name.capitalize()}  x${product.amount}',
+                                          ),
+                                          Text(currency.format(e.subtotal)),
+                                        ],
+                                      );
+                                    },
+                                  ),
                             ),
                           ],
                         ),

@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:seller_fribe/blocs/auth/auth_bloc.dart';
 import 'package:seller_fribe/blocs/receipts/receipt_bloc.dart';
+import 'package:seller_fribe/widgets/receipt_tile.dart';
 import 'package:seller_fribe/widgets/user_drawer.dart';
 
 class ReceiptsScreen extends StatefulWidget {
@@ -63,25 +64,10 @@ class _ReceiptsScreenState extends State<ReceiptsScreen> {
                     ),
                     children: receiptOfDay
                         .map(
-                          (receipt) => Padding(
-                            padding: const EdgeInsets.symmetric(
-                              vertical: 3.0,
-                              horizontal: 8.0,
-                            ),
-                            child: Chip(
-                              label: Column(
-                                crossAxisAlignment: CrossAxisAlignment.stretch,
-                                children: [
-                                  SelectableText(
-                                    receipt.id,
-                                    style: const TextStyle(fontSize: 16.0),
-                                  ),
-                                  Text(
-                                    'Total: ${currency.format(Decimal.parse(receipt.total).toDouble())}',
-                                  ),
-                                ],
-                              ),
-                            ),
+                          (receipt) => ReceiptTile(
+                            currency: currency,
+                            receipt: receipt,
+                            locale: locale,
                           ),
                         )
                         .toList(),
