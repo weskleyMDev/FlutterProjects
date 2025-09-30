@@ -112,7 +112,6 @@ class _PaymentDialogState extends State<PaymentDialog> {
                           SavePaymentMethod(method: method, amount: amount),
                         );
                       }
-                      print(state.selectedPaymentMethod);
                     }
                   : null,
               child:

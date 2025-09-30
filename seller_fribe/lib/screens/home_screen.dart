@@ -36,7 +36,18 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('NOVA VENDA'), centerTitle: true),
+      appBar: AppBar(
+        title: const Text('NOVA VENDA'),
+        centerTitle: true,
+        actions: [
+          IconButton(
+            onPressed: () => _cartBloc.add(const ClearCart()),
+            icon: const Icon(FontAwesome5.undo),
+            tooltip: 'Limpar carrinho',
+          ),
+        ],
+        actionsPadding: const EdgeInsets.only(right: 8.0),
+      ),
       drawer: UserDrawer(authBloc: _authBloc),
       body: BlocBuilder<HomeTabCubit, HomeTabState>(
         builder: (context, state) {
