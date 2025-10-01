@@ -52,7 +52,7 @@ class _PendingSalesScreenState extends State<PendingSalesScreen> {
                   final currency = NumberFormat.simpleCurrency(locale: locale);
                   return ExpansionTile(
                     title: Text(
-                      sale.id.capitalize(),
+                      sale.id.replaceAll('_', ' ').capitalize(),
                       style: const TextStyle(fontSize: 22),
                     ),
                     children: sale.receipts.map((receipt) {
@@ -79,6 +79,8 @@ class _PendingSalesScreenState extends State<PendingSalesScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(date.capitalize()),
+                            if (receipt.discount.isNotEmpty)
+                              Text('Desconto: ${receipt.discount}'),
                             Text(
                               'Total: ${currency.format(double.parse(receipt.total))}',
                               style: const TextStyle(
@@ -105,7 +107,7 @@ class _PendingSalesScreenState extends State<PendingSalesScreen> {
                                             MainAxisAlignment.spaceBetween,
                                         children: [
                                           Text(
-                                            '   ${product.name.capitalize()}  x${product.amount}',
+                                            '   ${product.name.capitalize()}  x${e.quantity.toStringAsFixed(3)}',
                                           ),
                                           Text(currency.format(e.subtotal)),
                                         ],

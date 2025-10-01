@@ -45,7 +45,11 @@ class _ReceiptsScreenState extends State<ReceiptsScreen> {
               ).format(receipt.createAt ?? DateTime.now()),
             );
             final dateKeys = grouped.keys.toList()
-              ..sort((a, b) => b.compareTo(a));
+              ..sort(
+                (a, b) => DateFormat.yMd(
+                  locale,
+                ).parse(b).compareTo(DateFormat.yMd(locale).parse(a)),
+              );
             final receipts = <Widget>[];
             for (final date in dateKeys) {
               final receiptOfDay = grouped[date]!;

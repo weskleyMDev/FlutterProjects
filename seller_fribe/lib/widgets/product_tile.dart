@@ -47,6 +47,7 @@ class ProductTile extends StatelessWidget {
                   ),
                 ],
               ),
+              Text('ID: ${product.id}'),
               Text(
                 'Estoque: ${amount.format(double.parse(product.amount))} (${product.measure})',
               ),
