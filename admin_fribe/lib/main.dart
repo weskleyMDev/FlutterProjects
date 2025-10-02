@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:admin_fribe/blocs/auth/auth_bloc.dart';
 import 'package:admin_fribe/blocs/login_form/login_form_bloc.dart';
 import 'package:admin_fribe/blocs/new_product_form/new_product_form_bloc.dart';
@@ -20,23 +22,23 @@ import 'package:window_manager/window_manager.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Future.wait([
-    Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform),
-    windowManager.ensureInitialized(),
-  ]);
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
+    await windowManager.ensureInitialized();
 
-  WindowOptions windowOptions = WindowOptions(
-    size: const Size(800, 600),
-    minimumSize: const Size(800, 600),
-    title: "Admin Fribe",
-    center: true,
-    backgroundColor: Colors.transparent,
-    skipTaskbar: false,
-    titleBarStyle: TitleBarStyle.normal,
-  );
-  windowManager.waitUntilReadyToShow(windowOptions, () async {
-    await Future.wait([windowManager.show(), windowManager.focus()]);
-  });
+    WindowOptions windowOptions = WindowOptions(
+      size: const Size(800, 600),
+      minimumSize: const Size(800, 600),
+      title: "Admin Fribe",
+      center: true,
+      backgroundColor: Colors.transparent,
+      skipTaskbar: false,
+      titleBarStyle: TitleBarStyle.normal,
+    );
+    windowManager.waitUntilReadyToShow(windowOptions, () async {
+      await Future.wait([windowManager.show(), windowManager.focus()]);
+    });
+  }
   runApp(const MyApp());
 }
 
