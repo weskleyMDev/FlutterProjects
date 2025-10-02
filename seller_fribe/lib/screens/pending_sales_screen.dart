@@ -29,6 +29,9 @@ class _PendingSalesScreenState extends State<PendingSalesScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final locale = Localizations.localeOf(context).languageCode;
+    final currency = NumberFormat.simpleCurrency(locale: locale);
+    String changeCurrency(String value) => currency.format(double.parse(value));
     return Scaffold(
       appBar: AppBar(title: const Text('VALES'), centerTitle: true),
       drawer: UserDrawer(authBloc: _authBloc),
@@ -80,9 +83,17 @@ class _PendingSalesScreenState extends State<PendingSalesScreen> {
                           children: [
                             Text(date.capitalize()),
                             if (receipt.discount.isNotEmpty)
-                              Text('Desconto: ${receipt.discount}'),
+                              Text(
+                                'Desconto: ${changeCurrency(receipt.discount)}',
+                              ),
+                            if (receipt.shipping.isNotEmpty)
+                              Text(
+                                'Frete: ${changeCurrency(receipt.shipping)}',
+                              ),
+                            if (receipt.tariffs.isNotEmpty)
+                              Text('Taxas: ${changeCurrency(receipt.tariffs)}'),
                             Text(
-                              'Total: ${currency.format(double.parse(receipt.total))}',
+                              'Total: ${changeCurrency(receipt.total)}',
                               style: const TextStyle(
                                 fontWeight: FontWeight.bold,
                               ),

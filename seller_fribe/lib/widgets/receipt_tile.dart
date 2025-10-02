@@ -20,6 +20,7 @@ class ReceiptTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    String changeCurrency(String value) => currency.format(double.parse(value));
     return Card(
       color: Theme.of(context).colorScheme.surface,
       child: Padding(
@@ -49,10 +50,15 @@ class ReceiptTile extends StatelessWidget {
                   .format(receipt.createAt ?? DateTime.now())
                   .capitalize(),
             ),
-
+            if (receipt.discount.isNotEmpty)
+              Text('Desconto: ${changeCurrency(receipt.discount)}'),
+            if (receipt.shipping.isNotEmpty)
+              Text('Frete: ${changeCurrency(receipt.shipping)}'),
+            if (receipt.tariffs.isNotEmpty)
+              Text('Taxas: ${changeCurrency(receipt.tariffs)}'),
             ...receipt.payments.map(
               (payment) => Text(
-                '${payment.type.capitalize()}: ${currency.format(double.parse(payment.value).toDouble())}',
+                '${payment.type.capitalize()}: ${changeCurrency(payment.value)}',
                 style: const TextStyle(fontWeight: FontWeight.bold),
               ),
             ),
