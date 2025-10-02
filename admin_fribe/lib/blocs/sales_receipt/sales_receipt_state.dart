@@ -19,11 +19,28 @@ final class SalesReceiptState extends Equatable {
     salesErrorMessage: null,
   );
 
+  Decimal safeDecimalParse(String? input) {
+    if (input == null || input.trim().isEmpty) return Decimal.zero;
+
+    final cleaned = input.replaceAll(RegExp(r'[^\d.-]'), '');
+
+    if (cleaned.isEmpty || cleaned == '.' || cleaned == '-') {
+      return Decimal.zero;
+    }
+
+    try {
+      return Decimal.parse(cleaned);
+    } catch (e) {
+      print('Erro ao fazer parse de "$input": $e');
+      return Decimal.zero;
+    }
+  }
+
   Decimal get totalSales => salesReceipts
       .fold<Decimal>(
         Decimal.zero,
         (previousValue, element) =>
-            previousValue + Decimal.parse(element.total),
+            previousValue + safeDecimalParse(element.total),
       )
       .round(scale: 2);
 
@@ -31,7 +48,7 @@ final class SalesReceiptState extends Equatable {
       .fold<Decimal>(
         Decimal.zero,
         (previousValue, element) =>
-            previousValue + Decimal.parse(element.discount),
+            previousValue + safeDecimalParse(element.discount),
       )
       .round(scale: 2);
 
@@ -39,7 +56,7 @@ final class SalesReceiptState extends Equatable {
       .fold<Decimal>(
         Decimal.zero,
         (previousValue, element) =>
-            previousValue + Decimal.parse(element.shipping),
+            previousValue + safeDecimalParse(element.shipping),
       )
       .round(scale: 2);
 
@@ -54,7 +71,7 @@ final class SalesReceiptState extends Equatable {
       subtotal,
       payment,
     ) {
-      final value = Decimal.parse((payment.value).replaceAll(',', '.'));
+      final value = safeDecimalParse((payment.value).replaceAll(',', '.'));
       return subtotal + value;
     });
 
@@ -72,7 +89,7 @@ final class SalesReceiptState extends Equatable {
       subtotal,
       payment,
     ) {
-      final value = Decimal.parse((payment.value).replaceAll(',', '.'));
+      final value = safeDecimalParse((payment.value).replaceAll(',', '.'));
       return subtotal + value;
     });
 
@@ -88,27 +105,27 @@ final class SalesReceiptState extends Equatable {
           subtotal,
           payment,
         ) {
-          final value = Decimal.parse((payment.value).replaceAll(',', '.'));
+          final value = safeDecimalParse((payment.value).replaceAll(',', '.'));
           return subtotal + value;
         });
 
         return total + cashSum;
       });
 
-  Decimal get totalPix => salesReceipts.fold<Decimal>(Decimal.zero, (total, receipt) {
-        final payments = receipt.payments;
-        final pixPayments = payments.where((p) => p.type == 'PIX');
+  Decimal get totalPix => salesReceipts.fold<Decimal>(Decimal.zero, (
+    total,
+    receipt,
+  ) {
+    final payments = receipt.payments;
+    final pixPayments = payments.where((p) => p.type == 'PIX');
 
-        final pixSum = pixPayments.fold<Decimal>(Decimal.zero, (
-          subtotal,
-          payment,
-        ) {
-          final value = Decimal.parse((payment.value).replaceAll(',', '.'));
-          return subtotal + value;
-        });
+    final pixSum = pixPayments.fold<Decimal>(Decimal.zero, (subtotal, payment) {
+      final value = safeDecimalParse((payment.value).replaceAll(',', '.'));
+      return subtotal + value;
+    });
 
-        return total + pixSum;
-      });
+    return total + pixSum;
+  });
 
   Map<String, Decimal> get totalQuantity {
     return salesReceipts
@@ -117,7 +134,7 @@ final class SalesReceiptState extends Equatable {
           product.forEach((productId, quantity) {
             prev[productId] =
                 (prev[productId] ?? Decimal.zero) +
-                Decimal.parse(quantity.toString());
+                safeDecimalParse(quantity.toString());
           });
           return prev;
         });

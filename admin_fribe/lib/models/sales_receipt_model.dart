@@ -14,6 +14,7 @@ final class SalesReceipt extends Equatable {
   final String shipping;
   final String tariffs;
   final String total;
+  final bool status;
 
   const SalesReceipt._({
     required this.id,
@@ -25,6 +26,7 @@ final class SalesReceipt extends Equatable {
     required this.shipping,
     required this.tariffs,
     required this.total,
+    required this.status,
   });
 
   factory SalesReceipt.initial() => SalesReceipt._(
@@ -37,6 +39,7 @@ final class SalesReceipt extends Equatable {
     shipping: '0',
     tariffs: '0',
     total: '0',
+    status: true,
   );
 
   SalesReceipt copyWith({
@@ -49,6 +52,7 @@ final class SalesReceipt extends Equatable {
     String Function()? shipping,
     String Function()? tariffs,
     String Function()? total,
+    bool Function()? status,
   }) {
     return SalesReceipt._(
       id: id?.call() ?? this.id,
@@ -60,6 +64,7 @@ final class SalesReceipt extends Equatable {
       shipping: shipping?.call() ?? this.shipping,
       tariffs: tariffs?.call() ?? this.tariffs,
       total: total?.call() ?? this.total,
+      status: status?.call() ?? this.status,
     );
   }
 
@@ -74,6 +79,7 @@ final class SalesReceipt extends Equatable {
       'shipping': shipping,
       'tariffs': tariffs,
       'total': total,
+      'status': status,
     };
   }
 
@@ -96,6 +102,7 @@ final class SalesReceipt extends Equatable {
       shipping: map['shipping'] as String,
       tariffs: map['tariffs'] as String,
       total: map['total'] as String,
+      status: map['status'] ?? true,
     );
   }
 
@@ -119,6 +126,7 @@ final class SalesReceipt extends Equatable {
       shipping,
       tariffs,
       total,
+      status,
     ];
   }
 }

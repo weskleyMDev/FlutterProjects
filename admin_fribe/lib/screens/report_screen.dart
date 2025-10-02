@@ -2,22 +2,55 @@ import 'package:admin_fribe/blocs/product/product_bloc.dart';
 import 'package:admin_fribe/blocs/sales_receipt/sales_receipt_bloc.dart';
 import 'package:admin_fribe/models/product_model.dart';
 import 'package:admin_fribe/models/sales_receipt_model.dart';
+import 'package:admin_fribe/utils/capitalize_text.dart';
 import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 
-class ReportScreen extends StatelessWidget {
+class ReportScreen extends StatefulWidget {
   const ReportScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    String weekKey(DateTime date) {
-      final monday = date.subtract(Duration(days: date.weekday - 1));
-      final sunday = monday.add(Duration(days: 6));
-      return '${DateFormat('dd/MM/yyyy').format(monday)} até ${DateFormat('dd/MM/yyyy').format(sunday)}';
+  State<ReportScreen> createState() => _ReportScreenState();
+}
+
+class _ReportScreenState extends State<ReportScreen> {
+  String? selectedMonth;
+
+  String weekKey(DateTime date) {
+    final startDay = DateTime(2025, 10, 1);
+    final daysSinceStart = date.difference(startDay).inDays;
+    final weekIndex = (daysSinceStart / 7).floor();
+    final weekStart = startDay.add(Duration(days: weekIndex * 7));
+    final weekEnd = weekStart.add(const Duration(days: 6));
+    return '${DateFormat('dd/MM/yyyy').format(weekStart)} até ${DateFormat('dd/MM/yyyy').format(weekEnd)}';
+  }
+
+  String mothKey(DateTime date) {
+    return DateFormat.yMMMM(
+      Localizations.localeOf(context).languageCode,
+    ).format(date).capitalize();
+  }
+
+  Decimal safeDecimalParse(String? input) {
+    if (input == null || input.trim().isEmpty) return Decimal.zero;
+
+    final cleaned = input.replaceAll(RegExp(r'[^\d.-]'), '');
+
+    if (cleaned.isEmpty || cleaned == '.' || cleaned == '-') {
+      return Decimal.zero;
     }
 
+    try {
+      return Decimal.parse(cleaned);
+    } catch (e) {
+      return Decimal.zero;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return BlocBuilder<SalesReceiptBloc, SalesReceiptState>(
       builder: (context, state) {
         if (state.salesStatus == SalesReceiptStatus.loading) {
@@ -33,17 +66,48 @@ class ReportScreen extends StatelessWidget {
             locale: locale,
             decimalDigits: 3,
           );
+          final startDate = DateTime(2025, 10, 1);
           final salesReceipts = state.salesReceipts;
           if (salesReceipts.isEmpty) {
             return const Center(child: Text('No sales receipts found.'));
           }
-          final grouped = <String, List<SalesReceipt>>{};
+          final allMonthsSet = <String>{};
+          final mapMothToDate = <String, DateTime>{};
           for (final receipt in salesReceipts) {
+            if (receipt.createAt.isBefore(startDate)) {
+              continue;
+            }
+            final mKey = mothKey(receipt.createAt);
+            allMonthsSet.add(mKey);
+            mapMothToDate[mKey] = DateTime(
+              receipt.createAt.year,
+              receipt.createAt.month,
+            );
+          }
+          final allMonths = allMonthsSet.toList()
+            ..sort((a, b) => mapMothToDate[b]!.compareTo(mapMothToDate[a]!));
+          selectedMonth ??= allMonths.isNotEmpty ? allMonths.first : null;
+          final filteredReceipts = salesReceipts.where((receipt) {
+            if (receipt.createAt.isBefore(startDate)) {
+              return false;
+            }
+            final mKey = mothKey(receipt.createAt);
+            return mKey == selectedMonth;
+          }).toList();
+          final grouped = <String, List<SalesReceipt>>{};
+
+          for (final receipt in filteredReceipts) {
+            if (receipt.createAt.isBefore(startDate)) continue;
+
             final key = weekKey(receipt.createAt);
             grouped.putIfAbsent(key, () => []).add(receipt);
           }
           final weekKeys = grouped.keys.toList()
-            ..sort((a, b) => b.compareTo(a));
+            ..sort(
+              (a, b) => DateFormat(
+                'dd/MM/yyyy',
+              ).parse(b).compareTo(DateFormat('dd/MM/yyyy').parse(a)),
+            );
           final productsSoldByWeek = <String, Map<String, Decimal>>{};
           for (final entry in grouped.entries) {
             final week = entry.key;
@@ -52,7 +116,7 @@ class ReportScreen extends StatelessWidget {
             for (final receipt in receipts) {
               for (final item in receipt.cart) {
                 final productId = item.productId;
-                final quantity = Decimal.parse(item.quantity.toString());
+                final quantity = safeDecimalParse(item.quantity.toString());
                 productTotals[productId] =
                     (productTotals[productId] ?? Decimal.zero) + quantity;
               }
@@ -69,35 +133,42 @@ class ReportScreen extends StatelessWidget {
                 .fold<Decimal>(
                   Decimal.zero,
                   (previousValue, element) =>
-                      previousValue + Decimal.parse(element.total),
+                      previousValue + safeDecimalParse(element.total),
                 )
                 .round(scale: 2);
             final discountOfWeek = receiptsOfWeek
                 .fold<Decimal>(
                   Decimal.zero,
                   (previousValue, element) =>
-                      previousValue + Decimal.parse(element.discount),
+                      previousValue + safeDecimalParse(element.discount),
                 )
                 .round(scale: 2);
             final shippingOfWeek = receiptsOfWeek
                 .fold<Decimal>(
                   Decimal.zero,
                   (previousValue, element) =>
-                      previousValue + Decimal.parse(element.shipping),
+                      previousValue + safeDecimalParse(element.shipping),
+                )
+                .round(scale: 2);
+            final tariffsOfWeek = receiptsOfWeek
+                .fold<Decimal>(
+                  Decimal.zero,
+                  (previousValue, element) =>
+                      previousValue + safeDecimalParse(element.tariffs),
                 )
                 .round(scale: 2);
             final totalCashOfWeek = receiptsOfWeek
                 .fold<Decimal>(Decimal.zero, (total, receipt) {
                   final payments = receipt.payments;
                   final cashPayments = payments.where(
-                    (p) => p.type == 'Dinheiro',
+                    (p) => p.type == 'dinheiro',
                   );
 
                   final cashSum = cashPayments.fold<Decimal>(Decimal.zero, (
                     subtotal,
                     payment,
                   ) {
-                    final value = Decimal.parse(
+                    final value = safeDecimalParse(
                       (payment.value).replaceAll(',', '.'),
                     );
                     return subtotal + value;
@@ -111,14 +182,14 @@ class ReportScreen extends StatelessWidget {
               (total, receipt) {
                 final payments = receipt.payments;
                 final creditPayments = payments.where(
-                  (p) => p.type == 'Cartão de Crédito',
+                  (p) => p.type == 'credito',
                 );
 
                 final creditSum = creditPayments.fold<Decimal>(Decimal.zero, (
                   subtotal,
                   payment,
                 ) {
-                  final value = Decimal.parse(
+                  final value = safeDecimalParse(
                     (payment.value).replaceAll(',', '.'),
                   );
                   return subtotal + value;
@@ -131,15 +202,13 @@ class ReportScreen extends StatelessWidget {
               Decimal.zero,
               (total, receipt) {
                 final payments = receipt.payments;
-                final debitPayments = payments.where(
-                  (p) => p.type == 'Cartão de Débito',
-                );
+                final debitPayments = payments.where((p) => p.type == 'debito');
 
                 final debitSum = debitPayments.fold<Decimal>(Decimal.zero, (
                   subtotal,
                   payment,
                 ) {
-                  final value = Decimal.parse(
+                  final value = safeDecimalParse(
                     (payment.value).replaceAll(',', '.'),
                   );
                   return subtotal + value;
@@ -153,13 +222,13 @@ class ReportScreen extends StatelessWidget {
               receipt,
             ) {
               final payments = receipt.payments;
-              final pixPayments = payments.where((p) => p.type == 'PIX');
+              final pixPayments = payments.where((p) => p.type == 'pix');
 
               final pixSum = pixPayments.fold<Decimal>(Decimal.zero, (
                 subtotal,
                 payment,
               ) {
-                final value = Decimal.parse(
+                final value = safeDecimalParse(
                   (payment.value).replaceAll(',', '.'),
                 );
                 return subtotal + value;
@@ -177,7 +246,7 @@ class ReportScreen extends StatelessWidget {
                   ),
                 ),
                 subtitle: Text(
-                  'Total da Semana: ${NumberFormat.simpleCurrency(locale: Localizations.localeOf(context).languageCode).format(totalOfWeek.toDouble())}\nDinheiro: ${NumberFormat.simpleCurrency(locale: Localizations.localeOf(context).languageCode).format(totalCashOfWeek.toDouble())}\nCartão de Crédito: ${NumberFormat.simpleCurrency(locale: Localizations.localeOf(context).languageCode).format(totalCreditOfWeek.toDouble())}\nCartão de Débito: ${NumberFormat.simpleCurrency(locale: Localizations.localeOf(context).languageCode).format(totalDebitOfWeek.toDouble())}\nPIX: ${NumberFormat.simpleCurrency(locale: Localizations.localeOf(context).languageCode).format(totalPixOfWeek.toDouble())}\nDescontos: ${NumberFormat.simpleCurrency(locale: Localizations.localeOf(context).languageCode).format(discountOfWeek.toDouble())}\nFrete: ${NumberFormat.simpleCurrency(locale: Localizations.localeOf(context).languageCode).format(shippingOfWeek.toDouble())}',
+                  'Total da Semana: ${currency.format(totalOfWeek.toDouble())}\nDinheiro: ${currency.format(totalCashOfWeek.toDouble())}\nCrédito: ${currency.format(totalCreditOfWeek.toDouble())}\nDébito: ${currency.format(totalDebitOfWeek.toDouble())}\nPIX: ${currency.format(totalPixOfWeek.toDouble())}\nDescontos: ${currency.format(discountOfWeek.toDouble())}\nFrete: ${currency.format(shippingOfWeek.toDouble())}\nTaxas: ${currency.format(tariffsOfWeek.toDouble())}',
                   style: const TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.w500,
@@ -197,7 +266,7 @@ class ReportScreen extends StatelessWidget {
                           return product ?? ProductModel.empty();
                         },
                         builder: (context, p) {
-                          final Decimal price = Decimal.parse(p.price);
+                          final Decimal price = safeDecimalParse(p.price);
                           return Card(
                             child: ListTile(
                               titleTextStyle: TextStyle(
@@ -223,13 +292,19 @@ class ReportScreen extends StatelessWidget {
             shrinkWrap: true,
             children: [
               Padding(
-                padding: const EdgeInsets.only(left: 16.0, top: 16.0),
-                child: Text(
-                  'Total Discount: ${currency.format(state.totalDiscount.toDouble())}\nTotal Shipping: ${currency.format(state.totalShipping.toDouble())}\nTotal Sales: ${currency.format(state.totalSales.toDouble())}\nTotal Credit Card: ${currency.format(state.totalCredit.toDouble())}\nTotal Debit Card: ${currency.format(state.totalDebit.toDouble())}\nTotal Cash: ${currency.format(state.totalCash.toDouble())}\nTotal PIX: ${currency.format(state.totalPix.toDouble())}',
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                  ),
+                padding: const EdgeInsets.all(8.0),
+                child: DropdownButton<String>(
+                  isExpanded: true,
+                  value: selectedMonth,
+                  hint: const Text('Select Month'),
+                  items: allMonths.map((month) {
+                    return DropdownMenuItem(value: month, child: Text(month));
+                  }).toList(),
+                  onChanged: (value) {
+                    setState(() {
+                      selectedMonth = value;
+                    });
+                  },
                 ),
               ),
               const SizedBox(height: 20),

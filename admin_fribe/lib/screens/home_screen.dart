@@ -16,27 +16,45 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final homeCubit = BlocProvider.of<HomeTabCubit>(context);
     final authBloc = BlocProvider.of<AuthBloc>(context);
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Admin Fribe'),
-        actions: [
-          IconButton(
-            icon: const Icon(FontAwesome5.plus),
-            tooltip: 'Add Product',
-            onPressed: () => GoRouter.of(context).pushNamed('new-product'),
+    TextButton navButton(HomeTabs tab, String label, IconData icon) {
+      final isSelected = homeCubit.state.tab == tab;
+      final color = isSelected
+          ? Theme.of(context).colorScheme.primary
+          : Colors.grey.shade600;
+      return TextButton(
+        style: TextButton.styleFrom(overlayColor: Colors.transparent),
+        onPressed: () => homeCubit.setTab(tab),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(icon, color: color),
+            Text(label, style: TextStyle(color: color)),
+          ],
+        ),
+      );
+    }
+
+    return BlocBuilder<HomeTabCubit, HomeTabState>(
+      builder: (context, state) {
+        return Scaffold(
+          appBar: AppBar(
+            title: const Text('Admin Fribe'),
+            actions: [
+              IconButton(
+                icon: const Icon(FontAwesome5.plus),
+                tooltip: 'Add Product',
+                onPressed: () => GoRouter.of(context).pushNamed('new-product'),
+              ),
+              IconButton(
+                icon: const Icon(FontAwesome5.sign_out_alt),
+                tooltip: 'Logout',
+                onPressed: () {
+                  authBloc.add(const AuthLogoutRequested());
+                },
+              ),
+            ],
           ),
-          IconButton(
-            icon: const Icon(FontAwesome5.sign_out_alt),
-            tooltip: 'Logout',
-            onPressed: () {
-              authBloc.add(const AuthLogoutRequested());
-            },
-          ),
-        ],
-      ),
-      body: BlocBuilder<HomeTabCubit, HomeTabState>(
-        builder: (context, state) {
-          return IndexedStack(
+          body: IndexedStack(
             index: homeCubit.state.tab.index,
             children: const [
               ReportScreen(),
@@ -44,37 +62,29 @@ class HomeScreen extends StatelessWidget {
               VouchersScreen(),
               ProductsScreen(),
             ],
-          );
-        },
-      ),
-      bottomNavigationBar: BottomAppBar(
-        shape: const CircularNotchedRectangle(),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            IconButton(
-              icon: const Icon(FontAwesome5.clipboard_list),
-              onPressed: () => homeCubit.setTab(HomeTabs.report),
-              tooltip: 'Relatórios',
+          ),
+          bottomNavigationBar: BottomAppBar(
+            shape: const CircularNotchedRectangle(),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                navButton(
+                  HomeTabs.report,
+                  'Relatórios',
+                  FontAwesome5.clipboard_list,
+                ),
+                navButton(HomeTabs.sales, 'Vendas', FontAwesome5.receipt),
+                navButton(
+                  HomeTabs.vouchers,
+                  'Vales',
+                  FontAwesome5.money_check_alt,
+                ),
+                navButton(HomeTabs.products, 'Produtos', FontAwesome5.boxes),
+              ],
             ),
-            IconButton(
-              icon: const Icon(FontAwesome5.receipt),
-              onPressed: () => homeCubit.setTab(HomeTabs.sales),
-              tooltip: 'Vendas',
-            ),
-            IconButton(
-              icon: const Icon(FontAwesome5.money_check_alt),
-              onPressed: () => homeCubit.setTab(HomeTabs.vouchers),
-              tooltip: 'Vales',
-            ),
-            IconButton(
-              icon: const Icon(FontAwesome5.cubes),
-              onPressed: () => homeCubit.setTab(HomeTabs.products),
-              tooltip: 'Produtos',
-            ),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 }

@@ -15,6 +15,21 @@ class SalesReceiptTile extends StatelessWidget {
     final locale = Localizations.localeOf(context).languageCode;
     final currency = NumberFormat.simpleCurrency(locale: locale);
     final date = DateFormat.yMEd(locale).add_Hm().format(receipt.createAt);
+    double safeDoubleParse(String? input) {
+      if (input == null || input.trim().isEmpty) return 0.0;
+
+      final cleaned = input
+          .replaceAll(RegExp(r'[^\d.,-]'), '')
+          .replaceAll(',', '.');
+
+      try {
+        return double.parse(cleaned);
+      } catch (e) {
+        debugPrint('Erro ao converter para double: "$input" => $e');
+        return 0.0;
+      }
+    }
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -27,13 +42,13 @@ class SalesReceiptTile extends StatelessWidget {
         Text(date.capitalize(), overflow: TextOverflow.ellipsis),
         ...receipt.payments.map(
           (e) => Text(
-            '${e.type}: ${currency.format(double.parse(e.value))}',
+            '${e.type}: ${currency.format(safeDoubleParse(e.value))}',
             overflow: TextOverflow.ellipsis,
           ),
         ),
         if (receipt.discount != '0' && receipt.discount != '0.0')
           Text(
-            'Desconto: ${currency.format(double.parse(receipt.discount))}',
+            'Desconto: ${currency.format(safeDoubleParse(receipt.discount))}',
             overflow: TextOverflow.ellipsis,
           ),
         if (receipt.discountReason.isNotEmpty)
