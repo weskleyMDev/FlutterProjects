@@ -3,11 +3,13 @@ import 'dart:io';
 import 'package:admin_fribe/blocs/auth/auth_bloc.dart';
 import 'package:admin_fribe/blocs/login_form/login_form_bloc.dart';
 import 'package:admin_fribe/blocs/new_product_form/new_product_form_bloc.dart';
+import 'package:admin_fribe/blocs/pending_sales/pending_sale_bloc.dart';
 import 'package:admin_fribe/blocs/product/product_bloc.dart';
 import 'package:admin_fribe/blocs/sales_receipt/sales_receipt_bloc.dart';
 import 'package:admin_fribe/cubits/home_tab/home_tab_cubit.dart';
 import 'package:admin_fribe/firebase_options.dart';
 import 'package:admin_fribe/generated/l10n.dart';
+import 'package:admin_fribe/repositories/pending_sales/pending_sale_repository.dart';
 import 'package:admin_fribe/repositories/products/product_repository.dart';
 import 'package:admin_fribe/repositories/sales_receipt/isales_receipt_repository.dart';
 import 'package:admin_fribe/services/auth/auth_service.dart';
@@ -59,6 +61,9 @@ class MyApp extends StatelessWidget {
         RepositoryProvider<IProductRepository>(
           create: (context) => ProductRepository(),
         ),
+        RepositoryProvider<IPendingSaleRepository>(
+          create: (context) => PendingSaleRepository(),
+        ),
       ],
       child: MultiBlocProvider(
         providers: [
@@ -87,6 +92,11 @@ class MyApp extends StatelessWidget {
             create: (context) => NewProductFormBloc(
               RepositoryProvider.of<IProductRepository>(context),
             ),
+          ),
+          BlocProvider(
+            create: (context) => PendingSaleBloc(
+              RepositoryProvider.of<IPendingSaleRepository>(context),
+            )..add(const FetchPendingSalesEvent()),
           ),
         ],
         child: MaterialApp.router(

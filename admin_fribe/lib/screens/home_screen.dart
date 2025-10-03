@@ -26,6 +26,8 @@ class HomeScreen extends StatelessWidget {
         onPressed: () => homeCubit.setTab(tab),
         child: Column(
           mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(icon, color: color),
             Text(label, style: TextStyle(color: color)),

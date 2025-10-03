@@ -42,7 +42,7 @@ class SalesReceiptTile extends StatelessWidget {
         Text(date.capitalize(), overflow: TextOverflow.ellipsis),
         ...receipt.payments.map(
           (e) => Text(
-            '${e.type}: ${currency.format(safeDoubleParse(e.value))}',
+            '${e.type.capitalize()}: ${currency.format(safeDoubleParse(e.value))}',
             overflow: TextOverflow.ellipsis,
           ),
         ),

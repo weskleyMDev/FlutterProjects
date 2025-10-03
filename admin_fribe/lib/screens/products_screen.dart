@@ -19,12 +19,18 @@ class ProductsScreen extends StatelessWidget {
             itemBuilder: (context, index) {
               final product = products[index] ?? ProductModel.empty();
               return Padding(
-                padding: const EdgeInsets.all(5.0),
-                child: Chip(
-                  label: ListTile(
+                padding: const EdgeInsets.symmetric(horizontal: 5.0),
+                child: Card(
+                  child: ListTile(
                     title: Text(product.name),
-                    subtitle: Text(
-                      'Price: \$${product.price} - Stock: ${product.amount}',
+                    subtitle: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SelectableText('ID: ${product.id}'),
+                        Text(
+                          'Price: \$${product.price} - Stock: ${product.amount}',
+                        ),
+                      ],
                     ),
                     trailing: IconButton(
                       icon: const Icon(Icons.edit),
