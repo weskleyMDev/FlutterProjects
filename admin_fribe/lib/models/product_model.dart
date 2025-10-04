@@ -85,6 +85,6 @@ final class ProductModel extends Equatable {
 
   @override
   List<Object> get props {
-    return [id, amount, category, imageUrl, measure, name, price];
+    return [id, name, category, amount, price, measure, imageUrl];
   }
 }

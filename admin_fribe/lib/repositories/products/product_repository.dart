@@ -1,5 +1,6 @@
 import 'package:admin_fribe/models/product_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:decimal/decimal.dart';
 
 part 'iproduct_repository.dart';
 
@@ -71,16 +72,34 @@ final class ProductRepository implements IProductRepository {
   }
 
   @override
-  Future<void> updateProduct(ProductModel product) {
+  Future<void> updateProduct(ProductModel product) async {
     try {
-      return _firestore
+      final docSnapshot = await _firestore
           .collection('stock')
           .doc(product.id)
           .withConverter<ProductModel>(
             fromFirestore: _fromFirestore,
             toFirestore: _toFirestore,
           )
-          .update(product.toMap());
+          .get();
+
+      if (!docSnapshot.exists || docSnapshot.data() == null) {
+        throw Exception('Product not found');
+      }
+      final existingProduct = docSnapshot.data()!;
+      final currentAmount =
+          Decimal.tryParse(
+            existingProduct.amount.isNotEmpty ? existingProduct.amount : '0',
+          ) ??
+          Decimal.zero;
+      final newAmount =
+          Decimal.tryParse(product.amount.isNotEmpty ? product.amount : '0') ??
+          Decimal.zero;
+      final updatedAmount = (currentAmount + newAmount)
+          .round(scale: 3)
+          .toString();
+      final updatedProduct = product.copyWith(amount: () => updatedAmount);
+      return docSnapshot.reference.update(updatedProduct.toMap());
     } catch (e) {
       rethrow;
     }

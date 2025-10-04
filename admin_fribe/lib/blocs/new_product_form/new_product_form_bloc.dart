@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:admin_fribe/blocs/new_product_form/validator/product_category_validator.dart';
 import 'package:admin_fribe/blocs/new_product_form/validator/product_measure_validator.dart';
 import 'package:admin_fribe/blocs/new_product_form/validator/product_name_validator.dart';
@@ -75,7 +77,7 @@ final class NewProductFormBloc
     emit(state.copyWith(productMeasure: () => productMeasure));
   }
 
-  Future<void> _onFormSubmitted(
+  FutureOr<void> _onFormSubmitted(
     FormSubmitted event,
     Emitter<NewProductFormState> emit,
   ) async {

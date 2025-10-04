@@ -53,10 +53,19 @@ class _EditProductViewState extends State<EditProductView> {
     super.dispose();
   }
 
-  void _showErrorSnackBar(BuildContext context, String message) {
+  void _showErrorSnackBar(BuildContext context, String message, Color color) {
     ScaffoldMessenger.of(context)
       ..clearSnackBars()
-      ..showSnackBar(SnackBar(content: Text(message)));
+      ..showSnackBar(
+        SnackBar(
+          content: Text(message),
+          backgroundColor: color,
+          duration: const Duration(seconds: 2),
+          margin: const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 16.0),
+          behavior: SnackBarBehavior.floating,
+          elevation: 6.0,
+        ),
+      );
   }
 
   @override
@@ -68,8 +77,9 @@ class _EditProductViewState extends State<EditProductView> {
           _showErrorSnackBar(
             context,
             productState.isNewProduct
-                ? 'Product added successfully!'
-                : 'Product updated successfully!',
+                ? '${productState.productName.value} added successfully!'
+                : '${productState.productName.value} updated successfully!',
+            Theme.of(context).colorScheme.primary,
           );
           context.pop();
           newProductFormBloc.add(const ResetProductForm());
@@ -77,142 +87,162 @@ class _EditProductViewState extends State<EditProductView> {
           _showErrorSnackBar(
             context,
             productState.errorMessage ?? 'An unknown error occurred.',
+            Theme.of(context).colorScheme.error,
           );
         }
       },
       builder: (context, productState) {
-        return Scaffold(
-          appBar: AppBar(
-            title: Text(
-              productState.isNewProduct ? 'New Product' : 'Edit Product',
-            ),
-          ),
-          body: Form(
-            key: _editProductFormKey,
-            child: ListView(
-              padding: const EdgeInsets.all(16.0),
-              children: [
-                TextFormField(
-                  key: const ValueKey('productNameField'),
-                  initialValue: productState.productName.value,
-                  autofocus: true,
-                  textInputAction: TextInputAction.next,
-                  onFieldSubmitted: (_) {
-                    FocusScope.of(context).requestFocus(_quantityFocusNode);
-                  },
-                  decoration: InputDecoration(
-                    labelText: 'Product Name',
-                    border: OutlineInputBorder(),
-                    errorText: productState.productNameErrorText,
-                  ),
-                  onChanged: (value) => newProductFormBloc.add(
-                    ProductNameChanged(value.trim().toUpperCase()),
-                  ),
+        return Stack(
+          children: [
+            Scaffold(
+              appBar: AppBar(
+                title: Text(
+                  productState.isNewProduct ? 'New Product' : 'Edit Product',
                 ),
-                const SizedBox(height: 16.0),
-                TextFormField(
-                  key: const ValueKey('productQuantityField'),
-                  initialValue: productState.productQuantity.value,
-                  keyboardType: TextInputType.numberWithOptions(decimal: true),
-                  focusNode: _quantityFocusNode,
-                  textInputAction: TextInputAction.next,
-                  onFieldSubmitted: (_) {
-                    FocusScope.of(context).requestFocus(_priceFocusNode);
-                  },
-                  decoration: InputDecoration(
-                    labelText: 'Product Quantity',
-                    border: OutlineInputBorder(),
-                    errorText: productState.productQuantityErrorText,
-                  ),
-                  onChanged: (value) => newProductFormBloc.add(
-                    ProductQuantityChanged(value.trim().replaceAll(',', '.')),
-                  ),
-                ),
-                const SizedBox(height: 16.0),
-                TextFormField(
-                  key: const ValueKey('productPriceField'),
-                  initialValue: productState.productPrice.value,
-                  keyboardType: TextInputType.numberWithOptions(decimal: true),
-                  focusNode: _priceFocusNode,
-                  decoration: InputDecoration(
-                    labelText: 'Product Price',
-                    border: OutlineInputBorder(),
-                    errorText: productState.productPriceErrorText,
-                  ),
-                  onChanged: (value) => newProductFormBloc.add(
-                    ProductPriceChanged(value.trim().replaceAll(',', '.')),
-                  ),
-                ),
-                const SizedBox(height: 16.0),
-                DropdownButtonFormField<ProductMeasure>(
-                  initialValue: ProductMeasure.values.firstWhereOrNull(
-                    (e) =>
-                        e.name.trim().toUpperCase() ==
-                        productState.productMeasure.value,
-                  ),
-                  items: ProductMeasure.values
-                      .map(
-                        (measure) => DropdownMenuItem(
-                          value: measure,
-                          child: Text(measure.name.capitalize()),
+              ),
+              body: Form(
+                key: _editProductFormKey,
+                child: ListView(
+                  padding: const EdgeInsets.all(16.0),
+                  children: [
+                    TextFormField(
+                      key: const ValueKey('productNameField'),
+                      initialValue: productState.productName.value,
+                      autofocus: true,
+                      textInputAction: TextInputAction.next,
+                      onFieldSubmitted: (_) {
+                        FocusScope.of(context).requestFocus(_quantityFocusNode);
+                      },
+                      decoration: InputDecoration(
+                        labelText: 'Product Name',
+                        border: OutlineInputBorder(),
+                        errorText: productState.productNameErrorText,
+                      ),
+                      onChanged: (value) => newProductFormBloc.add(
+                        ProductNameChanged(value.trim().toUpperCase()),
+                      ),
+                    ),
+                    const SizedBox(height: 16.0),
+                    TextFormField(
+                      key: const ValueKey('productQuantityField'),
+                      initialValue: productState.productQuantity.value,
+                      keyboardType: TextInputType.numberWithOptions(
+                        decimal: true,
+                      ),
+                      focusNode: _quantityFocusNode,
+                      textInputAction: TextInputAction.next,
+                      onFieldSubmitted: (_) {
+                        FocusScope.of(context).requestFocus(_priceFocusNode);
+                      },
+                      decoration: InputDecoration(
+                        labelText: 'Product Quantity',
+                        border: OutlineInputBorder(),
+                        errorText: productState.productQuantityErrorText,
+                      ),
+                      onChanged: (value) => newProductFormBloc.add(
+                        ProductQuantityChanged(
+                          value.trim().replaceAll(',', '.'),
                         ),
-                      )
-                      .toList(),
-                  onChanged: (value) {
-                    if (value != null) {
-                      newProductFormBloc.add(
-                        ProductMeasureChanged(value.name.trim().toUpperCase()),
-                      );
-                    }
-                  },
-                  decoration: InputDecoration(
-                    labelText: 'Select a Measure',
-                    border: OutlineInputBorder(),
-                    errorText: productState.productMeasureErrorText,
-                  ),
+                      ),
+                    ),
+                    const SizedBox(height: 16.0),
+                    TextFormField(
+                      key: const ValueKey('productPriceField'),
+                      initialValue: productState.productPrice.value,
+                      keyboardType: TextInputType.numberWithOptions(
+                        decimal: true,
+                      ),
+                      focusNode: _priceFocusNode,
+                      decoration: InputDecoration(
+                        labelText: 'Product Price',
+                        border: OutlineInputBorder(),
+                        errorText: productState.productPriceErrorText,
+                      ),
+                      onChanged: (value) => newProductFormBloc.add(
+                        ProductPriceChanged(value.trim().replaceAll(',', '.')),
+                      ),
+                    ),
+                    const SizedBox(height: 16.0),
+                    DropdownButtonFormField<ProductMeasure>(
+                      initialValue: ProductMeasure.values.firstWhereOrNull(
+                        (e) =>
+                            e.name.trim().toUpperCase() ==
+                            productState.productMeasure.value,
+                      ),
+                      items: ProductMeasure.values
+                          .map(
+                            (measure) => DropdownMenuItem(
+                              value: measure,
+                              child: Text(measure.name.capitalize()),
+                            ),
+                          )
+                          .toList(),
+                      onChanged: (value) {
+                        if (value != null) {
+                          newProductFormBloc.add(
+                            ProductMeasureChanged(
+                              value.name.trim().toUpperCase(),
+                            ),
+                          );
+                        }
+                      },
+                      decoration: InputDecoration(
+                        labelText: 'Select a Measure',
+                        border: OutlineInputBorder(),
+                        errorText: productState.productMeasureErrorText,
+                      ),
+                    ),
+                    const SizedBox(height: 16.0),
+                    DropdownButtonFormField<ProductCategory>(
+                      initialValue: ProductCategory.values.firstWhereOrNull(
+                        (e) =>
+                            e.name.trim().toUpperCase() ==
+                            productState.productCategory.value,
+                      ),
+                      items: ProductCategory.values
+                          .map(
+                            (category) => DropdownMenuItem(
+                              value: category,
+                              child: Text(category.name.capitalize()),
+                            ),
+                          )
+                          .toList(),
+                      onChanged: (value) {
+                        if (value != null) {
+                          newProductFormBloc.add(
+                            ProductCategoryChanged(
+                              value.name.trim().toUpperCase(),
+                            ),
+                          );
+                        }
+                      },
+                      decoration: InputDecoration(
+                        labelText: 'Select a Category',
+                        border: OutlineInputBorder(),
+                        errorText: productState.productCategoryErrorText,
+                      ),
+                    ),
+                    const SizedBox(height: 16.0),
+                    FilledButton(
+                      onPressed: productState.isValid
+                          ? () => newProductFormBloc.add(const FormSubmitted())
+                          : null,
+                      child: Text(
+                        productState.isNewProduct
+                            ? 'Save Product'
+                            : 'Update Product',
+                      ),
+                    ),
+                  ],
                 ),
-                const SizedBox(height: 16.0),
-                DropdownButtonFormField<ProductCategory>(
-                  initialValue: ProductCategory.values.firstWhereOrNull(
-                    (e) =>
-                        e.name.trim().toUpperCase() ==
-                        productState.productCategory.value,
-                  ),
-                  items: ProductCategory.values
-                      .map(
-                        (category) => DropdownMenuItem(
-                          value: category,
-                          child: Text(category.name.capitalize()),
-                        ),
-                      )
-                      .toList(),
-                  onChanged: (value) {
-                    if (value != null) {
-                      newProductFormBloc.add(
-                        ProductCategoryChanged(value.name.trim().toUpperCase()),
-                      );
-                    }
-                  },
-                  decoration: InputDecoration(
-                    labelText: 'Select a Category',
-                    border: OutlineInputBorder(),
-                    errorText: productState.productCategoryErrorText,
-                  ),
-                ),
-                const SizedBox(height: 16.0),
-                ElevatedButton(
-                  onPressed: productState.isValid
-                      ? () => newProductFormBloc.add(const FormSubmitted())
-                      : null,
-                  child: Text(
-                    productState.isNewProduct
-                        ? 'Save Product'
-                        : 'Update Product',
-                  ),
-                ),
-              ],
+              ),
             ),
-          ),
+            if (productState.formStatus == FormzSubmissionStatus.inProgress)
+              Container(
+                color: Colors.black54,
+                child: const Center(child: CircularProgressIndicator()),
+              ),
+          ],
         );
       },
     );
