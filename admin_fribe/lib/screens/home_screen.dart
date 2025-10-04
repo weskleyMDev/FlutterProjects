@@ -45,7 +45,7 @@ class HomeScreen extends StatelessWidget {
               IconButton(
                 icon: const Icon(FontAwesome5.plus),
                 tooltip: 'Add Product',
-                onPressed: () => GoRouter.of(context).pushNamed('new-product'),
+                onPressed: () => context.pushNamed('edit-product'),
               ),
               IconButton(
                 icon: const Icon(FontAwesome5.sign_out_alt),

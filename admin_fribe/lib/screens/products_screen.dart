@@ -2,6 +2,7 @@ import 'package:admin_fribe/blocs/product/product_bloc.dart';
 import 'package:admin_fribe/models/product_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 class ProductsScreen extends StatelessWidget {
   const ProductsScreen({super.key});
@@ -21,6 +22,13 @@ class ProductsScreen extends StatelessWidget {
               return Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 5.0),
                 child: Card(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(6.0),
+                    side: BorderSide(
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                      width: 1.0,
+                    ),
+                  ),
                   child: ListTile(
                     title: Text(product.name),
                     subtitle: Column(
@@ -35,7 +43,7 @@ class ProductsScreen extends StatelessWidget {
                     trailing: IconButton(
                       icon: const Icon(Icons.edit),
                       onPressed: () {
-                        // Navigate to edit product screen
+                        context.pushNamed('edit-product', extra: product);
                       },
                     ),
                   ),

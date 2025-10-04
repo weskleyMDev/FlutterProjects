@@ -9,7 +9,6 @@ final class NewProductFormState extends Equatable {
     this.productPrice = const ProductPriceInput.pure(),
     this.productMeasure = const ProductMeasureInput.pure(),
     this.formStatus = FormzSubmissionStatus.initial,
-    this.isFormValid = false,
     this.errorMessage,
   });
 
@@ -24,7 +23,6 @@ final class NewProductFormState extends Equatable {
         productPrice: ProductPriceInput.dirty(product.price),
         productMeasure: ProductMeasureInput.dirty(product.measure),
         formStatus: FormzSubmissionStatus.initial,
-        isFormValid: true,
         errorMessage: null,
       );
 
@@ -35,60 +33,63 @@ final class NewProductFormState extends Equatable {
   final ProductPriceInput productPrice;
   final ProductMeasureInput productMeasure;
   final FormzSubmissionStatus formStatus;
-  final bool isFormValid;
   final String? errorMessage;
 
-  String? get productNameErrorText {
-    if (productName.isPure) return null;
-    final errorMessage = {
-      ProductNameInputError.empty: 'Product name cannot be empty',
-      ProductNameInputError.tooShort:
-          'Product name must be at least 3 characters',
-      ProductNameInputError.invalidCharacters:
-          'Product name contains invalid characters',
-    };
-    return errorMessage[productName.error];
+  bool get isNewProduct => initialProduct == null;
+
+  bool get isValid => Formz.validate([
+    productName,
+    productCategory,
+    productQuantity,
+    productPrice,
+    productMeasure,
+  ]);
+
+  String? _getErrorText<T extends Enum>(
+    FormzInput input,
+    Map<T, String> messages,
+  ) {
+    if (input.isPure || input.error == null) return null;
+    return messages[input.error as T];
   }
 
-  String? get productCategoryErrorText {
-    if (productCategory.isPure) return null;
-    final errorMessage = {
-      ProductCategoryInputError.empty: 'Product category cannot be empty',
-      ProductCategoryInputError.invalid: 'Invalid product category',
-    };
-    return errorMessage[productCategory.error];
-  }
+  String? get productNameErrorText =>
+      _getErrorText<ProductNameInputError>(productName, {
+        ProductNameInputError.empty: 'Product name cannot be empty',
+        ProductNameInputError.invalidCharacters:
+            'Product name contains invalid characters',
+        ProductNameInputError.tooShort:
+            'Product name must be at least 3 characters',
+      });
 
-  String? get productQuantityErrorText {
-    if (productQuantity.isPure) return null;
-    final errorMessage = {
-      ProductQuantityInputError.empty: 'Product quantity cannot be empty',
-      ProductQuantityInputError.negative: 'Product quantity cannot be negative',
-      ProductQuantityInputError.zero: 'Product quantity cannot be zero',
-      ProductQuantityInputError.invalid: 'Invalid product quantity',
-    };
-    return errorMessage[productQuantity.error];
-  }
+  String? get productCategoryErrorText =>
+      _getErrorText<ProductCategoryInputError>(productCategory, {
+        ProductCategoryInputError.empty: 'Product category cannot be empty',
+        ProductCategoryInputError.invalid: 'Invalid product category',
+      });
 
-  String? get productPriceErrorText {
-    if (productPrice.isPure) return null;
-    final errorMessage = {
-      ProductPriceInputError.empty: 'Product price cannot be empty',
-      ProductPriceInputError.negative: 'Product price cannot be negative',
-      ProductPriceInputError.zero: 'Product price cannot be zero',
-      ProductPriceInputError.invalid: 'Invalid product price',
-    };
-    return errorMessage[productPrice.error];
-  }
+  String? get productQuantityErrorText =>
+      _getErrorText<ProductQuantityInputError>(productQuantity, {
+        ProductQuantityInputError.empty: 'Product quantity cannot be empty',
+        ProductQuantityInputError.negative:
+            'Product quantity cannot be negative',
+        ProductQuantityInputError.zero: 'Product quantity cannot be zero',
+        ProductQuantityInputError.invalid: 'Invalid product quantity',
+      });
 
-  String? get productMeasureErrorText {
-    if (productMeasure.isPure) return null;
-    final errorMessage = {
-      ProductMeasureInputError.empty: 'Product measure cannot be empty',
-      ProductMeasureInputError.invalid: 'Invalid product measure',
-    };
-    return errorMessage[productMeasure.error];
-  }
+  String? get productPriceErrorText =>
+      _getErrorText<ProductPriceInputError>(productPrice, {
+        ProductPriceInputError.empty: 'Product price cannot be empty',
+        ProductPriceInputError.negative: 'Product price cannot be negative',
+        ProductPriceInputError.zero: 'Product price cannot be zero',
+        ProductPriceInputError.invalid: 'Invalid product price',
+      });
+
+  String? get productMeasureErrorText =>
+      _getErrorText<ProductMeasureInputError>(productMeasure, {
+        ProductMeasureInputError.empty: 'Product measure cannot be empty',
+        ProductMeasureInputError.invalid: 'Invalid product measure',
+      });
 
   NewProductFormState copyWith({
     ProductModel? Function()? initialProduct,
@@ -98,7 +99,6 @@ final class NewProductFormState extends Equatable {
     ProductPriceInput Function()? productPrice,
     ProductMeasureInput Function()? productMeasure,
     FormzSubmissionStatus Function()? formStatus,
-    bool Function()? isFormValid,
     String? Function()? errorMessage,
   }) {
     return NewProductFormState._(
@@ -109,7 +109,6 @@ final class NewProductFormState extends Equatable {
       productPrice: productPrice?.call() ?? this.productPrice,
       productMeasure: productMeasure?.call() ?? this.productMeasure,
       formStatus: formStatus?.call() ?? this.formStatus,
-      isFormValid: isFormValid?.call() ?? this.isFormValid,
       errorMessage: errorMessage?.call() ?? this.errorMessage,
     );
   }
@@ -126,7 +125,6 @@ final class NewProductFormState extends Equatable {
     productPrice,
     productMeasure,
     formStatus,
-    isFormValid,
     errorMessage,
   ];
 }

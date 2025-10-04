@@ -63,15 +63,11 @@ final class ProductBloc extends Bloc<ProductEvent, ProductState> {
       final cartProduct = await Future.wait(
         event.cartItem.map((e) async {
           final product = await _productRepository.getProductById(e.productId);
-          if (product != null) {
-            return CartProduct(
-              product: product,
-              quantity: e.quantity.toString(),
-              subtotal: e.subtotal.toString(),
-            );
-          } else {
-            return null;
-          }
+          return CartProduct(
+            product: product,
+            quantity: e.quantity.toString(),
+            subtotal: e.subtotal.toString(),
+          );
         }),
       );
       Map<String, List<CartProduct>> validCartProducts = {};

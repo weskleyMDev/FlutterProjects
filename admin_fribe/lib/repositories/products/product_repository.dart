@@ -7,30 +7,47 @@ final class ProductRepository implements IProductRepository {
   final _firestore = FirebaseFirestore.instance;
 
   @override
-  Future<void> addProduct(ProductModel product) => _firestore
-      .collection('stock')
-      .doc(product.id)
-      .withConverter<ProductModel>(
-        fromFirestore: _fromFirestore,
-        toFirestore: _toFirestore,
-      )
-      .set(product);
+  Future<void> addProduct(ProductModel product) {
+    try {
+      return _firestore
+          .collection('stock')
+          .doc(product.id)
+          .withConverter<ProductModel>(
+            fromFirestore: _fromFirestore,
+            toFirestore: _toFirestore,
+          )
+          .set(product);
+    } catch (e) {
+      rethrow;
+    }
+  }
 
   @override
-  Future<void> deleteProduct(String id) =>
-      _firestore.collection('stock').doc(id).delete();
+  Future<void> deleteProduct(String id) {
+    try {
+      return _firestore.collection('stock').doc(id).delete();
+    } catch (e) {
+      rethrow;
+    }
+  }
 
   @override
-  Stream<List<ProductModel?>> getAllProducts() => _firestore
-      .collection('stock')
-      .withConverter<ProductModel>(
-        fromFirestore: _fromFirestore,
-        toFirestore: _toFirestore,
-      )
-      .orderBy('name')
-      .snapshots()
-      .map((snapshot) => snapshot.docs.map((doc) => doc.data()).toList())
-      .asBroadcastStream();
+  Stream<List<ProductModel>> getAllProducts() {
+    try {
+      return _firestore
+          .collection('stock')
+          .withConverter<ProductModel>(
+            fromFirestore: _fromFirestore,
+            toFirestore: _toFirestore,
+          )
+          .orderBy('name')
+          .snapshots()
+          .map((snapshot) => snapshot.docs.map((doc) => doc.data()).toList())
+          .asBroadcastStream();
+    } catch (e) {
+      rethrow;
+    }
+  }
 
   @override
   Future<ProductModel> getProductById(String id) async {
@@ -54,14 +71,20 @@ final class ProductRepository implements IProductRepository {
   }
 
   @override
-  Future<void> updateProduct(ProductModel product) async => _firestore
-      .collection('stock')
-      .doc(product.id)
-      .withConverter<ProductModel>(
-        fromFirestore: _fromFirestore,
-        toFirestore: _toFirestore,
-      )
-      .update(product.toMap());
+  Future<void> updateProduct(ProductModel product) {
+    try {
+      return _firestore
+          .collection('stock')
+          .doc(product.id)
+          .withConverter<ProductModel>(
+            fromFirestore: _fromFirestore,
+            toFirestore: _toFirestore,
+          )
+          .update(product.toMap());
+    } catch (e) {
+      rethrow;
+    }
+  }
 
   Map<String, dynamic> _toFirestore(
     ProductModel product,

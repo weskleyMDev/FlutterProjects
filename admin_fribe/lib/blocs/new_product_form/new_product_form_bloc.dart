@@ -5,6 +5,7 @@ import 'package:admin_fribe/blocs/new_product_form/validator/product_price_valid
 import 'package:admin_fribe/blocs/new_product_form/validator/product_quantity_validator.dart';
 import 'package:admin_fribe/models/product_model.dart';
 import 'package:admin_fribe/repositories/products/product_repository.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
@@ -16,12 +17,15 @@ part 'new_product_form_state.dart';
 final class NewProductFormBloc
     extends Bloc<NewProductFormEvent, NewProductFormState> {
   final IProductRepository _productRepository;
-  NewProductFormBloc(this._productRepository, {ProductModel? initialProduct})
-    : super(
-        initialProduct != null
-            ? NewProductFormState.fromProduct(product: initialProduct)
-            : const NewProductFormState.initial(),
-      ) {
+  NewProductFormBloc({
+    required IProductRepository productRepository,
+    required ProductModel? initialProduct,
+  }) : _productRepository = productRepository,
+       super(
+         initialProduct != null
+             ? NewProductFormState.fromProduct(product: initialProduct)
+             : const NewProductFormState.initial(),
+       ) {
     on<ProductNameChanged>(_onProductNameChanged);
     on<ProductCategoryChanged>(_onProductCategoryChanged);
     on<ProductQuantityChanged>(_onProductQuantityChanged);
@@ -36,18 +40,7 @@ final class NewProductFormBloc
     Emitter<NewProductFormState> emit,
   ) {
     final productName = ProductNameInput.dirty(event.name);
-    emit(
-      state.copyWith(
-        productName: () => productName,
-        isFormValid: () => Formz.validate([
-          productName,
-          state.productCategory,
-          state.productQuantity,
-          state.productPrice,
-          state.productMeasure,
-        ]),
-      ),
-    );
+    emit(state.copyWith(productName: () => productName));
   }
 
   void _onProductCategoryChanged(
@@ -55,18 +48,7 @@ final class NewProductFormBloc
     Emitter<NewProductFormState> emit,
   ) {
     final productCategory = ProductCategoryInput.dirty(event.category);
-    emit(
-      state.copyWith(
-        productCategory: () => productCategory,
-        isFormValid: () => Formz.validate([
-          state.productName,
-          productCategory,
-          state.productQuantity,
-          state.productPrice,
-          state.productMeasure,
-        ]),
-      ),
-    );
+    emit(state.copyWith(productCategory: () => productCategory));
   }
 
   void _onProductQuantityChanged(
@@ -74,18 +56,7 @@ final class NewProductFormBloc
     Emitter<NewProductFormState> emit,
   ) {
     final productQuantity = ProductQuantityInput.dirty(event.quantity);
-    emit(
-      state.copyWith(
-        productQuantity: () => productQuantity,
-        isFormValid: () => Formz.validate([
-          state.productName,
-          state.productCategory,
-          productQuantity,
-          state.productPrice,
-          state.productMeasure,
-        ]),
-      ),
-    );
+    emit(state.copyWith(productQuantity: () => productQuantity));
   }
 
   void _onProductPriceChanged(
@@ -93,18 +64,7 @@ final class NewProductFormBloc
     Emitter<NewProductFormState> emit,
   ) {
     final productPrice = ProductPriceInput.dirty(event.price);
-    emit(
-      state.copyWith(
-        productPrice: () => productPrice,
-        isFormValid: () => Formz.validate([
-          state.productName,
-          state.productCategory,
-          state.productQuantity,
-          productPrice,
-          state.productMeasure,
-        ]),
-      ),
-    );
+    emit(state.copyWith(productPrice: () => productPrice));
   }
 
   void _onProductMeasureChanged(
@@ -112,33 +72,20 @@ final class NewProductFormBloc
     Emitter<NewProductFormState> emit,
   ) {
     final productMeasure = ProductMeasureInput.dirty(event.measure);
-    emit(
-      state.copyWith(
-        productMeasure: () => productMeasure,
-        isFormValid: () => Formz.validate([
-          state.productName,
-          state.productCategory,
-          state.productQuantity,
-          state.productPrice,
-          productMeasure,
-        ]),
-      ),
-    );
+    emit(state.copyWith(productMeasure: () => productMeasure));
   }
 
   Future<void> _onFormSubmitted(
     FormSubmitted event,
     Emitter<NewProductFormState> emit,
   ) async {
-    if (state.isFormValid) {
-      emit(
-        state.copyWith(
-          formStatus: () => FormzSubmissionStatus.inProgress,
-          errorMessage: null,
-        ),
-      );
-    }
-    emit(state.copyWith(formStatus: () => FormzSubmissionStatus.inProgress));
+    if (!state.isValid) return;
+    emit(
+      state.copyWith(
+        formStatus: () => FormzSubmissionStatus.inProgress,
+        errorMessage: null,
+      ),
+    );
     try {
       final newProduct = (state.initialProduct ?? ProductModel.empty())
           .copyWith(
@@ -165,7 +112,7 @@ final class NewProductFormBloc
       emit(
         state.copyWith(
           formStatus: () => FormzSubmissionStatus.failure,
-          errorMessage: () => 'Failed to submit the form. Please try again.',
+          errorMessage: () => e is FirebaseException ? e.message : e.toString(),
         ),
       );
     }
@@ -175,6 +122,10 @@ final class NewProductFormBloc
     ResetProductForm event,
     Emitter<NewProductFormState> emit,
   ) {
-    emit(const NewProductFormState.initial());
+    if (state.initialProduct != null) {
+      emit(NewProductFormState.fromProduct(product: state.initialProduct!));
+    } else {
+      emit(const NewProductFormState.initial());
+    }
   }
 }

@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:admin_fribe/blocs/auth/auth_bloc.dart';
 import 'package:admin_fribe/blocs/login_form/login_form_bloc.dart';
-import 'package:admin_fribe/blocs/new_product_form/new_product_form_bloc.dart';
 import 'package:admin_fribe/blocs/pending_sales/pending_sale_bloc.dart';
 import 'package:admin_fribe/blocs/product/product_bloc.dart';
 import 'package:admin_fribe/blocs/sales_receipt/sales_receipt_bloc.dart';
@@ -87,11 +86,6 @@ class MyApp extends StatelessWidget {
             create: (context) =>
                 ProductBloc(RepositoryProvider.of<IProductRepository>(context))
                   ..add(const LoadProductsStream()),
-          ),
-          BlocProvider(
-            create: (context) => NewProductFormBloc(
-              RepositoryProvider.of<IProductRepository>(context),
-            ),
           ),
           BlocProvider(
             create: (context) => PendingSaleBloc(
