@@ -11,10 +11,15 @@ class AuthManager extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<AuthBloc, AuthState>(
       builder: (context, state) {
-        if (state.currentUser != null) {
-          return const HomeScreen();
-        } else {
-          return const LoginScreen();
+        switch (state.status) {
+          case AuthStatus.authenticated:
+            return const HomeScreen();
+          case AuthStatus.unauthenticated:
+            return const LoginScreen();
+          case AuthStatus.unknown:
+            return const Scaffold(
+              body: Center(child: CircularProgressIndicator()),
+            );
         }
       },
     );

@@ -1,5 +1,6 @@
 import 'package:admin_fribe/models/product_model.dart';
 import 'package:admin_fribe/screens/new_product_screen.dart';
+import 'package:admin_fribe/screens/product_sales_screen.dart';
 import 'package:admin_fribe/widgets/auth_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -31,6 +32,19 @@ final routes = GoRouter(
             );
           },
         );
+      },
+    ),
+    GoRoute(
+      path: '/product-sales',
+      name: 'product-sales',
+      builder: (context, state) {
+        final weekId = state.extra as String?;
+        if (weekId == null) {
+          return const Scaffold(
+            body: Center(child: Text('Semana não informada')),
+          );
+        }
+        return ProductSalesScreen(weekId: weekId);
       },
     ),
   ],

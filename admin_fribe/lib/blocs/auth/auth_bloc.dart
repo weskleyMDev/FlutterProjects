@@ -20,6 +20,7 @@ final class AuthBloc extends Bloc<AuthEvent, AuthState> {
     AuthSubscriptionRequested event,
     Emitter<AuthState> emit,
   ) async {
+    emit(const AuthState.unknown());
     try {
       await emit.forEach<UserModel?>(
         _authService.userChanges,
