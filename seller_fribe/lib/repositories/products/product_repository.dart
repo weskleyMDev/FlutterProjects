@@ -40,7 +40,7 @@ final class ProductRepository implements IProductRepository {
       final currentAmount = data.amount;
       final toDecimal = Decimal.parse(currentAmount);
       final toSubtract = Decimal.parse(amountToSubtract);
-      final newAmount = toDecimal - toSubtract;
+      final newAmount = (toDecimal - toSubtract).round(scale: 3);
       if (newAmount < Decimal.zero) {
         throw Exception(
           'Insufficient stock for product ID $productId. Current amount: $currentAmount, attempted to subtract: $amountToSubtract.',

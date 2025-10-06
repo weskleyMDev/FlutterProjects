@@ -107,9 +107,7 @@ class _PendingSalesScreenState extends State<PendingSalesScreen> {
                                   >(
                                     selector: (state) {
                                       return state.allProducts.firstWhere(
-                                        (product) =>
-                                            product.id ==
-                                            receipt.cart.first.productId,
+                                        (product) => product.id == e.productId,
                                       );
                                     },
                                     builder: (context, product) {
