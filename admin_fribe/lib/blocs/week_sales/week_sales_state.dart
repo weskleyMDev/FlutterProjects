@@ -56,6 +56,75 @@ final class WeekSalesState extends Equatable {
     originalReceipts: originalReceipts ?? this.originalReceipts,
   );
 
+  Decimal _safeParseDecimal(dynamic value) {
+    final str = value?.toString().trim();
+    if (str == null || str.isEmpty) return Decimal.zero;
+
+    try {
+      return Decimal.parse(str);
+    } catch (_) {
+      return Decimal.zero;
+    }
+  }
+
+  Decimal _calculateTotalByPaymentType(String paymentType) {
+    return weekSales
+        .fold<Decimal>(
+          Decimal.zero,
+          (previousValue, week) =>
+              previousValue +
+              week.salesReceipts.fold<Decimal>(Decimal.zero, (total, receipt) {
+                final payments = receipt.payments;
+                final filteredPayments = payments.where(
+                  (p) => p.type == paymentType,
+                );
+                final sum = filteredPayments.fold<Decimal>(Decimal.zero, (
+                  subtotal,
+                  payment,
+                ) {
+                  final value = _safeParseDecimal(payment.value);
+                  return subtotal + value;
+                });
+                return total + sum;
+              }),
+        )
+        .round(scale: 2);
+  }
+
+  Decimal _sumFromReceipts(Decimal Function(SalesReceipt element) getValue) {
+    return weekSales
+        .fold<Decimal>(
+          Decimal.zero,
+          (previousValue, week) =>
+              previousValue +
+              week.salesReceipts.fold<Decimal>(
+                Decimal.zero,
+                (receiptSum, element) => receiptSum + getValue(element),
+              ),
+        )
+        .round(scale: 2);
+  }
+
+  Decimal get totalWeekSales =>
+      _sumFromReceipts((element) => _safeParseDecimal(element.total));
+
+  Decimal get totalDiscounts =>
+      _sumFromReceipts((element) => _safeParseDecimal(element.discount));
+
+  Decimal get totalShipping =>
+      _sumFromReceipts((element) => _safeParseDecimal(element.shipping));
+
+  Decimal get totalTariffs =>
+      _sumFromReceipts((element) => _safeParseDecimal(element.tariffs));
+
+  Decimal get totalWeekSalesCash => _calculateTotalByPaymentType('dinheiro');
+
+  Decimal get totalWeekSalesCredit => _calculateTotalByPaymentType('credito');
+
+  Decimal get totalWeekSalesDebit => _calculateTotalByPaymentType('debito');
+
+  Decimal get totalWeekSalesPix => _calculateTotalByPaymentType('pix');
+
   @override
   bool get stringify => true;
 

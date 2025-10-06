@@ -50,7 +50,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final brightness = View.of(context).platformDispatcher.platformBrightness;
-    TextTheme textTheme = createTextTheme(context, "Nunito Sans", "Lora");
+    TextTheme textTheme = createTextTheme(context, "Oxanium", "Quantico");
     final theme = MaterialTheme(textTheme);
     return MultiRepositoryProvider(
       providers: [
