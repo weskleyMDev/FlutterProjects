@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:admin_fribe/models/pending_sale_model.dart';
 import 'package:admin_fribe/repositories/pending_sales/pending_sale_repository.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -14,9 +12,11 @@ final class PendingSaleBloc extends Bloc<PendingSaleEvent, PendingSaleState> {
   PendingSaleBloc(this._pendingSaleRepository)
     : super(PendingSaleState.initial()) {
     on<FetchPendingSalesEvent>(_onFetchPendingSales);
+    on<UpdatePaymentStatusEvent>(_onUpdatePaymentStatus);
+    on<ToggleExpansionEvent>(_onToggleExpansion);
   }
 
-  FutureOr<void> _onFetchPendingSales(
+  Future<void> _onFetchPendingSales(
     FetchPendingSalesEvent event,
     Emitter<PendingSaleState> emit,
   ) async {
@@ -32,5 +32,43 @@ final class PendingSaleBloc extends Bloc<PendingSaleEvent, PendingSaleState> {
     } catch (e) {
       emit(PendingSaleState.failure(e.toString()));
     }
+  }
+
+  Future<void> _onUpdatePaymentStatus(
+    UpdatePaymentStatusEvent event,
+    Emitter<PendingSaleState> emit,
+  ) async {
+    try {
+      await _pendingSaleRepository.updatePaymentStatus(
+        pendingSaleId: event.pendingSaleId,
+        receiptId: event.receiptId,
+        status: event.status,
+      );
+      emit(
+        state.copyWith(
+          status: () => PendingSaleStatus.success,
+        ),
+      );
+    } catch (e) {
+      emit(
+        state.copyWith(
+          status: () => PendingSaleStatus.failure,
+          errorMessage: () => e is FirebaseException ? e.message : e.toString(),
+        ),
+      );
+    }
+  }
+
+  void _onToggleExpansion(
+    ToggleExpansionEvent event,
+    Emitter<PendingSaleState> emit,
+  ) {
+    final expandedTiles = Set<String>.from(state.expandedTiles);
+    if (event.isExpanded) {
+      expandedTiles.add(event.tileId);
+    } else {
+      expandedTiles.remove(event.tileId);
+    }
+    emit(state.copyWith(expandedTiles: () => expandedTiles));
   }
 }

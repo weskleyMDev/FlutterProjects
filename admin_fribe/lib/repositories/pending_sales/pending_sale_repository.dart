@@ -39,6 +39,43 @@ final class PendingSaleRepository implements IPendingSaleRepository {
     }).asBroadcastStream();
   }
 
+  @override
+  Future<void> updatePaymentStatus({
+    required String pendingSaleId,
+    required String receiptId,
+    required bool status,
+  }) async {
+    final batch = _firestore.batch();
+
+    final saleRef = _firestore.collection('pending_sales').doc(pendingSaleId);
+    final receiptRef = saleRef.collection('pending_receipts').doc(receiptId);
+
+    final now = DateTime.now().toIso8601String();
+
+    final snapshot = await saleRef.get();
+    Map<String, dynamic> paymentAtMap = {};
+
+    if (snapshot.exists && snapshot.data() != null) {
+      final data = snapshot.data()!;
+      if (data['paymentAt'] != null &&
+          data['paymentAt'] is Map<String, dynamic>) {
+        paymentAtMap = Map<String, dynamic>.from(data['paymentAt']);
+      }
+    }
+
+    paymentAtMap[receiptId] = now;
+
+    batch.set(saleRef, {'paymentAt': paymentAtMap}, SetOptions(merge: true));
+
+    batch.update(receiptRef, {'status': status});
+
+    try {
+      await batch.commit();
+    } catch (e) {
+      rethrow;
+    }
+  }
+
   Map<String, dynamic> _toFirestore(
     SalesReceipt salesReceipt,
     SetOptions? options,

@@ -6,9 +6,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 
-class VouchersScreen extends StatelessWidget {
+class VouchersScreen extends StatefulWidget {
   const VouchersScreen({super.key});
 
+  @override
+  State<VouchersScreen> createState() => _VouchersScreenState();
+}
+
+class _VouchersScreenState extends State<VouchersScreen> {
+  static const WidgetStateProperty<Icon> thumbIcon =
+      WidgetStateProperty<Icon>.fromMap(<WidgetStatesConstraint, Icon>{
+        WidgetState.selected: Icon(Icons.check),
+        WidgetState.any: Icon(Icons.close),
+      });
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<PendingSaleBloc, PendingSaleState>(
@@ -19,6 +29,7 @@ class VouchersScreen extends StatelessWidget {
             return const Center(child: Text('No pending sales'));
           } else {
             return ListView.builder(
+              shrinkWrap: true,
               itemCount: pendingSales.length,
               itemBuilder: (context, index) {
                 final sale = pendingSales[index];
@@ -29,9 +40,19 @@ class VouchersScreen extends StatelessWidget {
                   decimalDigits: 3,
                 );
                 return ExpansionTile(
+                  key: const ValueKey('expansion_pending_tile'),
+                  initiallyExpanded: state.expandedTiles.contains(sale.id),
+                  onExpansionChanged: (isExpanded) {
+                    BlocProvider.of<PendingSaleBloc>(context).add(
+                      ToggleExpansionEvent(
+                        tileId: sale.id,
+                        isExpanded: isExpanded,
+                      ),
+                    );
+                  },
                   title: Text(sale.id.replaceAll('_', ' ').capitalize()),
                   children: sale.receipts.map((receipt) {
-                    final status = receipt.status ? 'Paid' : 'Unpaid';
+                    final isLoading = state.status == PendingSaleStatus.loading;
                     final date = DateFormat.yMd(
                       locale,
                     ).format(receipt.createAt);
@@ -43,7 +64,22 @@ class VouchersScreen extends StatelessWidget {
                             receipt.id.toUpperCase(),
                             style: const TextStyle(fontSize: 14.0),
                           ),
-                          Text(status),
+                          Switch(
+                            thumbIcon: thumbIcon,
+                            value: receipt.status,
+                            onChanged: isLoading
+                                ? null
+                                : (value) =>
+                                      BlocProvider.of<PendingSaleBloc>(
+                                        context,
+                                      ).add(
+                                        UpdatePaymentStatusEvent(
+                                          pendingSaleId: sale.id,
+                                          receiptId: receipt.id,
+                                          status: value,
+                                        ),
+                                      ),
+                          ),
                         ],
                       ),
                       subtitle: Column(
