@@ -3,12 +3,19 @@ import 'package:admin_fribe/models/product_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 
 class ProductsScreen extends StatelessWidget {
   const ProductsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final locale = Localizations.localeOf(context).toLanguageTag();
+    final currencyFormat = NumberFormat.simpleCurrency(locale: locale);
+    final numberFormat = NumberFormat.decimalPatternDigits(
+      locale: locale,
+      decimalDigits: 3,
+    );
     return BlocBuilder<ProductBloc, ProductState>(
       builder: (context, state) {
         if (state.status == ProductStatus.loading) {
@@ -36,7 +43,7 @@ class ProductsScreen extends StatelessWidget {
                       children: [
                         SelectableText('ID: ${product.id}'),
                         Text(
-                          'Price: \$${product.price} - Stock: ${product.amount}',
+                          'Price: ${currencyFormat.format(double.tryParse(product.price.toString()) ?? 0)} - Stock: ${numberFormat.format(double.tryParse(product.amount.toString()) ?? 0)}',
                         ),
                       ],
                     ),

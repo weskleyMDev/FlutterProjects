@@ -95,11 +95,11 @@ final class ProductRepository implements IProductRepository {
       final newAmount =
           Decimal.tryParse(product.amount.isNotEmpty ? product.amount : '0') ??
           Decimal.zero;
-      final updatedAmount = (currentAmount + newAmount)
-          .round(scale: 3)
-          .toString();
-      final updatedProduct = product.copyWith(amount: () => updatedAmount);
-      return docSnapshot.reference.update(updatedProduct.toMap());
+      final updatedAmount = (currentAmount + newAmount).round(scale: 3);
+      final updatedProduct = product.copyWith(
+        amount: () => updatedAmount.toString(),
+      );
+      await docSnapshot.reference.update(updatedProduct.toMap());
     } catch (e) {
       rethrow;
     }
