@@ -2,6 +2,7 @@ import 'package:admin_fribe/blocs/product/product_bloc.dart';
 import 'package:admin_fribe/models/product_model.dart';
 import 'package:admin_fribe/models/sales_receipt_model.dart';
 import 'package:admin_fribe/utils/capitalize_text.dart';
+import 'package:admin_fribe/widgets/products_receipt_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
@@ -46,36 +47,57 @@ class SalesReceiptTile extends StatelessWidget {
             overflow: TextOverflow.ellipsis,
           ),
         ),
-        if (receipt.discount != '0' && receipt.discount != '0.0')
+        if (receipt.discount != '0' &&
+            receipt.discount != '0.0' &&
+            receipt.discount.isNotEmpty)
           Text(
             'Desconto: ${currency.format(safeDoubleParse(receipt.discount))}',
             overflow: TextOverflow.ellipsis,
           ),
         if (receipt.discountReason.isNotEmpty)
           Text(
-            'Razão: ${receipt.discountReason}',
+            'Razão: ${receipt.discountReason.capitalize()}',
             overflow: TextOverflow.ellipsis,
           ),
-        ...receipt.cart.map(
-          (e) => BlocSelector<ProductBloc, ProductState, String>(
-            selector: (state) {
-              return state.products
-                      .firstWhere(
-                        (product) => product?.id == e.productId,
-                        orElse: () => ProductModel.empty(),
-                      )
-                      ?.name ??
-                  e.productId;
-            },
-            builder: (context, state) {
-              return ListTile(
-                titleTextStyle: TextStyle(fontSize: 12.0),
-                title: Text(
-                  '$state x${e.quantity}',
-                  overflow: TextOverflow.ellipsis,
-                ),
-              );
-            },
+        if (receipt.shipping.isNotEmpty &&
+            receipt.shipping != '0' &&
+            receipt.shipping != '0.0')
+          Text(
+            'Frete: ${currency.format(safeDoubleParse(receipt.shipping))}',
+            overflow: TextOverflow.ellipsis,
+          ),
+        if (receipt.tariffs.isNotEmpty &&
+            receipt.tariffs != '0' &&
+            receipt.tariffs != '0.0')
+          Text(
+            'Taxas: ${currency.format(safeDoubleParse(receipt.tariffs))}',
+            overflow: TextOverflow.ellipsis,
+          ),
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            children: receipt.cart
+                .map(
+                  (e) => BlocSelector<ProductBloc, ProductState, String>(
+                    selector: (state) {
+                      return state.products
+                              .firstWhere(
+                                (product) => product?.id == e.productId,
+                                orElse: () => ProductModel.empty(),
+                              )
+                              ?.name ??
+                          e.productId;
+                    },
+                    builder: (context, productName) {
+                      return ProductsReceiptTile(
+                        productName: productName,
+                        quantity: e.quantity,
+                        subtotal: currency.format(e.subtotal),
+                      );
+                    },
+                  ),
+                )
+                .toList(),
           ),
         ),
       ],

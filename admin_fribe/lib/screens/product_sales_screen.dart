@@ -23,7 +23,7 @@ class ProductSalesScreen extends StatelessWidget {
     );
 
     return Scaffold(
-      appBar: AppBar(title: Text('Produtos — $weekId')),
+      appBar: AppBar(title: Text('Produtos Mais Vendidos')),
       body: BlocBuilder<WeekSalesBloc, WeekSalesState>(
         builder: (context, state) {
           if (state.status == WeekSalesStatus.failure) {
@@ -49,54 +49,114 @@ class ProductSalesScreen extends StatelessWidget {
           final sorted = List<ProductSales>.from(productSalesList)
             ..sort((a, b) => b.totalSales.compareTo(a.totalSales));
 
-          return ListView.builder(
-            itemCount: sorted.length,
-            itemBuilder: (context, index) {
-              final ps = sorted[index];
-              final productId = ps.productId;
-              final quantity = ps.totalSales;
+          return BlocBuilder<ProductBloc, ProductState>(
+            builder: (context, productState) {
+              Decimal totalWeekRevenue = Decimal.zero;
 
-              return BlocSelector<ProductBloc, ProductState, ProductModel>(
-                selector: (productState) {
-                  final prod = productState.products.firstWhere(
-                    (p) => p?.id == productId,
-                    orElse: () => ProductModel.empty(),
-                  );
-                  return prod ?? ProductModel.empty();
-                },
-                builder: (context, product) {
-                  final Decimal price = _safeDecimalParse(product.price);
-                  return Card(
-                    margin: const EdgeInsets.symmetric(
-                      horizontal: 12,
-                      vertical: 6,
-                    ),
-                    child: ListTile(
-                      title: Text(
-                        product.name.isNotEmpty ? product.name : productId,
-                        style: const TextStyle(fontWeight: FontWeight.w600),
-                      ),
-                      subtitle: Text('Medida: ${product.measure}', maxLines: 1),
-                      trailing: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          Text(
-                            'Qtd: ${numberFormat.format(quantity.toDouble())}',
-                            style: const TextStyle(fontWeight: FontWeight.bold),
-                          ),
-                          const SizedBox(height: 4),
-                          Text(
-                            currency.format(price.toDouble()),
-                            style: TextStyle(
-                              color: Theme.of(context).colorScheme.primary,
-                            ),
-                          ),
-                        ],
+              for (final ps in sorted) {
+                final product = productState.products.firstWhere(
+                  (p) => p?.id == ps.productId,
+                  orElse: () => ProductModel.empty(),
+                );
+                final price = _safeDecimalParse(product?.price);
+                totalWeekRevenue += _calculateTotalRevenue(
+                  price,
+                  ps.totalSales,
+                );
+              }
+
+              return Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Text(
+                      'SUBTOTAL VENDIDO: ${currency.format(totalWeekRevenue.toDouble())}',
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.bold,
+                        color: Theme.of(context).colorScheme.primary,
                       ),
                     ),
-                  );
-                },
+                  ),
+
+                  const Divider(height: 1),
+
+                  Expanded(
+                    child: ListView.builder(
+                      itemCount: sorted.length,
+                      itemBuilder: (context, index) {
+                        final ps = sorted[index];
+                        final productId = ps.productId;
+                        final quantity = ps.totalSales;
+
+                        return BlocSelector<
+                          ProductBloc,
+                          ProductState,
+                          ProductModel
+                        >(
+                          selector: (productState) {
+                            final prod = productState.products.firstWhere(
+                              (p) => p?.id == productId,
+                              orElse: () => ProductModel.empty(),
+                            );
+                            return prod ?? ProductModel.empty();
+                          },
+                          builder: (context, product) {
+                            final Decimal price = _safeDecimalParse(
+                              product.price,
+                            );
+                            final Decimal totalRevenue = _calculateTotalRevenue(
+                              price,
+                              quantity,
+                            );
+
+                            return Card(
+                              margin: const EdgeInsets.symmetric(
+                                horizontal: 12,
+                                vertical: 6,
+                              ),
+                              child: ListTile(
+                                title: Text(
+                                  product.name.isNotEmpty
+                                      ? product.name
+                                      : productId,
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                                subtitle: Text(
+                                  'Preço: ${currency.format(price.toDouble())}',
+                                  maxLines: 1,
+                                ),
+                                trailing: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  children: [
+                                    Text(
+                                      'Qtd: ${numberFormat.format(quantity.toDouble())}',
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 4),
+                                    Text(
+                                      currency.format(totalRevenue.toDouble()),
+                                      style: TextStyle(
+                                        color: Theme.of(
+                                          context,
+                                        ).colorScheme.primary,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            );
+                          },
+                        );
+                      },
+                    ),
+                  ),
+                ],
               );
             },
           );
@@ -111,5 +171,9 @@ class ProductSalesScreen extends StatelessWidget {
     return (cleaned.isEmpty || cleaned == '.' || cleaned == '-')
         ? Decimal.zero
         : Decimal.tryParse(cleaned) ?? Decimal.zero;
+  }
+
+  Decimal _calculateTotalRevenue(Decimal price, Decimal quantity) {
+    return (price * quantity).round(scale: 2);
   }
 }
