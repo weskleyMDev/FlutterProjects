@@ -72,7 +72,7 @@ class ReportScreen extends StatelessWidget {
                   ...state.weekSales.map((week) {
                     return ReportTile(
                       title: week.id,
-                      state: state,
+                      week: week,
                       currency: currency,
                     );
                   }),

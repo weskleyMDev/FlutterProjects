@@ -1,4 +1,4 @@
-import 'package:admin_fribe/blocs/week_sales/week_sales_bloc.dart';
+import 'package:admin_fribe/models/week_sales.dart';
 import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttericon/font_awesome5_icons.dart';
@@ -9,12 +9,12 @@ class ReportTile extends StatelessWidget {
   const ReportTile({
     super.key,
     required this.title,
-    required this.state,
+    required this.week,
     required this.currency,
   });
 
   final String title;
-  final WeekSalesState state;
+  final WeekSales week;
   final NumberFormat currency;
 
   @override
@@ -53,7 +53,7 @@ class ReportTile extends StatelessWidget {
           children: [
             Text('Total da Semana:'),
             Text(
-              currency.format(state.totalWeekSales.toDouble()).toString(),
+              currency.format(week.totalSales.toDouble()).toString(),
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
@@ -71,7 +71,7 @@ class ReportTile extends StatelessWidget {
         children: [
           weekResume(
             currency,
-            state.totalWeekSalesCash,
+            week.totalCash,
             'Dinheiro',
             Colors.green,
             FontAwesome5.money_bill,
@@ -79,7 +79,7 @@ class ReportTile extends StatelessWidget {
           ),
           weekResume(
             currency,
-            state.totalWeekSalesCredit,
+            week.totalCredit,
             'Crédito',
             Colors.amber,
             FontAwesome5.credit_card,
@@ -87,7 +87,7 @@ class ReportTile extends StatelessWidget {
           ),
           weekResume(
             currency,
-            state.totalWeekSalesDebit,
+            week.totalDebit,
             'Débito',
             Colors.blue,
             FontAwesome5.credit_card,
@@ -95,7 +95,7 @@ class ReportTile extends StatelessWidget {
           ),
           weekResume(
             currency,
-            state.totalWeekSalesPix,
+            week.totalPix,
             'Pix',
             Colors.purple,
             FontAwesome5.qrcode,
@@ -104,7 +104,7 @@ class ReportTile extends StatelessWidget {
           const Divider(),
           weekResume(
             currency,
-            state.totalDiscounts,
+            week.totalDiscounts,
             'Descontos',
             Colors.red.shade700,
             FontAwesome5.minus_circle,
@@ -112,7 +112,7 @@ class ReportTile extends StatelessWidget {
           ),
           weekResume(
             currency,
-            state.totalShipping,
+            week.totalShipping,
             'Frete',
             Colors.blueGrey,
             FontAwesome5.shipping_fast,
@@ -120,7 +120,7 @@ class ReportTile extends StatelessWidget {
           ),
           weekResume(
             currency,
-            state.totalTariffs,
+            week.totalTariffs,
             'Taxas',
             Colors.teal,
             FontAwesome5.university,

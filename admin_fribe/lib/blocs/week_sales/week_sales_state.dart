@@ -105,25 +105,25 @@ final class WeekSalesState extends Equatable {
         .round(scale: 2);
   }
 
-  Decimal get totalWeekSales =>
+  Decimal get totalMonthSales =>
       _sumFromReceipts((element) => _safeParseDecimal(element.total));
 
-  Decimal get totalDiscounts =>
+  Decimal get totalMonthDiscounts =>
       _sumFromReceipts((element) => _safeParseDecimal(element.discount));
 
-  Decimal get totalShipping =>
+  Decimal get totalMonthShipping =>
       _sumFromReceipts((element) => _safeParseDecimal(element.shipping));
 
-  Decimal get totalTariffs =>
+  Decimal get totalMonthTariffs =>
       _sumFromReceipts((element) => _safeParseDecimal(element.tariffs));
 
-  Decimal get totalWeekSalesCash => _calculateTotalByPaymentType('dinheiro');
+  Decimal get totalMonthCash => _calculateTotalByPaymentType('dinheiro');
 
-  Decimal get totalWeekSalesCredit => _calculateTotalByPaymentType('credito');
+  Decimal get totalMonthCredit => _calculateTotalByPaymentType('credito');
 
-  Decimal get totalWeekSalesDebit => _calculateTotalByPaymentType('debito');
+  Decimal get totalMonthDebit => _calculateTotalByPaymentType('debito');
 
-  Decimal get totalWeekSalesPix => _calculateTotalByPaymentType('pix');
+  Decimal get totalMonthPix => _calculateTotalByPaymentType('pix');
 
   @override
   bool get stringify => true;
