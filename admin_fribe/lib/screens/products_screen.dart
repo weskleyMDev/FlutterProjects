@@ -1,8 +1,8 @@
 import 'package:admin_fribe/blocs/product/product_bloc.dart';
 import 'package:admin_fribe/models/product_model.dart';
+import 'package:admin_fribe/widgets/product_detail_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
 class ProductsScreen extends StatelessWidget {
@@ -36,23 +36,10 @@ class ProductsScreen extends StatelessWidget {
                       width: 1.0,
                     ),
                   ),
-                  child: ListTile(
-                    title: Text(product.name),
-                    subtitle: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        SelectableText('ID: ${product.id}'),
-                        Text(
-                          'Price: ${currencyFormat.format(double.tryParse(product.price.toString()) ?? 0)} - Stock: ${numberFormat.format(double.tryParse(product.amount.toString()) ?? 0)}',
-                        ),
-                      ],
-                    ),
-                    trailing: IconButton(
-                      icon: const Icon(Icons.edit),
-                      onPressed: () {
-                        context.pushNamed('edit-product', extra: product);
-                      },
-                    ),
+                  child: ProductDetailTile(
+                    product: product,
+                    currencyFormat: currencyFormat,
+                    numberFormat: numberFormat,
                   ),
                 ),
               );

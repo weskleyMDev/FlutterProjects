@@ -39,6 +39,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     onChanged: (value) {
                       loginBloc.add(LoginFormEmailChanged(value));
                     },
+                    keyboardType: TextInputType.emailAddress,
                     decoration: InputDecoration(
                       border: const OutlineInputBorder(),
                       labelText: 'Email',

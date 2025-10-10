@@ -39,7 +39,7 @@ class SalesReceiptTile extends StatelessWidget {
     }
 
     Widget showCharges(String title, String values) {
-      final Map<String, String> chargesMap = {
+      final Map<String, String> chargesValueMap = {
         'Desconto': currency.format(safeDoubleParse(receipt.discount)),
         'Frete': currency.format(safeDoubleParse(receipt.shipping)),
         'Taxas': currency.format(safeDoubleParse(receipt.tariffs)),
@@ -74,7 +74,7 @@ class SalesReceiptTile extends StatelessWidget {
                       ),
                   const SizedBox(width: 8.0),
                   Text(
-                    '$title: ${chargesMap[title]}',
+                    '$title: ${chargesValueMap[title]}',
                     overflow: TextOverflow.ellipsis,
                   ),
                 ],
@@ -97,13 +97,20 @@ class SalesReceiptTile extends StatelessWidget {
               ),
               const SizedBox(width: 8.0),
               Expanded(
-                child: Text(receipt.id, overflow: TextOverflow.ellipsis),
+                child: Text(
+                  receipt.id.toUpperCase(),
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 1,
+                ),
               ),
-              Text(
-                currency.format(double.parse(receipt.total)),
-                style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: Colors.limeAccent,
+              Container(
+                margin: const EdgeInsets.only(left: 8.0),
+                child: Text(
+                  currency.format(double.parse(receipt.total)),
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.limeAccent,
+                  ),
                 ),
               ),
             ],
