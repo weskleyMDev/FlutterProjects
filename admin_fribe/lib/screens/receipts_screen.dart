@@ -1,4 +1,5 @@
 import 'package:admin_fribe/blocs/sales_receipt/sales_receipt_bloc.dart';
+import 'package:admin_fribe/services/receipt_to_pdf.dart';
 import 'package:admin_fribe/widgets/sales_receipt_tile.dart';
 import 'package:collection/collection.dart';
 import 'package:decimal/decimal.dart';
@@ -51,10 +52,16 @@ class ReceiptsScreen extends StatelessWidget {
                 ),
                 children: receiptsOfDay
                     .map(
-                      (receipt) => Card(
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: SalesReceiptTile(receipt: receipt),
+                      (receipt) => InkWell(
+                        onTap: () => ReceiptToPdfService.convertReceiptToPdf(
+                          receipt,
+                          context,
+                        ),
+                        child: Card(
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: SalesReceiptTile(receipt: receipt),
+                          ),
                         ),
                       ),
                     )

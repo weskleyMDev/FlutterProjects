@@ -11,7 +11,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
-import 'package:uuid/uuid.dart';
 
 part 'new_product_form_event.dart';
 part 'new_product_form_state.dart';
@@ -91,7 +90,7 @@ final class NewProductFormBloc
     try {
       final newProduct = (state.initialProduct ?? ProductModel.empty())
           .copyWith(
-            id: () => state.initialProduct?.id ?? Uuid().v4(),
+            id: () => state.initialProduct?.id ?? '',
             amount: () => state.productQuantity.value,
             category: () => state.productCategory.value,
             measure: () => state.productMeasure.value,

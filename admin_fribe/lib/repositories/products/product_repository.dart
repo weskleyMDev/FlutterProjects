@@ -8,16 +8,16 @@ final class ProductRepository implements IProductRepository {
   final _firestore = FirebaseFirestore.instance;
 
   @override
-  Future<void> addProduct(ProductModel product) {
+  Future<void> addProduct(ProductModel product) async {
     try {
-      return _firestore
-          .collection('stock')
-          .doc(product.id)
+      final docRef = _firestore.collection('stock').doc();
+      final newProduct = product.copyWith(id: () => docRef.id);
+      await docRef
           .withConverter<ProductModel>(
             fromFirestore: _fromFirestore,
             toFirestore: _toFirestore,
           )
-          .set(product);
+          .set(newProduct);
     } catch (e) {
       rethrow;
     }
