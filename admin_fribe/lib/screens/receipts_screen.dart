@@ -1,5 +1,6 @@
 import 'package:admin_fribe/blocs/sales_receipt/sales_receipt_bloc.dart';
-import 'package:admin_fribe/services/receipt_to_pdf.dart';
+import 'package:admin_fribe/models/sales_receipt_model.dart';
+import 'package:admin_fribe/widgets/receipt_pdf_dialog.dart';
 import 'package:admin_fribe/widgets/sales_receipt_tile.dart';
 import 'package:collection/collection.dart';
 import 'package:decimal/decimal.dart';
@@ -12,6 +13,13 @@ class ReceiptsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Future<bool?> showPdfDialog(SalesReceipt receipt) async {
+      return await showDialog<bool>(
+        context: context,
+        builder: (context) => ReceiptPdfDialog(receipt: receipt),
+      );
+    }
+
     return BlocBuilder<SalesReceiptBloc, SalesReceiptState>(
       builder: (context, state) {
         if (state.salesStatus == SalesReceiptStatus.loading) {
@@ -53,10 +61,19 @@ class ReceiptsScreen extends StatelessWidget {
                 children: receiptsOfDay
                     .map(
                       (receipt) => InkWell(
-                        onTap: () => ReceiptToPdfService.convertReceiptToPdf(
-                          receipt,
-                          context,
-                        ),
+                        onTap: () async {
+                          final result = await showPdfDialog(receipt);
+                          if (result == true) {
+                            if (!context.mounted) return;
+                            ScaffoldMessenger.of(context)
+                              ..clearSnackBars()
+                              ..showSnackBar(
+                                const SnackBar(
+                                  content: Text('Recibo salvo em PDF!'),
+                                ),
+                              );
+                          }
+                        },
                         child: Card(
                           child: Padding(
                             padding: const EdgeInsets.all(8.0),
