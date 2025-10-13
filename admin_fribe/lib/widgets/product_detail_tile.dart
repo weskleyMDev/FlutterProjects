@@ -33,14 +33,14 @@ class ProductDetailTile extends StatelessWidget {
                   overflow: TextOverflow.ellipsis,
                   style: const TextStyle(
                     fontWeight: FontWeight.bold,
-                    color: Colors.limeAccent,
+                    color: Colors.lightGreen,
                   ),
                 ),
                 Text(
                   currencyFormat.format(double.tryParse(product.price) ?? 0),
                   style: const TextStyle(
                     fontWeight: FontWeight.bold,
-                    color: Colors.limeAccent,
+                    color: Colors.lightGreen,
                   ),
                 ),
               ],

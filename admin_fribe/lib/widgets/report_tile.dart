@@ -1,3 +1,4 @@
+import 'package:admin_fribe/models/report_data_model.dart';
 import 'package:admin_fribe/models/week_sales.dart';
 import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
@@ -19,30 +20,68 @@ class ReportTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Widget weekResume(
-      NumberFormat currency,
-      Decimal totalMethod,
-      String method,
-      Color color,
-      IconData icon,
-      BuildContext context,
-    ) {
+    Widget weekResume(ReportDataModel data) {
       return Padding(
         padding: const EdgeInsets.symmetric(vertical: 4.0),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(icon, color: color),
+            Icon(data.icon, color: data.color),
             const SizedBox(width: 12),
-            Expanded(child: Text(method)),
+            Expanded(child: Text(data.title)),
             Text(
-              currency.format(totalMethod.toDouble()),
+              currency.format(data.total.toDouble()),
               style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
             ),
           ],
         ),
       );
     }
+
+    ReportDataModel data(
+      String title,
+      Decimal total,
+      Color color,
+      IconData icon,
+    ) {
+      return ReportDataModel.empty().copyWith(
+        title: title,
+        total: total,
+        color: color,
+        icon: icon,
+      );
+    }
+
+    final List<ReportDataModel> payments = [
+      data(
+        'Dinheiro',
+        week.totalCash,
+        Colors.green,
+        FontAwesome5.money_bill_alt,
+      ),
+      data('Crédito', week.totalCredit, Colors.blue, FontAwesome5.credit_card),
+      data('Débito', week.totalDebit, Colors.purple, FontAwesome5.university),
+      data('Pix', week.totalPix, Colors.white70, FontAwesome5.qrcode),
+    ];
+
+    final sortedData = List<ReportDataModel>.from(payments)
+      ..sort((a, b) => b.total.compareTo(a.total));
+
+    final List<ReportDataModel> adjustments = [
+      data(
+        'Descontos',
+        week.totalDiscounts,
+        Colors.red,
+        FontAwesome5.minus_circle,
+      ),
+      data(
+        'Frete',
+        week.totalShipping,
+        Colors.teal,
+        FontAwesome5.shipping_fast,
+      ),
+      data('Taxas', week.totalTariffs, Colors.orange, FontAwesome5.coins),
+    ];
 
     return Card(
       child: ExpansionTile(
@@ -69,63 +108,9 @@ class ReportTile extends StatelessWidget {
         ),
         childrenPadding: const EdgeInsets.only(left: 32, right: 32, bottom: 8),
         children: [
-          weekResume(
-            currency,
-            week.totalCash,
-            'Dinheiro',
-            Colors.green,
-            FontAwesome5.money_bill,
-            context,
-          ),
-          weekResume(
-            currency,
-            week.totalCredit,
-            'Crédito',
-            Colors.amber,
-            FontAwesome5.credit_card,
-            context,
-          ),
-          weekResume(
-            currency,
-            week.totalDebit,
-            'Débito',
-            Colors.blue,
-            FontAwesome5.credit_card,
-            context,
-          ),
-          weekResume(
-            currency,
-            week.totalPix,
-            'Pix',
-            Colors.purple,
-            FontAwesome5.qrcode,
-            context,
-          ),
+          ...sortedData.map((data) => weekResume(data)),
           const Divider(),
-          weekResume(
-            currency,
-            week.totalDiscounts,
-            'Descontos',
-            Colors.red.shade700,
-            FontAwesome5.minus_circle,
-            context,
-          ),
-          weekResume(
-            currency,
-            week.totalShipping,
-            'Frete',
-            Colors.blueGrey,
-            FontAwesome5.shipping_fast,
-            context,
-          ),
-          weekResume(
-            currency,
-            week.totalTariffs,
-            'Taxas',
-            Colors.teal,
-            FontAwesome5.university,
-            context,
-          ),
+          ...adjustments.map((data) => weekResume(data)),
         ],
       ),
     );

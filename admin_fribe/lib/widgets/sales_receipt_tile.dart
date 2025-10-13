@@ -109,7 +109,7 @@ class SalesReceiptTile extends StatelessWidget {
                   currency.format(double.parse(receipt.total)),
                   style: const TextStyle(
                     fontWeight: FontWeight.bold,
-                    color: Colors.limeAccent,
+                    color: Colors.lightGreen,
                   ),
                 ),
               ),
