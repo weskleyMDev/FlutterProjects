@@ -38,8 +38,8 @@ final class ProductRepository implements IProductRepository {
         throw Exception('Product with ID $productId does not exist.');
       }
       final currentAmount = data.amount;
-      final toDecimal = Decimal.parse(currentAmount);
-      final toSubtract = Decimal.parse(amountToSubtract);
+      final toDecimal = Decimal.parse(currentAmount.trim());
+      final toSubtract = Decimal.parse(amountToSubtract.trim());
       final newAmount = (toDecimal - toSubtract).round(scale: 3);
       if (newAmount < Decimal.zero) {
         throw Exception(
@@ -47,7 +47,7 @@ final class ProductRepository implements IProductRepository {
         );
       }
       await docRef.update({'amount': newAmount.toString()});
-    } catch (e) {
+    } catch (_) {
       rethrow;
     }
   }
