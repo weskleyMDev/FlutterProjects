@@ -29,7 +29,7 @@ class ProductTile extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 4.0),
       child: InkWell(
         onTap: () async {
-          QuantityInput.setAvailableStock(double.parse(product.amount));
+          QuantityInput.setAvailableStock(double.parse(product.amount.trim()));
           await showQuantityDialog();
         },
         child: Chip(
@@ -42,14 +42,14 @@ class ProductTile extends StatelessWidget {
                 children: [
                   Text(product.name, style: const TextStyle(fontSize: 18.0)),
                   Text(
-                    currency.format(double.parse(product.price)),
+                    currency.format(double.parse(product.price.trim())),
                     style: const TextStyle(fontSize: 16.0),
                   ),
                 ],
               ),
               Text('ID: ${product.id}'),
               Text(
-                'Estoque: ${amount.format(double.parse(product.amount))} (${product.measure})',
+                'Estoque: ${amount.format(double.parse(product.amount.trim()))} (${product.measure})',
               ),
             ],
           ),

@@ -143,8 +143,8 @@ class CartBloc extends Bloc<CartEvent, CartState> {
     final existingIndex = state.cartItems.indexWhere(
       (item) => item.productId == event.product.id,
     );
-    final quantity = Decimal.parse(state.quantityInput.value);
-    final price = Decimal.parse(event.product.price);
+    final quantity = Decimal.parse(state.quantityInput.value.trim());
+    final price = Decimal.parse(event.product.price.trim());
     final subtotal = (price * quantity).toDouble();
     List<CartItemModel> updatedItems = List.from(state.cartItems);
     if (existingIndex != -1) {

@@ -31,7 +31,8 @@ class _PendingSalesScreenState extends State<PendingSalesScreen> {
   Widget build(BuildContext context) {
     final locale = Localizations.localeOf(context).languageCode;
     final currency = NumberFormat.simpleCurrency(locale: locale);
-    String changeCurrency(String value) => currency.format(double.parse(value));
+    String changeCurrency(String value) =>
+        currency.format(double.parse(value.trim()));
     return Scaffold(
       appBar: AppBar(title: const Text('VALES'), centerTitle: true),
       drawer: UserDrawer(authBloc: _authBloc),

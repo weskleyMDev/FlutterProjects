@@ -155,7 +155,7 @@ final class CartState extends Equatable {
       .fold<Decimal>(
         Decimal.zero,
         (previousValue, element) =>
-            previousValue + Decimal.parse(element.subtotal.toString()),
+            previousValue + Decimal.parse(element.subtotal.toString().trim()),
       )
       .round(scale: 2);
 
@@ -163,7 +163,7 @@ final class CartState extends Equatable {
     Decimal safeParse(String value) {
       if (value.trim().isEmpty) return Decimal.zero;
       try {
-        return Decimal.parse(value.replaceAll(',', '.'));
+        return Decimal.parse(value.trim().replaceAll(',', '.'));
       } catch (_) {
         return Decimal.zero;
       }
@@ -184,7 +184,7 @@ final class CartState extends Equatable {
       .fold<Decimal>(
         Decimal.zero,
         (previousValue, element) =>
-            previousValue + Decimal.parse(element.value.replaceAll(',', '.')),
+            previousValue + Decimal.parse(element.value.trim().replaceAll(',', '.')),
       )
       .round(scale: 2);
 

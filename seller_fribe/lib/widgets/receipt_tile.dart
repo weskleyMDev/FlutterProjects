@@ -20,7 +20,7 @@ class ReceiptTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String changeCurrency(String value) => currency.format(double.parse(value));
+    String changeCurrency(String value) => currency.format(double.parse(value.trim()));
     return Card(
       color: Theme.of(context).colorScheme.surface,
       child: Padding(
@@ -39,7 +39,7 @@ class ReceiptTile extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  currency.format(double.parse(receipt.total).toDouble()),
+                  currency.format(double.parse(receipt.total.trim())),
                   style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
               ],

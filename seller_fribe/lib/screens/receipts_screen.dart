@@ -57,7 +57,7 @@ class _ReceiptsScreenState extends State<ReceiptsScreen> {
                   .fold<Decimal>(
                     Decimal.zero,
                     (previousValue, element) =>
-                        previousValue + Decimal.parse(element.total),
+                        previousValue + Decimal.parse(element.total.trim()),
                   )
                   .round(scale: 2);
               receipts.add(
