@@ -5,6 +5,7 @@ import 'package:admin_fribe/blocs/login_form/login_form_bloc.dart';
 import 'package:admin_fribe/blocs/pending_sales/pending_sale_bloc.dart';
 import 'package:admin_fribe/blocs/product/product_bloc.dart';
 import 'package:admin_fribe/blocs/sales_receipt/sales_receipt_bloc.dart';
+import 'package:admin_fribe/blocs/update_amount/update_amount_bloc.dart';
 import 'package:admin_fribe/blocs/week_sales/week_sales_bloc.dart';
 import 'package:admin_fribe/cubits/home_tab/home_tab_cubit.dart';
 import 'package:admin_fribe/firebase_options.dart';
@@ -94,6 +95,11 @@ class MyApp extends StatelessWidget {
             )..add(const FetchPendingSalesEvent()),
           ),
           BlocProvider(create: (context) => WeekSalesBloc()),
+          BlocProvider(
+            create: (context) => UpdateAmountBloc(
+              RepositoryProvider.of<IProductRepository>(context),
+            ),
+          ),
         ],
         child: MaterialApp.router(
           title: 'Admin Fribe',

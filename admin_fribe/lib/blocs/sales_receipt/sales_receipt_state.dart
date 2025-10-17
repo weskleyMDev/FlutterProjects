@@ -30,8 +30,7 @@ final class SalesReceiptState extends Equatable {
 
     try {
       return Decimal.parse(cleaned);
-    } catch (e) {
-      debugPrint('Erro ao fazer parse de "$input": $e');
+    } catch (_) {
       return Decimal.zero;
     }
   }

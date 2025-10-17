@@ -1,5 +1,6 @@
 import 'package:admin_fribe/models/product_model.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttericon/font_awesome_icons.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
@@ -50,9 +51,28 @@ class ProductDetailTile extends StatelessWidget {
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
             ),
-            Text(
-              'Stock: ${numberFormat.format(double.tryParse(product.amount) ?? 0)}(${product.measure})',
-              style: const TextStyle(fontWeight: FontWeight.bold),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Stock: ${numberFormat.format(double.tryParse(product.amount) ?? 0)}(${product.measure})',
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
+                SizedBox(
+                  width: 30,
+                  height: 30,
+                  child: IconButton(
+                    padding: EdgeInsets.zero,
+                    onPressed: () {},
+                    icon: Icon(
+                      FontAwesome.pencil,
+                      size: 16.0,
+                      color: Colors.white70,
+                    ),
+                    tooltip: 'Edit Product Amount',
+                  ),
+                ),
+              ],
             ),
           ],
         ),

@@ -5,5 +5,9 @@ abstract interface class IProductRepository {
   Future<ProductModel> getProductById(String id);
   Future<void> addProduct(ProductModel product);
   Future<void> updateProduct(ProductModel product);
+  Future<void> updateProductAmount({
+    required String productId,
+    required String newAmount,
+  });
   Future<void> deleteProduct(String id);
 }

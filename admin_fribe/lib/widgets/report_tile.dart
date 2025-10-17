@@ -92,7 +92,7 @@ class ReportTile extends StatelessWidget {
           children: [
             Text('Total da Semana:'),
             Text(
-              currency.format(week.totalSales.toDouble()).toString(),
+              currency.format(week.totalSales.toDouble()),
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,

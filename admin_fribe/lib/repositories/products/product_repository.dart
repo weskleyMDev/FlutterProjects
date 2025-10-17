@@ -1,6 +1,7 @@
 import 'package:admin_fribe/models/product_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:decimal/decimal.dart';
+import 'package:flutter/cupertino.dart';
 
 part 'iproduct_repository.dart';
 
@@ -74,9 +75,29 @@ final class ProductRepository implements IProductRepository {
   @override
   Future<void> updateProduct(ProductModel product) async {
     try {
-      final docSnapshot = await _firestore
+      await _firestore
           .collection('stock')
           .doc(product.id)
+          .withConverter<ProductModel>(
+            fromFirestore: _fromFirestore,
+            toFirestore: _toFirestore,
+          )
+          .set(product);
+    } catch (e) {
+      debugPrint('Error updating product: $e');
+      rethrow;
+    }
+  }
+
+  @override
+  Future<void> updateProductAmount({
+    required String productId,
+    required String newAmount,
+  }) async {
+    try {
+      final docSnapshot = await _firestore
+          .collection('stock')
+          .doc(productId)
           .withConverter<ProductModel>(
             fromFirestore: _fromFirestore,
             toFirestore: _toFirestore,
@@ -86,21 +107,15 @@ final class ProductRepository implements IProductRepository {
       if (!docSnapshot.exists || docSnapshot.data() == null) {
         throw Exception('Product not found');
       }
+
       final existingProduct = docSnapshot.data()!;
       final currentAmount =
-          Decimal.tryParse(
-            existingProduct.amount.isNotEmpty ? existingProduct.amount : '0',
-          ) ??
-          Decimal.zero;
-      final newAmount =
-          Decimal.tryParse(product.amount.isNotEmpty ? product.amount : '0') ??
-          Decimal.zero;
-      final updatedAmount = (currentAmount + newAmount).round(scale: 3);
-      final updatedProduct = product.copyWith(
-        amount: () => updatedAmount.toString(),
-      );
-      await docSnapshot.reference.update(updatedProduct.toMap());
+          Decimal.tryParse(existingProduct.amount.trim()) ?? Decimal.zero;
+      final receivedAmount = Decimal.parse(newAmount.trim());
+      final updatedAmount = (currentAmount + receivedAmount).round(scale: 3);
+      await docSnapshot.reference.update({'amount': updatedAmount.toString()});
     } catch (e) {
+      debugPrint('Error updating product amount: $e');
       rethrow;
     }
   }
