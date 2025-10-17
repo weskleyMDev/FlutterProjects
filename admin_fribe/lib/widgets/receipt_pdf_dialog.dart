@@ -1,5 +1,5 @@
 import 'package:admin_fribe/models/sales_receipt_model.dart';
-import 'package:admin_fribe/services/receipt_to_pdf.dart';
+import 'package:admin_fribe/services/pdf/receipt_to_pdf.dart';
 import 'package:flutter/material.dart';
 
 class ReceiptPdfDialog extends StatelessWidget {

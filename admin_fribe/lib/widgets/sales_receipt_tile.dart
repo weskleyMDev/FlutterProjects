@@ -32,8 +32,7 @@ class SalesReceiptTile extends StatelessWidget {
       if (input == null || input.trim().isEmpty) return 0.0;
       try {
         return double.tryParse(input.trim().replaceAll(',', '.')) ?? 0.0;
-      } catch (e) {
-        debugPrint('Erro ao converter para double: "$input" => $e');
+      } catch (_) {
         return 0.0;
       }
     }

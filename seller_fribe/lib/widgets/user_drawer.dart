@@ -42,18 +42,31 @@ class UserDrawer extends StatelessWidget {
             leading: const Icon(FontAwesome5.receipt),
             title: const Text('Recibos'),
             onTap: () {
-              Navigator.of( context).pop();
+              Navigator.of(context).pop();
               GoRouter.of(context).goNamed('receipts');
             },
           ),
           const Spacer(),
-          ListTile(
-            leading: const Icon(Icons.logout),
-            title: const Text('Sair'),
-            onTap: () {
-              Navigator.of(context).pop();
-              authBloc.add(const AuthLogoutRequested());
-            },
+          Row(
+            children: [
+              Expanded(
+                child: ListTile(
+                  leading: const Icon(Icons.logout),
+                  title: const Text('Sair'),
+                  onTap: () {
+                    Navigator.of(context).pop();
+                    authBloc.add(const AuthLogoutRequested());
+                  },
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(right: 8.0),
+                child: Text(
+                  'V 1.1.0',
+                  style: Theme.of(context).textTheme.bodySmall,
+                ),
+              ),
+            ],
           ),
         ],
       ),
