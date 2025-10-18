@@ -14,6 +14,7 @@ final class UpdateAmountBloc
   UpdateAmountBloc(this._productRepository)
     : super(UpdateAmountState.initial()) {
     on<AmountInputChanged>(_onAmountInputChanged);
+    on<ClearAmountInput>(_onClearAmountInput);
     on<UpdateAmountSubmitted>(_onUpdateAmountSubmitted);
   }
 
@@ -23,6 +24,13 @@ final class UpdateAmountBloc
   ) {
     final amountInput = AmountInput.dirty(event.amount);
     emit(state.copyWith(amountInput: amountInput));
+  }
+
+  void _onClearAmountInput(
+    ClearAmountInput event,
+    Emitter<UpdateAmountState> emit,
+  ) {
+    emit(UpdateAmountState.initial());
   }
 
   Future<void> _onUpdateAmountSubmitted(

@@ -31,6 +31,21 @@ final class UpdateAmountState extends Equatable {
 
   bool get isValid => Formz.validate([amountInput]);
 
+  String? _getErrorText<T extends Enum>(
+    FormzInput input,
+    Map<T, String> messages,
+  ) {
+    if (input.isPure || input.error == null) return null;
+    return messages[input.error as T];
+  }
+
+  String? get amountErrorText => _getErrorText<AmountInputError>(amountInput, {
+    AmountInputError.empty: 'Amount cannot be empty',
+    AmountInputError.invalid: 'Invalid amount format',
+    AmountInputError.negative: 'Amount cannot be negative',
+    AmountInputError.zero: 'Amount must be greater than zero',
+  });
+
   @override
   bool get stringify => true;
 

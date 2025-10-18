@@ -1,4 +1,5 @@
 import 'package:admin_fribe/models/product_model.dart';
+import 'package:admin_fribe/widgets/update_amount_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttericon/font_awesome_icons.dart';
 import 'package:go_router/go_router.dart';
@@ -18,6 +19,16 @@ class ProductDetailTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    void showEditAmountDialog() {
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        useRootNavigator: true,
+        builder: (dialogContext) =>
+            UpdateAmountDialog(product: product, dialogContext: dialogContext),
+      );
+    }
+
     return InkWell(
       onTap: () => context.pushNamed('edit-product', extra: product),
       child: Padding(
@@ -63,7 +74,7 @@ class ProductDetailTile extends StatelessWidget {
                   height: 30,
                   child: IconButton(
                     padding: EdgeInsets.zero,
-                    onPressed: () {},
+                    onPressed: showEditAmountDialog,
                     icon: Icon(
                       FontAwesome.pencil,
                       size: 16.0,

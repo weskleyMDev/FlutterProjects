@@ -16,6 +16,10 @@ final class AmountInputChanged extends UpdateAmountEvent {
   List<Object?> get props => [amount];
 }
 
+final class ClearAmountInput extends UpdateAmountEvent {
+  const ClearAmountInput();
+}
+
 final class UpdateAmountSubmitted extends UpdateAmountEvent {
   const UpdateAmountSubmitted(this.productId);
 
