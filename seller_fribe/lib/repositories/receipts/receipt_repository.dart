@@ -7,16 +7,31 @@ final class ReceiptRepository implements IReceiptRepository {
   final _firestore = FirebaseFirestore.instance;
 
   @override
-  Stream<List<ReceiptModel>> getReceipts() => _firestore
-      .collection('sales')
-      .withConverter<ReceiptModel>(
-        fromFirestore: _fromFirestore,
-        toFirestore: _toFirestore,
-      )
-      .orderBy('createAt', descending: true)
-      .snapshots()
-      .map((snapshot) => snapshot.docs.map((doc) => doc.data()).toList())
-      .asBroadcastStream();
+  Stream<List<ReceiptModel>> getReceipts() {
+    try {
+      final now = DateTime.now();
+      final today = DateTime(now.year, now.month, now.day);
+      final twoDaysAgo = today.subtract(Duration(days: 2));
+      final endOfToday = today
+          .add(Duration(days: 1))
+          .subtract(Duration(milliseconds: 1));
+
+      return _firestore
+          .collection('sales')
+          .withConverter(
+            fromFirestore: _fromFirestore,
+            toFirestore: _toFirestore,
+          )
+          .where('createAt', isGreaterThanOrEqualTo: twoDaysAgo)
+          .where('createAt', isLessThanOrEqualTo: endOfToday)
+          .orderBy('createAt', descending: true)
+          .snapshots()
+          .map((snapshot) => snapshot.docs.map((doc) => doc.data()).toList())
+          .asBroadcastStream();
+    } catch (_) {
+      rethrow;
+    }
+  }
 
   @override
   Future<void> saveReceipt(ReceiptModel receiptData) async {

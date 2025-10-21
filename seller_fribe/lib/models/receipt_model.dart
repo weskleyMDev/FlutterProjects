@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 import 'package:seller_fribe/models/cart_item_model.dart';
 import 'package:seller_fribe/models/payment_model.dart';
@@ -55,7 +56,7 @@ final class ReceiptModel extends Equatable {
 
   Map<String, dynamic> toMap() => {
     'id': id,
-    'createAt': createAt?.toIso8601String(),
+    'createAt': Timestamp.fromDate(createAt ?? DateTime.now()),
     'discount': discount,
     'discountReason': discountReason,
     'shipping': shipping,
@@ -66,30 +67,36 @@ final class ReceiptModel extends Equatable {
     'status': status,
   };
 
-  factory ReceiptModel.fromMap(Map<String, dynamic> map) => ReceiptModel._(
-    id: map['id'] ?? '',
-    createAt: map['createAt'] != null ? DateTime.parse(map['createAt']) : null,
-    discount: map['discount'] ?? '',
-    discountReason: map['discountReason'] ?? '',
-    shipping: map['shipping'] ?? '',
-    tariffs: map['tariffs'] ?? '',
-    total: map['total'] ?? '',
-    payments: map['payments'] != null
-        ? List<PaymentModel>.from(
-            (map['payments'] as List<dynamic>).map<PaymentModel>(
-              (x) => PaymentModel.fromMap(x as Map<String, dynamic>),
-            ),
-          )
-        : [],
-    cart: map['cart'] != null
-        ? List<CartItemModel>.from(
-            (map['cart'] as List<dynamic>).map<CartItemModel>(
-              (x) => CartItemModel.fromMap(x as Map<String, dynamic>),
-            ),
-          )
-        : [],
-    status: map['status'] ?? true,
-  );
+  factory ReceiptModel.fromMap(Map<String, dynamic> map) {
+    final rawCreateAt = map['createAt'];
+    final DateTime createAt = rawCreateAt is Timestamp
+        ? rawCreateAt.toDate()
+        : DateTime.parse(rawCreateAt as String);
+    return ReceiptModel._(
+      id: map['id'] ?? '',
+      createAt: createAt,
+      discount: map['discount'] ?? '',
+      discountReason: map['discountReason'] ?? '',
+      shipping: map['shipping'] ?? '',
+      tariffs: map['tariffs'] ?? '',
+      total: map['total'] ?? '',
+      payments: map['payments'] != null
+          ? List<PaymentModel>.from(
+              (map['payments'] as List<dynamic>).map<PaymentModel>(
+                (x) => PaymentModel.fromMap(x as Map<String, dynamic>),
+              ),
+            )
+          : [],
+      cart: map['cart'] != null
+          ? List<CartItemModel>.from(
+              (map['cart'] as List<dynamic>).map<CartItemModel>(
+                (x) => CartItemModel.fromMap(x as Map<String, dynamic>),
+              ),
+            )
+          : [],
+      status: map['status'] ?? true,
+    );
+  }
 
   @override
   bool? get stringify => true;
