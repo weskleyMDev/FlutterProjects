@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:admin_fribe/models/cart_item_model.dart';
 import 'package:admin_fribe/models/payment_type_model.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 
 final class SalesReceipt extends Equatable {
@@ -72,7 +73,7 @@ final class SalesReceipt extends Equatable {
     return <String, dynamic>{
       'id': id,
       'cart': cart.map((x) => x.toMap()).toList(),
-      'createAt': createAt.toIso8601String(),
+      'createAt': Timestamp.fromDate(createAt),
       'discount': discount,
       'discountReason': discountReason,
       'payments': payments.map((x) => x.toMap()).toList(),
@@ -84,6 +85,10 @@ final class SalesReceipt extends Equatable {
   }
 
   factory SalesReceipt.fromMap(Map<String, dynamic> map) {
+    final rawCreateAt = map['createAt'];
+    final DateTime createAt = rawCreateAt is Timestamp
+        ? rawCreateAt.toDate()
+        : DateTime.parse(rawCreateAt as String);
     return SalesReceipt._(
       id: map['id'] as String,
       cart: List<CartItem>.from(
@@ -91,7 +96,7 @@ final class SalesReceipt extends Equatable {
           (x) => CartItem.fromMap(x as Map<String, dynamic>),
         ),
       ),
-      createAt: DateTime.parse(map['createAt'] as String),
+      createAt: createAt,
       discount: map['discount'] as String,
       discountReason: map['discountReason'] as String,
       payments: List<PaymentType>.from(

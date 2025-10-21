@@ -2,22 +2,38 @@ part of 'sales_receipt_bloc.dart';
 
 enum SalesReceiptStatus { initial, loading, success, failure }
 
+@immutable
 final class SalesReceiptState extends Equatable {
   final List<SalesReceipt> salesReceipts;
+  final DateTime? startDate;
+  final DateTime? endDate;
   final SalesReceiptStatus salesStatus;
   final String? salesErrorMessage;
 
   const SalesReceiptState._({
     required this.salesReceipts,
+    required this.startDate,
+    required this.endDate,
     required this.salesStatus,
-    this.salesErrorMessage,
+    required this.salesErrorMessage,
   });
 
   factory SalesReceiptState.initial() => const SalesReceiptState._(
     salesReceipts: [],
+    startDate: null,
+    endDate: null,
     salesStatus: SalesReceiptStatus.initial,
     salesErrorMessage: null,
   );
+
+  String? get startDateFormatted =>
+      startDate != null ? DateFormat.yMd('pt_BR').format(startDate!) : null;
+
+  String? get endDateFormatted =>
+      endDate != null ? DateFormat.yMd('pt_BR').format(endDate!) : null;
+
+  bool get canFetchSalesReceipts =>
+      startDate != null && endDate != null && startDate!.isBefore(endDate!);
 
   Decimal safeDecimalParse(String? input) {
     if (input == null || input.trim().isEmpty) return Decimal.zero;
@@ -140,14 +156,23 @@ final class SalesReceiptState extends Equatable {
   }
 
   SalesReceiptState copyWith({
-    List<SalesReceipt> Function()? salesReceipts,
-    SalesReceiptStatus Function()? salesStatus,
-    String? Function()? salesErrorMessage,
+    List<SalesReceipt>? salesReceipts,
+    DateTime? startDate,
+    DateTime? endDate,
+    SalesReceiptStatus? salesStatus,
+    String? salesErrorMessage,
+    bool clearStartDate = false,
+    bool clearEndDate = false,
+    bool clearErrorMessage = false,
   }) {
     return SalesReceiptState._(
-      salesReceipts: salesReceipts?.call() ?? this.salesReceipts,
-      salesStatus: salesStatus?.call() ?? this.salesStatus,
-      salesErrorMessage: salesErrorMessage?.call() ?? this.salesErrorMessage,
+      salesReceipts: salesReceipts ?? this.salesReceipts,
+      salesStatus: salesStatus ?? this.salesStatus,
+      salesErrorMessage: clearErrorMessage
+          ? null
+          : (salesErrorMessage ?? this.salesErrorMessage),
+      startDate: clearStartDate ? null : (startDate ?? this.startDate),
+      endDate: clearEndDate ? null : (endDate ?? this.endDate),
     );
   }
 
@@ -155,5 +180,11 @@ final class SalesReceiptState extends Equatable {
   bool get stringify => true;
 
   @override
-  List<Object?> get props => [salesReceipts, salesStatus, salesErrorMessage];
+  List<Object?> get props => [
+    salesReceipts,
+    startDate,
+    endDate,
+    salesStatus,
+    salesErrorMessage,
+  ];
 }

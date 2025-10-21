@@ -1,104 +1,77 @@
 import 'package:admin_fribe/blocs/sales_receipt/sales_receipt_bloc.dart';
-import 'package:admin_fribe/models/sales_receipt_model.dart';
-import 'package:admin_fribe/widgets/receipt_pdf_dialog.dart';
-import 'package:admin_fribe/widgets/sales_receipt_tile.dart';
-import 'package:collection/collection.dart';
-import 'package:decimal/decimal.dart';
+import 'package:admin_fribe/widgets/build_receipt_list.dart';
+import 'package:admin_fribe/widgets/select_date_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:intl/intl.dart';
 
 class ReceiptsScreen extends StatelessWidget {
   const ReceiptsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    Future<bool?> showPdfDialog(SalesReceipt receipt) async {
-      return await showDialog<bool>(
+    final receiptState = context.watch<SalesReceiptBloc>().state;
+
+    Future<void> selectDate(BuildContext context, bool isStartDate) async {
+      final DateTime? picked = await showDatePicker(
         context: context,
-        builder: (context) => ReceiptPdfDialog(receipt: receipt),
+        initialDate: DateTime.now(),
+        firstDate: DateTime(2024),
+        lastDate: DateTime(2026),
       );
+      if (picked != null) {
+        final DateTime adjustedDate = isStartDate
+            ? DateTime(picked.year, picked.month, picked.day)
+            : DateTime(picked.year, picked.month, picked.day, 23, 59, 59, 999);
+
+        if (!context.mounted) return;
+        if (isStartDate) {
+          context.read<SalesReceiptBloc>().add(StartDateChanged(adjustedDate));
+        } else {
+          context.read<SalesReceiptBloc>().add(EndDateChanged(adjustedDate));
+        }
+      }
     }
 
-    return BlocBuilder<SalesReceiptBloc, SalesReceiptState>(
-      builder: (context, state) {
-        if (state.salesStatus == SalesReceiptStatus.loading) {
-          return const Center(child: CircularProgressIndicator());
-        } else if (state.salesStatus == SalesReceiptStatus.failure) {
-          return Center(child: Text('Error: ${state.salesErrorMessage}'));
-        } else if (state.salesStatus == SalesReceiptStatus.success) {
-          final salesReceipts = state.salesReceipts;
-          if (salesReceipts.isEmpty) {
-            return const Center(child: Text('No sales receipts found.'));
-          }
-
-          final grouped = groupBy(
-            salesReceipts,
-            (r) => DateFormat('yyyy-MM-dd').format(r.createAt),
-          );
-          final dateKeys = grouped.keys.toList()
-            ..sort((a, b) => b.compareTo(a));
-
-          final items = <Widget>[];
-          for (final date in dateKeys) {
-            final receiptsOfDay = grouped[date]!;
-            final totalOfDay = receiptsOfDay
-                .fold<Decimal>(
-                  Decimal.zero,
-                  (previousValue, element) =>
-                      previousValue + Decimal.parse(element.total),
-                )
-                .round(scale: 2);
-            items.add(
-              ExpansionTile(
-                title: Text(
-                  '${DateFormat('dd/MM/yyyy').format(DateTime.parse(date))} - Total: ${NumberFormat.simpleCurrency(locale: Localizations.localeOf(context).languageCode).format(totalOfDay.toDouble())}',
-                  style: const TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                children: receiptsOfDay
-                    .map(
-                      (receipt) => InkWell(
-                        onTap: () async {
-                          final result = await showPdfDialog(receipt);
-                          if (result == true) {
-                            if (!context.mounted) return;
-                            ScaffoldMessenger.of(context)
-                              ..clearSnackBars()
-                              ..showSnackBar(
-                                const SnackBar(
-                                  content: Text('Recibo salvo em PDF!'),
-                                ),
-                              );
-                          }
-                        },
-                        child: Card(
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: SalesReceiptTile(receipt: receipt),
-                          ),
-                        ),
-                      ),
-                    )
-                    .toList(),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      mainAxisSize: MainAxisSize.min,
+      children: <Widget>[
+        SelectDateCard(
+          title: 'Start Date',
+          subtitle: receiptState.startDateFormatted,
+          tooltip: 'Select Start Date',
+          selectDate: () => selectDate(context, true),
+          iconColor: Colors.green,
+        ),
+        SelectDateCard(
+          title: 'End Date',
+          subtitle: receiptState.endDateFormatted,
+          tooltip: 'Select End Date',
+          selectDate: () => selectDate(context, false),
+          iconColor: Colors.red,
+        ),
+        Container(
+          margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 4),
+          child: ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              padding: const EdgeInsets.symmetric(
+                vertical: 18,
+                horizontal: 12.0,
               ),
-            );
-          }
-
-          return ListView(children: items);
-        }
-        return Center(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const CircularProgressIndicator(),
-              Text('Please wait...'),
-            ],
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
+            ),
+            onPressed: receiptState.canFetchSalesReceipts
+                ? () => context.read<SalesReceiptBloc>().add(
+                    const LoadSalesReceipts(),
+                  )
+                : null,
+            child: const Text('Carregar Recibos'),
           ),
-        );
-      },
+        ),
+        Expanded(child: BuildReceiptList(receiptState: receiptState)),
+      ],
     );
   }
 }

@@ -31,7 +31,7 @@ class ReceiptToPdfService {
       locale: locale,
       decimalDigits: 3,
     );
-    final products = BlocProvider.of<ProductBloc>(context).state.products;
+    final products = context.read<ProductBloc>().state.products;
     final date = DateFormat('dd/MM/yyyy').add_Hm().format(receipt.createAt);
     final pdf = pw.Document();
     pdf.addPage(

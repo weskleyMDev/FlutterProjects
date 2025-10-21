@@ -2,7 +2,7 @@ import 'package:admin_fribe/models/product_sales.dart';
 import 'package:admin_fribe/models/sales_receipt_model.dart';
 import 'package:admin_fribe/models/week_product_sales.dart';
 import 'package:admin_fribe/models/week_sales.dart';
-import 'package:admin_fribe/utils/capitalize_text.dart';
+import 'package:admin_fribe/repositories/sales_receipt/isales_receipt_repository.dart';
 import 'package:decimal/decimal.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -12,7 +12,9 @@ part 'week_sales_event.dart';
 part 'week_sales_state.dart';
 
 class WeekSalesBloc extends Bloc<WeekSalesEvent, WeekSalesState> {
-  WeekSalesBloc() : super(WeekSalesState.initial()) {
+  final ISalesReceiptRepository _salesReceiptRepository;
+  WeekSalesBloc(this._salesReceiptRepository)
+    : super(WeekSalesState.initial()) {
     on<WeekSalesRequested>(_onWeekSalesRequested);
   }
 
@@ -25,10 +27,25 @@ class WeekSalesBloc extends Bloc<WeekSalesEvent, WeekSalesState> {
     );
 
     try {
+      final monthDate = event.month;
+      final startDate = DateTime(monthDate.year, monthDate.month, 1);
+      final endDate = DateTime(
+        monthDate.year,
+        monthDate.month + 1,
+        1,
+      ).subtract(Duration(seconds: 1));
+
+      final receipts = await _salesReceiptRepository.getSalesReceiptsByMonth(
+        startDate: startDate,
+        endDate: endDate,
+      );
+
       final result = _buildWeekSales(
-        receipts: event.receipts,
+        receipts: receipts,
         locale: event.locale,
         month: event.month,
+        startDate: startDate,
+        endDate: endDate,
       );
 
       emit(
@@ -39,7 +56,6 @@ class WeekSalesBloc extends Bloc<WeekSalesEvent, WeekSalesState> {
           locale: event.locale,
           status: WeekSalesStatus.success,
           allMonths: result.allMonths,
-          originalReceipts: event.receipts,
         ),
       );
     } catch (e) {
@@ -55,40 +71,35 @@ class WeekSalesBloc extends Bloc<WeekSalesEvent, WeekSalesState> {
   _WeekSalesResult _buildWeekSales({
     required List<SalesReceipt> receipts,
     required String locale,
-    required String month,
+    required DateTime month,
+    required DateTime startDate,
+    required DateTime endDate,
   }) {
-    final startDate = DateTime(2025, 10, 1);
-
-    final allMonthsSet = <String>{};
-    final mapMonthToDate = <String, DateTime>{};
+    final allMonthsSet = <DateTime>{};
 
     for (final receipt in receipts) {
-      if (receipt.createAt.isBefore(startDate)) continue;
-
-      final mKey = _monthKey(receipt.createAt, locale);
-      allMonthsSet.add(mKey);
-      mapMonthToDate[mKey] = DateTime(
-        receipt.createAt.year,
-        receipt.createAt.month,
-      );
+      final monthDate = DateTime(receipt.createAt.year, receipt.createAt.month);
+      allMonthsSet.add(monthDate);
     }
 
-    final allMonths = allMonthsSet.toList()
-      ..sort((a, b) => mapMonthToDate[b]!.compareTo(mapMonthToDate[a]!));
+    final allMonths = allMonthsSet.toList()..sort((a, b) => b.compareTo(a));
 
-    final selectedMonth = (month.isNotEmpty)
+    final DateTime? selectedMonth = allMonths.contains(month)
         ? month
         : (allMonths.isNotEmpty ? allMonths.first : null);
 
     final filteredReceipts = receipts.where((receipt) {
-      if (receipt.createAt.isBefore(startDate)) return false;
-      final mKey = _monthKey(receipt.createAt, locale);
-      return mKey == selectedMonth;
+      if (receipt.createAt.isBefore(startDate) ||
+          receipt.createAt.isAfter(endDate)) {
+        return false;
+      }
+      final monthDate = DateTime(receipt.createAt.year, receipt.createAt.month);
+      return monthDate == selectedMonth;
     }).toList();
 
     final groupedMap = <String, WeekSales>{};
     for (final receipt in filteredReceipts) {
-      final key = _weekKey(receipt.createAt, locale);
+      final key = _weekKey(receipt.createAt, locale, startDate, endDate);
       final existing = groupedMap[key];
       if (existing == null) {
         groupedMap[key] = WeekSales.empty().copyWith(
@@ -150,17 +161,20 @@ class WeekSalesBloc extends Bloc<WeekSalesEvent, WeekSalesState> {
   }
 }
 
-String _weekKey(DateTime date, String locale) {
-  final startDay = DateTime(2025, 10, 1);
-  final daysSinceStart = date.difference(startDay).inDays;
+String _weekKey(
+  DateTime date,
+  String locale,
+  DateTime startDate,
+  DateTime endDate,
+) {
+  final daysSinceStart = date.difference(startDate).inDays;
   final weekIndex = (daysSinceStart / 7).floor();
-  final weekStart = startDay.add(Duration(days: weekIndex * 7));
-  final weekEnd = weekStart.add(const Duration(days: 6));
+  final weekStart = startDate.add(Duration(days: weekIndex * 7));
+  final tentativeWeekEnd = weekStart.add(const Duration(days: 6));
+  final weekEnd = tentativeWeekEnd.isAfter(endDate)
+      ? endDate
+      : tentativeWeekEnd;
   return '${DateFormat.yMd(locale).format(weekStart)} - ${DateFormat.yMd(locale).format(weekEnd)}';
-}
-
-String _monthKey(DateTime date, String locale) {
-  return DateFormat.yMMMM(locale).format(date).capitalize();
 }
 
 Decimal _safeDecimalParse(String? input) {
@@ -174,8 +188,8 @@ Decimal _safeDecimalParse(String? input) {
 class _WeekSalesResult {
   final List<WeekSales> weekSales;
   final List<WeekProductSales> productsSoldByWeek;
-  final String? selectedMonth;
-  final List<String> allMonths;
+  final DateTime? selectedMonth;
+  final List<DateTime> allMonths;
 
   _WeekSalesResult({
     required this.weekSales,

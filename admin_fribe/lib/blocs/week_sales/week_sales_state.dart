@@ -7,11 +7,10 @@ final class WeekSalesState extends Equatable {
   final List<WeekProductSales> productsSoldByWeek;
   final WeekSalesStatus status;
   final String locale;
-  final String? selectedMonth;
+  final DateTime? selectedMonth;
   final String? errorMessage;
 
-  final List<String> allMonths;
-  final List<SalesReceipt> originalReceipts;
+  final List<DateTime> allMonths;
 
   const WeekSalesState._({
     required this.weekSales,
@@ -21,7 +20,6 @@ final class WeekSalesState extends Equatable {
     required this.selectedMonth,
     this.errorMessage,
     required this.allMonths,
-    required this.originalReceipts,
   });
 
   factory WeekSalesState.initial() => const WeekSalesState._(
@@ -29,10 +27,9 @@ final class WeekSalesState extends Equatable {
     productsSoldByWeek: [],
     status: WeekSalesStatus.initial,
     locale: '',
-    selectedMonth: '',
+    selectedMonth: null,
     errorMessage: null,
     allMonths: [],
-    originalReceipts: [],
   );
 
   WeekSalesState copyWith({
@@ -40,20 +37,23 @@ final class WeekSalesState extends Equatable {
     List<WeekProductSales>? productsSoldByWeek,
     WeekSalesStatus? status,
     String? locale,
-    String? selectedMonth,
+    DateTime? selectedMonth,
     String? errorMessage,
-    List<String>? allMonths,
-    List<SalesReceipt>? originalReceipts,
+    List<DateTime>? allMonths,
     bool clearErrorMessage = false,
+    bool clearSelectedMonth = false,
   }) => WeekSalesState._(
     weekSales: weekSales ?? this.weekSales,
     productsSoldByWeek: productsSoldByWeek ?? this.productsSoldByWeek,
     status: status ?? this.status,
     locale: locale ?? this.locale,
-    selectedMonth: selectedMonth ?? this.selectedMonth,
-    errorMessage: clearErrorMessage ? null : errorMessage ?? this.errorMessage,
+    selectedMonth: clearSelectedMonth
+        ? null
+        : (selectedMonth ?? this.selectedMonth),
+    errorMessage: clearErrorMessage
+        ? null
+        : (errorMessage ?? this.errorMessage),
     allMonths: allMonths ?? this.allMonths,
-    originalReceipts: originalReceipts ?? this.originalReceipts,
   );
 
   Decimal _safeParseDecimal(dynamic value) {
@@ -137,6 +137,5 @@ final class WeekSalesState extends Equatable {
     selectedMonth,
     errorMessage,
     allMonths,
-    originalReceipts,
   ];
 }

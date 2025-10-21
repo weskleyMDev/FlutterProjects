@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:ui';
 
 import 'package:admin_fribe/blocs/auth/auth_bloc.dart';
 import 'package:admin_fribe/blocs/login_form/login_form_bloc.dart';
@@ -69,36 +70,43 @@ class MyApp extends StatelessWidget {
       child: MultiBlocProvider(
         providers: [
           BlocProvider(
-            create: (context) => SalesReceiptBloc(
-              RepositoryProvider.of<ISalesReceiptRepository>(context),
-            )..add(const LoadSalesReceipts()),
+            create: (context) =>
+                SalesReceiptBloc(context.read<ISalesReceiptRepository>()),
           ),
           BlocProvider(create: (context) => HomeTabCubit()),
           BlocProvider(
-            create: (context) => LoginFormBloc(
-              authService: RepositoryProvider.of<IAuthService>(context),
-            ),
-          ),
-          BlocProvider(
-            create: (context) => AuthBloc(
-              authService: RepositoryProvider.of<IAuthService>(context),
-            )..add(const AuthSubscriptionRequested()),
+            create: (context) =>
+                LoginFormBloc(authService: context.read<IAuthService>()),
           ),
           BlocProvider(
             create: (context) =>
-                ProductBloc(RepositoryProvider.of<IProductRepository>(context))
+                AuthBloc(authService: context.read<IAuthService>())
+                  ..add(const AuthSubscriptionRequested()),
+          ),
+          BlocProvider(
+            create: (context) =>
+                ProductBloc(context.read<IProductRepository>())
                   ..add(const LoadProductsStream()),
           ),
           BlocProvider(
-            create: (context) => PendingSaleBloc(
-              RepositoryProvider.of<IPendingSaleRepository>(context),
-            )..add(const FetchPendingSalesEvent()),
+            create: (context) =>
+                PendingSaleBloc(context.read<IPendingSaleRepository>())
+                  ..add(const FetchPendingSalesEvent()),
           ),
-          BlocProvider(create: (context) => WeekSalesBloc()),
           BlocProvider(
-            create: (context) => UpdateAmountBloc(
-              RepositoryProvider.of<IProductRepository>(context),
-            ),
+            create: (context) {
+              final locale = PlatformDispatcher.instance.locale.toLanguageTag();
+              final currentMonth = DateTime(
+                DateTime.now().year,
+                DateTime.now().month,
+              );
+              return WeekSalesBloc(context.read<ISalesReceiptRepository>())
+                ..add(WeekSalesRequested(locale: locale, month: currentMonth));
+            },
+          ),
+          BlocProvider(
+            create: (context) =>
+                UpdateAmountBloc(context.read<IProductRepository>()),
           ),
         ],
         child: MaterialApp.router(

@@ -9,15 +9,10 @@ sealed class WeekSalesEvent extends Equatable {
 
 final class WeekSalesRequested extends WeekSalesEvent {
   final String locale;
-  final String month;
-  final List<SalesReceipt> receipts;
+  final DateTime month;
 
-  const WeekSalesRequested({
-    required this.locale,
-    required this.month,
-    required this.receipts,
-  });
+  const WeekSalesRequested({required this.locale, required this.month});
 
   @override
-  List<Object> get props => [locale, month, receipts];
+  List<Object> get props => [locale, month];
 }

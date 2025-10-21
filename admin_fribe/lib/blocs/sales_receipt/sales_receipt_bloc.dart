@@ -6,6 +6,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:decimal/decimal.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
+import 'package:meta/meta.dart';
 import 'package:rxdart/rxdart.dart';
 
 part 'sales_receipt_event.dart';
@@ -16,6 +18,9 @@ final class SalesReceiptBloc
   final ISalesReceiptRepository _salesReceiptRepository;
   SalesReceiptBloc(this._salesReceiptRepository)
     : super(SalesReceiptState.initial()) {
+    on<StartDateChanged>(_onStartDateChanged);
+    on<EndDateChanged>(_onEndDateChanged);
+    on<ClearDates>(_onClearDates);
     on<LoadSalesReceipts>(
       _onLoadSalesReceipts,
       transformer: (events, mapper) => events
@@ -24,27 +29,68 @@ final class SalesReceiptBloc
     );
   }
 
+  void _onStartDateChanged(
+    StartDateChanged event,
+    Emitter<SalesReceiptState> emit,
+  ) {
+    emit(
+      state.copyWith(
+        startDate: event.startDate,
+      ),
+    );
+  }
+
+  void _onEndDateChanged(
+    EndDateChanged event,
+    Emitter<SalesReceiptState> emit,
+  ) {
+    emit(
+      state.copyWith(
+        endDate: event.endDate,
+      ),
+    );
+  }
+
+  void _onClearDates(
+    ClearDates event,
+    Emitter<SalesReceiptState> emit,
+  ) {
+    emit(
+      state.copyWith(
+        clearStartDate: true,
+        clearEndDate: true,
+      ),
+    );
+  }
+
   Future<void> _onLoadSalesReceipts(
     LoadSalesReceipts event,
     Emitter<SalesReceiptState> emit,
   ) async {
+    if (!state.canFetchSalesReceipts) return;
     emit(
       state.copyWith(
-        salesStatus: () => SalesReceiptStatus.loading,
-        salesErrorMessage: () => null,
+        salesStatus: SalesReceiptStatus.loading,
+        clearErrorMessage: true,
       ),
     );
     await emit.forEach<List<SalesReceipt>>(
-      _salesReceiptRepository.getSalesReceiptsStream(),
+      _salesReceiptRepository.getSalesReceiptsStream(
+        startDate: state.startDate!,
+        endDate: state.endDate!,
+      ),
       onData: (data) => state.copyWith(
-        salesReceipts: () => data,
-        salesStatus: () => SalesReceiptStatus.success,
-        salesErrorMessage: () => null,
+        salesReceipts: data,
+        salesStatus: SalesReceiptStatus.success,
+        clearErrorMessage: true,
+        clearStartDate: true,
+        clearEndDate: true,
       ),
       onError: (error, _) => state.copyWith(
-        salesStatus: () => SalesReceiptStatus.failure,
-        salesErrorMessage: () =>
-            error is FirebaseException ? error.message : error.toString(),
+        salesStatus: SalesReceiptStatus.failure,
+        salesErrorMessage: error is FirebaseException
+            ? error.message
+            : error.toString(),
       ),
     );
   }
