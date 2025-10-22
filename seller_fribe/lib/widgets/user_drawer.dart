@@ -62,7 +62,7 @@ class UserDrawer extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.only(right: 8.0),
                 child: Text(
-                  'V 1.1.0',
+                  'V 1.2.0',
                   style: Theme.of(context).textTheme.bodySmall,
                 ),
               ),
