@@ -14,8 +14,8 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final homeCubit = BlocProvider.of<HomeTabCubit>(context);
-    final authBloc = BlocProvider.of<AuthBloc>(context);
+    final homeCubit = context.watch<HomeTabCubit>();
+    final authBloc = context.read<AuthBloc>();
     TextButton navButton(HomeTabs tab, String label, IconData icon) {
       final isSelected = homeCubit.state.tab == tab;
       final color = isSelected
@@ -36,57 +36,49 @@ class HomeScreen extends StatelessWidget {
       );
     }
 
-    return BlocBuilder<HomeTabCubit, HomeTabState>(
-      builder: (context, state) {
-        return Scaffold(
-          appBar: AppBar(
-            title: const Text('Admin Fribe'),
-            actions: [
-              IconButton(
-                icon: const Icon(FontAwesome5.plus),
-                tooltip: 'Add Product',
-                onPressed: () => context.pushNamed('edit-product'),
-              ),
-              IconButton(
-                icon: const Icon(FontAwesome5.sign_out_alt),
-                tooltip: 'Logout',
-                onPressed: () {
-                  authBloc.add(const AuthLogoutRequested());
-                },
-              ),
-            ],
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Admin Fribe'),
+        actions: [
+          IconButton(
+            icon: const Icon(FontAwesome5.plus),
+            tooltip: 'Add Product',
+            onPressed: () => context.pushNamed('edit-product'),
           ),
-          body: IndexedStack(
-            index: homeCubit.state.tab.index,
-            children: const [
-              ReportScreen(),
-              ReceiptsScreen(),
-              VouchersScreen(),
-              ProductsScreen(),
-            ],
+          IconButton(
+            icon: const Icon(FontAwesome5.sign_out_alt),
+            tooltip: 'Logout',
+            onPressed: () {
+              authBloc.add(const AuthLogoutRequested());
+            },
           ),
-          bottomNavigationBar: BottomAppBar(
-            shape: const CircularNotchedRectangle(),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                navButton(
-                  HomeTabs.report,
-                  'Relatórios',
-                  FontAwesome5.clipboard_list,
-                ),
-                navButton(HomeTabs.sales, 'Vendas', FontAwesome5.receipt),
-                navButton(
-                  HomeTabs.vouchers,
-                  'Vales',
-                  FontAwesome5.money_check_alt,
-                ),
-                navButton(HomeTabs.products, 'Produtos', FontAwesome5.boxes),
-              ],
+        ],
+      ),
+      body: IndexedStack(
+        index: homeCubit.state.tab.index,
+        children: const [
+          ReportScreen(),
+          ReceiptsScreen(),
+          VouchersScreen(),
+          ProductsScreen(),
+        ],
+      ),
+      bottomNavigationBar: BottomAppBar(
+        shape: const CircularNotchedRectangle(),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            navButton(
+              HomeTabs.report,
+              'Relatórios',
+              FontAwesome5.clipboard_list,
             ),
-          ),
-        );
-      },
+            navButton(HomeTabs.sales, 'Vendas', FontAwesome5.receipt),
+            navButton(HomeTabs.vouchers, 'Vales', FontAwesome5.money_check_alt),
+            navButton(HomeTabs.products, 'Produtos', FontAwesome5.boxes),
+          ],
+        ),
+      ),
     );
   }
 }

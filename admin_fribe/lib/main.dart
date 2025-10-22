@@ -18,15 +18,27 @@ import 'package:admin_fribe/services/auth/auth_service.dart';
 import 'package:admin_fribe/utils/font/font.dart';
 import 'package:admin_fribe/utils/routes/routes.dart';
 import 'package:admin_fribe/utils/theme/theme.dart';
+import 'package:admin_fribe/widgets/connectivity_manager.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:window_manager/window_manager.dart';
 
+import 'blocs/connectivity/connectivity_bloc.dart';
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  await Future.wait([
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]),
+    Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform),
+  ]);
+
   if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
     await windowManager.ensureInitialized();
 
@@ -51,7 +63,6 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final brightness = View.of(context).platformDispatcher.platformBrightness;
     TextTheme textTheme = createTextTheme(context, "Oxanium", "Quantico");
     final theme = MaterialTheme(textTheme);
     return MultiRepositoryProvider(
@@ -108,11 +119,17 @@ class MyApp extends StatelessWidget {
             create: (context) =>
                 UpdateAmountBloc(context.read<IProductRepository>()),
           ),
+          BlocProvider(
+            create: (context) =>
+                ConnectivityBloc(Connectivity())..add(CheckConnectivity()),
+          ),
         ],
         child: MaterialApp.router(
           title: 'Admin Fribe',
           debugShowCheckedModeBanner: false,
-          theme: brightness == Brightness.light ? theme.light() : theme.dark(),
+          theme: theme.light(),
+          darkTheme: theme.dark(),
+          themeMode: ThemeMode.system,
           supportedLocales: S.delegate.supportedLocales,
           localizationsDelegates: const [
             S.delegate,
@@ -121,6 +138,9 @@ class MyApp extends StatelessWidget {
             GlobalCupertinoLocalizations.delegate,
           ],
           routerConfig: routes,
+          builder: (context, child) {
+            return ConnectivityManager(child: child!);
+          },
         ),
       ),
     );

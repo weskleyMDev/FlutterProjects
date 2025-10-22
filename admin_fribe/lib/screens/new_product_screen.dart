@@ -19,7 +19,7 @@ class EditProductScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => NewProductFormBloc(
-        productRepository: RepositoryProvider.of<IProductRepository>(context),
+        productRepository: context.read<IProductRepository>(),
         initialProduct: initialProduct,
       ),
       child: const EditProductView(),
@@ -70,7 +70,7 @@ class _EditProductViewState extends State<EditProductView> {
 
   @override
   Widget build(BuildContext context) {
-    final newProductFormBloc = BlocProvider.of<NewProductFormBloc>(context);
+    final newProductFormBloc = context.read<NewProductFormBloc>();
     return BlocConsumer<NewProductFormBloc, NewProductFormState>(
       listener: (context, productState) {
         if (productState.formStatus == FormzSubmissionStatus.success) {

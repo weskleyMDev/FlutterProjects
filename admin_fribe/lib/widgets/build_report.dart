@@ -34,6 +34,15 @@ class BuildReportView extends StatelessWidget {
           ),
         );
       case WeekSalesStatus.success:
+        final sales = weekSalesState.weekSales;
+        if (sales.isEmpty) {
+          return Center(
+            child: Text(
+              'No sales data available for the selected month.',
+              style: TextStyle(fontSize: 16, color: Colors.grey.shade600),
+            ),
+          );
+        }
         return Padding(
           padding: const EdgeInsets.all(8.0),
           child: ListView(
@@ -63,7 +72,7 @@ class BuildReportView extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 8),
-              ...weekSalesState.weekSales.map(
+              ...sales.map(
                 (week) =>
                     ReportTile(title: week.id, week: week, currency: currency),
               ),

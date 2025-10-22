@@ -13,7 +13,8 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
-    final loginBloc = BlocProvider.of<LoginFormBloc>(context);
+    final loginState = context.watch<LoginFormBloc>().state;
+    final loginBloc = context.read<LoginFormBloc>();
 
     return Scaffold(
       body: Padding(
@@ -29,56 +30,52 @@ class _LoginScreenState extends State<LoginScreen> {
                 );
             }
           },
-          child: BlocBuilder<LoginFormBloc, LoginFormState>(
-            builder: (context, state) {
-              return Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  TextField(
-                    onChanged: (value) {
-                      loginBloc.add(LoginFormEmailChanged(value));
-                    },
-                    keyboardType: TextInputType.emailAddress,
-                    decoration: InputDecoration(
-                      border: const OutlineInputBorder(),
-                      labelText: 'Email',
-                      errorText: state.emailErrorText,
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  TextField(
-                    onChanged: (value) {
-                      loginBloc.add(LoginFormPasswordChanged(value));
-                    },
-                    obscureText: true,
-                    decoration: InputDecoration(
-                      border: const OutlineInputBorder(),
-                      labelText: 'Password',
-                      errorText: state.passwordErrorText,
-                    ),
-                  ),
-                  const SizedBox(height: 24),
-                  ElevatedButton(
-                    onPressed: state.isValid
-                        ? () => loginBloc.add(const LoginFormSubmitted())
-                        : null,
-                    child: state.isLoading
-                        ? const SizedBox(
-                            width: 24,
-                            height: 24,
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2,
-                              valueColor: AlwaysStoppedAnimation<Color>(
-                                Colors.white,
-                              ),
-                            ),
-                          )
-                        : const Text('Login'),
-                  ),
-                ],
-              );
-            },
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              TextField(
+                onChanged: (value) {
+                  loginBloc.add(LoginFormEmailChanged(value));
+                },
+                keyboardType: TextInputType.emailAddress,
+                decoration: InputDecoration(
+                  border: const OutlineInputBorder(),
+                  labelText: 'Email',
+                  errorText: loginState.emailErrorText,
+                ),
+              ),
+              const SizedBox(height: 16),
+              TextField(
+                onChanged: (value) {
+                  loginBloc.add(LoginFormPasswordChanged(value));
+                },
+                obscureText: true,
+                decoration: InputDecoration(
+                  border: const OutlineInputBorder(),
+                  labelText: 'Password',
+                  errorText: loginState.passwordErrorText,
+                ),
+              ),
+              const SizedBox(height: 24),
+              ElevatedButton(
+                onPressed: loginState.isValid
+                    ? () => loginBloc.add(const LoginFormSubmitted())
+                    : null,
+                child: loginState.isLoading
+                    ? const SizedBox(
+                        width: 24,
+                        height: 24,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          valueColor: AlwaysStoppedAnimation<Color>(
+                            Colors.white,
+                          ),
+                        ),
+                      )
+                    : const Text('Login'),
+              ),
+            ],
           ),
         ),
       ),
