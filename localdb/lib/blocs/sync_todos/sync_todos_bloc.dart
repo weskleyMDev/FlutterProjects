@@ -72,6 +72,6 @@ class SyncTodosBloc extends Bloc<SyncTodosEvent, SyncTodosState> {
     ResetSyncTodosStateEvent event,
     Emitter<SyncTodosState> emit,
   ) {
-    emit(SyncTodosState.initial());
+    emit(SyncTodosState.initial().copyWith(syncedCount: state.syncedCount));
   }
 }

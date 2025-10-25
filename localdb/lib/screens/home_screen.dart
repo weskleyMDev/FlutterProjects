@@ -18,16 +18,18 @@ class HomeScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Home Screen'),
         actions: [
-          BlocBuilder<SyncTodosBloc, SyncTodosState>(
-            builder: (context, state) {
+          BlocSelector<SyncTodosBloc, SyncTodosState, int>(
+            selector: (state) => state.syncedCount,
+            builder: (context, syncedCount) {
+              final syncState = syncTodosBloc.state;
               return Badge(
-                label: Text('${state.syncedCount}'),
-                isLabelVisible: state.syncedCount > 0,
+                label: Text('$syncedCount'),
+                isLabelVisible: syncedCount > 0,
                 child: IconButton(
-                  onPressed: state.isSyncing
+                  onPressed: syncState.isSyncing
                       ? null
                       : () => syncTodosBloc.add(const StartSyncTodosEvent()),
-                  icon: Icon(Icons.cloud_upload_sharp),
+                  icon: const Icon(Icons.cloud_upload_sharp),
                 ),
               );
             },
@@ -106,8 +108,8 @@ class HomeScreen extends StatelessWidget {
     }
     if (state.status != SyncTodosStatus.syncing) {
       Future.delayed(const Duration(seconds: 2), () {
-        bloc.add(const GetSyncedCountEvent());
         bloc.add(const ResetSyncTodosStateEvent());
+        bloc.add(const GetSyncedCountEvent());
       });
     }
   }
