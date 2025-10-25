@@ -8,7 +8,7 @@ final class DescriptionInput extends FormzInput<String, DescriptionInputError> {
 
   static const int _minLength = 10;
   static const int _maxLength = 200;
-  static final _validationRegex = RegExp(r'^[A-Za-z0-9_-]+$');
+  static final _validationRegex = RegExp(r'^[A-Za-z0-9 _-]+$');
 
   @override
   DescriptionInputError? validator(String value) {

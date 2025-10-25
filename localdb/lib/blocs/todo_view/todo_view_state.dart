@@ -19,8 +19,9 @@ final class TodoViewState extends Equatable {
   final TodoViewStatus status;
   final String? errorMessage;
 
-  List<TodoModel> get sortedTodos => List<TodoModel>.of(todos)
-    ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
+  List<TodoModel> get sortedTodos =>
+      List<TodoModel>.of(todos)
+        ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
 
   TodoViewState copyWith({
     List<TodoModel>? todos,

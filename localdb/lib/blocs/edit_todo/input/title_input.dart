@@ -8,7 +8,7 @@ final class TitleInput extends FormzInput<String, TitleInputError> {
 
   static const int _minLength = 3;
   static const int _maxLength = 50;
-  static final _validationRegex = RegExp(r'^[A-Za-z0-9_-]+$');
+  static final _validationRegex = RegExp(r'^[A-Za-z0-9 _-]+$');
 
   @override
   TitleInputError? validator(String value) {

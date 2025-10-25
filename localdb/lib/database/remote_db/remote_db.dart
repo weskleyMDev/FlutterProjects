@@ -5,11 +5,15 @@ final class RemoteDb {
   final _firestore = FirebaseFirestore.instance;
   static const String _collection = 'todos';
 
-  Future<void> addTodo(TodoModel todo) async {
-    _firestore
-        .collection(_collection)
-        .withConverter(fromFirestore: _fromFirestore, toFirestore: _toFirestore)
-        .add(todo);
+  Future<void> addTodos(List<TodoModel> todos) async {
+    final batch = _firestore.batch();
+
+    for (final todo in todos) {
+      final docRef = _firestore.collection(_collection).doc(todo.id);
+      batch.set(docRef, todo.toFirestore());
+    }
+
+    await batch.commit();
   }
 
   Future<void> updateTodo(TodoModel todo) async {

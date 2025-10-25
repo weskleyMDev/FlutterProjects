@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "686693247591",
+    "project_id": "sync-local-7f559",
+    "storage_bucket": "sync-local-7f559.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:686693247591:android:e95a5cb29cb38e11f4c2c2",
+        "android_client_info": {
+          "package_name": "br.com.weskleym.localdb.localdb"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAN3WwfGa4VdxJVHUm25n9LWwq6wq71g8w"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

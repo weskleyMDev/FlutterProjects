@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:localdb/blocs/sync_todos/sync_todos_bloc.dart';
 import 'package:localdb/blocs/todo_view/todo_view_bloc.dart';
 import 'package:localdb/models/todo_model.dart';
 import 'package:localdb/widgets/build_todos_view.dart';
@@ -11,10 +12,26 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final todoViewBloc = BlocProvider.of<TodoViewBloc>(context);
+    final syncTodosBloc = BlocProvider.of<SyncTodosBloc>(context);
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Home Screen'),
         actions: [
+          BlocBuilder<SyncTodosBloc, SyncTodosState>(
+            builder: (context, state) {
+              return Badge(
+                label: Text('${state.syncedCount}'),
+                isLabelVisible: state.syncedCount > 0,
+                child: IconButton(
+                  onPressed: state.isSyncing
+                      ? null
+                      : () => syncTodosBloc.add(const StartSyncTodosEvent()),
+                  icon: Icon(Icons.cloud_upload_sharp),
+                ),
+              );
+            },
+          ),
           BlocSelector<TodoViewBloc, TodoViewState, List<TodoModel>>(
             selector: (state) => state.todos,
             builder: (context, todos) {
@@ -32,29 +49,66 @@ class HomeScreen extends StatelessWidget {
         ],
         actionsPadding: const EdgeInsets.only(right: 8.0),
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Expanded(
-              child: BlocBuilder<TodoViewBloc, TodoViewState>(
-                buildWhen: (previous, current) =>
-                    previous.status != current.status ||
-                    previous.todos != current.todos,
-                builder: (_, todoViewState) {
-                  return BuildTodosView(todoViewState: todoViewState);
-                },
+      body: BlocConsumer<SyncTodosBloc, SyncTodosState>(
+        listener: (context, state) =>
+            _handleSyncStatus(context, syncTodosBloc, state),
+        builder: (context, state) {
+          return Stack(
+            children: [
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Expanded(
+                    child: BlocBuilder<TodoViewBloc, TodoViewState>(
+                      buildWhen: (previous, current) =>
+                          previous.status != current.status ||
+                          previous.todos != current.todos,
+                      builder: (_, todoViewState) {
+                        return BuildTodosView(todoViewState: todoViewState);
+                      },
+                    ),
+                  ),
+                ],
               ),
-            ),
-          ],
-        ),
+              if (state.status == SyncTodosStatus.syncing)
+                Container(
+                  color: Colors.black54,
+                  child: const Center(child: CircularProgressIndicator()),
+                ),
+            ],
+          );
+        },
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => context.pushNamed('edit-todo'),
         child: Icon(Icons.add),
       ),
     );
+  }
+
+  void _handleSyncStatus(
+    BuildContext context,
+    SyncTodosBloc bloc,
+    SyncTodosState state,
+  ) {
+    final messages = {
+      SyncTodosStatus.success: 'Todos synchronized successfully.',
+      SyncTodosStatus.partial: 'Some todos failed to synchronize.',
+      SyncTodosStatus.failure: 'Failed to synchronize todos.',
+    };
+    final message = state.snackMessage ?? messages[state.status];
+    if (message != null) {
+      ScaffoldMessenger.of(context)
+        ..clearSnackBars()
+        ..showSnackBar(SnackBar(content: Text(message)));
+    }
+    if (state.status != SyncTodosStatus.syncing) {
+      Future.delayed(const Duration(seconds: 2), () {
+        bloc.add(const GetSyncedCountEvent());
+        bloc.add(const ResetSyncTodosStateEvent());
+      });
+    }
   }
 }
