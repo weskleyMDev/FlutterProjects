@@ -2,7 +2,6 @@ part of 'sales_receipt_bloc.dart';
 
 enum SalesReceiptStatus { initial, loading, success, failure }
 
-@immutable
 final class SalesReceiptState extends Equatable {
   final List<SalesReceipt> salesReceipts;
   final DateTime? startDate;

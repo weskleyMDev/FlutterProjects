@@ -1,6 +1,5 @@
 part of 'sales_receipt_bloc.dart';
 
-@immutable
 sealed class SalesReceiptEvent extends Equatable {
   const SalesReceiptEvent();
   @override
@@ -9,7 +8,7 @@ sealed class SalesReceiptEvent extends Equatable {
 
 final class LoadSalesReceipts extends SalesReceiptEvent {
   const LoadSalesReceipts();
-  
+
   @override
   List<Object?> get props => [];
 }

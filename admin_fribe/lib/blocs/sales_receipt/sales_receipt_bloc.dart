@@ -7,7 +7,6 @@ import 'package:decimal/decimal.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
-import 'package:meta/meta.dart';
 import 'package:rxdart/rxdart.dart';
 
 part 'sales_receipt_event.dart';
@@ -33,34 +32,18 @@ final class SalesReceiptBloc
     StartDateChanged event,
     Emitter<SalesReceiptState> emit,
   ) {
-    emit(
-      state.copyWith(
-        startDate: event.startDate,
-      ),
-    );
+    emit(state.copyWith(startDate: event.startDate));
   }
 
   void _onEndDateChanged(
     EndDateChanged event,
     Emitter<SalesReceiptState> emit,
   ) {
-    emit(
-      state.copyWith(
-        endDate: event.endDate,
-      ),
-    );
+    emit(state.copyWith(endDate: event.endDate));
   }
 
-  void _onClearDates(
-    ClearDates event,
-    Emitter<SalesReceiptState> emit,
-  ) {
-    emit(
-      state.copyWith(
-        clearStartDate: true,
-        clearEndDate: true,
-      ),
-    );
+  void _onClearDates(ClearDates event, Emitter<SalesReceiptState> emit) {
+    emit(state.copyWith(clearStartDate: true, clearEndDate: true));
   }
 
   Future<void> _onLoadSalesReceipts(
