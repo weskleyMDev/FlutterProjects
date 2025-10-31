@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pdf_download/bloc/pdf_generator_bloc.dart';
+import 'package:pdf_download/widget/build_pdf_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -31,15 +32,23 @@ class PdfGeneratorScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text('Gerador de PDF')),
-      body: Center(
-        child: ElevatedButton(
-          onPressed: () async {
-            context.read<PdfGeneratorBloc>().add(
-              GeneratePdfEvent(fileName: 'sample.pdf'),
-            );
-          },
-          child: Text('Gerar PDF'),
-        ),
+      body: BlocConsumer<PdfGeneratorBloc, PdfGeneratorState>(
+        listener: (context, state) {
+          if (state.status == PdfGeneratorStatus.success) {
+            ScaffoldMessenger.of(context)
+              ..clearSnackBars()
+              ..showSnackBar(
+                SnackBar(content: Text('PDF gerado com sucesso!')),
+              );
+          } else if (state.status == PdfGeneratorStatus.failure) {
+            ScaffoldMessenger.of(context)
+              ..clearSnackBars()
+              ..showSnackBar(SnackBar(content: Text('Falha ao gerar o PDF.')));
+          }
+        },
+        builder: (context, state) {
+          return BuildPdfScreen(state: state);
+        },
       ),
     );
   }
