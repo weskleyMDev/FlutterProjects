@@ -23,17 +23,18 @@ class WeekSalesBloc extends Bloc<WeekSalesEvent, WeekSalesState> {
     Emitter<WeekSalesState> emit,
   ) async {
     emit(
-      state.copyWith(status: WeekSalesStatus.inProgress, errorMessage: null),
+      state.copyWith(
+        status: WeekSalesStatus.inProgress,
+        clearErrorMessage: true,
+      ),
     );
-
     try {
-      final monthDate = event.month;
-      final startDate = DateTime(monthDate.year, monthDate.month, 1);
+      final startDate = DateTime(event.year, event.month, 1);
       final endDate = DateTime(
-        monthDate.year,
-        monthDate.month + 1,
+        event.year,
+        event.month + 1,
         1,
-      ).subtract(Duration(seconds: 1));
+      ).subtract(Duration(milliseconds: 1));
 
       final receipts = await _salesReceiptRepository.getSalesReceiptsByMonth(
         startDate: startDate,
@@ -43,6 +44,7 @@ class WeekSalesBloc extends Bloc<WeekSalesEvent, WeekSalesState> {
       final result = _buildWeekSales(
         receipts: receipts,
         locale: event.locale,
+        year: event.year,
         month: event.month,
         startDate: startDate,
         endDate: endDate,
@@ -52,10 +54,11 @@ class WeekSalesBloc extends Bloc<WeekSalesEvent, WeekSalesState> {
         state.copyWith(
           weekSales: result.weekSales,
           productsSoldByWeek: result.productsSoldByWeek,
-          selectedMonth: result.selectedMonth,
+          selectedMonth: result.selectedMonth.month,
+          selectedYear: result.selectedMonth.year,
           locale: event.locale,
           status: WeekSalesStatus.success,
-          allMonths: result.allMonths,
+          allMonths: result.allMonths.whereType<DateTime>().toList(),
         ),
       );
     } catch (e) {
@@ -71,44 +74,41 @@ class WeekSalesBloc extends Bloc<WeekSalesEvent, WeekSalesState> {
   _WeekSalesResult _buildWeekSales({
     required List<SalesReceipt> receipts,
     required String locale,
-    required DateTime month,
+    required int year,
+    required int month,
     required DateTime startDate,
     required DateTime endDate,
   }) {
     final allMonthsSet = <DateTime>{};
 
     for (final receipt in receipts) {
-      final monthDate = DateTime(receipt.createAt.year, receipt.createAt.month);
-      allMonthsSet.add(monthDate);
+      allMonthsSet.add(DateTime(receipt.createAt.year, receipt.createAt.month));
     }
 
     final allMonths = allMonthsSet.toList()..sort((a, b) => b.compareTo(a));
 
-    final DateTime? selectedMonth = allMonths.contains(month)
-        ? month
-        : (allMonths.isNotEmpty ? allMonths.first : null);
+    final DateTime selectedMonth = allMonths.firstWhere(
+      (date) => date.year == year && date.month == month,
+      orElse: () =>
+          allMonths.isNotEmpty ? allMonths.first : DateTime(year, month),
+    );
 
     final filteredReceipts = receipts.where((receipt) {
-      if (receipt.createAt.isBefore(startDate) ||
-          receipt.createAt.isAfter(endDate)) {
-        return false;
-      }
-      final monthDate = DateTime(receipt.createAt.year, receipt.createAt.month);
-      return monthDate == selectedMonth;
+      final receiptMonth = DateTime(
+        receipt.createAt.year,
+        receipt.createAt.month,
+      );
+      return !receipt.createAt.isBefore(startDate) &&
+          !receipt.createAt.isAfter(endDate) &&
+          receiptMonth == selectedMonth;
     }).toList();
 
     final groupedMap = <String, WeekSales>{};
     for (final receipt in filteredReceipts) {
       final key = _weekKey(receipt.createAt, locale, startDate, endDate);
-      final existing = groupedMap[key];
-      if (existing == null) {
-        groupedMap[key] = WeekSales.empty().copyWith(
-          id: key,
-          salesReceipts: [receipt],
-        );
-      } else {
-        groupedMap[key] = existing.addReceipt(receipt);
-      }
+      groupedMap[key] =
+          groupedMap[key]?.addReceipt(receipt) ??
+          WeekSales.empty().copyWith(id: key, salesReceipts: [receipt]);
     }
 
     final grouped = groupedMap.values.toList()
@@ -122,35 +122,28 @@ class WeekSalesBloc extends Bloc<WeekSalesEvent, WeekSalesState> {
         return startB.compareTo(startA);
       });
 
-    final productsSoldByWeek = <WeekProductSales>[];
-    for (final weekSales in grouped) {
+    final productsSoldByWeek = grouped.map((weekSales) {
       final productTotals = <String, Decimal>{};
-
       for (final receipt in weekSales.salesReceipts) {
         for (final item in receipt.cart) {
-          final productId = item.productId;
           final quantity = _safeDecimalParse(item.quantity.toString());
-          productTotals[productId] =
-              (productTotals[productId] ?? Decimal.zero) + quantity;
+          productTotals[item.productId] =
+              (productTotals[item.productId] ?? Decimal.zero) + quantity;
         }
       }
 
-      final productSalesList = productTotals.entries
-          .map(
-            (entry) => ProductSales.empty().copyWith(
-              productId: entry.key,
-              totalSales: entry.value,
-            ),
-          )
-          .toList();
+      final productSalesList = productTotals.entries.map((entry) {
+        return ProductSales.empty().copyWith(
+          productId: entry.key,
+          totalSales: entry.value,
+        );
+      }).toList();
 
-      productsSoldByWeek.add(
-        WeekProductSales.empty().copyWith(
-          id: weekSales.id,
-          productSales: productSalesList,
-        ),
+      return WeekProductSales.empty().copyWith(
+        id: weekSales.id,
+        productSales: productSalesList,
       );
-    }
+    }).toList();
 
     return _WeekSalesResult(
       weekSales: grouped,
@@ -188,7 +181,7 @@ Decimal _safeDecimalParse(String? input) {
 class _WeekSalesResult {
   final List<WeekSales> weekSales;
   final List<WeekProductSales> productsSoldByWeek;
-  final DateTime? selectedMonth;
+  final DateTime selectedMonth;
   final List<DateTime> allMonths;
 
   _WeekSalesResult({

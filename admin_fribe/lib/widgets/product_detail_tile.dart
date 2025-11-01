@@ -76,7 +76,7 @@ class ProductDetailTile extends StatelessWidget {
                     padding: EdgeInsets.zero,
                     onPressed: showEditAmountDialog,
                     icon: Icon(
-                      FontAwesome.pencil,
+                      FontAwesome.plus,
                       size: 16.0,
                       color: Colors.white70,
                     ),

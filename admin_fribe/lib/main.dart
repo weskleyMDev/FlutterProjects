@@ -107,12 +107,18 @@ class MyApp extends StatelessWidget {
           BlocProvider(
             create: (context) {
               final locale = PlatformDispatcher.instance.locale.toLanguageTag();
-              final currentMonth = DateTime(
-                DateTime.now().year,
-                DateTime.now().month,
-              );
+              final now = DateTime.now();
+              final currentMonth = now.month;
+              final currentYear = now.year;
+
               return WeekSalesBloc(context.read<ISalesReceiptRepository>())
-                ..add(WeekSalesRequested(locale: locale, month: currentMonth));
+                ..add(
+                  WeekSalesRequested(
+                    locale: locale,
+                    month: currentMonth,
+                    year: currentYear,
+                  ),
+                );
             },
           ),
           BlocProvider(
