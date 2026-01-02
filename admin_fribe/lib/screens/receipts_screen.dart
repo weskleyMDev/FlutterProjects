@@ -26,7 +26,11 @@ class ReceiptsScreen extends StatelessWidget {
                 picked.year,
                 picked.month,
                 picked.day,
-              ).add(const Duration(days: 1));
+                23,
+                59,
+                59,
+                999,
+              ).toLocal();
 
         if (!context.mounted) return;
         if (isStartDate) {

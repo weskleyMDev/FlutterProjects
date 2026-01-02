@@ -20,10 +20,7 @@ final class SalesReceiptRepository implements ISalesReceiptRepository {
           toFirestore: _toFirestore,
         )
         .where('createAt', isGreaterThanOrEqualTo: startDate)
-        .where(
-          'createAt',
-          isLessThan: adjustedEndDate,
-        )
+        .where('createAt', isLessThan: adjustedEndDate)
         .orderBy('createAt', descending: true)
         .snapshots()
         .map((snapshot) => snapshot.docs.map((doc) => doc.data()).toList())
