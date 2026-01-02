@@ -50,7 +50,7 @@ final class PendingSaleRepository implements IPendingSaleRepository {
     final saleRef = _firestore.collection('pending_sales').doc(pendingSaleId);
     final receiptRef = saleRef.collection('pending_receipts').doc(receiptId);
 
-    final now = DateTime.now().toIso8601String();
+    final now = Timestamp.fromDate(DateTime.now());
 
     final snapshot = await saleRef.get();
     Map<String, dynamic> paymentAtMap = {};

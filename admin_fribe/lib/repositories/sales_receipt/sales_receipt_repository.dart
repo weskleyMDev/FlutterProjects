@@ -6,23 +6,29 @@ final class SalesReceiptRepository implements ISalesReceiptRepository {
   Stream<List<SalesReceipt>> getSalesReceiptsStream({
     required DateTime startDate,
     required DateTime endDate,
-  }) => _firestore
-      .collection('sales')
-      .withConverter<SalesReceipt>(
-        fromFirestore: _fromFirestore,
-        toFirestore: _toFirestore,
-      )
-      .where('createAt', isGreaterThanOrEqualTo: startDate)
-      .where(
-        'createAt',
-        isLessThanOrEqualTo: endDate
-            .add(const Duration(days: 1))
-            .subtract(const Duration(milliseconds: 1)),
-      )
-      .orderBy('createAt', descending: true)
-      .snapshots()
-      .map((snapshot) => snapshot.docs.map((doc) => doc.data()).toList())
-      .asBroadcastStream();
+  }) {
+    DateTime adjustedEndDate = DateTime(
+      endDate.year,
+      endDate.month,
+      endDate.day,
+    ).add(const Duration(days: 1));
+
+    return _firestore
+        .collection('sales')
+        .withConverter<SalesReceipt>(
+          fromFirestore: _fromFirestore,
+          toFirestore: _toFirestore,
+        )
+        .where('createAt', isGreaterThanOrEqualTo: startDate)
+        .where(
+          'createAt',
+          isLessThan: adjustedEndDate,
+        )
+        .orderBy('createAt', descending: true)
+        .snapshots()
+        .map((snapshot) => snapshot.docs.map((doc) => doc.data()).toList())
+        .asBroadcastStream();
+  }
 
   @override
   Future<List<SalesReceipt>> getSalesReceiptsByMonth({

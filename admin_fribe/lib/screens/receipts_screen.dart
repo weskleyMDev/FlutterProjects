@@ -12,16 +12,21 @@ class ReceiptsScreen extends StatelessWidget {
     final receiptState = context.watch<SalesReceiptBloc>().state;
 
     Future<void> selectDate(BuildContext context, bool isStartDate) async {
+      final now = DateTime.now();
       final DateTime? picked = await showDatePicker(
         context: context,
-        initialDate: DateTime.now(),
+        initialDate: now,
         firstDate: DateTime(2024),
-        lastDate: DateTime(2026),
+        lastDate: now.add(const Duration(days: 365)),
       );
       if (picked != null) {
         final DateTime adjustedDate = isStartDate
             ? DateTime(picked.year, picked.month, picked.day)
-            : DateTime(picked.year, picked.month, picked.day, 23, 59, 59, 999);
+            : DateTime(
+                picked.year,
+                picked.month,
+                picked.day,
+              ).add(const Duration(days: 1));
 
         if (!context.mounted) return;
         if (isStartDate) {
