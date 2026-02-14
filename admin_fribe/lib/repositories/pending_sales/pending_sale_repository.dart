@@ -25,7 +25,8 @@ final class PendingSaleRepository implements IPendingSaleRepository {
             .map((receiptSnapshot) {
               final receiptModels = receiptSnapshot.docs
                   .map((e) => e.data())
-                  .toList();
+                  .toList()
+              ..sort((a, b) => b.createAt.compareTo(a.createAt));
               return pendingSale.copyWith(
                 id: () => doc.id,
                 receipts: () => receiptModels,
