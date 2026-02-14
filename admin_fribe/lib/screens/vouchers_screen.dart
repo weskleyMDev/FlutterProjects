@@ -2,6 +2,7 @@ import 'package:admin_fribe/blocs/pending_sales/pending_sale_bloc.dart';
 import 'package:admin_fribe/blocs/product/product_bloc.dart';
 import 'package:admin_fribe/models/product_model.dart';
 import 'package:admin_fribe/utils/capitalize_text.dart';
+import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
@@ -39,6 +40,13 @@ class _VouchersScreenState extends State<VouchersScreen> {
                   locale: locale,
                   decimalDigits: 3,
                 );
+                final totalPending = sale.receipts.where(
+                  (receipt) => receipt.status == false,
+                ).fold<Decimal>(
+                  Decimal.zero,
+                  (previousValue, receipt) =>
+                      previousValue + (Decimal.tryParse(receipt.total) ?? Decimal.zero),
+                ).toDouble();
                 return ExpansionTile(
                   key: const ValueKey('expansion_pending_tile'),
                   initiallyExpanded: state.expandedTiles.contains(sale.id),
@@ -50,7 +58,18 @@ class _VouchersScreenState extends State<VouchersScreen> {
                       ),
                     );
                   },
-                  title: Text(sale.id.replaceAll('_', ' ').capitalize()),
+                  title: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(sale.id.replaceAll('_', ' ').capitalize()),
+                      const SizedBox(width: 10),
+                      Text(
+                        'Pendente: ${currency.format(totalPending)}',
+                        style: const TextStyle(fontSize: 12.0, fontWeight: FontWeight.bold),
+                      ),
+                    ],
+                  ),
                   children: sale.receipts.map((receipt) {
                     final isLoading = state.status == PendingSaleStatus.loading;
                     final date = DateFormat.yMd(
