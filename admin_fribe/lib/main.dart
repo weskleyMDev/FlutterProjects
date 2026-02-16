@@ -11,6 +11,7 @@ import 'package:admin_fribe/blocs/week_sales/week_sales_bloc.dart';
 import 'package:admin_fribe/cubits/home_tab/home_tab_cubit.dart';
 import 'package:admin_fribe/firebase_options.dart';
 import 'package:admin_fribe/generated/l10n.dart';
+import 'package:admin_fribe/logs/update_amount_log.dart';
 import 'package:admin_fribe/repositories/pending_sales/pending_sale_repository.dart';
 import 'package:admin_fribe/repositories/products/product_repository.dart';
 import 'package:admin_fribe/repositories/sales_receipt/isales_receipt_repository.dart';
@@ -77,6 +78,9 @@ class MyApp extends StatelessWidget {
         RepositoryProvider<IPendingSaleRepository>(
           create: (context) => PendingSaleRepository(),
         ),
+        RepositoryProvider<IUpdateAmountLog>(
+          create: (context) => UpdateAmountLog(),
+        ),
       ],
       child: MultiBlocProvider(
         providers: [
@@ -122,8 +126,10 @@ class MyApp extends StatelessWidget {
             },
           ),
           BlocProvider(
-            create: (context) =>
-                UpdateAmountBloc(context.read<IProductRepository>()),
+            create: (context) => UpdateAmountBloc(
+              context.read<IProductRepository>(),
+              context.read<IUpdateAmountLog>(),
+            ),
           ),
           BlocProvider(
             create: (context) =>
