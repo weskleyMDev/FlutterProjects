@@ -54,81 +54,100 @@ class _PendingSalesScreenState extends State<PendingSalesScreen> {
                   final sale = pendingSales[index];
                   final locale = Localizations.localeOf(context).languageCode;
                   final currency = NumberFormat.simpleCurrency(locale: locale);
+                  final pendingCount = sale.receipts
+                      .where((receipt) => receipt.status == false)
+                      .length;
                   return ExpansionTile(
-                    title: Text(
-                      sale.id.replaceAll('_', ' ').capitalize(),
-                      style: const TextStyle(fontSize: 22),
+                    title: Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            sale.id.replaceAll('_', ' ').capitalize(),
+                            style: const TextStyle(fontSize: 22),
+                          ),
+                        ),
+                        const SizedBox(width: 10),
+                        Text(
+                          '${pendingCount <= 1 ? 'Pendente:' : 'Pendentes:'} $pendingCount',
+                        ),
+                      ],
                     ),
-                    children: sale.receipts.map((receipt) {
-                      final paymentStatus = receipt.status
-                          ? 'Pago'
-                          : 'Pendente';
-                      final date = DateFormat.yMEd(
-                        locale,
-                      ).add_Hm().format(receipt.createAt ?? DateTime.now());
-                      return ListTile(
-                        title: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            SelectableText(receipt.id),
-                            Text(
-                              paymentStatus,
-                              style: const TextStyle(
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ],
-                        ),
-                        subtitle: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(date.capitalize()),
-                            if (receipt.discount.isNotEmpty)
-                              Text(
-                                'Desconto: ${changeCurrency(receipt.discount)}',
-                              ),
-                            if (receipt.shipping.isNotEmpty)
-                              Text(
-                                'Frete: ${changeCurrency(receipt.shipping)}',
-                              ),
-                            if (receipt.tariffs.isNotEmpty)
-                              Text('Taxas: ${changeCurrency(receipt.tariffs)}'),
-                            Text(
-                              'Total: ${changeCurrency(receipt.total)}',
-                              style: const TextStyle(
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            ...receipt.cart.map(
-                              (e) =>
-                                  BlocSelector<
-                                    ProductBloc,
-                                    ProductState,
-                                    ProductModel
-                                  >(
-                                    selector: (state) {
-                                      return state.allProducts.firstWhere(
-                                        (product) => product.id == e.productId,
-                                      );
-                                    },
-                                    builder: (context, product) {
-                                      return Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Text(
-                                            '   ${product.name.capitalize()}  x${e.quantity.toStringAsFixed(3)}',
-                                          ),
-                                          Text(currency.format(e.subtotal)),
-                                        ],
-                                      );
-                                    },
+                    children: sale.receipts
+                        .where((receipt) => receipt.status == false)
+                        .map((receipt) {
+                          final paymentStatus = receipt.status
+                              ? 'Pago'
+                              : 'Pendente';
+                          final date = DateFormat.yMEd(
+                            locale,
+                          ).add_Hm().format(receipt.createAt ?? DateTime.now());
+                          return ListTile(
+                            title: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                SelectableText(receipt.id),
+                                Text(
+                                  paymentStatus,
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
                                   ),
+                                ),
+                              ],
                             ),
-                          ],
-                        ),
-                      );
-                    }).toList(),
+                            subtitle: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(date.capitalize()),
+                                if (receipt.discount.isNotEmpty)
+                                  Text(
+                                    'Desconto: ${changeCurrency(receipt.discount)}',
+                                  ),
+                                if (receipt.shipping.isNotEmpty)
+                                  Text(
+                                    'Frete: ${changeCurrency(receipt.shipping)}',
+                                  ),
+                                if (receipt.tariffs.isNotEmpty)
+                                  Text(
+                                    'Taxas: ${changeCurrency(receipt.tariffs)}',
+                                  ),
+                                Text(
+                                  'Total: ${changeCurrency(receipt.total)}',
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                ...receipt.cart.map(
+                                  (e) =>
+                                      BlocSelector<
+                                        ProductBloc,
+                                        ProductState,
+                                        ProductModel
+                                      >(
+                                        selector: (state) {
+                                          return state.allProducts.firstWhere(
+                                            (product) =>
+                                                product.id == e.productId,
+                                          );
+                                        },
+                                        builder: (context, product) {
+                                          return Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Text(
+                                                '   ${product.name.capitalize()}  x${e.quantity.toStringAsFixed(3)}',
+                                              ),
+                                              Text(currency.format(e.subtotal)),
+                                            ],
+                                          );
+                                        },
+                                      ),
+                                ),
+                              ],
+                            ),
+                          );
+                        })
+                        .toList(),
                   );
                 },
               );

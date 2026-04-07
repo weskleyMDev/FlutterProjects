@@ -35,7 +35,7 @@ Future<void> main() async {
       center: true,
       backgroundColor: Colors.transparent,
       skipTaskbar: false,
-      title: 'Fribe Cortes Especiais',
+      title: 'Fribe Cortes Especiais - Vendedor v1.0.0',
       titleBarStyle: TitleBarStyle.normal,
     );
 

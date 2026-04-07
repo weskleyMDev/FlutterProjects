@@ -16,6 +16,7 @@ final class PendingSaleRepository implements IPendingSaleRepository {
       final receiptStreams = snapshot.docs.map((doc) {
         return doc.reference
             .collection('pending_receipts')
+            .orderBy('createAt', descending: true)
             .withConverter(
               fromFirestore: _fromFirestore,
               toFirestore: _toFirestore,
