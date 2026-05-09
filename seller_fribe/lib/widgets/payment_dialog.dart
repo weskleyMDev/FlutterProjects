@@ -32,7 +32,7 @@ class _PaymentDialogState extends State<PaymentDialog> {
       },
       builder: (context, state) {
         return AlertDialog(
-          title: const Text('Pagamentos'),
+          title: const Text('Selecionar Pagamento'),
           content: SizedBox(
             width: double.maxFinite,
             child: Column(
@@ -44,7 +44,7 @@ class _PaymentDialogState extends State<PaymentDialog> {
                       .map(
                         (method) => DropdownMenuItem(
                           value: method,
-                          child: Text(method.name),
+                          child: Text(method.name.toUpperCase()),
                         ),
                       )
                       .toList(),
@@ -55,7 +55,7 @@ class _PaymentDialogState extends State<PaymentDialog> {
                   },
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(top: 12.0),
+                  padding: const EdgeInsets.only(top: 22.0),
                   child: TextField(
                     autofocus: true,
                     keyboardType: TextInputType.numberWithOptions(
@@ -100,7 +100,7 @@ class _PaymentDialogState extends State<PaymentDialog> {
                 Navigator.of(context).pop();
                 widget.cartBloc.add(const ClearPaymentMethod());
               },
-              child: const Text('Fechar'),
+              child: const Text('Cancelar'),
             ),
             ElevatedButton(
               onPressed: state.isPaymentValid
@@ -121,7 +121,7 @@ class _PaymentDialogState extends State<PaymentDialog> {
                       height: 16.0,
                       child: CircularProgressIndicator(strokeWidth: 2.0),
                     )
-                  : const Text('Adicionar'),
+                  : const Text('Confirmar'),
             ),
           ],
         );

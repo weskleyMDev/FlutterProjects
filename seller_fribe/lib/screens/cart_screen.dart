@@ -175,9 +175,116 @@ class CartScreen extends StatelessWidget {
                 const Divider(thickness: 2.0),
                 Padding(
                   padding: const EdgeInsets.all(12.0),
-                  child: Text(
-                    'Subtotal: ${currency.format(state.subtotal.toDouble())}\nDesconto: ${currency.format(discount)}\nFrete: ${currency.format(shipping)}\nJuros/Taxas: ${currency.format(tariffs)}\nTotal: ${currency.format(state.total.toDouble())}\nRestante: ${currency.format(state.remainingAmount.toDouble())}',
-                    style: const TextStyle(fontSize: 16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const Text(
+                            'Resumo da Venda:',
+                            style: TextStyle(
+                              fontSize: 18.0,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          Text(
+                            'Itens: ${state.cartItems.length}',
+                            style: const TextStyle(fontSize: 16.0),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 8.0),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            'Subtotal: ',
+                            style: const TextStyle(fontSize: 16.0),
+                          ),
+                          Text(
+                            currency.format(state.subtotal.toDouble()),
+                            style: const TextStyle(fontSize: 16.0),
+                          ),
+                        ],
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            'Desconto: ',
+                            style: const TextStyle(fontSize: 16.0),
+                          ),
+                          Text(
+                            currency.format(discount),
+                            style: const TextStyle(fontSize: 16.0),
+                          ),
+                        ],
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            'Frete: ',
+                            style: const TextStyle(fontSize: 16.0),
+                          ),
+                          Text(
+                            currency.format(shipping),
+                            style: const TextStyle(fontSize: 16.0),
+                          ),
+                        ],
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            'Juros/Taxas: ',
+                            style: const TextStyle(fontSize: 16.0),
+                          ),
+                          Text(
+                            currency.format(tariffs),
+                            style: const TextStyle(fontSize: 16.0),
+                          ),
+                        ],
+                      ),
+                      const Divider(thickness: 1.0),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const Text(
+                            'Total: ',
+                            style: TextStyle(
+                              fontSize: 16.0,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          Text(
+                            currency.format(state.total.toDouble()),
+                            style: const TextStyle(
+                              fontSize: 20.0,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const Text(
+                            'Restante: ',
+                            style: TextStyle(
+                              fontSize: 16.0,
+                            ),
+                          ),
+                          Text(
+                            currency.format(state.remainingAmount.toDouble()),
+                            style: const TextStyle(
+                              fontSize: 16.0,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
                   ),
                 ),
                 const Divider(thickness: 2.0),

@@ -35,7 +35,7 @@ Future<void> main() async {
       center: true,
       backgroundColor: Colors.transparent,
       skipTaskbar: false,
-      title: 'Fribe Cortes Especiais - Vendedor v1.0.0',
+      title: 'Fribe Cortes Especiais - Vendedor v1.1.0',
       titleBarStyle: TitleBarStyle.normal,
     );
 
@@ -101,7 +101,7 @@ class MyApp extends StatelessWidget {
         ],
         child: MaterialApp.router(
           debugShowCheckedModeBanner: false,
-          title: 'Fribe Cortes Especiais',
+          title: 'Fribe - Vendedor v1.1.0',
           theme: theme.dark(),
           supportedLocales: S.delegate.supportedLocales,
           localizationsDelegates: [

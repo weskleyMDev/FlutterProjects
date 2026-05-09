@@ -73,7 +73,7 @@ class _PendingSalesScreenState extends State<PendingSalesScreen> {
                       ],
                     ),
                     children: sale.receipts
-                        .where((receipt) => receipt.status == false)
+                        // .where((receipt) => receipt.status == false)
                         .map((receipt) {
                           final paymentStatus = receipt.status
                               ? 'Pago'

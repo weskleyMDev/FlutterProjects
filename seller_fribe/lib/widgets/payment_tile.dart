@@ -26,7 +26,7 @@ class PaymentTile extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text('Pagamentos:', style: TextStyle(fontSize: 18.0)),
+              const Text('Pagamentos:', style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold)),
               IconButton(
                 onPressed: openPaymentDialog,
                 icon: const Icon(Icons.add_circle),
@@ -34,7 +34,7 @@ class PaymentTile extends StatelessWidget {
             ],
           ),
           if (state.payments.isEmpty)
-            const Text('Nenhum pagamento adicionado')
+            const Text('Nenhum pagamento selecionado')
           else
             Column(
               children: state.payments
