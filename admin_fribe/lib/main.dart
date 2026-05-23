@@ -44,16 +44,20 @@ Future<void> main() async {
     await windowManager.ensureInitialized();
 
     WindowOptions windowOptions = WindowOptions(
-      size: const Size(800, 600),
-      minimumSize: const Size(800, 600),
-      title: "Admin Fribe",
+      size: const Size(600, 600),
+      minimumSize: const Size(600, 600),
+      title: "Admin Fribe v1.0.2",
       center: true,
       backgroundColor: Colors.transparent,
       skipTaskbar: false,
       titleBarStyle: TitleBarStyle.normal,
     );
     windowManager.waitUntilReadyToShow(windowOptions, () async {
-      await Future.wait([windowManager.show(), windowManager.focus()]);
+      await Future.wait([
+        windowManager.show(),
+        windowManager.focus(),
+        windowManager.setAlwaysOnTop(true),
+      ]);
     });
   }
   runApp(const MyApp());
