@@ -32,6 +32,9 @@ class _PaymentDialogState extends State<PaymentDialog> {
       },
       builder: (context, state) {
         return AlertDialog(
+          insetPadding: EdgeInsets.symmetric(
+            horizontal: MediaQuery.of(context).size.width * 0.1,
+          ),
           title: const Text('Selecionar Pagamento'),
           content: SizedBox(
             width: double.maxFinite,
