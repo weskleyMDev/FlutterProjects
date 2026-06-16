@@ -44,8 +44,8 @@ Future<void> main() async {
     await windowManager.ensureInitialized();
 
     WindowOptions windowOptions = WindowOptions(
-      size: const Size(600, 600),
-      minimumSize: const Size(600, 600),
+      size: const Size(600, 800),
+      minimumSize: const Size(600, 800),
       title: "Admin Fribe v1.0.2",
       center: true,
       backgroundColor: Colors.transparent,
@@ -131,8 +131,8 @@ class MyApp extends StatelessWidget {
           ),
           BlocProvider(
             create: (context) => UpdateAmountBloc(
-              context.read<IProductRepository>(),
-              context.read<IUpdateAmountLog>(),
+              productRepository: context.read<IProductRepository>(),
+              updateAmountLog: context.read<IUpdateAmountLog>(),
             ),
           ),
           BlocProvider(

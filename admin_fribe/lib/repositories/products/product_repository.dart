@@ -1,4 +1,5 @@
 import 'package:admin_fribe/models/product_model.dart';
+import 'package:admin_fribe/models/update_amount_result.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:decimal/decimal.dart';
 import 'package:flutter/cupertino.dart';
@@ -6,7 +7,10 @@ import 'package:flutter/cupertino.dart';
 part 'iproduct_repository.dart';
 
 final class ProductRepository implements IProductRepository {
-  final _firestore = FirebaseFirestore.instance;
+  final FirebaseFirestore _firestore;
+
+  ProductRepository({FirebaseFirestore? firestore})
+    : _firestore = firestore ?? FirebaseFirestore.instance;
 
   @override
   Future<void> addProduct(ProductModel product) async {
@@ -90,7 +94,7 @@ final class ProductRepository implements IProductRepository {
   }
 
   @override
-  Future<void> updateProductAmount({
+  Future<UpdateAmountResult> updateProductAmount({
     required String productId,
     required String newAmount,
   }) async {
@@ -113,7 +117,18 @@ final class ProductRepository implements IProductRepository {
           Decimal.tryParse(existingProduct.amount.trim()) ?? Decimal.zero;
       final receivedAmount = Decimal.parse(newAmount.trim());
       final updatedAmount = (currentAmount + receivedAmount).round(scale: 3);
-      await docSnapshot.reference.update({'amount': updatedAmount.toString()});
+
+      final oldAmount = currentAmount.toString();
+      final addedAmount = receivedAmount.toString();
+      final finalAmount = updatedAmount.toString();
+
+      await docSnapshot.reference.update({'amount': finalAmount});
+
+      return UpdateAmountResult(
+        oldAmount: oldAmount,
+        addedAmount: addedAmount,
+        newAmount: finalAmount,
+      );
     } catch (e) {
       debugPrint('Error updating product amount: $e');
       rethrow;

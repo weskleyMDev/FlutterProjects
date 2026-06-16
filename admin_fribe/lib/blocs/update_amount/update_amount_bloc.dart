@@ -14,8 +14,12 @@ final class UpdateAmountBloc
     extends Bloc<UpdateAmountEvent, UpdateAmountState> {
   final IProductRepository _productRepository;
   final IUpdateAmountLog _updateAmountLog;
-  UpdateAmountBloc(this._productRepository, this._updateAmountLog)
-    : super(UpdateAmountState.initial()) {
+  UpdateAmountBloc({
+    required IProductRepository productRepository,
+    required IUpdateAmountLog updateAmountLog,
+  }) : _productRepository = productRepository,
+       _updateAmountLog = updateAmountLog,
+       super(UpdateAmountState.initial()) {
     on<AmountInputChanged>(_onAmountInputChanged);
     on<ClearAmountInput>(_onClearAmountInput);
     on<UpdateAmountSubmitted>(_onUpdateAmountSubmitted);
@@ -48,15 +52,20 @@ final class UpdateAmountBloc
       ),
     );
     try {
-      await _productRepository.updateProductAmount(
+      final result = await _productRepository.updateProductAmount(
         productId: event.productId,
         newAmount: state.amountInput.value,
       );
       final now = DateTime.now();
       final formattedDate = DateFormat('dd/MM/yyyy HH:mm').format(now);
 
-      await _updateAmountLog.writeLog( 
-        logEntry: 'Product ID: ${event.productId}, New Amount: ${state.amountInput.value}, Updated At: $formattedDate',
+      await _updateAmountLog.writeLog(
+        logEntry:
+            '[UPDATE_AMOUNT] ProductId=${event.productId}, '
+            'Old=${result.oldAmount}, '
+            'Added=${result.addedAmount}, '
+            'New=${result.newAmount}, '
+            'At=$formattedDate',
       );
 
       emit(
