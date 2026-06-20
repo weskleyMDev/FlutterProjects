@@ -1,8 +1,12 @@
+import 'package:admin_fribe/blocs/logs/logs_bloc.dart';
 import 'package:admin_fribe/models/product_model.dart';
+import 'package:admin_fribe/repositories/logs/log_repository.dart';
+import 'package:admin_fribe/screens/logs_screen.dart';
 import 'package:admin_fribe/screens/new_product_screen.dart';
 import 'package:admin_fribe/screens/product_sales_screen.dart';
 import 'package:admin_fribe/widgets/auth_manager.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 final routes = GoRouter(
@@ -45,6 +49,20 @@ final routes = GoRouter(
           );
         }
         return ProductSalesScreen(weekId: weekId);
+      },
+    ),
+    GoRoute(
+      name: 'logs',
+      path: '/logs',
+      builder: (context, state) {
+        final productId = state.extra as String;
+
+        return BlocProvider(
+          create: (context) =>
+              LogsBloc(logRepository: context.read<ILogRepository>())
+                ..add(OpenLogScreen(productId)),
+          child: const LogsScreen(),
+        );
       },
     ),
   ],

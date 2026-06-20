@@ -1,11 +1,12 @@
 import 'package:admin_fribe/blocs/update_amount/validator/amount_input.dart';
-import 'package:admin_fribe/logs/update_amount_log.dart';
+import 'package:admin_fribe/logs/enum/log_action.dart';
+import 'package:admin_fribe/models/log_model.dart';
+import 'package:admin_fribe/repositories/logs/log_repository.dart';
 import 'package:admin_fribe/repositories/products/product_repository.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
-import 'package:intl/intl.dart';
 
 part 'update_amount_event.dart';
 part 'update_amount_state.dart';
@@ -13,12 +14,12 @@ part 'update_amount_state.dart';
 final class UpdateAmountBloc
     extends Bloc<UpdateAmountEvent, UpdateAmountState> {
   final IProductRepository _productRepository;
-  final IUpdateAmountLog _updateAmountLog;
+  final ILogRepository _logRepository;
   UpdateAmountBloc({
     required IProductRepository productRepository,
-    required IUpdateAmountLog updateAmountLog,
+    required ILogRepository logRepository,
   }) : _productRepository = productRepository,
-       _updateAmountLog = updateAmountLog,
+       _logRepository = logRepository,
        super(UpdateAmountState.initial()) {
     on<AmountInputChanged>(_onAmountInputChanged);
     on<ClearAmountInput>(_onClearAmountInput);
@@ -57,16 +58,15 @@ final class UpdateAmountBloc
         newAmount: state.amountInput.value,
       );
       final now = DateTime.now();
-      final formattedDate = DateFormat('dd/MM/yyyy HH:mm').format(now);
 
-      await _updateAmountLog.writeLog(
-        logEntry:
-            '[UPDATE_AMOUNT] ProductId=${event.productId}, '
-            'Old=${result.oldAmount}, '
-            'Added=${result.addedAmount}, '
-            'New=${result.newAmount}, '
-            'At=$formattedDate',
+      final log = LogModel(
+        action: LogAction.updateAmount,
+        productId: event.productId,
+        timestamp: now,
+        payload: result.toMap(),
       );
+
+      await _logRepository.saveLog(log);
 
       emit(
         state.copyWith(

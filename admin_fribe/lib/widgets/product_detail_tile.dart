@@ -29,6 +29,8 @@ class ProductDetailTile extends StatelessWidget {
       );
     }
 
+    void openLogsScreen() => context.pushNamed('logs', extra: product.id);
+
     return InkWell(
       onTap: () => context.pushNamed('edit-product', extra: product),
       child: Padding(
@@ -69,19 +71,37 @@ class ProductDetailTile extends StatelessWidget {
                   'Stock: ${numberFormat.format(double.tryParse(product.amount) ?? 0)}(${product.measure})',
                   style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
-                SizedBox(
-                  width: 30,
-                  height: 30,
-                  child: IconButton(
-                    padding: EdgeInsets.zero,
-                    onPressed: showEditAmountDialog,
-                    icon: Icon(
-                      FontAwesome.plus,
-                      size: 16.0,
-                      color: Colors.white70,
+                Row(
+                  children: [
+                    SizedBox(
+                      width: 30,
+                      height: 30,
+                      child: IconButton(
+                        padding: EdgeInsets.zero,
+                        onPressed: showEditAmountDialog,
+                        icon: Icon(
+                          FontAwesome.plus,
+                          size: 16.0,
+                          color: Colors.white70,
+                        ),
+                        tooltip: 'Edit Product Amount',
+                      ),
                     ),
-                    tooltip: 'Edit Product Amount',
-                  ),
+                    SizedBox(
+                      width: 30,
+                      height: 30,
+                      child: IconButton(
+                        padding: EdgeInsets.zero,
+                        onPressed: openLogsScreen,
+                        icon: Icon(
+                          FontAwesome.doc,
+                          size: 16.0,
+                          color: Colors.white70,
+                        ),
+                        tooltip: 'Show Product Logs',
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),

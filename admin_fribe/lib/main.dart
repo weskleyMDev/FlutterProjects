@@ -12,6 +12,7 @@ import 'package:admin_fribe/cubits/home_tab/home_tab_cubit.dart';
 import 'package:admin_fribe/firebase_options.dart';
 import 'package:admin_fribe/generated/l10n.dart';
 import 'package:admin_fribe/logs/update_amount_log.dart';
+import 'package:admin_fribe/repositories/logs/log_repository.dart';
 import 'package:admin_fribe/repositories/pending_sales/pending_sale_repository.dart';
 import 'package:admin_fribe/repositories/products/product_repository.dart';
 import 'package:admin_fribe/repositories/sales_receipt/isales_receipt_repository.dart';
@@ -46,7 +47,7 @@ Future<void> main() async {
     WindowOptions windowOptions = WindowOptions(
       size: const Size(600, 800),
       minimumSize: const Size(600, 800),
-      title: "Admin Fribe v1.0.3",
+      title: "Admin Fribe v1.2",
       center: true,
       backgroundColor: Colors.transparent,
       skipTaskbar: false,
@@ -72,6 +73,9 @@ class MyApp extends StatelessWidget {
     final theme = MaterialTheme(textTheme);
     return MultiRepositoryProvider(
       providers: [
+        RepositoryProvider<ILogRepository>(
+          create: (context) => LogRepository(),
+        ),
         RepositoryProvider<ISalesReceiptRepository>(
           create: (context) => SalesReceiptRepository(),
         ),
@@ -132,7 +136,7 @@ class MyApp extends StatelessWidget {
           BlocProvider(
             create: (context) => UpdateAmountBloc(
               productRepository: context.read<IProductRepository>(),
-              updateAmountLog: context.read<IUpdateAmountLog>(),
+              logRepository: context.read<ILogRepository>(),
             ),
           ),
           BlocProvider(

@@ -11,6 +11,14 @@ final class UpdateAmountResult extends Equatable {
     required this.newAmount,
   });
 
+  Map<String, dynamic> toMap() {
+    return {
+      'oldAmount': oldAmount,
+      'addedAmount': addedAmount,
+      'newAmount': newAmount,
+    };
+  }
+
   @override
   List<Object> get props => [oldAmount, addedAmount, newAmount];
 }
