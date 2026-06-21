@@ -90,14 +90,21 @@ class LogsScreen extends StatelessWidget {
         itemCount: state.logs.length,
         itemBuilder: (context, index) {
           final log = state.logs[index];
-          return ListTile(
-            title: Text(
-              '+${log.addedAmount} added',
-              style: const TextStyle(fontWeight: FontWeight.bold),
-            ),
-            subtitle: Text(
-              '${log.oldAmount} → ${log.newAmount}\n'
-              '${DateFormat('dd/MM/yyyy HH:mm').format(log.timestamp)}',
+          return Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: ListTile(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+                side: BorderSide(color: Colors.grey.shade300),
+              ),
+              title: Text(
+                '+${log.addedAmount} added',
+                style: const TextStyle(fontWeight: FontWeight.bold),
+              ),
+              subtitle: Text(
+                '${log.oldAmount} → ${log.newAmount}\n'
+                '${DateFormat('dd/MM/yyyy HH:mm').format(log.timestamp)}',
+              ),
             ),
           );
         },

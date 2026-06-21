@@ -47,7 +47,7 @@ Future<void> main() async {
     WindowOptions windowOptions = WindowOptions(
       size: const Size(600, 800),
       minimumSize: const Size(600, 800),
-      title: "Admin Fribe v1.2",
+      title: "Admin Fribe v1.3",
       center: true,
       backgroundColor: Colors.transparent,
       skipTaskbar: false,

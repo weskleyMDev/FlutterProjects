@@ -74,7 +74,7 @@ class _VouchersScreenState extends State<VouchersScreen> {
                     final isLoading = state.status == PendingSaleStatus.loading;
                     final date = DateFormat.yMd(
                       locale,
-                    ).format(receipt.createAt);
+                    ).add_Hm().format(receipt.createAt);
                     return ListTile(
                       title: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
