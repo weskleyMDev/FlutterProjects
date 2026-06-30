@@ -41,6 +41,11 @@ class HomeScreen extends StatelessWidget {
         title: const Text('Admin Fribe'),
         actions: [
           IconButton(
+            icon: const Icon(FontAwesome5.file_alt),
+            tooltip: 'Show Logs',
+            onPressed: () => context.pushNamed('logs'),
+          ),
+          IconButton(
             icon: const Icon(FontAwesome5.plus),
             tooltip: 'Add Product',
             onPressed: () => context.pushNamed('edit-product'),

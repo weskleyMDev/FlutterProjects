@@ -29,7 +29,7 @@ class ProductDetailTile extends StatelessWidget {
       );
     }
 
-    void openLogsScreen() => context.pushNamed('logs', extra: product.id);
+    void openLogsScreen() => context.pushNamed('product-logs', extra: product.id);
 
     return InkWell(
       onTap: () => context.pushNamed('edit-product', extra: product),

@@ -52,15 +52,27 @@ final routes = GoRouter(
       },
     ),
     GoRoute(
-      name: 'logs',
-      path: '/logs',
+      name: 'product-logs',
+      path: '/product-logs',
       builder: (context, state) {
         final productId = state.extra as String;
 
         return BlocProvider(
           create: (context) =>
               LogsBloc(logRepository: context.read<ILogRepository>())
-                ..add(OpenLogScreen(productId)),
+                ..add(OpenLogsScreen(productId: productId)),
+          child: const LogsScreen(),
+        );
+      },
+    ),
+    GoRoute(
+      name: 'logs',
+      path: '/logs',
+      builder: (context, state) {
+        return BlocProvider(
+          create: (_) =>
+              LogsBloc(logRepository: context.read<ILogRepository>())
+                ..add(const OpenLogsScreen()),
           child: const LogsScreen(),
         );
       },

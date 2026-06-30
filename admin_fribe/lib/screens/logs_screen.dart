@@ -1,7 +1,5 @@
 import 'package:admin_fribe/blocs/logs/logs_bloc.dart';
-import 'package:admin_fribe/blocs/product/product_bloc.dart';
 import 'package:admin_fribe/logs/enum/log_action.dart';
-import 'package:admin_fribe/models/log_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
@@ -13,18 +11,20 @@ class LogsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: BlocSelector<LogsBloc, LogsState, String>(
-          selector: (state) => state.productId,
-          builder: (context, productId) {
-            return BlocSelector<ProductBloc, ProductState, String?>(
-              selector: (state) => state.products
-                  .where((p) => p?.id == productId)
-                  .map((p) => p?.name)
-                  .firstOrNull,
-              builder: (context, name) {
-                return Text('${name ?? 'Product'} LOGS');
-              },
-            );
+        title: BlocBuilder<LogsBloc, LogsState>(
+          builder: (context, state) {
+            final productName = state.logs.isNotEmpty
+                ? state.logs.first.productName
+                : null;
+            if (state.mode == LogsMode.general) {
+              return const Text('LATEST LOGS');
+            }
+
+            if (state.logs.isNotEmpty) {
+              return Text('${productName ?? 'PRODUCT'} LOGS');
+            }
+
+            return const Text('PRODUCT LOGS');
           },
         ),
       ),
@@ -98,13 +98,21 @@ class LogsScreen extends StatelessWidget {
                 side: BorderSide(color: Colors.grey.shade300),
               ),
               title: Text(
-                '+${log.addedAmount} added',
+                state.mode == LogsMode.general
+                    ? log.productName
+                    : '+${log.addedAmount} added',
                 style: const TextStyle(fontWeight: FontWeight.bold),
               ),
-              subtitle: Text(
-                '${log.oldAmount} → ${log.newAmount}\n'
-                '${DateFormat('dd/MM/yyyy HH:mm').format(log.timestamp)}',
-              ),
+              subtitle: state.mode == LogsMode.general
+                  ? Text(
+                      '+${log.addedAmount} added\n'
+                      '${log.oldAmount} → ${log.newAmount}\n'
+                      '${DateFormat('dd/MM/yyyy HH:mm').format(log.timestamp)}',
+                    )
+                  : Text(
+                      '${log.oldAmount} → ${log.newAmount}\n'
+                      '${DateFormat('dd/MM/yyyy HH:mm').format(log.timestamp)}',
+                    ),
             ),
           );
         },

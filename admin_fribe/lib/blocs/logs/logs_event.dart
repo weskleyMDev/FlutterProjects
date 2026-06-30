@@ -7,10 +7,10 @@ sealed class LogsEvent extends Equatable {
   List<Object?> get props => [];
 }
 
-final class OpenLogScreen extends LogsEvent {
-  final String productId;
+final class OpenLogsScreen extends LogsEvent {
+  final String? productId;
 
-  const OpenLogScreen(this.productId);
+  const OpenLogsScreen({this.productId});
 
   @override
   List<Object?> get props => [productId];
